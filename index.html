@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Faujiadda — Defence Housing, SSB Dorms & Food</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="preconnect" href="https://firestore.googleapis.com">
+
+    <meta name="theme-color" content="#0b1325">
+    <link rel="manifest" href="manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+
+    <link rel="stylesheet" href="style.css?v=21">
+
+    <style>
+        /* 🇮🇳 PATRIOTIC THEME OVERRIDES 🇮🇳 */
+        :root {
+            --bg: #0b1325;       /* Deep Navy Blue (Air Force/Navy vibe) */
+            --nav: #111d36;      /* Lighter Navy for Header */
+            --card: #1a2642;     /* Card Background */
+            --border: #2a3b5c;
+            --accent: #FF9933;   /* Indian Saffron */
+            --gold: #FF9933;     /* Overriding gold to Saffron for UI consistency */
+            --green: #138808;    /* Indian Green */
+            --text: #ffffff;
+            --muted: #a0aec0;
+        }
+
+        /* ── SSB Dorm Cards ── */
+        .dorm-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .dorm-card:hover { border-color: var(--accent); }
+        .dorm-card h4 { margin: 0 0 4px; font-size: 15px; color: var(--text); }
+        .dorm-card .dorm-meta { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+        .dorm-card .dorm-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+        .dorm-tag { font-size: 11px; padding: 3px 10px; border-radius: 20px; border: 1px solid; }
+        .dorm-price { color: var(--accent); border-color: var(--accent); }
+        .dorm-dist  { color: var(--green); border-color: var(--green); }
+
+        /* ── Food Panel ── */
+        #foodPanel {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            max-height: 55vh;
+            background: var(--nav);
+            border-top: 3px solid var(--accent);
+            border-radius: 20px 20px 0 0;
+            z-index: 9998;
+            transform: translateY(100%);
+            transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+            padding: 0 16px 24px;
+            overflow-y: auto;
+        }
+        #foodPanel.open { transform: translateY(0); }
+        .food-handle { text-align: center; padding: 12px 0 8px; cursor: pointer; }
+        .food-handle-bar { display: inline-block; width: 40px; height: 4px; background: #555; border-radius: 2px; }
+        .food-panel-title {
+            font-size: 16px; font-weight: 700; color: var(--accent);
+            margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;
+        }
+        .food-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .food-card {
+            background: var(--bg); border: 1px solid var(--border);
+            border-radius: 10px; padding: 12px; transition: border-color 0.2s;
+        }
+        .food-card:hover { border-color: var(--accent); }
+        .food-card .fname { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+        .food-card .ftype { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+        .food-card .fprice { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 20px; display: inline-block; }
+
+        .budget-low  { background: rgba(19, 136, 8, 0.15); color: var(--green); }
+        .budget-mid  { background: rgba(255, 153, 51, 0.15);  color: var(--accent); }
+        .budget-high { background: rgba(252, 92, 125, 0.15);  color: #fc5c7d; }
+    </style>
+</head>
+<body>
+
+<header style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; padding: 15px 20px; background: var(--nav);">
+    <div class="logo" style="margin: 0; font-size: 24px; font-weight: 800; color: var(--accent);">Fauji<span style="color: white;">adda</span></div>
+
+    <button onclick="openProfileModal()" style="background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 8px 16px; border-radius: 20px; font-weight: bold; cursor: pointer; font-family: 'Outfit', sans-serif; transition: 0.2s;">👤 My Profile</button>
+
+    <div class="filters" id="type-filters" style="overflow-x: auto; white-space: nowrap; display: flex; gap: 8px; width: 100%; padding-bottom: 5px;">
+        <button class="fb active" onclick="setType('all',this)">All Types</button>
+        <button class="fb" onclick="setType('1bhk',this)">1 BHK</button>
+        <button class="fb" onclick="setType('2bhk',this)">2 BHK</button>
+        <button class="fb" onclick="setType('3bhk',this)">3 BHK</button>
+        <button class="fb" onclick="setType('pg',this)">PG/Room</button>
+        <button class="fb" onclick="setType('dorm',this)" style="border-color: var(--accent); color: var(--accent);">🏨 SSB Dorms</button>
+    </div>
+</header>
+
+<div class="main">
+    <div class="sidebar">
+        <div class="drag-handle" onclick="toggleSidebar()"><div class="drag-bar"></div></div>
+        <div class="s-top">
+            <div class="search" style="margin-bottom: 12px; border-color: var(--border);">
+                <input type="text" placeholder="Search Station, Cantt, or City..." oninput="setSmartSearch(this.value)">
+            </div>
+            <div class="price-row" style="margin-bottom: 10px; display: flex; gap: 10px;">
+                <select id="rankBAH" onchange="setPrice(this.value)" class="fb" style="flex: 1;">
+                    <option value="100000">BAH Limit</option>
+                    <option value="15000">🟢 OR (15k)</option>
+                    <option value="30000">🟡 JCO (30k)</option>
+                    <option value="60000">🔴 Offr (60k)</option>
+                </select>
+                <select id="sortOpt" onchange="setSort(this.value)" class="fb" style="flex: 1;">
+                    <option value="new">Sort: Newest</option>
+                    <option value="priceAsc">Price: Low to High</option>
+                    <option value="priceDesc">Price: High to Low</option>
+                    <option value="near">Nearest to Gate</option>
+                </select>
+            </div>
+            <div class="count-subtitle" id="cnt" style="font-size: 14px; color: var(--accent); font-weight: 600; margin-bottom: 10px;">Loading...</div>
+        </div>
+        <div class="listings" id="list"></div>
+    </div>
+    <div id="map"></div>
+</div>
+
+<button class="fab-post" onclick="openPostModal()" style="background: var(--accent); color: black;">➕ Post Room</button>
+
+<div id="foodPanel">
+    <div class="food-handle" onclick="closeFoodPanel()">
+        <div class="food-handle-bar"></div>
+    </div>
+    <div class="food-panel-title">
+        <span>🍽️ Nearby Food & Stay Options</span>
+        <span style="font-size:12px; color:var(--muted); font-weight:400;" id="foodCity"></span>
+    </div>
+    <div class="food-grid" id="foodGrid"></div>
+</div>
+
+<div id="postModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closePostModal()">&times;</span>
+        <h2 id="modal-title">Step 0: Verify Phone</h2>
+        <div id="step-auth">
+            <p style="margin-bottom: 15px; color: var(--muted); font-size: 14px;">Verify your mobile number to post.</p>
+            <input type="tel" id="auth_phone" placeholder="Phone (e.g. +919876543210)" required style="margin-bottom: 10px;">
+            <div id="recaptcha-container" style="margin-bottom: 15px;"></div>
+            <button onclick="sendOTP()" id="btn-send-otp" class="pbtn-p" style="background: var(--border);">Send OTP 💬</button>
+            <div id="otp-section" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border);">
+                <input type="text" id="auth_otp" placeholder="Enter 6-digit OTP" required>
+                <button onclick="verifyOTP()" id="btn-verify-otp" class="pbtn-p" style="background: var(--accent); color: black;">Verify & Proceed ✅</button>
+            </div>
+        </div>
+        <div id="step1" style="display: none;">
+            <input type="text" id="f_name" placeholder="Society/Building Name" required>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="f_area" placeholder="Area/Cantt" required style="flex: 1;">
+                <input type="text" id="f_city" placeholder="City/Station" required style="flex: 1;">
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <input type="number" id="f_price" placeholder="Rent (₹)" required style="flex: 1;">
+                <select id="f_type" style="flex: 1;">
+                    <option value="1bhk">1 BHK</option><option value="2bhk">2 BHK</option>
+                    <option value="3bhk">3 BHK</option><option value="pg">PG/Room</option>
+                </select>
+            </div>
+            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <input type="number" id="f_sqft" placeholder="SqFt Area" style="flex: 1;">
+                <select id="f_furnish" style="flex: 1;">
+                    <option value="Semi-Furnished">Semi-Furnished</option>
+                    <option value="Fully-Furnished">Fully-Furnished</option>
+                    <option value="Unfurnished">Unfurnished</option>
+                </select>
+                <input type="number" id="f_floor" placeholder="Floor No." style="flex: 1;">
+            </div>
+            <input type="tel" id="f_phone" placeholder="WhatsApp Number" required>
+            <div style="margin-bottom: 15px;">
+                <label style="color: var(--muted); font-size: 14px; display: block; margin-bottom: 5px;">Available From:</label>
+                <input type="date" id="f_date" required style="width: 100%; padding: 12px; background: var(--card); border: 1px solid var(--border); color: white; border-radius: 8px; outline: none;">
+            </div>
+            <button onclick="goToStep2()" class="pbtn-p" style="background: var(--border);">Next: Pin Location 📍</button>
+        </div>
+        <div id="step2" style="display: none;">
+            <p style="margin-bottom: 10px; color: var(--muted); font-size: 14px;">Drag the red pin to your exact building.</p>
+            <div id="mini-map" style="width: 100%; height: 250px; background-color: #222; border-radius: 8px; border: 1px solid #555; position: relative; z-index: 10;"></div>
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button onclick="goToStep1()" style="flex: 1; padding: 15px; background: transparent; color: white; border: 1px solid #555; border-radius: 8px; cursor: pointer;">Back</button>
+                <button onclick="goToStep3()" style="flex: 1; padding: 15px; background: var(--border); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Next: Add Photos 📸</button>
+            </div>
+        </div>
+        <div id="step3" style="display: none;">
+            <p style="margin-bottom: 10px; color: var(--muted); font-size: 14px;">Select images or videos of the room.</p>
+            <input type="file" id="f_media" multiple accept="image/*,video/*" style="padding: 10px 0; color: white;">
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button onclick="goToStep2()" style="flex: 1; padding: 15px; background: transparent; color: white; border: 1px solid #555; border-radius: 8px; cursor: pointer;">Back</button>
+                <button onclick="submitFinalListing()" id="finalSubmitBtn" style="flex: 1; padding: 15px; background: var(--accent); color: black; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Submit Listing ✅</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="detailModal" class="modal" style="z-index: 10000; display: none;">
+    <div class="modal-content" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; max-height: 90vh; background: var(--bg); border: none;">
+        <div style="padding: 15px; background: var(--nav); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border);">
+            <h3 style="margin: 0; font-size: 18px;">Property Details</h3>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <span id="shareBtn" style="font-size: 20px; cursor: pointer;">🔗</span>
+                <span id="reportBtn" style="font-size: 20px; cursor: pointer; color: #ff4444;">🚩</span>
+                <span style="font-size: 28px; cursor: pointer; line-height: 1; margin-left: 10px;" onclick="closeDetailModal()">&times;</span>
+            </div>
+        </div>
+        <div id="detail-content" style="padding: 15px 15px 0 15px; overflow-y: auto; flex-grow: 1;"></div>
+        <div id="detail-footer" style="padding: 15px; background: var(--card); border-top: 1px solid var(--border);"></div>
+    </div>
+</div>
+
+<div id="reportModal" class="modal" style="z-index: 10001; display: none;">
+    <div class="modal-content" style="max-width: 350px;">
+        <span class="close" onclick="document.getElementById('reportModal').style.display='none'">&times;</span>
+        <h3 style="margin-bottom: 15px; color: #ff4444;">🚩 Report Listing</h3>
+        <p style="font-size: 14px; color: var(--muted); margin-bottom: 15px;">Why are you reporting this post?</p>
+        <div class="report-options" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+            <label><input type="radio" name="reportReason" value="Fake Listing"> Fake/Scam listing</label>
+            <label><input type="radio" name="reportReason" value="Wrong Location"> Wrong location pinned</label>
+            <label><input type="radio" name="reportReason" value="Inappropriate"> Inappropriate content</label>
+            <label><input type="radio" name="reportReason" value="Already Rented"> Already rented out</label>
+        </div>
+        <button onclick="submitReport()" class="pbtn-p" style="background: #ff4444;">Submit Report</button>
+    </div>
+</div>
+
+<div id="welcomeModal" class="modal" style="z-index: 10005;">
+    <div class="modal-content" style="text-align: center; max-width: 400px; padding: 30px 20px;">
+        <div style="font-size: 50px; margin-bottom: 10px;">🇮🇳</div>
+        <h2 style="color: var(--accent); margin-bottom: 15px; font-size: 24px;">Welcome to Faujiadda</h2>
+        <p style="color: var(--muted); margin-bottom: 20px; font-size: 15px;">The trusted ecosystem built exclusively for the Armed Forces community.</p>
+        <div style="text-align: left; background: var(--nav); padding: 15px; border-radius: 12px; margin-bottom: 25px; border: 1px solid var(--border);">
+            <p style="margin-bottom: 10px; font-size: 14px;">✅ <strong>Verified Rentals:</strong> Spam-free & secure.</p>
+            <p style="margin-bottom: 10px; font-size: 14px;">🏨 <strong>SSB Dorms:</strong> Stay near your Selection Centre.</p>
+            <p style="margin: 0; font-size: 14px;">🍽️ <strong>Food Panel:</strong> Local Fauji-trusted meals.</p>
+        </div>
+        <button onclick="closeWelcomeModal()" class="pbtn-p" style="background: var(--accent); color: black;">Start Exploring 🗺️</button>
+    </div>
+</div>
+
+<div id="requestModal" class="modal" style="z-index: 10005; display: none;">
+    <div class="modal-content" style="max-width: 350px;">
+        <span class="close" onclick="closeRequestModal()">&times;</span>
+        <h3 style="margin-bottom: 15px; color: var(--accent);">🏠 Request a Home</h3>
+        <p style="font-size: 14px; color: var(--muted); margin-bottom: 15px;">Tell us where you are getting posted, and we'll notify you when listings are added!</p>
+        <input type="text" id="req_city" placeholder="Station/City (e.g. Wellington)" required style="margin-bottom: 10px; width: 100%; padding: 12px; background: var(--card); border: 1px solid var(--border); color: white; border-radius: 8px; outline: none;">
+        <input type="tel" id="req_phone" placeholder="WhatsApp Number" required style="margin-bottom: 20px; width: 100%; padding: 12px; background: var(--card); border: 1px solid var(--border); color: white; border-radius: 8px; outline: none;">
+        <button onclick="submitHomeRequest()" class="pbtn-p" style="background: var(--accent); color: black;">Submit Request</button>
+    </div>
+</div>
+
+<div id="profileModal" class="modal" style="z-index: 10006; display: none;">
+    <div class="modal-content" style="max-width: 500px; padding: 25px;">
+        <span class="close" onclick="closeProfileModal()">&times;</span>
+        <h2 style="margin-bottom: 15px; color: var(--accent);">👤 My Profile</h2>
+        <div id="profile-details" style="margin-bottom: 20px; background: var(--nav); padding: 15px; border-radius: 12px; border: 1px solid var(--border);"></div>
+        <h3 style="margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid var(--border);">My Posted Listings</h3>
+        <div id="my-listings-container" style="max-height: 350px; overflow-y: auto; padding-right: 5px;"></div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+<script type="module" src="script.js?v=22"></script>
+</body>
+</html>

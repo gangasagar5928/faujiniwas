@@ -1,0 +1,24 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Target the "rentals" collection
+    match /rentals/{rentalId} {
+
+      // RULE 1: READING DATA
+      // Anyone can read the listing IF it is verified (for the public map).
+      // IF you are logged in (request.auth != null), you can read everything (for your admin dashboard).
+      allow read: if resource.data.verified == true || request.auth != null;
+
+      // RULE 2: CREATING DATA
+      // Anyone can submit a new room from the public map...
+      // BUT we strictly force them to set 'verified' to false.
+      // If a hacker tries to inject 'verified: true', Firebase will instantly block it.
+      allow create: if request.resource.data.verified == false;
+
+      // RULE 3: UPDATING & DELETING DATA
+      // ONLY logged-in users (You, the admin) are allowed to modify or delete a listing.
+      allow update, delete: if request.auth != null;
+    }
+  }
+}
