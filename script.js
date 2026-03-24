@@ -219,7 +219,7 @@ function initMap() {
         preferCanvas: true
     }).setView([22.9074, 79.1469], 5);
 
-    L.tileLayer('https://mt1.google.com/vt/lyrs=m&gl=IN&x={x}&y={y}&z={z}', {
+   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 20, minZoom: 5, noWrap: true
     }).addTo(map);
 
