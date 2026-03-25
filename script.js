@@ -95,7 +95,6 @@ window.openFoodPanel = (city) => {
     const grid  = document.getElementById('foodGrid');
     const label = document.getElementById('foodCity');
 
-    // Try to match city name loosely
     const cityKey = Object.keys(FOOD_BY_CITY).find(k => city && city.toLowerCase().includes(k.toLowerCase()));
     const options = cityKey ? FOOD_BY_CITY[cityKey] : [];
     label.textContent = city || '';
@@ -157,7 +156,7 @@ function renderDorms() {
 
         const icon = L.divIcon({
             className: '',
-            html: `<div class="pm" style="border-color:#f4c542; color:#f4c542; background:#1a1a1a; font-size:18px; display:flex; align-items:center; justify-content:center;">🏨</div>`,
+            html: `<div class="pm" style="border-color:#FF9933; color:#FF9933; background:#1a1a1a; font-size:18px; display:flex; align-items:center; justify-content:center;">🏨</div>`,
             iconAnchor: [30, 34], popupAnchor: [0, -34], iconSize: [60, 34]
         });
 
@@ -166,11 +165,11 @@ function renderDorms() {
                 <div style="font-family:'Outfit',sans-serif; min-width:200px;">
                     <b style="font-size:15px;">${d.name}</b><br>
                     <span style="color:#b3b3b3; font-size:13px;">${d.area}, ${d.city}</span><br>
-                    <b style="color:#f4c542; font-size:14px;">₹${d.price}/night · ${d.type}</b><br>
+                    <b style="color:#FF9933; font-size:14px;">₹${d.price}/night · ${d.type}</b><br>
                     <small style="color:#888;">🎯 ${d.ssb}</small><br>
                     <small style="color:#888;">🚶 ${d.distance} km to SSB gate</small><br>
                     <button onclick="openFoodPanel('${d.city}')"
-                        style="margin-top:10px; width:100%; background:#f4c542; color:#000; border:none; padding:9px; border-radius:6px; font-weight:700; cursor:pointer; font-family:'Outfit',sans-serif;">
+                        style="margin-top:10px; width:100%; background:var(--accent); color:#000; border:none; padding:9px; border-radius:6px; font-weight:700; cursor:pointer; font-family:'Outfit',sans-serif;">
                         🍽️ Nearby Food & Hotels
                     </button>
                 </div>
@@ -249,11 +248,11 @@ function initMap() {
     });
 }
 
+
 // ══════════════════════════════════════════════════════
 //  RENDER LISTINGS
 // ══════════════════════════════════════════════════════
 function render() {
-    // If in dorm mode, render dorms instead
     if (typeFilter === 'dorm') { renderDorms(); return; }
 
     let filtered = listings.filter(r => {
@@ -285,7 +284,7 @@ function render() {
                 <div style="font-size: 40px; margin-bottom: 15px;">🗺️</div>
                 <h3 style="margin-bottom: 10px; font-size: 18px;">No homes found here</h3>
                 <p style="color: var(--muted); font-size: 14px; margin-bottom: 20px;">We don't have verified listings matching these filters yet.</p>
-                <button onclick="openRequestModal()" style="background: var(--accent); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-family: 'Outfit', sans-serif;">Request a Home Here</button>
+                <button onclick="openRequestModal()" style="background: var(--accent); color: black; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-family: 'Outfit', sans-serif;">Request a Home Here</button>
             </div>
         `;
         return; 
@@ -295,9 +294,9 @@ function render() {
         const d = document.createElement('div'); d.className = 'lc'; d.id = 'card-' + r.id; 
         if(!r.distance) r.distance = (Math.random() * 3 + 0.5).toFixed(1);
 
-        let bahColor = r.price <= 15000 ? '#3ecf8e' : r.price <= 30000 ? '#f4c542' : '#fc5c7d';
+        let bahColor = r.price <= 15000 ? '#138808' : r.price <= 30000 ? '#FF9933' : '#fc5c7d';
         let bahTag = `<span class="tag" style="border-color: ${bahColor}; color: ${bahColor};">` + (r.price <= 15000 ? '🟢 OR' : r.price <= 30000 ? '🟡 JCO' : '🔴 Offr') + `</span>`;
-        let dateTag = r.available ? `<span class="tag" style="background: rgba(255,215,0,0.1); color: var(--gold); border-color: var(--gold);">📅 Avail: ${r.available}</span>` : `<span class="tag" style="background: rgba(62,207,142,0.1); color: #3ecf8e; border-color: #3ecf8e;">📅 Immediate</span>`;
+        let dateTag = r.available ? `<span class="tag" style="background: rgba(255,153,51,0.1); color: var(--accent); border-color: var(--accent);">📅 Avail: ${r.available}</span>` : `<span class="tag" style="background: rgba(19,136,8,0.1); color: #138808; border-color: #138808;">📅 Immediate</span>`;
 
         let thumbUrl = "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=200&q=80";
         if (r.mediaUrls && r.mediaUrls.length > 0) {
@@ -312,7 +311,7 @@ function render() {
                 <div class="lc-details">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <strong style="font-size:15px;">${r.name}</strong>
-                        <b style="color:var(--gold)">₹${r.price}</b>
+                        <b style="color:var(--accent)">₹${r.price}</b>
                     </div>
                     <small style="color:var(--text); display:block; margin-top:2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">📍 ${r.area}, ${r.city}</small>
                     <small style="color:var(--muted); display:block; margin-top:2px;">🚶 ~${r.distance} km from Cantt Gate</small>
@@ -325,4 +324,305 @@ function render() {
         
         const customIcon = L.divIcon({ className: '', html: `<div class="pm" style="border-color:${bahColor}; color:${bahColor}; box-shadow: 0 4px 15px rgba(0,0,0,0.6); transform: scale(1.1);"><style>.pm::after{border-top-color:${bahColor};}</style>₹${(r.price/1000).toFixed(0)}K</div>`, iconAnchor: [30, 34], popupAnchor: [0, -34], iconSize: [60, 34] });
         
-        let popupBtn = `<button onclick="openDetailModal('${r.id}')" style="width:100%; background:var(--accent); color:#fff; padding:10px; border:none; border-radius
+        let popupBtn = `<button onclick="openDetailModal('${r.id}')" style="width:100%; background:var(--accent); color:black; padding:10px; border:none; border-radius:6px; font-weight:800; margin-top:10px; cursor:pointer; font-family:'Outfit', sans-serif;">View Full Details</button>`;
+        
+        const m = L.marker([r.lat, r.lng], {icon: customIcon})
+            .bindPopup(`<div style="font-family:'Outfit', sans-serif;"><b style="font-size:16px;">${r.name}</b><br><span style="color:#b3b3b3;">${r.area}, ${r.city}</span><br><b style="color:#138808; font-size:15px;">Rent: ₹${r.price}</b>${popupBtn}</div>`);
+        
+        newMarkersArray.push(m);
+        markers[r.id] = m;
+
+        d.onclick = () => { map.flyTo([r.lat, r.lng], 15, {duration: 0.5}); setTimeout(() => { m.openPopup(); }, 500); openDetailModal(r.id); }; 
+        listEl.appendChild(d); 
+    });
+
+    markerCluster.addLayers(newMarkersArray);
+}
+
+// ══════════════════════════════════════════════════════
+//  DETAIL MODAL
+// ══════════════════════════════════════════════════════
+window.openDetailModal = (id) => {
+    const r = listings.find(l => l.id === id); if(!r) return;
+    const modal = document.getElementById('detailModal'); 
+    const content = document.getElementById('detail-content'); 
+    const footer = document.getElementById('detail-footer');
+
+    const daysAgo = r.createdAt ? Math.floor((Date.now() - r.createdAt) / 86400000) : 0;
+    const postedText = daysAgo === 0 ? "Posted today" : `Posted ${daysAgo} days ago`;
+
+    let photosHtml = '', dotsHtml = '';
+    const images = (r.mediaUrls && r.mediaUrls.length > 0) ? r.mediaUrls : ["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80"];
+    
+    images.forEach((url, i) => {
+        photosHtml += `<img src="${url}">`;
+        dotsHtml += `<div class="dot ${i===0 ? 'active' : ''}" id="dot-${i}"></div>`;
+    });
+
+    let bahColor = r.price <= 15000 ? '#138808' : r.price <= 30000 ? '#FF9933' : '#fc5c7d';
+    let bahText = r.price <= 15000 ? '🟢 Within OR Limit' : r.price <= 30000 ? '🟡 Within JCO Limit' : '🔴 Officer BAH Limit';
+    
+    content.innerHTML = `
+        <div class="carousel-container">
+            <div class="detail-carousel" onscroll="updateCarousel(this, ${images.length})">${photosHtml}</div>
+            <div class="carousel-badge" id="c-badge">1/${images.length} 📷</div>
+            <div class="carousel-dots">${dotsHtml}</div>
+        </div>
+        
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 5px;">
+            <h2 style="margin:0; font-size:22px;">${r.name}</h2>
+            <h2 style="margin:0; color:var(--accent); font-size:22px;">₹${r.price}</h2>
+        </div>
+        <p style="color:var(--text); margin:0 0 10px 0; font-size: 15px;">📍 ${r.area}, ${r.city}</p>
+        <p style="color:var(--muted); font-size: 13px; margin-bottom: 15px;">⏳ ${postedText}</p>
+        
+        <div class="specs-row">
+            <div class="spec-item"><strong>${r.type.toUpperCase()}</strong>Type</div>
+            <div class="spec-item"><strong>${r.sqft || 900}</strong>SqFt</div>
+            <div class="spec-item"><strong>${r.furnishing || 'Semi'}</strong>Furnishing</div>
+            <div class="spec-item"><strong>${r.floor || 1}</strong>Floor</div>
+        </div>
+
+        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom: 20px;">
+            <span class="tag" style="font-size:13px; padding: 6px 12px; border-color:${bahColor}; color:${bahColor};">${bahText}</span>
+        </div>
+
+        <div style="background: var(--card); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border);">
+            <p style="margin:0 0 10px 0; font-size: 15px;"><strong>📅 Available From:</strong> <span style="color:var(--accent)">${r.available || 'Immediate'}</span></p>
+            <p style="margin:0; font-size: 15px;"><strong>🚶 Distance from Gate:</strong> ~${r.distance || '1.5'} km</p>
+        </div>
+
+        <button onclick="openFoodPanel('${r.city}')" style="width:100%; background: rgba(255,153,51,0.1); color:var(--accent); border:1px solid var(--accent); padding:12px; border-radius:8px; font-weight:700; font-size:14px; cursor:pointer; font-family:'Outfit',sans-serif; margin-bottom:10px;">
+            🍽️ Nearby Food & Hotels in ${r.city}
+        </button>
+    `;
+
+    if (!auth.currentUser) {
+        footer.innerHTML = `<button onclick="closeDetailModal(); openPostModal();" style="width:100%; background:var(--accent); color:black; padding:15px; border:none; border-radius:8px; font-weight:800; font-size:16px; cursor:pointer;">🔒 Login to View Contact</button>`;
+    } else if (r.whatsapp) {
+        footer.innerHTML = `<a href="https://wa.me/91${r.whatsapp}?text=Hi, I saw your listing for ${r.area} on Faujiadda." target="_blank" style="display:block; text-align:center; background:#138808; color:#fff; padding:15px; border-radius:8px; text-decoration:none; font-weight:800; font-size:16px;">💬 Chat with Owner</a>`;
+    } else {
+        footer.innerHTML = `<button disabled style="width:100%; background:#444; color:#888; padding:15px; border:none; border-radius:8px; font-weight:800; font-size:16px;">Contact Unavailable</button>`;
+    }
+
+    document.getElementById('shareBtn').onclick = () => shareListing(r);
+    document.getElementById('reportBtn').onclick = () => openReportModal(r.id);
+
+    modal.style.display = 'block';
+};
+
+window.closeDetailModal = () => {
+    document.getElementById('detailModal').style.display = 'none';
+    closeFoodPanel();
+};
+
+window.updateCarousel = (el, total) => {
+    let index = Math.round(el.scrollLeft / el.clientWidth);
+    document.getElementById('c-badge').innerText = `${index + 1}/${total} 📷`;
+    document.querySelectorAll('.dot').forEach((d, i) => { d.className = i === index ? 'dot active' : 'dot'; });
+};
+
+window.shareListing = (r) => { if (navigator.share) { navigator.share({ title: 'Faujiadda', text: `Check out this ${r.type.toUpperCase()} in ${r.area}, ${r.city} for ₹${r.price}.`, url: window.location.href }); } else { alert("Link copied to clipboard!"); } };
+window.openReportModal = (id) => { currentReportId = id; document.getElementById('reportModal').style.display = 'block'; };
+window.submitReport = async () => {
+    const reason = document.querySelector('input[name="reportReason"]:checked');
+    if(!reason) { alert("Select a reason"); return; }
+    try {
+        await updateDoc(doc(db, "rentals", currentReportId), { reportCount: increment(1) });
+        alert("Report submitted. Thank you for keeping the community safe!");
+        document.getElementById('reportModal').style.display = 'none'; closeDetailModal();
+    } catch(e) { alert("Error reporting: " + e.message); }
+};
+
+window.toggleSidebar = () => { document.querySelector('.sidebar').classList.toggle('minimized'); setTimeout(() => map.invalidateSize(), 300); };
+
+async function getCoordinates(address) {
+    try { const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`); const data = await res.json(); if(data && data.length > 0) return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) }; } catch(e) {} return null;
+}
+
+// ══════════════════════════════════════════════════════
+//  WIZARD / AUTH
+// ══════════════════════════════════════════════════════
+window.openPostModal = () => {
+    document.getElementById('postModal').style.display = 'block';
+    if (auth.currentUser) {
+        document.getElementById('modal-title').textContent = "Step 1: Room Details";
+        document.getElementById('step-auth').style.display = 'none';
+        document.getElementById('step1').style.display = 'block';
+        document.getElementById('f_phone').value = auth.currentUser.phoneNumber.replace('+91', '');
+    } else {
+        document.getElementById('modal-title').textContent = "Step 0: Verify Phone";
+        document.getElementById('step-auth').style.display = 'block';
+        document.getElementById('step1').style.display = 'none';
+        if (!window.recaptchaVerifier) { window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'normal' }); window.recaptchaVerifier.render(); }
+    }
+    document.getElementById('step2').style.display = 'none'; document.getElementById('step3').style.display = 'none';
+};
+window.closePostModal = () => document.getElementById('postModal').style.display = 'none';
+
+window.sendOTP = () => {
+    const phoneInput = document.getElementById('auth_phone').value.trim();
+    if (!phoneInput.startsWith('+91') || phoneInput.length < 13) { alert("Use +91 (e.g. +919876543210)"); return; }
+    const btn = document.getElementById('btn-send-otp'); btn.textContent = "Sending..."; btn.disabled = true;
+    signInWithPhoneNumber(auth, phoneInput, window.recaptchaVerifier).then((cResult) => { window.confirmationResult = cResult; document.getElementById('otp-section').style.display = 'block'; btn.textContent = "OTP Sent!"; }).catch((error) => { alert("Error: " + error.message); btn.textContent = "Send OTP 💬"; btn.disabled = false; });
+};
+window.verifyOTP = () => {
+    const code = document.getElementById('auth_otp').value.trim(); if (code.length !== 6) { alert("Enter 6-digit OTP."); return; }
+    const btn = document.getElementById('btn-verify-otp'); btn.textContent = "Verifying..."; btn.disabled = true;
+    window.confirmationResult.confirm(code).then((result) => {
+        alert("Verified!"); document.getElementById('f_phone').value = result.user.phoneNumber.replace('+91', '');
+        document.getElementById('modal-title').textContent = "Step 1: Room Details"; document.getElementById('step-auth').style.display = 'none'; document.getElementById('step1').style.display = 'block';
+    }).catch(() => { alert("Invalid OTP."); btn.textContent = "Verify & Proceed ✅"; btn.disabled = false; });
+};
+
+window.goToStep1 = () => { document.getElementById('step1').style.display = 'block'; document.getElementById('step2').style.display = 'none'; document.getElementById('step3').style.display = 'none'; };
+window.goToStep2 = async () => {
+    const name = document.getElementById('f_name').value.trim(); const area = document.getElementById('f_area').value.trim(); const city = document.getElementById('f_city').value.trim(); const price = document.getElementById('f_price').value; const phone = document.getElementById('f_phone').value;
+    if(!name || !area || !city || !price || !phone) { alert("Please fill all details."); return; }
+    const nextBtn = document.querySelector('#step1 .pbtn-p'); nextBtn.textContent = "Finding Area... ⏳"; nextBtn.disabled = true;
+    draftCoords = await getCoordinates(`${area}, ${city}, India`) || await getCoordinates(`${city}, India`) || { lat: 22.9074, lng: 79.1469 };
+    document.getElementById('step1').style.display = 'none'; document.getElementById('step2').style.display = 'block';
+    if(!miniMap) { miniMap = L.map('mini-map').setView([draftCoords.lat, draftCoords.lng], 13); L.tileLayer('https://mt1.google.com/vt/lyrs=m&gl=IN&x={x}&y={y}&z={z}', {maxZoom: 20}).addTo(miniMap); miniMarker = L.marker([draftCoords.lat, draftCoords.lng], {draggable: true}).addTo(miniMap); miniMarker.on('dragend', () => draftCoords = miniMarker.getLatLng()); } 
+    else { miniMap.setView([draftCoords.lat, draftCoords.lng], 13); miniMarker.setLatLng([draftCoords.lat, draftCoords.lng]); }
+    setTimeout(() => miniMap.invalidateSize(), 300); nextBtn.textContent = "Next: Pin Location 📍"; nextBtn.disabled = false;
+};
+window.goToStep3 = () => { document.getElementById('step2').style.display = 'none'; document.getElementById('step3').style.display = 'block'; };
+
+window.submitFinalListing = async () => {
+    const submitBtn = document.getElementById('finalSubmitBtn'); submitBtn.textContent = "Uploading... ⏳"; submitBtn.disabled = true;
+    try {
+        const files = document.getElementById('f_media').files; let uploadedUrls = [];
+        const cloudName = "dyp27u9es";
+        
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/quicktime'];
+        const maxSize = 5 * 1024 * 1024;
+
+        if(files.length > 0) {
+            for(let i=0; i < files.length; i++) {
+                if(!allowedTypes.includes(files[i].type)) { throw new Error(`File ${files[i].name} is not a valid format. Use JPG, PNG, WEBP, or MP4.`); }
+                if(files[i].size > maxSize) { throw new Error(`File ${files[i].name} is too large. Max size is 5MB.`); }
+                const fd = new FormData(); fd.append("file", files[i]); fd.append("upload_preset", "rentmap_uploads");
+                const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, { method: "POST", body: fd });
+                const data = await res.json(); if(data.secure_url) uploadedUrls.push(data.secure_url);
+            }
+        }
+
+        await addDoc(collection(db, "rentals"), {
+            name: document.getElementById('f_name').value.trim(), area: document.getElementById('f_area').value.trim(), city: document.getElementById('f_city').value.trim(),
+            price: Number(document.getElementById('f_price').value), type: document.getElementById('f_type').value,
+            sqft: document.getElementById('f_sqft').value, furnish: document.getElementById('f_furnish').value, floor: document.getElementById('f_floor').value,
+            whatsapp: document.getElementById('f_phone').value.trim(), available: document.getElementById('f_date').value,
+            lat: draftCoords.lat, lng: draftCoords.lng, mediaUrls: uploadedUrls, verified: false,
+            createdAt: Date.now(), reportCount: 0, uid: auth.currentUser ? auth.currentUser.uid : "unknown" 
+        });
+        alert("Success! Pending verification."); closePostModal();
+    } catch (e) { alert("Error: " + e.message); }
+    submitBtn.textContent = "Submit ✅"; submitBtn.disabled = false;
+};
+
+// ══════════════════════════════════════════════════════
+//  UI TRIGGERS
+// ══════════════════════════════════════════════════════
+window.setType = (v, btn) => {
+    typeFilter = v;
+    document.querySelectorAll('#type-filters .fb').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    closeFoodPanel();
+    render();
+};
+window.setPrice = (v) => { maxPrice = parseInt(v); render(); }; 
+window.setSmartSearch = (v) => { smartSearchQ = v.toLowerCase(); render(); }; 
+window.setSort = (v) => { sortPref = v; render(); };
+
+// ══════════════════════════════════════════════════════
+//  WELCOME & REQUEST
+// ══════════════════════════════════════════════════════
+window.closeWelcomeModal = () => { localStorage.setItem('mrm_welcomed', 'true'); document.getElementById('welcomeModal').style.display = 'none'; };
+window.openRequestModal = () => { document.getElementById('requestModal').style.display = 'block'; if (smartSearchQ) document.getElementById('req_city').value = smartSearchQ; };
+window.closeRequestModal = () => document.getElementById('requestModal').style.display = 'none';
+
+window.submitHomeRequest = async () => {
+    const city = document.getElementById('req_city').value.trim(); const phone = document.getElementById('req_phone').value.trim();
+    if(!city || !phone) { alert("Please enter the city and your WhatsApp number."); return; }
+    try {
+        await addDoc(collection(db, "home_requests"), { city: city, phone: phone, createdAt: Date.now() });
+        alert("Request logged! We will notify you when homes are added in " + city); closeRequestModal();
+    } catch(e) { alert("Error submitting request: " + e.message); }
+};
+
+// ══════════════════════════════════════════════════════
+//  PROFILE / DASHBOARD
+// ══════════════════════════════════════════════════════
+window.openProfileModal = async () => {
+    if (!auth.currentUser) { alert("Please log in first by clicking '+ Post Room'."); return; }
+    document.getElementById('profileModal').style.display = 'block';
+    
+    const phone = auth.currentUser.phoneNumber;
+    document.getElementById('profile-details').innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="font-size: 16px;"><strong>Phone:</strong> <br><span style="color: var(--muted);">${phone}</span></div>
+            <button onclick="logoutUser()" style="background: #ff4444; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold;">Log Out</button>
+        </div>
+    `;
+
+    const container = document.getElementById('my-listings-container');
+    container.innerHTML = '<p style="color:var(--muted); text-align: center; padding: 20px;">Loading your listings... ⏳</p>';
+
+    try {
+        const q = query(collection(db, "rentals"), where("uid", "==", auth.currentUser.uid));
+        const snap = await getDocs(q);
+        
+        if (snap.empty) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 20px;">
+                    <p style="color:var(--muted); margin-bottom: 15px;">You haven't posted any listings yet.</p>
+                    <button onclick="closeProfileModal(); openPostModal();" class="pbtn-p" style="background: var(--accent); color: black; width: auto; padding: 10px 20px;">+ Post Your First Room</button>
+                </div>`;
+            return;
+        }
+
+        let html = '';
+        snap.forEach(docSnap => {
+            const data = docSnap.data();
+            let statusBadge = data.verified 
+                ? '<span style="color:#138808; background: rgba(19,136,8,0.1); padding: 4px 8px; border-radius: 4px; font-size: 12px; border: 1px solid #138808;">✅ Live on Map</span>' 
+                : '<span style="color:#FF9933; background: rgba(255,153,51,0.1); padding: 4px 8px; border-radius: 4px; font-size: 12px; border: 1px solid #FF9933;">⏳ Pending</span>';
+            
+            html += `
+                <div style="background: var(--card); border: 1px solid var(--border); padding: 15px; border-radius: 8px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong style="display:block; font-size: 16px; margin-bottom: 4px;">${data.name}</strong>
+                        <small style="color:var(--muted); display:block; margin-bottom: 8px;">📍 ${data.area} • ₹${data.price}</small>
+                        ${statusBadge}
+                    </div>
+                    <button onclick="deleteListing('${docSnap.id}')" style="background: transparent; color: #ff4444; border: 1px solid #ff4444; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.2s;">Delete</button>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+        
+    } catch (error) { container.innerHTML = `<p style="color:#ff4444;">Error loading listings: ${error.message}</p>`; }
+};
+
+window.closeProfileModal = () => document.getElementById('profileModal').style.display = 'none';
+
+window.logoutUser = () => {
+    signOut(auth).then(() => {
+        alert("Logged out successfully."); closeProfileModal(); window.location.reload(); 
+    }).catch(error => alert("Error logging out: " + error.message));
+};
+
+window.deleteListing = async (id) => {
+    if(confirm("Are you sure you want to permanently delete this listing? This cannot be undone.")) {
+        try { await deleteDoc(doc(db, "rentals", id)); alert("Listing deleted."); openProfileModal(); } 
+        catch(e) { alert("Error deleting: " + e.message); }
+    }
+};
+
+// ══════════════════════════════════════════════════════
+//  START APP
+// ══════════════════════════════════════════════════════
+window.onload = () => {
+    initMap();
+    if (!localStorage.getItem('mrm_welcomed')) { document.getElementById('welcomeModal').style.display = 'block'; }
+};
