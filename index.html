@@ -1,279 +1,1649 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Faujiadda — Defence Housing, SSB Dorms & Food</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://unpkg.com">
-    <link rel="preconnect" href="https://firestore.googleapis.com">
-
-    <meta name="theme-color" content="#0b1325">
-    <link rel="manifest" href="manifest.json">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
-
-    <link rel="stylesheet" href="style.css?v=21">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 
     <style>
-        /* 🇮🇳 PATRIOTIC THEME OVERRIDES 🇮🇳 */
+        /* ==========================================================================
+           1. RESET & GLOBAL VARIABLES
+           ========================================================================== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         :root {
-            --bg: #0b1325;       /* Deep Navy Blue (Air Force/Navy vibe) */
-            --nav: #111d36;      /* Lighter Navy for Header */
-            --card: #1a2642;     /* Card Background */
-            --border: #2a3b5c;
-            --accent: #FF9933;   /* Indian Saffron */
-            --gold: #FF9933;     /* Overriding gold to Saffron for UI consistency */
-            --green: #138808;    /* Indian Green */
-            --text: #ffffff;
-            --muted: #a0aec0;
+            /* Core Brand Colors */
+            --navy: #0b1325;
+            --navy-light: #111d36;
+            --navy-lighter: #1a2642;
+            --border-color: rgba(42, 59, 92, 0.6);
+
+            /* Accent Colors */
+            --saffron: #FF9933;
+            --saffron-glow: rgba(255, 153, 51, 0.2);
+            --green: #138808;
+            --red-alert: #fc5c7d;
+
+            /* Typography Colors */
+            --white: #ffffff;
+            --text-muted: #a0aec0;
+
+            /* Effects */
+            --glass-blur: blur(12px);
+            --transition-standard: all 0.3s ease;
+            --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* ── SSB Dorm Cards ── */
-        .dorm-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 14px;
-            margin-bottom: 12px;
-            cursor: pointer;
-            transition: border-color 0.2s;
+        html {
+            scroll-behavior: smooth;
         }
-        .dorm-card:hover { border-color: var(--accent); }
-        .dorm-card h4 { margin: 0 0 4px; font-size: 15px; color: var(--text); }
-        .dorm-card .dorm-meta { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
-        .dorm-card .dorm-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-        .dorm-tag { font-size: 11px; padding: 3px 10px; border-radius: 20px; border: 1px solid; }
-        .dorm-price { color: var(--accent); border-color: var(--accent); }
-        .dorm-dist  { color: var(--green); border-color: var(--green); }
 
-        /* ── Food Panel ── */
-        #foodPanel {
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--navy);
+            color: var(--white);
+            overflow-x: hidden;
+            cursor: none; /* Custom cursor used */
+            line-height: 1.6;
+        }
+
+        /* ==========================================================================
+           2. BACKGROUND EFFECTS & PARTICLES
+           ========================================================================== */
+        body::before {
+            content: '';
             position: fixed;
-            bottom: 0; left: 0; right: 0;
-            max-height: 55vh;
-            background: var(--nav);
-            border-top: 3px solid var(--accent);
-            border-radius: 20px 20px 0 0;
-            z-index: 9998;
-            transform: translateY(100%);
-            transition: transform 0.35s cubic-bezier(.4,0,.2,1);
-            padding: 0 16px 24px;
-            overflow-y: auto;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.4;
         }
-        #foodPanel.open { transform: translateY(0); }
-        .food-handle { text-align: center; padding: 12px 0 8px; cursor: pointer; }
-        .food-handle-bar { display: inline-block; width: 40px; height: 4px; background: #555; border-radius: 2px; }
-        .food-panel-title {
-            font-size: 16px; font-weight: 700; color: var(--accent);
-            margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;
-        }
-        .food-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .food-card {
-            background: var(--bg); border: 1px solid var(--border);
-            border-radius: 10px; padding: 12px; transition: border-color 0.2s;
-        }
-        .food-card:hover { border-color: var(--accent); }
-        .food-card .fname { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
-        .food-card .ftype { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
-        .food-card .fprice { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 20px; display: inline-block; }
 
-        .budget-low  { background: rgba(19, 136, 8, 0.15); color: var(--green); }
-        .budget-mid  { background: rgba(255, 153, 51, 0.15);  color: var(--accent); }
-        .budget-high { background: rgba(252, 92, 125, 0.15);  color: #fc5c7d; }
+        .particles-container {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background-color: var(--saffron);
+            border-radius: 50%;
+            opacity: 0;
+            animation: particleFloat linear infinite;
+            box-shadow: 0 0 10px var(--saffron);
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100px) translateX(40px);
+                opacity: 0;
+            }
+        }
+
+        /* ==========================================================================
+           3. CUSTOM CURSOR
+           ========================================================================== */
+        .cursor-dot {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            background-color: var(--saffron);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+            mix-blend-mode: difference;
+        }
+
+        .cursor-ring {
+            position: fixed;
+            width: 36px;
+            height: 36px;
+            border: 1px solid rgba(255, 153, 51, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99998;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease-out, width 0.2s, height 0.2s;
+        }
+
+        /* ==========================================================================
+           4. NAVIGATION BAR
+           ========================================================================== */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to bottom, rgba(11, 19, 37, 0.95), rgba(11, 19, 37, 0));
+            backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: var(--transition-standard);
+        }
+
+        nav.scrolled {
+            padding: 15px 50px;
+            background: rgba(11, 19, 37, 0.98);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .nav-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            text-decoration: none;
+            color: var(--white);
+        }
+
+        .nav-logo span {
+            color: var(--saffron);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: var(--transition-standard);
+        }
+
+        .nav-link:hover {
+            color: var(--white);
+        }
+
+        .nav-cta {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            padding: 10px 24px;
+            border-radius: 100px;
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition-standard);
+        }
+
+        .nav-cta:hover {
+            background-color: var(--saffron);
+            color: var(--navy);
+            border-color: var(--saffron);
+        }
+
+        /* ── Hamburger ── */
+        .nav-hamburger {
+            display: none; flex-direction: column; gap: 5px;
+            background: none; border: none; cursor: pointer; padding: 4px; z-index: 1001;
+        }
+        .nav-hamburger span {
+            display: block; width: 24px; height: 2px;
+            background: var(--white); border-radius: 2px; transition: all 0.3s ease;
+        }
+        .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        /* ── Mobile Drawer ── */
+        .nav-drawer {
+            display: none; position: fixed; inset: 0;
+            background: rgba(11,19,37,0.99); z-index: 999;
+            flex-direction: column; align-items: center; justify-content: center; gap: 36px;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        .nav-drawer.open { opacity: 1; pointer-events: all; }
+        .nav-drawer a {
+            color: var(--white); text-decoration: none; font-size: 30px; font-weight: 700;
+            font-family: 'Playfair Display', serif; transition: color 0.2s;
+        }
+        .nav-drawer a:hover { color: var(--saffron); }
+
+        /* ── Nav link underline hover ── */
+        .nav-link { position: relative; }
+        .nav-link::after {
+            content:''; position:absolute; bottom:-3px; left:0; right:0;
+            height:1px; background:var(--saffron); transform:scaleX(0);
+            transition:transform 0.3s ease; transform-origin:left;
+        }
+        .nav-link:hover::after { transform:scaleX(1); }
+
+        @media (max-width: 768px) {
+            nav { padding: 16px 24px !important; }
+            .nav-links { display: none; }
+            .nav-hamburger { display: flex; }
+            .nav-drawer { display: flex; }
+        }
+
+        /* ==========================================================================
+           5. HERO SECTION
+           ========================================================================== */
+        #hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 140px 24px 80px;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .hero-grid-bg {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(42, 59, 92, 0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(42, 59, 92, 0.3) 1px, transparent 1px);
+            background-size: 60px 60px;
+            animation: gridPan 30s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes gridPan {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(60px); }
+        }
+
+        .hero-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            pointer-events: none;
+            z-index: 0;
+            transition: transform 0.2s ease-out;
+        }
+
+        .blob-saffron {
+            width: 600px;
+            height: 600px;
+            background-color: rgba(255, 153, 51, 0.08);
+            top: -150px;
+            right: -100px;
+        }
+
+        .blob-green {
+            width: 500px;
+            height: 500px;
+            background-color: rgba(19, 136, 8, 0.06);
+            bottom: -100px;
+            left: -150px;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .announcement-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background-color: rgba(255, 153, 51, 0.1);
+            border: 1px solid rgba(255, 153, 51, 0.3);
+            border-radius: 100px;
+            padding: 8px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--saffron);
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: elementFadeUp 0.8s ease 0.2s forwards;
+            backdrop-filter: var(--glass-blur);
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--saffron);
+            border-radius: 50%;
+            animation: statusPulse 2s infinite;
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(255, 153, 51, 0.4); }
+            50% { opacity: 0.5; box-shadow: 0 0 0 8px rgba(255, 153, 51, 0); }
+        }
+
+        .main-headline {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(48px, 9vw, 100px);
+            font-weight: 900;
+            line-height: 1.05;
+            letter-spacing: -0.02em;
+            margin-bottom: 30px;
+            opacity: 0;
+            animation: elementFadeUp 0.9s ease 0.4s forwards;
+        }
+
+        .main-headline .highlight-brand {
+            color: var(--saffron);
+            text-shadow: 0 0 40px rgba(255, 153, 51, 0.3);
+        }
+
+        .hero-description {
+            font-size: clamp(18px, 2.5vw, 22px);
+            font-weight: 300;
+            color: var(--text-muted);
+            line-height: 1.7;
+            max-width: 700px;
+            margin: 0 auto 50px;
+            opacity: 0;
+            animation: elementFadeUp 0.9s ease 0.6s forwards;
+        }
+
+        .hero-description strong {
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: elementFadeUp 0.9s ease 0.8s forwards;
+        }
+
+        .btn-solid-primary {
+            background-color: var(--saffron);
+            color: var(--navy);
+            border: none;
+            padding: 18px 42px;
+            border-radius: 100px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition-standard);
+            box-shadow: 0 0 25px rgba(255, 153, 51, 0.25);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-solid-primary:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(255, 153, 51, 0.4);
+        }
+
+        .btn-outline-secondary {
+            background-color: rgba(255, 255, 255, 0.03);
+            color: var(--white);
+            border: 1px solid var(--border-color);
+            padding: 18px 36px;
+            border-radius: 100px;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-standard);
+            text-decoration: none;
+            backdrop-filter: var(--glass-blur);
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-outline-secondary:hover {
+            border-color: var(--saffron);
+            color: var(--saffron);
+            background-color: rgba(255, 153, 51, 0.05);
+        }
+
+        /* Animated Stats Row */
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 70px;
+            margin-top: 80px;
+            padding-top: 50px;
+            border-top: 1px solid var(--border-color);
+            opacity: 0;
+            animation: elementFadeUp 0.9s ease 1.0s forwards;
+            flex-wrap: wrap;
+        }
+
+        .stat-block {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--saffron);
+            line-height: 1;
+            text-shadow: 0 0 20px rgba(255, 153, 51, 0.2);
+        }
+
+        .stat-caption {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 8px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        /* ==========================================================================
+           6. SECTION HEADERS (REUSABLE)
+           ========================================================================== */
+        .global-section {
+            position: relative;
+            z-index: 1;
+            padding: 140px 24px;
+            max-width: 1250px;
+            margin: 0 auto;
+        }
+
+        .section-kicker {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--saffron);
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .section-heading {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(36px, 5vw, 56px);
+            font-weight: 700;
+            line-height: 1.15;
+            margin-bottom: 70px;
+            max-width: 700px;
+            color: var(--white);
+        }
+
+        .text-center {
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ==========================================================================
+           7. FEATURES GRID (6 Cards)
+           ========================================================================== */
+        .features-grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-box {
+            background-color: var(--navy-light);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 45px 35px;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: var(--transition-slow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-box.scroll-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .feature-box:hover {
+            border-color: rgba(255, 153, 51, 0.5);
+            transform: translateY(-10px) !important;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .feature-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top right, rgba(255, 153, 51, 0.12), transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s;
+            pointer-events: none;
+        }
+
+        .feature-box:hover::before {
+            opacity: 1;
+        }
+
+        .feature-emoji {
+            font-size: 48px;
+            margin-bottom: 28px;
+            display: inline-block;
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.3));
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .feature-box:hover .feature-emoji {
+            transform: scale(1.15) rotate(-8deg);
+        }
+
+        .feature-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--white);
+        }
+
+        .feature-paragraph {
+            font-size: 16px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .feature-pill {
+            display: inline-block;
+            margin-top: 24px;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 16px;
+            border-radius: 100px;
+            border: 1px solid rgba(255, 153, 51, 0.3);
+            color: var(--saffron);
+            background-color: rgba(255, 153, 51, 0.08);
+        }
+
+        /* ==========================================================================
+           8. HOW IT WORKS SECTION (NEW)
+           ========================================================================== */
+        .how-it-works-bg {
+            background-color: var(--navy-lighter);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .steps-container {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            position: relative;
+        }
+
+        .steps-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 35px;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--saffron), rgba(255,153,51,0.1));
+            z-index: 0;
+        }
+
+        @media (max-width: 768px) {
+            .steps-container::before { left: 25px; }
+        }
+
+        .step-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 40px;
+            position: relative;
+            z-index: 1;
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: var(--transition-slow);
+        }
+
+        .step-row.scroll-visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .step-number-circle {
+            width: 70px;
+            height: 70px;
+            background-color: var(--navy);
+            border: 2px solid var(--saffron);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--saffron);
+            flex-shrink: 0;
+            box-shadow: 0 0 20px rgba(255,153,51,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .step-row { gap: 20px; }
+            .step-number-circle { width: 50px; height: 50px; font-size: 20px; }
+        }
+
+        .step-content {
+            background-color: var(--navy-light);
+            border: 1px solid var(--border-color);
+            padding: 30px 40px;
+            border-radius: 20px;
+            flex-grow: 1;
+        }
+
+        .step-content h3 {
+            font-size: 24px;
+            margin-bottom: 12px;
+            color: var(--white);
+        }
+
+        .step-content p {
+            color: var(--text-muted);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* ==========================================================================
+           9. STATISTICAL COMPARISON TABLE
+           ========================================================================== */
+        .comparison-wrapper {
+            position: relative;
+            z-index: 1;
+            padding: 120px 24px;
+            background: linear-gradient(180deg, var(--navy) 0%, rgba(17, 29, 54, 0.5) 100%);
+        }
+
+        .vs-table-ui {
+            background-color: var(--navy-lighter);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            overflow: hidden;
+            backdrop-filter: var(--glass-blur);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transform: translateY(40px);
+            transition: var(--transition-slow);
+        }
+
+        .vs-table-ui.scroll-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr 1fr;
+            border-bottom: 1px solid var(--border-color);
+            align-items: center;
+        }
+
+        .table-row:last-child {
+            border-bottom: none;
+        }
+
+        .table-cell {
+            padding: 28px 32px;
+            font-size: 17px;
+        }
+
+        .table-header-row {
+            background-color: rgba(0, 0, 0, 0.4);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+        }
+
+        .column-faujiadda {
+            background-color: rgba(255, 153, 51, 0.05);
+            color: var(--white);
+            font-weight: 600;
+            position: relative;
+        }
+
+        .column-faujiadda::after {
+            content:'';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 3px;
+            background-color: var(--saffron);
+        }
+
+        .column-generic {
+            color: var(--red-alert);
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .feature-row-title {
+            text-align: left;
+            font-weight: 600;
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+                @media (max-width: 900px) {
+            .table-row { grid-template-columns: 1fr; text-align: left; gap: 8px; padding: 16px; border-bottom: 1px dashed var(--border-color); }
+            .table-cell { padding: 12px 16px; border: none; }
+            .table-header-row { display: none; }
+            .column-faujiadda::after { display: none; }
+
+            /* The upgraded Mobile Highlight Box */
+            .column-faujiadda {
+                background: rgba(255, 153, 51, 0.05);
+                padding-left: 16px;
+                border-left: 3px solid var(--saffron);
+                border-radius: 8px;
+                margin-top: 8px;
+            }
+            .column-generic {
+                padding-left: 16px;
+                border-left: 3px solid var(--red-alert);
+            }
+
+            /* display: block forces the title to stack cleanly above the text */
+            .feature-row-title {
+                font-size: 14px;
+                color: var(--text-muted);
+                margin-bottom: 8px;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                display: block;
+            }
+        }
+
+
+        /* ==========================================================================
+           10. TESTIMONIALS CAROUSEL (NEW)
+           ========================================================================== */
+        .testimonials-bg {
+            background-color: var(--navy);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .carousel-wrapper {
+            display: flex;
+            gap: 30px;
+            overflow-x: auto;
+            padding-bottom: 40px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; /* Firefox */
+        }
+
+        .carousel-wrapper::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+        }
+
+        .testimonial-card {
+            min-width: 350px;
+            max-width: 450px;
+            background-color: var(--navy-light);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px;
+            scroll-snap-align: start;
+            flex-shrink: 0;
+            opacity: 0;
+            transform: translateX(30px);
+            transition: var(--transition-slow);
+        }
+
+        .testimonial-card.scroll-visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .quote-icon {
+            font-size: 40px;
+            color: rgba(255,153,51,0.3);
+            margin-bottom: 20px;
+            font-family: 'Playfair Display', serif;
+            line-height: 1;
+        }
+
+        .testimonial-text {
+            font-size: 18px;
+            font-style: italic;
+            color: var(--white);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--saffron);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--navy);
+            font-size: 20px;
+        }
+
+        .author-details h4 {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .author-details p {
+            font-size: 13px;
+            color: var(--saffron);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* ==========================================================================
+           11. FAQ ACCORDION (NEW)
+           ========================================================================== */
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background-color: var(--navy-light);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: var(--transition-slow);
+        }
+
+        .faq-item.scroll-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .faq-question {
+            padding: 25px 30px;
+            width: 100%;
+            text-align: left;
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 18px;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-icon {
+            font-size: 24px;
+            color: var(--saffron);
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            padding: 0 30px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.4s ease;
+            color: var(--text-muted);
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 0 30px 25px 30px;
+            max-height: 300px; /* Arbitrary large number to allow animation */
+        }
+
+        /* ==========================================================================
+           12. INSPIRATIONAL QUOTE SECTION
+           ========================================================================== */
+        #quote-section {
+            position: relative;
+            z-index: 1;
+            padding: 140px 24px;
+            text-align: center;
+        }
+
+        .large-quote-text {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(28px, 4vw, 46px);
+            font-weight: 400;
+            font-style: italic;
+            line-height: 1.5;
+            max-width: 850px;
+            margin: 0 auto 30px;
+            color: var(--white);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        .large-quote-text.scroll-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .quote-national-flag {
+            font-size: 36px;
+        }
+
+        /* ==========================================================================
+           13. CALL TO ACTION (CTA)
+           ========================================================================== */
+        #cta-section {
+            position: relative;
+            z-index: 1;
+            padding: 60px 24px 140px;
+        }
+
+        .cta-container-box {
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+            background-color: var(--navy-lighter);
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            padding: 80px 50px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: var(--glass-blur);
+            box-shadow: 0 0 60px rgba(255, 153, 51, 0.1);
+        }
+
+        .cta-container-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--green), var(--saffron), var(--green));
+            background-size: 200% 100%;
+            animation: shimmerEffect 4s linear infinite;
+        }
+
+        @keyframes shimmerEffect {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .cta-center-glow {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 153, 51, 0.1), transparent);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .cta-headline {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(32px, 5vw, 52px);
+            font-weight: 700;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .cta-subtext {
+            font-size: 20px;
+            color: var(--text-muted);
+            margin-bottom: 50px;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        /* ==========================================================================
+           14. EXPANDED FOOTER
+           ========================================================================== */
+        footer {
+            position: relative;
+            z-index: 1;
+            border-top: 1px solid var(--border-color);
+            background-color: rgba(0, 0, 0, 0.4);
+            padding: 80px 50px 40px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 50px;
+            max-width: 1250px;
+            margin: 0 auto 60px;
+        }
+
+        @media (max-width: 900px) {
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 600px) {
+            .footer-grid { grid-template-columns: 1fr; text-align: center; }
+        }
+
+        .footer-brand h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .footer-brand span { color: var(--saffron); }
+
+        .footer-brand p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 20px;
+            max-width: 300px;
+        }
+
+        .footer-column h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: var(--white);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: var(--transition-standard);
+        }
+
+        .footer-links a:hover {
+            color: var(--saffron);
+            padding-left: 5px;
+        }
+
+        .footer-bottom {
+            max-width: 1250px;
+            margin: 0 auto;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+            .footer-bottom { flex-direction: column; gap: 15px; text-align: center; }
+        }
+
+        /* Animation Keyframe Utilities */
+        @keyframes elementFadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
 
-<header style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; padding: 15px 20px; background: var(--nav);">
-    <div class="logo" style="margin: 0; font-size: 24px; font-weight: 800; color: var(--accent);">Fauji<span style="color: white;">adda</span></div>
+    <div class="cursor-dot" id="cursorDot"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
 
-    <button onclick="openProfileModal()" style="background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 8px 16px; border-radius: 20px; font-weight: bold; cursor: pointer; font-family: 'Outfit', sans-serif; transition: 0.2s;">👤 My Profile</button>
+    <div class="particles-container" id="particlesContainer"></div>
 
-    <div class="filters" id="type-filters" style="overflow-x: auto; white-space: nowrap; display: flex; gap: 8px; width: 100%; padding-bottom: 5px;">
-        <button class="fb active" onclick="setType('all',this)">All Types</button>
-        <button class="fb" onclick="setType('1bhk',this)">1 BHK</button>
-        <button class="fb" onclick="setType('2bhk',this)">2 BHK</button>
-        <button class="fb" onclick="setType('3bhk',this)">3 BHK</button>
-        <button class="fb" onclick="setType('pg',this)">PG/Room</button>
-        <button class="fb" onclick="setType('dorm',this)" style="border-color: var(--accent); color: var(--accent);">🏨 SSB Dorms</button>
+    <!-- Mobile Drawer -->
+    <div class="nav-drawer" id="navDrawer">
+        <a href="#features" onclick="closeDrawer()">Features</a>
+        <a href="#how-it-works" onclick="closeDrawer()">How it Works</a>
+        <a href="#faq" onclick="closeDrawer()">FAQ</a>
+        <a href="app.html" style="color:var(--saffron);">Open Map →</a>
     </div>
-</header>
 
-<div class="main">
-    <div class="sidebar">
-        <div class="drag-handle" onclick="toggleSidebar()"><div class="drag-bar"></div></div>
-        <div class="s-top">
-            <div class="search" style="margin-bottom: 12px; border-color: var(--border);">
-                <input type="text" placeholder="Search Station, Cantt, or City..." oninput="setSmartSearch(this.value)">
-            </div>
-            <div class="price-row" style="margin-bottom: 10px; display: flex; gap: 10px;">
-                <select id="rankBAH" onchange="setPrice(this.value)" class="fb" style="flex: 1;">
-                    <option value="100000">BAH Limit</option>
-                    <option value="15000">🟢 OR (15k)</option>
-                    <option value="30000">🟡 JCO (30k)</option>
-                    <option value="60000">🔴 Offr (60k)</option>
-                </select>
-                <select id="sortOpt" onchange="setSort(this.value)" class="fb" style="flex: 1;">
-                    <option value="new">Sort: Newest</option>
-                    <option value="priceAsc">Price: Low to High</option>
-                    <option value="priceDesc">Price: High to Low</option>
-                    <option value="near">Nearest to Gate</option>
-                </select>
-            </div>
-            <div class="count-subtitle" id="cnt" style="font-size: 14px; color: var(--accent); font-weight: 600; margin-bottom: 10px;">Loading...</div>
+    <nav id="mainNav">
+        <a href="#" class="nav-logo"><span>Fauji</span>adda</a>
+        <div class="nav-links">
+            <a href="#features" class="nav-link">Features</a>
+            <a href="#how-it-works" class="nav-link">How it Works</a>
+            <a href="#faq" class="nav-link">FAQ</a>
+            <a href="app.html" class="nav-cta">Open Map</a>
         </div>
-        <div class="listings" id="list"></div>
-    </div>
-    <div id="map"></div>
-</div>
+        <button class="nav-hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
 
-<button class="fab-post" onclick="openPostModal()" style="background: var(--accent); color: black;">➕ Post Room</button>
+    <section id="hero">
+        <div class="hero-grid-bg"></div>
+        <div class="hero-blob blob-saffron" id="parallaxBlob1"></div>
+        <div class="hero-blob blob-green" id="parallaxBlob2"></div>
+        <div class="hero-blob blob-saffron" style="width: 300px; height: 300px; top: 40%; left: 40%; animation: blobFloat 12s infinite;"></div>
 
-<div id="foodPanel">
-    <div class="food-handle" onclick="closeFoodPanel()">
-        <div class="food-handle-bar"></div>
-    </div>
-    <div class="food-panel-title">
-        <span>🍽️ Nearby Food & Stay Options</span>
-        <span style="font-size:12px; color:var(--muted); font-weight:400;" id="foodCity"></span>
-    </div>
-    <div class="food-grid" id="foodGrid"></div>
-</div>
+        <div class="hero-content">
+            <div class="announcement-badge">
+                <div class="pulse-dot"></div>
+                Exclusively for India's Armed Forces
+            </div>
 
-<div id="postModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closePostModal()">&times;</span>
-        <h2 id="modal-title">Step 0: Verify Phone</h2>
-        <div id="step-auth">
-            <p style="margin-bottom: 15px; color: var(--muted); font-size: 14px;">Verify your mobile number to post.</p>
-            <input type="tel" id="auth_phone" placeholder="Phone (e.g. +919876543210)" required style="margin-bottom: 10px;">
-            <div id="recaptcha-container" style="margin-bottom: 15px;"></div>
-            <button onclick="sendOTP()" id="btn-send-otp" class="pbtn-p" style="background: var(--border);">Send OTP 💬</button>
-            <div id="otp-section" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border);">
-                <input type="text" id="auth_otp" placeholder="Enter 6-digit OTP" required>
-                <button onclick="verifyOTP()" id="btn-verify-otp" class="pbtn-p" style="background: var(--accent); color: black;">Verify & Proceed ✅</button>
+            <h1 class="main-headline">
+                <span class="highlight-brand">Fauji</span>adda
+            </h1>
+
+            <p class="hero-description">
+                The only platform built <strong>exclusively</strong> for India's defence community —
+                verified housing, SSB dorms, and trusted food guides near every cantonment.
+            </p>
+
+            <div class="action-buttons">
+                <a href="app.html" class="btn-solid-primary">
+                    🗺️ Explore Rentals
+                </a>
+                <a href="#comparison" class="btn-outline-secondary">
+                    View the Data ↓
+                </a>
             </div>
-        </div>
-        <div id="step1" style="display: none;">
-            <input type="text" id="f_name" placeholder="Society/Building Name" required>
-            <div style="display: flex; gap: 10px;">
-                <input type="text" id="f_area" placeholder="Area/Cantt" required style="flex: 1;">
-                <input type="text" id="f_city" placeholder="City/Station" required style="flex: 1;">
-            </div>
-            <div style="display: flex; gap: 10px;">
-                <input type="number" id="f_price" placeholder="Rent (₹)" required style="flex: 1;">
-                <select id="f_type" style="flex: 1;">
-                    <option value="1bhk">1 BHK</option><option value="2bhk">2 BHK</option>
-                    <option value="3bhk">3 BHK</option><option value="pg">PG/Room</option>
-                </select>
-            </div>
-            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                <input type="number" id="f_sqft" placeholder="SqFt Area" style="flex: 1;">
-                <select id="f_furnish" style="flex: 1;">
-                    <option value="Semi-Furnished">Semi-Furnished</option>
-                    <option value="Fully-Furnished">Fully-Furnished</option>
-                    <option value="Unfurnished">Unfurnished</option>
-                </select>
-                <input type="number" id="f_floor" placeholder="Floor No." style="flex: 1;">
-            </div>
-            <input type="tel" id="f_phone" placeholder="WhatsApp Number" required>
-            <div style="margin-bottom: 15px;">
-                <label style="color: var(--muted); font-size: 14px; display: block; margin-bottom: 5px;">Available From:</label>
-                <input type="date" id="f_date" required style="width: 100%; padding: 12px; background: var(--card); border: 1px solid var(--border); color: white; border-radius: 8px; outline: none;">
-            </div>
-            <button onclick="goToStep2()" class="pbtn-p" style="background: var(--border);">Next: Pin Location 📍</button>
-        </div>
-        <div id="step2" style="display: none;">
-            <p style="margin-bottom: 10px; color: var(--muted); font-size: 14px;">Drag the red pin to your exact building.</p>
-            <div id="mini-map" style="width: 100%; height: 250px; background-color: #222; border-radius: 8px; border: 1px solid #555; position: relative; z-index: 10;"></div>
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <button onclick="goToStep1()" style="flex: 1; padding: 15px; background: transparent; color: white; border: 1px solid #555; border-radius: 8px; cursor: pointer;">Back</button>
-                <button onclick="goToStep3()" style="flex: 1; padding: 15px; background: var(--border); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Next: Add Photos 📸</button>
+
+            <div class="stats-container">
+                <div class="stat-block">
+                    <div class="stat-number" data-target="1300">0</div>
+                    <div class="stat-caption">Verified Listings</div>
+                </div>
+                <div class="stat-block">
+                    <div class="stat-number" data-target="15">0</div>
+                    <div class="stat-caption">Defence Stations</div>
+                </div>
+                <div class="stat-block">
+                    <div class="stat-number" data-target="12">0</div>
+                    <div class="stat-caption">SSB Centres</div>
+                </div>
+                <div class="stat-block">
+                    <div class="stat-number" data-target="6">0</div>
+                    <div class="stat-caption">City Food Guides</div>
+                </div>
             </div>
         </div>
-        <div id="step3" style="display: none;">
-            <p style="margin-bottom: 10px; color: var(--muted); font-size: 14px;">Select images or videos of the room.</p>
-            <input type="file" id="f_media" multiple accept="image/*,video/*" style="padding: 10px 0; color: white;">
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <button onclick="goToStep2()" style="flex: 1; padding: 15px; background: transparent; color: white; border: 1px solid #555; border-radius: 8px; cursor: pointer;">Back</button>
-                <button onclick="submitFinalListing()" id="finalSubmitBtn" style="flex: 1; padding: 15px; background: var(--accent); color: black; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Submit Listing ✅</button>
+    </section>
+
+    <section id="features" class="global-section">
+        <span class="section-kicker">Core Arsenal</span>
+        <h2 class="section-heading">Everything a Fauji needs,<br>in one single place.</h2>
+
+        <div class="features-grid-layout">
+            <div class="feature-box scroll-anim">
+                <span class="feature-emoji">🏘️</span>
+                <h3 class="feature-title">Verified Defence Rentals</h3>
+                <p class="feature-paragraph">Every listing is OTP-verified by a real phone number. No spam, no fake posts. Rent filtered by your rank's BAH limit — OR, JCO, or Officer.</p>
+                <span class="feature-pill">BAH Rank Filtering</span>
+            </div>
+            <div class="feature-box scroll-anim" style="transition-delay: 0.1s;">
+                <span class="feature-emoji">📍</span>
+                <h3 class="feature-title">Cantt Gate Distance</h3>
+                <p class="feature-paragraph">Every listing shows exact distance from the Cantonment gate. Sort by nearest, available date, or price. Made for transfers, not tourists.</p>
+                <span class="feature-pill">Transfer Ready</span>
+            </div>
+            <div class="feature-box scroll-anim" style="transition-delay: 0.2s;">
+                <span class="feature-emoji">🏨</span>
+                <h3 class="feature-title">SSB Dorm Finder</h3>
+                <p class="feature-paragraph">Appearing for SSB? Find verified budget dorms ₹250–₹1200/night near all 12 major selection centres — Allahabad, Bhopal, Kapurthala & more.</p>
+                <span class="feature-pill">12 SSB Centres</span>
+            </div>
+            <div class="feature-box scroll-anim" style="transition-delay: 0.3s;">
+                <span class="feature-emoji">🍽️</span>
+                <h3 class="feature-title">Food & Stay Guide</h3>
+                <p class="feature-paragraph">Relocating to a new city? Every listing shows nearby restaurants with budget tags. Know where to eat safely before you even arrive.</p>
+                <span class="feature-pill">6 Cities Covered</span>
+            </div>
+            <div class="feature-box scroll-anim" style="transition-delay: 0.4s;">
+                <span class="feature-emoji">🔒</span>
+                <h3 class="feature-title">Spam-Free Community</h3>
+                <p class="feature-paragraph">Strict phone verification before posting. Community report system removes fake listings automatically at 3 reports. Your time is precious.</p>
+                <span class="feature-pill">OTP Verified</span>
+            </div>
+            <div class="feature-box scroll-anim" style="transition-delay: 0.5s;">
+                <span class="feature-emoji">📅</span>
+                <h3 class="feature-title">Post & Find in Minutes</h3>
+                <p class="feature-paragraph">Pin your property on a live map, upload photos, set your availability date. Fauji families can reach thousands of genuine seekers instantly.</p>
+                <span class="feature-pill">Live Map Posting</span>
             </div>
         </div>
-    </div>
-</div>
+    </section>
 
-<div id="detailModal" class="modal" style="z-index: 10000; display: none;">
-    <div class="modal-content" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; max-height: 90vh; background: var(--bg); border: none;">
-        <div style="padding: 15px; background: var(--nav); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border);">
-            <h3 style="margin: 0; font-size: 18px;">Property Details</h3>
-            <div style="display: flex; gap: 15px; align-items: center;">
-                <span id="shareBtn" style="font-size: 20px; cursor: pointer;">🔗</span>
-                <span id="reportBtn" style="font-size: 20px; cursor: pointer; color: #ff4444;">🚩</span>
-                <span style="font-size: 28px; cursor: pointer; line-height: 1; margin-left: 10px;" onclick="closeDetailModal()">&times;</span>
+    <section id="how-it-works" class="global-section how-it-works-bg">
+        <span class="section-kicker">The Process</span>
+        <h2 class="section-heading">From transfer order to<br>new home in 4 steps.</h2>
+
+        <div class="steps-container">
+            <div class="step-row scroll-anim">
+                <div class="step-number-circle">1</div>
+                <div class="step-content">
+                    <h3>Set Your Destination & Rank</h3>
+                    <p>Enter your new posting station. Select your rank category (OR, JCO, or Officer) to automatically filter out properties that exceed your authorized BAH limits.</p>
+                </div>
+            </div>
+            <div class="step-row scroll-anim" style="transition-delay: 0.1s;">
+                <div class="step-number-circle">2</div>
+                <div class="step-content">
+                    <h3>Scan the Live Map</h3>
+                    <p>Browse our custom Dark Mode map. See color-coded pins showing exact pricing and availability dates, mapped strictly around the Cantonment parameters.</p>
+                </div>
+            </div>
+            <div class="step-row scroll-anim" style="transition-delay: 0.2s;">
+                <div class="step-number-circle">3</div>
+                <div class="step-content">
+                    <h3>Check Gate Distances</h3>
+                    <p>Forget "distance to city center." Faujiadda calculates the exact driving distance from the property directly to the nearest Military Station gate.</p>
+                </div>
+            </div>
+            <div class="step-row scroll-anim" style="transition-delay: 0.3s;">
+                <div class="step-number-circle">4</div>
+                <div class="step-content">
+                    <h3>Connect Directly (Zero Brokerage)</h3>
+                    <p>Found the perfect place? Connect directly with the verified owner or departing defence family. No middlemen, no 15-day brokerage fees. Ever.</p>
+                </div>
             </div>
         </div>
-        <div id="detail-content" style="padding: 15px 15px 0 15px; overflow-y: auto; flex-grow: 1;"></div>
-        <div id="detail-footer" style="padding: 15px; background: var(--card); border-top: 1px solid var(--border);"></div>
-    </div>
-</div>
+    </section>
 
-<div id="reportModal" class="modal" style="z-index: 10001; display: none;">
-    <div class="modal-content" style="max-width: 350px;">
-        <span class="close" onclick="document.getElementById('reportModal').style.display='none'">&times;</span>
-        <h3 style="margin-bottom: 15px; color: #ff4444;">🚩 Report Listing</h3>
-        <p style="font-size: 14px; color: var(--muted); margin-bottom: 15px;">Why are you reporting this post?</p>
-        <div class="report-options" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
-            <label><input type="radio" name="reportReason" value="Fake Listing"> Fake/Scam listing</label>
-            <label><input type="radio" name="reportReason" value="Wrong Location"> Wrong location pinned</label>
-            <label><input type="radio" name="reportReason" value="Inappropriate"> Inappropriate content</label>
-            <label><input type="radio" name="reportReason" value="Already Rented"> Already rented out</label>
+    <section id="comparison" class="comparison-wrapper">
+        <div style="max-width: 1000px; margin: 0 auto; text-align: center;">
+            <span class="section-kicker">By The Numbers</span>
+            <h2 class="section-heading text-center">Why switch to Faujiadda?</h2>
+
+            <div class="vs-table-ui scroll-anim">
+                <div class="table-row table-header-row">
+                    <div class="table-cell" style="text-align:left;">Metrics & Capabilities</div>
+                    <div class="table-cell">Generic Real Estate Apps</div>
+                    <div class="table-cell column-faujiadda" style="color:var(--saffron);">Faujiadda Ecosystem</div>
+                </div>
+
+                <div class="table-row">
+                    <div class="table-cell feature-row-title">💸 Brokerage Fees</div>
+                    <div class="table-cell column-generic">15 to 30 Days Rent</div>
+                    <div class="table-cell column-faujiadda">Absolutely ₹0</div>
+                </div>
+
+                <div class="table-row">
+                    <div class="table-cell feature-row-title">📍 Location Accuracy</div>
+                    <div class="table-cell column-generic">Distance to "City Center"</div>
+                    <div class="table-cell column-faujiadda">Distance to Cantt Gate</div>
+                </div>
+
+                <div class="table-row">
+                    <div class="table-cell feature-row-title">🔐 Trust & Safety</div>
+                    <div class="table-cell column-generic">Anyone can post freely</div>
+                    <div class="table-cell column-faujiadda">Strict OTP Verification</div>
+                </div>
+
+                <div class="table-row">
+                    <div class="table-cell feature-row-title">🎖️ Defence Features</div>
+                    <div class="table-cell column-generic">None available</div>
+                    <div class="table-cell column-faujiadda">BAH limits & SSB Dorms</div>
+                </div>
+            </div>
         </div>
-        <button onclick="submitReport()" class="pbtn-p" style="background: #ff4444;">Submit Report</button>
-    </div>
-</div>
+    </section>
 
-<div id="welcomeModal" class="modal" style="z-index: 10005;">
-    <div class="modal-content" style="text-align: center; max-width: 400px; padding: 30px 20px;">
-        <div style="font-size: 50px; margin-bottom: 10px;">🇮🇳</div>
-        <h2 style="color: var(--accent); margin-bottom: 15px; font-size: 24px;">Welcome to Faujiadda</h2>
-        <p style="color: var(--muted); margin-bottom: 20px; font-size: 15px;">The trusted ecosystem built exclusively for the Armed Forces community.</p>
-        <div style="text-align: left; background: var(--nav); padding: 15px; border-radius: 12px; margin-bottom: 25px; border: 1px solid var(--border);">
-            <p style="margin-bottom: 10px; font-size: 14px;">✅ <strong>Verified Rentals:</strong> Spam-free & secure.</p>
-            <p style="margin-bottom: 10px; font-size: 14px;">🏨 <strong>SSB Dorms:</strong> Stay near your Selection Centre.</p>
-            <p style="margin: 0; font-size: 14px;">🍽️ <strong>Food Panel:</strong> Local Fauji-trusted meals.</p>
+    <section id="testimonials" class="global-section testimonials-bg">
+        <span class="section-kicker">Community Trust</span>
+        <h2 class="section-heading">Trusted by thousands of<br>defence families.</h2>
+
+        <div class="carousel-wrapper">
+            <div class="testimonial-card scroll-anim">
+                <div class="quote-icon">"</div>
+                <p class="testimonial-text">"Transferred from Jodhpur to Pune on a 10-day notice. Used Faujiadda to find a JCO-budget flat just 3km from the gate. Saved me almost ₹15,000 in brokerage fees."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">S</div>
+                    <div class="author-details">
+                        <h4>Subedar Ramesh S.</h4>
+                        <p>Indian Army • Pune Cantt</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card scroll-anim" style="transition-delay: 0.1s;">
+                <div class="quote-icon">"</div>
+                <p class="testimonial-text">"The SSB Dorm Finder is a lifesaver. Found a clean, verified dormitory right outside the Allahabad selection board for just ₹400/night. The food guide was totally accurate too."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">A</div>
+                    <div class="author-details">
+                        <h4>Aman Kumar</h4>
+                        <p>NDA Aspirant • Siwan</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card scroll-anim" style="transition-delay: 0.2s;">
+                <div class="quote-icon">"</div>
+                <p class="testimonial-text">"As an officer posting out of Wellington, I wanted to pass my rented home to another Fauji family. Posted it on the map and transferred the lease within 48 hours."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">M</div>
+                    <div class="author-details">
+                        <h4>Maj. Vikram R.</h4>
+                        <p>Indian Army • Wellington</p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <button onclick="closeWelcomeModal()" class="pbtn-p" style="background: var(--accent); color: black;">Start Exploring 🗺️</button>
-    </div>
-</div>
+    </section>
 
-<div id="requestModal" class="modal" style="z-index: 10005; display: none;">
-    <div class="modal-content" style="max-width: 350px;">
-        <span class="close" onclick="closeRequestModal()">&times;</span>
-        <h3 style="margin-bottom: 15px; color: var(--accent);">🏠 Request a Home</h3>
-        <p style="font-size: 14px; color: var(--muted); margin-bottom: 15px;">Tell us where you are getting posted, and we'll notify you when listings are added!</p>
-        <input type="text" id="req_city" placeholder="Station/City (e.g. Wellington)" required style="margin-bottom: 10px; width: 100%; padding: 12px; background: var(--card); border: 1px solid var(--border); color: white; border-radius: 8px; outline: none;">
-        <input type="tel" id="req_phone" placeholder="WhatsApp Number" required style="margin-bottom: 20px; width: 100%; padding: 12px; background: var(--card); border: 1px solid var(--border); color: white; border-radius: 8px; outline: none;">
-        <button onclick="submitHomeRequest()" class="pbtn-p" style="background: var(--accent); color: black;">Submit Request</button>
-    </div>
-</div>
+    <section id="faq" class="global-section">
+        <span class="section-kicker">Support</span>
+        <h2 class="section-heading text-center">Frequently Asked Questions</h2>
 
-<div id="profileModal" class="modal" style="z-index: 10006; display: none;">
-    <div class="modal-content" style="max-width: 500px; padding: 25px;">
-        <span class="close" onclick="closeProfileModal()">&times;</span>
-        <h2 style="margin-bottom: 15px; color: var(--accent);">👤 My Profile</h2>
-        <div id="profile-details" style="margin-bottom: 20px; background: var(--nav); padding: 15px; border-radius: 12px; border: 1px solid var(--border);"></div>
-        <h3 style="margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid var(--border);">My Posted Listings</h3>
-        <div id="my-listings-container" style="max-height: 350px; overflow-y: auto; padding-right: 5px;"></div>
-    </div>
-</div>
+        <div class="faq-container">
+            <div class="faq-item scroll-anim">
+                <button class="faq-question">
+                    Is Faujiadda completely free to use?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    Yes, Faujiadda is 100% free for all defence personnel and SSB candidates. We do not charge subscription fees to browse the map, and we strictly prohibit any brokerage fees on the platform.
+                </div>
+            </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
-<script type="module" src="script.js?v=22"></script>
+            <div class="faq-item scroll-anim" style="transition-delay: 0.1s;">
+                <button class="faq-question">
+                    How do you verify the rental listings?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    Security is our top priority. Every user who wishes to post a property must pass mandatory phone OTP verification. Additionally, our community-driven reporting system automatically hides any listing that receives 3 flags for being inaccurate or spam.
+                </div>
+            </div>
+
+            <div class="faq-item scroll-anim" style="transition-delay: 0.2s;">
+                <button class="faq-question">
+                    How does the BAH filter work?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    When you search, you can select your rank category (OR, JCO, or Officer). The map will instantly filter out any properties that exceed the standard Basic Allowance for Housing (BAH) limits for your rank, saving you time.
+                </div>
+            </div>
+
+            <div class="faq-item scroll-anim" style="transition-delay: 0.3s;">
+                <button class="faq-question">
+                    Are the SSB dorms affiliated with the military?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    No, the dorms listed are highly-rated private budget accommodations located strategically near the selection centres. They are handpicked based on price (₹250-₹1200), safety, and ease of access to the military gates for candidates.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="quote-section">
+        <p class="large-quote-text scroll-anim">
+            "For a soldier who gives everything to this nation —<br>finding a home shouldn't be this hard."
+        </p>
+        <div class="quote-national-flag">🇮🇳</div>
+    </section>
+
+    <section id="cta-section">
+        <div class="cta-container-box scroll-anim">
+            <div class="cta-center-glow"></div>
+            <h2 class="cta-headline">Ready to find your next home?</h2>
+            <p class="cta-subtext">
+                Join thousands of defence families who trust Faujiadda.<br>
+                Verified listings. Real distances. Honest community.
+            </p>
+            <div class="action-buttons" style="opacity: 1; animation: none;">
+                <a href="app.html" class="btn-solid-primary">🗺️ Explore Rentals Now</a>
+                <a href="app.html#dorm" class="btn-outline-secondary">🏨 Find SSB Dorms</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <h3><span>Fauji</span>adda</h3>
+                <p>The premier verified housing and community ecosystem built exclusively for India's Armed Forces and SSB Aspirants.</p>
+            </div>
+
+            <div class="footer-column">
+                <h4>Platform</h4>
+                <ul class="footer-links">
+                    <li><a href="app.html">Interactive Map</a></li>
+                    <li><a href="app.html#dorm">SSB Dorm Finder</a></li>
+                    <li><a href="#how-it-works">How it Works</a></li>
+                    <li><a href="#">Report an Issue</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4>Community</h4>
+                <ul class="footer-links">
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Success Stories</a></li>
+                    <li><a href="#">Contact Support</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4>Legal</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Community Guidelines</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div>© 2026 Faujiadda Platform. All rights reserved.</div>
+            <div>Built for those who serve. 🇮🇳 &nbsp;|&nbsp; faujirentals.web.app</div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile nav drawer
+        function toggleDrawer() {
+            const d = document.getElementById('navDrawer');
+            const h = document.getElementById('hamburger');
+            d.classList.toggle('open');
+            h.classList.toggle('open');
+            document.body.style.overflow = d.classList.contains('open') ? 'hidden' : '';
+        }
+        function closeDrawer() {
+            document.getElementById('navDrawer').classList.remove('open');
+            document.getElementById('hamburger').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        // 1. Navbar Scroll Effect
+        const nav = document.getElementById('mainNav');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // 2. Custom Cursor Logic
+        const cursorDot = document.getElementById('cursorDot');
+        const cursorRing = document.getElementById('cursorRing');
+        let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursorDot.style.left = mouseX + 'px';
+            cursorDot.style.top = mouseY + 'px';
+        });
+
+        function animateRing() {
+            ringX += (mouseX - ringX) * 0.15;
+            ringY += (mouseY - ringY) * 0.15;
+            cursorRing.style.left = ringX + 'px';
+            cursorRing.style.top = ringY + 'px';
+            requestAnimationFrame(animateRing);
+        }
+        animateRing();
+
+        // Cursor Hover States
+        const interactiveElements = document.querySelectorAll('a, button, .feature-box, .step-content, .faq-question');
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursorDot.style.transform = 'translate(-50%, -50%) scale(2.5)';
+                cursorDot.style.backgroundColor = 'transparent';
+                cursorDot.style.border = '1px solid var(--saffron)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
+                cursorDot.style.backgroundColor = 'var(--saffron)';
+                cursorDot.style.border = 'none';
+            });
+        });
+
+        // 3. Parallax Hero Blobs
+        const blob1 = document.getElementById('parallaxBlob1');
+        const blob2 = document.getElementById('parallaxBlob2');
+        document.addEventListener('mousemove', (e) => {
+            const moveX = (e.clientX / window.innerWidth - 0.5) * 50;
+            const moveY = (e.clientY / window.innerHeight - 0.5) * 50;
+            blob1.style.transform = `translate(${moveX}px, ${moveY}px)`;
+            blob2.style.transform = `translate(${-moveX}px, ${-moveY}px)`;
+        });
+
+        // 4. Background Particles Generator
+        const particleContainer = document.getElementById('particlesContainer');
+        for (let i = 0; i < 20; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.animationDuration = (Math.random() * 15 + 10) + 's';
+            particle.style.animationDelay = (Math.random() * 10) + 's';
+            particle.style.opacity = Math.random() * 0.6;
+            particleContainer.appendChild(particle);
+        }
+
+        // 5. Number Count-Up Animation (smooth easing)
+        const statNumbers = document.querySelectorAll('.stat-number');
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = parseInt(entry.target.getAttribute('data-target'));
+                    const suffix = target > 20 ? '+' : '';
+                    const duration = 1400; // ms
+                    const startTime = performance.now();
+
+                    const updateNumber = (currentTime) => {
+                        const elapsed = currentTime - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+                        // Ease out cubic
+                        const ease = 1 - Math.pow(1 - progress, 3);
+                        entry.target.innerText = Math.ceil(ease * target) + suffix;
+                        if (progress < 1) requestAnimationFrame(updateNumber);
+                    };
+                    requestAnimationFrame(updateNumber);
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        statNumbers.forEach(stat => statsObserver.observe(stat));
+
+        // 6. Scroll Fade-In Observer (Staggered Animation)
+        const scrollElements = document.querySelectorAll('.scroll-anim');
+        const scrollObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('scroll-visible');
+                    // Stop observing once it has animated in
+                    scrollObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15, rootMargin: "0px 0px -50px 0px" });
+
+        scrollElements.forEach(el => scrollObserver.observe(el));
+
+        // 6b. Highlight active nav link on scroll
+        const sections = document.querySelectorAll('section[id], #hero');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navLinks.forEach(a => {
+                        a.style.color = a.getAttribute('href') === '#' + entry.target.id ? 'var(--white)' : '';
+                    });
+                }
+            });
+        }, { threshold: 0.4 });
+        sections.forEach(s => sectionObserver.observe(s));
+
+        // 7. FAQ Accordion Logic
+        const faqQuestions = document.querySelectorAll('.faq-question');
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', () => {
+                const parentItem = question.parentElement;
+
+                // Close all other open items
+                document.querySelectorAll('.faq-item').forEach(item => {
+                    if (item !== parentItem) {
+                        item.classList.remove('active');
+                    }
+                });
+
+                // Toggle current item
+                parentItem.classList.toggle('active');
+            });
+        });
+    </script>
 </body>
 </html>
