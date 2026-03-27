@@ -1,13 +1,49 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // ── Rentals collection ──────────────────────────────────────────────────
     match /rentals/{rental} {
-      allow read: if true; 
-      allow create, update, delete: if request.auth != null; 
+
+      // PUBLIC: Anyone can read verified listings (needed for the map)
+      allow read: if true;
+
+      // CREATE: Must be authenticated. Must not self-verify.
+      // Enforces all required fields, sane price range, and correct defaults.
+      allow create: if request.auth != null
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.verified == false          // cannot self-approve
+        && request.resource.data.reportCount == 0           // starts at 0
+        && request.resource.data.price is number
+        && request.resource.data.price > 0
+        && request.resource.data.price < 500000             // sanity cap ₹5L/mo
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 2
+        && request.resource.data.name.size() < 200
+        && request.resource.data.city is string
+        && request.resource.data.area is string
+        && request.resource.data.whatsapp is string;
+
+      // UPDATE: Only the owner can update their own listing.
+      // They CANNOT change uid, verified status, or reportCount (admin-only fields).
+      allow update: if request.auth != null
+        && resource.data.uid == request.auth.uid
+        && request.resource.data.uid == resource.data.uid          // uid immutable
+        && request.resource.data.verified == resource.data.verified // cannot self-verify
+        && request.resource.data.reportCount == resource.data.reportCount; // cannot clear reports
+
+      // DELETE: Only the owner can delete their own listing.
+      allow delete: if request.auth != null
+        && resource.data.uid == request.auth.uid;
     }
+
+    // ── Home Requests (contact/inquiry form if added later) ─────────────────
     match /home_requests/{req} {
-      allow create: if true; 
-      allow read, update, delete: if false;
+      allow create: if request.auth != null;   // logged-in users only
+      allow read, update, delete: if false;    // admin reads via Firebase Console only
     }
+
+    // ── Reports are stored as a field on rentals (reportCount), not a
+    //    separate collection — no extra rules needed. ────────────────────────
   }
 }

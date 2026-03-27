@@ -1,5 +1,5 @@
 import { state, FOOD_BY_CITY } from './data.js';
-import { db, auth, collection, addDoc, doc, updateDoc, increment, query, where, getDocs, deleteDoc, RecaptchaVerifier, signInWithPhoneNumber, signOut } from './firebase.js';
+import { db, auth, collection, addDoc, doc, updateDoc, increment, query, where, getDocs, deleteDoc, RecaptchaVerifier, signInWithPhoneNumber, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut } from './firebase.js';
 
 // Expose auth to inline scripts
 window._fbAuth = auth;
@@ -20,10 +20,14 @@ let miniMap, miniMarker;
 
 // ─── Food Panel ───
 window.openFoodPanel = (city) => {
-    window.closeFoodPanel();
+    // Close detail modal if open so they don't layer
+    const dm = document.getElementById('detailModal');
+    if (dm) dm.style.display = 'none';
+
     const panel = document.getElementById('foodPanel');
     const grid  = document.getElementById('foodGrid');
     const label = document.getElementById('foodCity');
+    if (!panel) return;
 
     const key = Object.keys(FOOD_BY_CITY).find(k => city?.toLowerCase().includes(k.toLowerCase()));
     const opts = key ? FOOD_BY_CITY[key] : [];
@@ -37,8 +41,7 @@ window.openFoodPanel = (city) => {
             return `<div class="food-card">
             <div class="fname">${f.name}</div>
             <div class="ftype">${f.type}</div>
-            <span class="fprice ${cls}">${f.budget}</span>
-            <div style="font-size:11px;color:var(--muted);margin-top:5px;">${f.note}</div>
+            <span class="fprice ${cls}">${f.budget} — ${f.note}</span>
             </div>`;
         }).join('');
     }
@@ -51,6 +54,8 @@ window.closeFoodPanel = () => document.getElementById('foodPanel').classList.rem
 window.openDetailModal = (id) => {
     const r = state.listings.find(l => l.id === id);
     if (!r) return;
+    // Close food panel first — they should never overlap
+    if (window.closeFoodPanel) window.closeFoodPanel();
     window._currentListing = r;
     window._openDetailModal(r);
 };
@@ -230,7 +235,117 @@ window.submitReport = async () => {
 
 // ─── Auth & Post Wizard ───
 
+// Helper: advance past auth step
+function _onAuthSuccess(user) {
+    document.getElementById('step-auth').style.display = 'none';
+    document.getElementById('step1').style.display    = 'block';
+    document.getElementById('stepper').style.display  = 'flex';
+    // Pre-fill phone if available
+    try {
+        const phone = user.phoneNumber || '';
+        document.getElementById('f_phone').value = phone.replace('+91', '');
+    } catch(_) {}
+    window.showToast?.('Verified! ✅ Fill in your listing details.', 'ok');
+    if (typeof setStep === 'function') setStep(1);
+}
 
+// ── Tab switcher (Phone / Email) ──
+window.switchAuthTab = (tab) => {
+    const phoneTab = document.getElementById('auth-tab-phone');
+    const emailTab = document.getElementById('auth-tab-email');
+    const phonePane = document.getElementById('auth-pane-phone');
+    const emailPane = document.getElementById('auth-pane-email');
+    if (tab === 'phone') {
+        phoneTab.classList.add('auth-tab-active');
+        emailTab.classList.remove('auth-tab-active');
+        phonePane.style.display = 'block';
+        emailPane.style.display = 'none';
+    } else {
+        emailTab.classList.add('auth-tab-active');
+        phoneTab.classList.remove('auth-tab-active');
+        emailPane.style.display = 'block';
+        phonePane.style.display = 'none';
+    }
+};
+
+// ── Email mode toggle (login / register) ──
+window.switchEmailMode = (mode) => {
+    const loginFields  = document.getElementById('email-login-fields');
+    const regFields    = document.getElementById('email-register-fields');
+    const submitBtn    = document.getElementById('btn-email-submit');
+    const modeSub      = document.getElementById('email-mode-sub');
+    const forgotLink   = document.getElementById('email-forgot-link');
+
+    if (mode === 'login') {
+        loginFields.style.display  = 'block';
+        regFields.style.display    = 'none';
+        submitBtn.textContent      = '🔓 Login with Email';
+        modeSub.innerHTML          = `No account? <button class="auth-link" onclick="window.switchEmailMode('register')">Register free →</button>`;
+        forgotLink.style.display   = 'block';
+    } else {
+        loginFields.style.display  = 'block';
+        regFields.style.display    = 'block';
+        submitBtn.textContent      = '✅ Create Account & Continue';
+        modeSub.innerHTML          = `Already have an account? <button class="auth-link" onclick="window.switchEmailMode('login')">Login →</button>`;
+        forgotLink.style.display   = 'none';
+    }
+    submitBtn.dataset.mode = mode;
+};
+
+// ── Email submit (login or register) ──
+window.emailAuthSubmit = async () => {
+    const email = document.getElementById('auth_email').value.trim();
+    const pass  = document.getElementById('auth_pass').value;
+    const btn   = document.getElementById('btn-email-submit');
+    const mode  = btn.dataset.mode || 'login';
+
+    if (!email || !pass) { window.showToast?.('Enter email and password', 'err'); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { window.showToast?.('Enter a valid email address', 'err'); return; }
+    if (pass.length < 6) { window.showToast?.('Password must be at least 6 characters', 'err'); return; }
+
+    if (mode === 'register') {
+        const name = document.getElementById('auth_display_name')?.value.trim();
+        if (!name) { window.showToast?.('Enter your name', 'err'); return; }
+    }
+
+    btn.textContent = mode === 'login' ? 'Logging in... ⏳' : 'Creating account... ⏳';
+    btn.disabled = true;
+
+    try {
+        let cred;
+        if (mode === 'login') {
+            cred = await signInWithEmailAndPassword(auth, email, pass);
+        } else {
+            cred = await createUserWithEmailAndPassword(auth, email, pass);
+        }
+        _onAuthSuccess(cred.user);
+    } catch(e) {
+        const msg = {
+            'auth/user-not-found':      'No account found for this email.',
+            'auth/wrong-password':      'Incorrect password. Try again.',
+            'auth/email-already-in-use':'Email already registered. Choose Login.',
+            'auth/weak-password':       'Password too weak (6+ chars required).',
+            'auth/invalid-email':       'Invalid email address format.',
+            'auth/invalid-credential':  'Wrong email or password.',
+        }[e.code] || e.message;
+        window.showToast?.('Error: ' + msg, 'err');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = mode === 'login' ? '🔓 Login with Email' : '✅ Create Account & Continue';
+    }
+};
+
+// ── Forgot password ──
+window.forgotPassword = async () => {
+    const email = document.getElementById('auth_email').value.trim();
+    if (!email) { window.showToast?.('Enter your email first', 'err'); return; }
+    try {
+        await sendPasswordResetEmail(auth, email);
+        window.showToast?.('Reset link sent to ' + email + ' 📧', 'ok', 5000);
+    } catch(e) {
+        window.showToast?.('Error: ' + e.message, 'err');
+    }
+};
 window.sendOTP = async () => {
     let phoneInput = document.getElementById('auth_phone').value.trim();
     if (!phoneInput) { window.showToast?.('Enter your phone number', 'err'); return; }
@@ -286,13 +401,7 @@ window.verifyOTP = async () => {
     if (verifyBtn) { verifyBtn.textContent = 'Verifying... ⏳'; verifyBtn.disabled = true; }
     try {
         const result = await window.confirmationResult.confirm(code);
-        try { document.getElementById('f_phone').value = result.user.phoneNumber.replace('+91',''); } catch(e){}
-        document.getElementById('step-auth').style.display = 'none';
-        document.getElementById('step1').style.display = 'block';
-        document.getElementById('stepper').style.display = 'flex';
-        // Update stepper
-        if (typeof setStep === 'function') setStep(1);
-        window.showToast?.('Verified! ✅ Fill in your listing details.', 'ok');
+        _onAuthSuccess(result.user);
     } catch(e) {
         window.showToast?.('Invalid OTP. Please try again.', 'err');
         if (verifyBtn) { verifyBtn.textContent = 'Verify & Continue ✅'; verifyBtn.disabled = false; }

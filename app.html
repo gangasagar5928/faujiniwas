@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Faujiadda — Live Map</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪖</text></svg>">
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
@@ -100,7 +103,9 @@
             width:400px; height:100%; background:var(--nav);
             display:flex; flex-direction:column;
             border-right:1px solid var(--border); z-index:10; flex-shrink:0;
-            transition: transform .35s var(--ease), height .35s var(--ease);
+            transition: transform .3s var(--ease), height .3s var(--ease);
+            will-change: transform;
+            backface-visibility: hidden;
         }
         #map { flex-grow:1; height:100%; background:var(--bg); z-index:1; }
 
@@ -134,9 +139,12 @@
         /* LISTING CARD */
         .lc {
             background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
-            padding:12px; margin-bottom:9px; cursor:pointer; transition: all .2s var(--ease);
+            padding:12px; margin-bottom:9px; cursor:pointer;
+            transition: border-color .18s var(--ease), background .18s var(--ease), transform .18s var(--ease);
             display:flex; gap:12px; position:relative; overflow:hidden;
+            animation: cardIn .28s var(--ease) both;
         }
+        @keyframes cardIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
         .lc::before {
             content:''; position:absolute; left:0; top:0; bottom:0; width:3px;
             background:transparent; transition:background .2s;
@@ -205,9 +213,11 @@
         /* FOOD PANEL */
         #foodPanel {
             position:fixed; bottom:0; left:0; right:0; max-height:55vh; background:var(--card);
-            border-top:2px solid var(--accent); border-radius:20px 20px 0 0; z-index:10001;
-            transform:translateY(100%); transition:transform .4s var(--ease);
+            border-top:2px solid var(--accent); border-radius:20px 20px 0 0; z-index:9500;
+            transform:translateY(100%); transition:transform .34s cubic-bezier(0.4,0,0.2,1);
             padding:0 16px 32px; overflow-y:auto; scrollbar-width:thin;
+            will-change: transform;
+            backface-visibility: hidden;
         }
         #foodPanel.open { transform:translateY(0); }
         .food-card { background:var(--card2); border:1px solid var(--border2); border-radius:10px; padding:12px; transition:border-color .2s; }
@@ -222,16 +232,24 @@
         /* MODALS */
         .modal {
             display:none; position:fixed; z-index:10000; left:0; top:0; width:100%; height:100%;
-            background:rgba(0,0,0,.78); backdrop-filter:blur(8px); animation:mfade .2s ease;
+            background:rgba(0,0,0,.78); backdrop-filter:blur(8px);
+            animation:mfade .22s ease;
+            /* Prevent pull-to-refresh / overscroll from dismissing modal */
+            overscroll-behavior: contain;
+            touch-action: none;
         }
         @keyframes mfade { from{opacity:0} to{opacity:1} }
         .mc {
             background:var(--card); margin:4% auto; border:1px solid var(--border2);
             border-radius:var(--radius-lg); width:92%; max-width:560px;
             position:relative; box-shadow:var(--shadow-lg); overflow:hidden;
-            animation:mslide .3s var(--ease);
+            animation:mslide .28s var(--ease);
+            will-change: transform, opacity;
+            /* Allow scrolling inside the card without closing modal */
+            overscroll-behavior: contain;
+            touch-action: pan-y;
         }
-        @keyframes mslide { from{transform:translateY(28px);opacity:0} to{transform:translateY(0);opacity:1} }
+        @keyframes mslide { from{transform:translateY(30px);opacity:0} to{transform:none;opacity:1} }
         .mhdr { padding:18px 18px 0; display:flex; justify-content:space-between; align-items:center; }
         .mbody { padding:18px; }
         .mh2 { font-family:'Playfair Display',serif; font-size:20px; }
@@ -248,9 +266,9 @@
         .car::-webkit-scrollbar { display:none; }
         .car img { width:100%; height:260px; object-fit:cover; scroll-snap-align:center; flex-shrink:0; }
         .car-badge {
-            position:absolute; top:12px; right:12px; background:rgba(0,0,0,.72);
+            position:absolute; top:12px; left:12px; background:rgba(0,0,0,.72);
             padding:4px 12px; border-radius:100px; font-size:11px; font-weight:700; color:#fff;
-            backdrop-filter:blur(4px);
+            backdrop-filter:blur(4px); pointer-events:none;
         }
         .car-dots { position:absolute; bottom:10px; left:50%; transform:translateX(-50%); display:flex; gap:5px; }
         .dot { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,.35); transition:all .2s; }
@@ -336,7 +354,17 @@
             .sidebar.minimized { transform:translateY(calc(100% - 130px)); }
             .sidebar.fullscreen { transform:translateY(0); height:90vh; }
             .fab { bottom:16px; right:16px; padding:11px 18px; font-size:13px; }
-            .mc { margin:8% auto; max-height:88vh; overflow-y:auto; }
+            .mc {
+                margin:0 auto;
+                border-radius:20px 20px 0 0;
+                position:absolute; bottom:0; left:0; right:0;
+                max-width:100%; width:100%;
+                max-height:92vh; overflow-y:auto;
+                animation:mslide-mobile .3s var(--ease);
+            }
+            @keyframes mslide-mobile { from{transform:translateY(100%)} to{transform:translateY(0)} }
+            .modal { align-items:flex-end; display:none; }
+            .modal[style*="block"] { display:flex !important; }
             .specs { grid-template-columns:repeat(2,1fr); }
             .frow { grid-template-columns:1fr; }
         }
@@ -346,6 +374,23 @@
         .empty-ico { font-size:32px; margin-bottom:10px; }
         .empty h3 { margin-bottom:6px; font-size:16px; }
         .empty p { color:var(--muted); font-size:13px; }
+        /* AUTH TABS */
+        .auth-tabs { display:flex; gap:0; border:1px solid var(--border2); border-radius:10px; overflow:hidden; margin-bottom:16px; }
+        .auth-tab {
+            flex:1; padding:10px; font-size:13px; font-weight:600;
+            background:transparent; color:var(--muted); border:none;
+            cursor:pointer; font-family:'Outfit',sans-serif;
+            transition:all .2s; text-align:center;
+        }
+        .auth-tab:first-child { border-right:1px solid var(--border2); }
+        .auth-tab-active { background:var(--accent) !important; color:#000 !important; }
+        .auth-tab:not(.auth-tab-active):hover { color:var(--text); background:var(--card2); }
+        .auth-link {
+            background:none; border:none; color:var(--accent);
+            font-size:12px; cursor:pointer; font-family:'Outfit',sans-serif;
+            font-weight:600; padding:0; text-decoration:underline;
+        }
+        .auth-divider { text-align:center; color:var(--muted); font-size:12px; margin:4px 0 10px; }
     </style>
 </head>
 <body>
@@ -439,15 +484,53 @@
                     <div class="sn" id="sn3">3</div>
                 </div>
 
-                <!-- Step 0: Auth -->
+                <!-- Step 0: Auth (tabbed: Phone OTP | Email) -->
                 <div id="step-auth">
-                    <p style="color:var(--muted);font-size:13px;margin-bottom:14px;">Verify your mobile to post a listing.</p>
-                    <input type="tel" id="auth_phone" class="fi" placeholder="+91 XXXXXXXXXX">
-                    <div id="recaptcha-container" style="margin-bottom:10px;"></div>
-                    <button id="btn-send-otp" onclick="window.sendOTP()" class="bp">Send OTP 💬</button>
-                    <div id="otp-section" style="display:none;margin-top:10px;">
-                        <input type="text" id="auth_otp" class="fi" placeholder="6-digit OTP" maxlength="6" style="letter-spacing:.2em;text-align:center;font-size:20px;">
-                        <button onclick="window.verifyOTP()" class="bp">Verify & Continue ✅</button>
+                    <p style="color:var(--muted);font-size:13px;margin-bottom:12px;">Login or register to post a listing.</p>
+
+                    <!-- Tab switcher -->
+                    <div class="auth-tabs">
+                        <button class="auth-tab auth-tab-active" id="auth-tab-phone" onclick="window.switchAuthTab('phone')">📱 Phone OTP</button>
+                        <button class="auth-tab" id="auth-tab-email" onclick="window.switchAuthTab('email')">✉️ Email</button>
+                    </div>
+
+                    <!-- Phone pane -->
+                    <div id="auth-pane-phone">
+                        <input type="tel" id="auth_phone" class="fi" placeholder="+91 XXXXXXXXXX">
+                        <div id="recaptcha-container" style="margin-bottom:10px;"></div>
+                        <button id="btn-send-otp" onclick="window.sendOTP()" class="bp">Send OTP 💬</button>
+                        <div id="otp-section" style="display:none;margin-top:10px;">
+                            <input type="text" id="auth_otp" class="fi" placeholder="6-digit OTP" maxlength="6"
+                                   style="letter-spacing:.2em;text-align:center;font-size:20px;">
+                            <button onclick="window.verifyOTP()" class="bp">Verify &amp; Continue ✅</button>
+                        </div>
+                    </div>
+
+                    <!-- Email pane -->
+                    <div id="auth-pane-email" style="display:none;">
+                        <!-- Register-only: Name field -->
+                        <div id="email-register-fields" style="display:none;">
+                            <input type="text" id="auth_display_name" class="fi" placeholder="Your Full Name">
+                        </div>
+
+                        <!-- Login + Register: Email & Password -->
+                        <div id="email-login-fields">
+                            <input type="email" id="auth_email" class="fi" placeholder="Email Address"
+                                   onkeyup="if(event.key==='Enter') window.emailAuthSubmit()">
+                            <input type="password" id="auth_pass" class="fi" placeholder="Password (min. 6 chars)"
+                                   onkeyup="if(event.key==='Enter') window.emailAuthSubmit()">
+                        </div>
+
+                        <button id="btn-email-submit" onclick="window.emailAuthSubmit()" class="bp"
+                                data-mode="login">🔓 Login with Email</button>
+
+                        <a id="email-forgot-link" onclick="window.forgotPassword()" 
+                           style="display:block;text-align:right;font-size:12px;color:var(--muted);cursor:pointer;
+                                  margin-top:6px;text-decoration:underline;">Forgot password?</a>
+
+                        <div class="auth-divider" id="email-mode-sub" style="margin-top:10px;">
+                            No account? <button class="auth-link" onclick="window.switchEmailMode('register')">Register free &rarr;</button>
+                        </div>
                     </div>
                 </div>
 
@@ -568,17 +651,28 @@
             }, 1500);
         });
 
-        // Backdrop close
-        window.onclick = (e) => {
-            if (e.target.classList.contains('modal')) {
-                e.target.style.display = 'none';
-                if(window.closeFoodPanel) window.closeFoodPanel();
-            }
+        // Backdrop close — ONLY fires when tapping the dark backdrop itself, not the modal card
+        document.querySelectorAll('.modal').forEach(m => {
+            m.addEventListener('click', e => {
+                // Only close if the click target is the modal backdrop itself
+                if (e.target === m) m.style.display = 'none';
+            });
+            // Prevent touch scroll inside modal from bubbling to backdrop
+            m.querySelector('.mc')?.addEventListener('touchmove', e => e.stopPropagation(), { passive: true });
+        });
+        window.onclick = null; // Remove old global onclick handler
+        window.closeModals = () => {
+            document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+            if(window.closeFoodPanel) window.closeFoodPanel();
         };
-        window.closeModals = () => { document.querySelectorAll('.modal').forEach(m => m.style.display='none'); if(window.closeFoodPanel) window.closeFoodPanel(); };
+        document.addEventListener('modalopen', () => { if(window.closeFoodPanel) window.closeFoodPanel(); });
 
-        // Filters
-        document.getElementById('searchInput').addEventListener('input', e => { if(window.setSmartSearch) window.setSmartSearch(e.target.value); });
+        // Filters (debounced search for perf)
+        let _st;
+        document.getElementById('searchInput').addEventListener('input', e => {
+            clearTimeout(_st);
+            _st = setTimeout(() => { if(window.setSmartSearch) window.setSmartSearch(e.target.value); }, 180);
+        });
         document.getElementById('bahFilter').addEventListener('change', e => { if(window.setPrice) window.setPrice(e.target.value==='all' ? 100000 : parseInt(e.target.value)); });
         document.getElementById('sortFilter').addEventListener('change', e => { if(window.setSort) window.setSort(e.target.value); });
 
@@ -614,14 +708,24 @@
         // Post modal
         window.openPostModal = () => {
             document.getElementById('postModal').style.display = 'block';
-            // Reset OTP section state
+
+            // Reset phone OTP state
             document.getElementById('otp-section').style.display = 'none';
             const otpInput = document.getElementById('auth_otp');
             if (otpInput) otpInput.value = '';
             const sendBtn = document.getElementById('btn-send-otp');
             if (sendBtn) { sendBtn.textContent = 'Send OTP 💬'; sendBtn.disabled = false; }
+
+            // Reset email state
+            ['auth_email','auth_pass','auth_display_name'].forEach(id => {
+                const el = document.getElementById(id); if (el) el.value = '';
+            });
+            // Reset to phone tab by default
+            if (window.switchAuthTab) window.switchAuthTab('phone');
+            // Reset email mode to login
+            if (window.switchEmailMode) window.switchEmailMode('login');
+
             setTimeout(() => {
-                // Check auth via firebase auth object exposed by ui.js module
                 const fbAuth = window._fbAuth || null;
                 const authed = fbAuth && fbAuth.currentUser;
                 document.getElementById('stepper').style.display = authed ? 'flex' : 'none';
@@ -629,9 +733,11 @@
                 document.getElementById('step1').style.display = authed ? 'block' : 'none';
                 if (authed) {
                     setStep(1);
-                    try { document.getElementById('f_phone').value = fbAuth.currentUser.phoneNumber.replace('+91',''); } catch(e){}
+                    try {
+                        const ph = fbAuth.currentUser.phoneNumber || '';
+                        document.getElementById('f_phone').value = ph.replace('+91', '');
+                    } catch(e) {}
                 } else {
-                    // Init recaptcha via the function exposed by ui.js
                     if (window.initRecaptcha) window.initRecaptcha();
                 }
             }, 100);

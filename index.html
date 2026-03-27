@@ -4,7 +4,10 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Faujiadda — Defence Housing, SSB Dorms & Food</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪖</text></svg>">
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 
     <style>
@@ -64,6 +67,7 @@
             pointer-events: none;
             z-index: 0;
             opacity: 0.4;
+            will-change: opacity;
         }
 
         .particles-container {
@@ -82,24 +86,15 @@
             border-radius: 50%;
             opacity: 0;
             animation: particleFloat linear infinite;
-            box-shadow: 0 0 10px var(--saffron);
+            box-shadow: 0 0 8px var(--saffron);
+            will-change: transform, opacity;
         }
 
         @keyframes particleFloat {
-            0% {
-                transform: translateY(100vh) translateX(0);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.6;
-            }
-            90% {
-                opacity: 0.3;
-            }
-            100% {
-                transform: translateY(-100px) translateX(40px);
-                opacity: 0;
-            }
+            0%   { transform: translateY(100vh) translateX(0);  opacity: 0; }
+            10%  { opacity: 0.6; }
+            90%  { opacity: 0.3; }
+            100% { transform: translateY(-100px) translateX(40px); opacity: 0; }
         }
 
         /* ==========================================================================
@@ -284,7 +279,8 @@
             filter: blur(120px);
             pointer-events: none;
             z-index: 0;
-            transition: transform 0.2s ease-out;
+            will-change: transform;
+            transition: transform 0.12s linear;
         }
 
         .blob-saffron {
@@ -916,17 +912,17 @@
 
         .faq-answer {
             padding: 0 30px;
-            max-height: 0;
             overflow: hidden;
-            transition: max-height 0.4s ease, padding 0.4s ease;
+            transition: height 0.38s cubic-bezier(0.4,0,0.2,1), padding 0.38s cubic-bezier(0.4,0,0.2,1);
             color: var(--text-muted);
             line-height: 1.6;
             font-size: 16px;
+            height: 0;
         }
 
         .faq-item.active .faq-answer {
             padding: 0 30px 25px 30px;
-            max-height: 300px; /* Arbitrary large number to allow animation */
+            /* height set by JS to exact scrollHeight for true smooth animation */
         }
 
         /* ==========================================================================
@@ -1575,27 +1571,38 @@
             });
         });
 
-        // 3. Parallax Hero Blobs
+        // 3. Parallax Hero Blobs — throttled via rAF for zero jank
         const blob1 = document.getElementById('parallaxBlob1');
         const blob2 = document.getElementById('parallaxBlob2');
+        let ticking = false, mx = 0, my = 0;
         document.addEventListener('mousemove', (e) => {
-            const moveX = (e.clientX / window.innerWidth - 0.5) * 50;
-            const moveY = (e.clientY / window.innerHeight - 0.5) * 50;
-            blob1.style.transform = `translate(${moveX}px, ${moveY}px)`;
-            blob2.style.transform = `translate(${-moveX}px, ${-moveY}px)`;
-        });
+            mx = e.clientX; my = e.clientY;
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    const moveX = (mx / window.innerWidth  - 0.5) * 44;
+                    const moveY = (my / window.innerHeight - 0.5) * 44;
+                    blob1.style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`;
+                    blob2.style.transform = `translate3d(${-moveX}px, ${-moveY}px, 0)`;
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }, { passive: true });
 
-        // 4. Background Particles Generator
+        // 4. Background Particles — fewer on mobile for perf
         const particleContainer = document.getElementById('particlesContainer');
-        for (let i = 0; i < 20; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            particle.style.left = Math.random() * 100 + 'vw';
-            particle.style.animationDuration = (Math.random() * 15 + 10) + 's';
-            particle.style.animationDelay = (Math.random() * 10) + 's';
-            particle.style.opacity = Math.random() * 0.6;
-            particleContainer.appendChild(particle);
+        const particleCount = window.innerWidth < 768 ? 8 : 18;
+        const frag = document.createDocumentFragment();
+        for (let i = 0; i < particleCount; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.style.left = Math.random() * 100 + 'vw';
+            p.style.animationDuration = (Math.random() * 14 + 10) + 's';
+            p.style.animationDelay  = (Math.random() * 10) + 's';
+            p.style.opacity = (Math.random() * 0.5 + 0.1).toFixed(2);
+            frag.appendChild(p);
         }
+        particleContainer.appendChild(frag);
 
         // 5. Number Count-Up Animation (smooth easing)
         const statNumbers = document.querySelectorAll('.stat-number');
@@ -1663,21 +1670,35 @@
         }, { threshold: 0.4 });
         sections.forEach(s => sectionObserver.observe(s));
 
-        // 7. FAQ Accordion Logic
-        const faqQuestions = document.querySelectorAll('.faq-question');
-        faqQuestions.forEach(question => {
-            question.addEventListener('click', () => {
-                const parentItem = question.parentElement;
+        // 7. FAQ Accordion — smooth height animation with real scrollHeight
+        document.querySelectorAll('.faq-question').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const item   = btn.parentElement;
+                const answer = item.querySelector('.faq-answer');
+                const isOpen = item.classList.contains('active');
 
-                // Close all other open items
-                document.querySelectorAll('.faq-item').forEach(item => {
-                    if (item !== parentItem) {
-                        item.classList.remove('active');
+                // Close all others
+                document.querySelectorAll('.faq-item.active').forEach(other => {
+                    if (other !== item) {
+                        other.querySelector('.faq-answer').style.height = '0';
+                        other.classList.remove('active');
                     }
                 });
 
-                // Toggle current item
-                parentItem.classList.toggle('active');
+                if (isOpen) {
+                    answer.style.height = answer.scrollHeight + 'px';
+                    // Force reflow then collapse
+                    requestAnimationFrame(() => requestAnimationFrame(() => {
+                        answer.style.height = '0';
+                    }));
+                    item.classList.remove('active');
+                } else {
+                    item.classList.add('active');
+                    answer.style.height = answer.scrollHeight + 'px';
+                    answer.addEventListener('transitionend', () => {
+                        if (item.classList.contains('active')) answer.style.height = 'auto';
+                    }, { once: true });
+                }
             });
         });
     </script>
