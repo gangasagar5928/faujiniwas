@@ -677,117 +677,101 @@
         }
 
         /* ==========================================================================
-           9. STATISTICAL COMPARISON TABLE
+           9. COMPARISON SECTION — fully responsive card layout
            ========================================================================== */
         .comparison-wrapper {
             position: relative;
             z-index: 1;
             padding: 120px 24px;
-            background: linear-gradient(180deg, var(--navy) 0%, rgba(17, 29, 54, 0.5) 100%);
+            background: linear-gradient(180deg, var(--navy) 0%, rgba(17, 29, 54, 0.6) 100%);
         }
 
-        .vs-table-ui {
-            background-color: var(--navy-lighter);
+        /* Column header badges */
+        .vs-col-headers {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            max-width: 820px;
+            margin: 0 auto 24px;
+        }
+        .vs-col-head {
+            padding: 14px 20px;
+            border-radius: 14px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+        .vs-col-head.generic {
+            background: rgba(252,92,125,0.08);
+            border: 1px solid rgba(252,92,125,0.25);
+            color: var(--red-alert);
+        }
+        .vs-col-head.faujiadda {
+            background: rgba(255,153,51,0.1);
+            border: 1px solid rgba(255,153,51,0.4);
+            color: var(--saffron);
+        }
+
+        /* One comparison row card */
+        .vs-row {
+            background: var(--navy-lighter);
             border: 1px solid var(--border-color);
-            border-radius: 24px;
+            border-radius: 18px;
+            margin-bottom: 14px;
             overflow: hidden;
-            backdrop-filter: var(--glass-blur);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
             opacity: 0;
-            transform: translateY(40px);
+            transform: translateY(28px);
             transition: var(--transition-slow);
         }
+        .vs-row.scroll-visible { opacity: 1; transform: translateY(0); }
+        .vs-row:hover { border-color: rgba(255,153,51,0.3); }
 
-        .vs-table-ui.scroll-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .table-row {
-            display: grid;
-            grid-template-columns: 1.2fr 1fr 1fr;
-            border-bottom: 1px solid var(--border-color);
-            align-items: center;
-        }
-
-        .table-row:last-child {
-            border-bottom: none;
-        }
-
-        .table-cell {
-            padding: 28px 32px;
-            font-size: 17px;
-        }
-
-        .table-header-row {
-            background-color: rgba(0, 0, 0, 0.4);
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 13px;
-            letter-spacing: 0.1em;
-            color: var(--text-muted);
-        }
-
-        .column-faujiadda {
-            background-color: rgba(255, 153, 51, 0.05);
-            color: var(--white);
-            font-weight: 600;
-            position: relative;
-        }
-
-        .column-faujiadda::after {
-            content:'';
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            width: 3px;
-            background-color: var(--saffron);
-        }
-
-        .column-generic {
-            color: var(--red-alert);
-            opacity: 0.9;
-            font-weight: 500;
-        }
-
-        .feature-row-title {
-            text-align: left;
-            font-weight: 600;
-            color: var(--white);
+        /* Row label bar */
+        .vs-row-label {
+            padding: 14px 22px;
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--white);
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(0,0,0,0.25);
+        }
+        .vs-row-label .vs-icon {
+            font-size: 18px;
+            flex-shrink: 0;
         }
 
-                @media (max-width: 900px) {
-            .table-row { grid-template-columns: 1fr; text-align: left; gap: 8px; padding: 16px; border-bottom: 1px dashed var(--border-color); }
-            .table-cell { padding: 12px 16px; border: none; }
-            .table-header-row { display: none; }
-            .column-faujiadda::after { display: none; }
+        /* Two-column value grid inside each row */
+        .vs-values {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+        .vs-val {
+            padding: 16px 22px;
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            line-height: 1.35;
+        }
+        .vs-val.generic {
+            color: var(--red-alert);
+            border-right: 1px solid var(--border-color);
+        }
+        .vs-val.faujiadda {
+            color: var(--saffron);
+            background: rgba(255,153,51,0.04);
+        }
+        .vs-val .check { font-size: 16px; flex-shrink: 0; }
 
-            /* The upgraded Mobile Highlight Box */
-            .column-faujiadda {
-                background: rgba(255, 153, 51, 0.05);
-                padding-left: 16px;
-                border-left: 3px solid var(--saffron);
-                border-radius: 8px;
-                margin-top: 8px;
-            }
-            .column-generic {
-                padding-left: 16px;
-                border-left: 3px solid var(--red-alert);
-            }
-
-            /* display: block forces the title to stack cleanly above the text */
-            .feature-row-title {
-                font-size: 14px;
-                color: var(--text-muted);
-                margin-bottom: 8px;
-                text-transform: uppercase;
-                letter-spacing: 0.05em;
-                display: block;
-            }
+        @media (max-width: 480px) {
+            .vs-col-head, .vs-val { font-size: 13px; padding: 12px 14px; }
+            .vs-row-label { font-size: 13px; padding: 12px 16px; }
         }
 
 
@@ -1198,20 +1182,20 @@
 
             <div class="stats-container">
                 <div class="stat-block">
-                    <div class="stat-number" data-target="1300">0</div>
-                    <div class="stat-caption">Verified Listings</div>
-                </div>
-                <div class="stat-block">
-                    <div class="stat-number" data-target="15">0</div>
-                    <div class="stat-caption">Defence Stations</div>
-                </div>
-                <div class="stat-block">
                     <div class="stat-number" data-target="12">0</div>
-                    <div class="stat-caption">SSB Centres</div>
+                    <div class="stat-caption">SSB Selection Centres</div>
                 </div>
                 <div class="stat-block">
-                    <div class="stat-number" data-target="6">0</div>
+                    <div class="stat-number" data-target="0">0</div>
+                    <div class="stat-caption">Brokerage Fees</div>
+                </div>
+                <div class="stat-block">
+                    <div class="stat-number" data-target="28">0</div>
                     <div class="stat-caption">City Food Guides</div>
+                </div>
+                <div class="stat-block">
+                    <div class="stat-number" data-target="24">0</div>
+                    <div class="stat-caption">Hr Listing Review</div>
                 </div>
             </div>
         </div>
@@ -1243,8 +1227,8 @@
             <div class="feature-box scroll-anim" style="transition-delay: 0.3s;">
                 <span class="feature-emoji">🍽️</span>
                 <h3 class="feature-title">Food & Stay Guide</h3>
-                <p class="feature-paragraph">Relocating to a new city? Every listing shows nearby restaurants with budget tags. Know where to eat safely before you even arrive.</p>
-                <span class="feature-pill">6 Cities Covered</span>
+                <p class="feature-paragraph">Relocating to a new city? Every listing links to a curated guide with budget-tagged restaurants — dhabas, messes & cafes near every cantonment and SSB centre.</p>
+                <span class="feature-pill">28+ Cities Covered</span>
             </div>
             <div class="feature-box scroll-anim" style="transition-delay: 0.4s;">
                 <span class="feature-emoji">🔒</span>
@@ -1298,39 +1282,79 @@
     </section>
 
     <section id="comparison" class="comparison-wrapper">
-        <div style="max-width: 1000px; margin: 0 auto; text-align: center;">
+        <div style="max-width: 860px; margin: 0 auto; text-align: center;">
             <span class="section-kicker">By The Numbers</span>
-            <h2 class="section-heading text-center">Why switch to Faujiadda?</h2>
+            <h2 class="section-heading text-center">Why Faujiadda, not generic apps?</h2>
 
-            <div class="vs-table-ui scroll-anim">
-                <div class="table-row table-header-row">
-                    <div class="table-cell" style="text-align:left;">Metrics & Capabilities</div>
-                    <div class="table-cell">Generic Real Estate Apps</div>
-                    <div class="table-cell column-faujiadda" style="color:var(--saffron);">Faujiadda Ecosystem</div>
+            <!-- Column Header Badges -->
+            <div class="vs-col-headers">
+                <div class="vs-col-head generic">❌ Generic Real Estate Apps</div>
+                <div class="vs-col-head faujiadda">✅ Faujiadda</div>
+            </div>
+
+            <!-- Row 1 -->
+            <div class="vs-row scroll-anim">
+                <div class="vs-row-label">
+                    <span class="vs-icon">💸</span> Brokerage Fees
                 </div>
-
-                <div class="table-row">
-                    <div class="table-cell feature-row-title">💸 Brokerage Fees</div>
-                    <div class="table-cell column-generic">15 to 30 Days Rent</div>
-                    <div class="table-cell column-faujiadda">Absolutely ₹0</div>
+                <div class="vs-values">
+                    <div class="vs-val generic"><span class="check">✗</span> 15–30 days rent as commission</div>
+                    <div class="vs-val faujiadda"><span class="check">✓</span> Absolutely ₹0 always</div>
                 </div>
+            </div>
 
-                <div class="table-row">
-                    <div class="table-cell feature-row-title">📍 Location Accuracy</div>
-                    <div class="table-cell column-generic">Distance to "City Center"</div>
-                    <div class="table-cell column-faujiadda">Distance to Cantt Gate</div>
+            <!-- Row 2 -->
+            <div class="vs-row scroll-anim" style="transition-delay: 0.08s;">
+                <div class="vs-row-label">
+                    <span class="vs-icon">📍</span> Location Reference
                 </div>
-
-                <div class="table-row">
-                    <div class="table-cell feature-row-title">🔐 Trust & Safety</div>
-                    <div class="table-cell column-generic">Anyone can post freely</div>
-                    <div class="table-cell column-faujiadda">Strict OTP Verification</div>
+                <div class="vs-values">
+                    <div class="vs-val generic"><span class="check">✗</span> Distance to city centre</div>
+                    <div class="vs-val faujiadda"><span class="check">✓</span> Distance to Cantt gate</div>
                 </div>
+            </div>
 
-                <div class="table-row">
-                    <div class="table-cell feature-row-title">🎖️ Defence Features</div>
-                    <div class="table-cell column-generic">None available</div>
-                    <div class="table-cell column-faujiadda">BAH limits & SSB Dorms</div>
+            <!-- Row 3 -->
+            <div class="vs-row scroll-anim" style="transition-delay: 0.16s;">
+                <div class="vs-row-label">
+                    <span class="vs-icon">🔐</span> Listing Trust
+                </div>
+                <div class="vs-values">
+                    <div class="vs-val generic"><span class="check">✗</span> Anyone can post anonymously</div>
+                    <div class="vs-val faujiadda"><span class="check">✓</span> Mandatory OTP verification</div>
+                </div>
+            </div>
+
+            <!-- Row 4 -->
+            <div class="vs-row scroll-anim" style="transition-delay: 0.24s;">
+                <div class="vs-row-label">
+                    <span class="vs-icon">🎖️</span> Defence-Specific Tools
+                </div>
+                <div class="vs-values">
+                    <div class="vs-val generic"><span class="check">✗</span> No rank or BAH awareness</div>
+                    <div class="vs-val faujiadda"><span class="check">✓</span> BAH filters + SSB dorm finder</div>
+                </div>
+            </div>
+
+            <!-- Row 5 -->
+            <div class="vs-row scroll-anim" style="transition-delay: 0.32s;">
+                <div class="vs-row-label">
+                    <span class="vs-icon">🍽️</span> Relocation Support
+                </div>
+                <div class="vs-values">
+                    <div class="vs-val generic"><span class="check">✗</span> No food or local guides</div>
+                    <div class="vs-val faujiadda"><span class="check">✓</span> Curated food guide, 28+ cities</div>
+                </div>
+            </div>
+
+            <!-- Row 6 -->
+            <div class="vs-row scroll-anim" style="transition-delay: 0.40s;">
+                <div class="vs-row-label">
+                    <span class="vs-icon">⏱️</span> Listing Review Time
+                </div>
+                <div class="vs-values">
+                    <div class="vs-val generic"><span class="check">✗</span> Instant, unmoderated</div>
+                    <div class="vs-val faujiadda"><span class="check">✓</span> Reviewed within 24 hours</div>
                 </div>
             </div>
         </div>
@@ -1338,7 +1362,7 @@
 
     <section id="testimonials" class="global-section testimonials-bg">
         <span class="section-kicker">Community Trust</span>
-        <h2 class="section-heading">Trusted by thousands of<br>defence families.</h2>
+        <h2 class="section-heading">Built by the community,<br>for the community.</h2>
 
         <div class="carousel-wrapper">
             <div class="testimonial-card scroll-anim">
@@ -1579,16 +1603,28 @@
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const target = parseInt(entry.target.getAttribute('data-target'));
-                    const suffix = target > 20 ? '+' : '';
+                    const caption = entry.target.nextElementSibling?.textContent || '';
                     const duration = 1400; // ms
                     const startTime = performance.now();
+
+                    // Determine suffix based on caption or value
+                    let prefix = '', suffix = '';
+                    if (caption.includes('Brokerage')) { prefix = '₹'; suffix = ''; }
+                    else if (caption.includes('Hr') || caption.includes('hr')) suffix = ' hr';
+                    else if (target > 10) suffix = '+';
+
+                    if (target === 0) {
+                        entry.target.innerText = prefix + '0' + suffix;
+                        statsObserver.unobserve(entry.target);
+                        return;
+                    }
 
                     const updateNumber = (currentTime) => {
                         const elapsed = currentTime - startTime;
                         const progress = Math.min(elapsed / duration, 1);
                         // Ease out cubic
                         const ease = 1 - Math.pow(1 - progress, 3);
-                        entry.target.innerText = Math.ceil(ease * target) + suffix;
+                        entry.target.innerText = prefix + Math.ceil(ease * target) + suffix;
                         if (progress < 1) requestAnimationFrame(updateNumber);
                     };
                     requestAnimationFrame(updateNumber);

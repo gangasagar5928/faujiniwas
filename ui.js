@@ -1,6 +1,9 @@
 import { state, FOOD_BY_CITY } from './data.js';
 import { db, auth, collection, addDoc, doc, updateDoc, increment, query, where, getDocs, deleteDoc, RecaptchaVerifier, signInWithPhoneNumber, signOut } from './firebase.js';
 
+// Expose auth to inline scripts
+window._fbAuth = auth;
+
 // ─── Image fallback ───
 window.addEventListener('error', e => {
     if (e.target.tagName?.toLowerCase() === 'img') {
@@ -48,8 +51,8 @@ window.closeFoodPanel = () => document.getElementById('foodPanel').classList.rem
 window.openDetailModal = (id) => {
     const r = state.listings.find(l => l.id === id);
     if (!r) return;
-    window._currentListing = r; // store for share button
-    _openDetailModal(r);
+    window._currentListing = r;
+    window._openDetailModal(r);
 };
 
 window._openDetailModal = (r) => {
@@ -57,10 +60,25 @@ window._openDetailModal = (r) => {
     const content = document.getElementById('detail-content');
     const footer  = document.getElementById('detail-footer');
 
-    const daysAgo   = r.createdAt ? Math.floor((Date.now() - r.createdAt) / 86400000) : 0;
-    const postedTxt = daysAgo === 0 ? 'Posted today' : `Posted ${daysAgo}d ago`;
+    // ── Time display ──
+    const daysAgo = r.createdAt ? Math.floor((Date.now() - r.createdAt) / 86400000) : null;
+    let postedTxt = 'Listing date unknown';
+    if (daysAgo !== null) {
+        if (daysAgo === 0) postedTxt = 'Updated today';
+        else if (daysAgo === 1) postedTxt = 'Updated yesterday';
+        else if (daysAgo < 30) postedTxt = `Updated ${daysAgo}d ago`;
+        else {
+            const d = new Date(r.createdAt);
+            postedTxt = `Updated ${d.toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })}`;
+        }
+    }
 
-    // ── 5-6 fallback photos pool ──
+    // Verified badge
+    const verifiedBadge = r.verified
+        ? `<span style="display:inline-flex;align-items:center;gap:4px;background:rgba(34,197,94,0.12);color:#22c55e;border:1px solid rgba(34,197,94,0.35);font-size:11px;font-weight:700;padding:3px 9px;border-radius:100px;margin-left:8px;vertical-align:middle;letter-spacing:0.03em;">✅ Verified</span>`
+        : `<span style="display:inline-flex;align-items:center;gap:4px;background:rgba(244,197,66,0.1);color:#f4c542;border:1px solid rgba(244,197,66,0.3);font-size:11px;font-weight:700;padding:3px 9px;border-radius:100px;margin-left:8px;vertical-align:middle;letter-spacing:0.03em;">⏳ Pending</span>`;
+
+    // ── Fallback photos ──
     const PHOTO_POOL = [
         'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80',
         'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80',
@@ -82,67 +100,103 @@ window._openDetailModal = (r) => {
     const bahColor = r.price <= 15000 ? '#22c55e' : r.price <= 30000 ? '#f4c542' : '#f43f5e';
     const bahText  = r.price <= 15000 ? '🟢 Within OR Limit' : r.price <= 30000 ? '🟡 Within JCO Limit' : '🔴 Officer BAH';
 
+    // Small overlay button style (reused)
+    const oBtn = `position:absolute;border:none;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:15px;transition:transform 0.18s,background 0.18s;`;
+
     content.innerHTML = `
     <div class="car-wrap">
-    <div class="car" onscroll="window.updateCarousel(this,${images.length})">${photosHtml}</div>
-    <div class="car-badge" id="c-badge">1/${images.length} 📷</div>
-    <div class="car-dots">${dotsHtml}</div>
-    <button onclick="window.closeDetailModal()" style="position:absolute;top:10px;left:10px;background:rgba(0,0,0,.6);border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px;backdrop-filter:blur(4px);">✕</button>
+      <div class="car" onscroll="window.updateCarousel(this,${images.length})">${photosHtml}</div>
+      <div class="car-badge" id="c-badge">1/${images.length} 📷</div>
+      <div class="car-dots">${dotsHtml}</div>
+
+      <!-- ✕ Close — top left -->
+      <button onclick="window.closeDetailModal()"
+        style="${oBtn}background:rgba(0,0,0,0.6);color:#fff;top:10px;left:10px;"
+        title="Close" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">✕</button>
+
+      <!-- Share — top right -->
+      <button onclick="window.shareListing(window._currentListing)"
+        style="${oBtn}background:rgba(56,189,248,0.75);color:#fff;top:10px;right:52px;"
+        title="Share" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">🔗</button>
+
+      <!-- Report — top right -->
+      <button onclick="window.openReportModal('${r.id}')"
+        style="${oBtn}background:rgba(244,63,94,0.75);color:#fff;top:10px;right:10px;"
+        title="Report" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">🚩</button>
     </div>
+
     <div style="padding:14px 16px 0;">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
-    <h2 style="font-size:20px;line-height:1.2;">${r.name}</h2>
-    <h2 style="font-size:20px;color:var(--gold);white-space:nowrap;margin-left:10px;">₹${r.price.toLocaleString()}</h2>
-    </div>
-    <p style="color:var(--muted);font-size:13px;margin-bottom:10px;">📍 ${r.area}, ${r.city} &nbsp;·&nbsp; <span style="color:var(--muted2);font-size:12px;">${postedTxt}</span></p>
-    <div class="specs">
-    <div class="spc"><strong>${r.type?.toUpperCase() || '—'}</strong>Type</div>
-    <div class="spc"><strong>${r.sqft || '~900'}</strong>Sq.Ft</div>
-    <div class="spc"><strong>${r.furnishing || r.furnish || 'Semi'}</strong>Furnish</div>
-    <div class="spc"><strong>Floor ${r.floor || 1}</strong>Level</div>
-    </div>
-    <div style="margin-bottom:12px;">
-    <span class="tag" style="font-size:12px;padding:5px 12px;border-color:${bahColor};color:${bahColor};">${bahText}</span>
-    ${r.available ? `<span class="tag" style="margin-left:6px;font-size:12px;padding:5px 12px;">📅 Available: ${r.available}</span>` : ''}
-    </div>
+      <!-- Name + Verified badge + Price -->
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;gap:8px;">
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px;">
+            <h2 style="font-size:19px;line-height:1.25;margin:0;">${r.name}</h2>
+            ${verifiedBadge}
+          </div>
+        </div>
+        <div style="text-align:right;flex-shrink:0;">
+          <div style="font-size:20px;font-weight:800;color:var(--gold);line-height:1;">₹${r.price.toLocaleString()}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px;">/month</div>
+        </div>
+      </div>
 
-    <!-- ✅ Nearby Food Button — always visible -->
-    <button onclick="window.openFoodPanel('${r.city}')"
-    style="width:100%;background:rgba(255,153,51,0.08);color:var(--accent);border:1px solid rgba(255,153,51,0.3);padding:12px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;font-family:'Outfit',sans-serif;margin-bottom:10px;transition:all 0.2s;"
-    onmouseover="this.style.background='rgba(255,153,51,0.15)'"
-    onmouseout="this.style.background='rgba(255,153,51,0.08)'">
-    🍽️ Nearby Food & Hotels in ${r.city}
-    </button>
+      <!-- Location + Last Updated -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:4px;">
+        <div style="color:var(--muted);font-size:13px;">📍 ${r.area}, ${r.city}</div>
+        <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted2);background:var(--bg);border:1px solid var(--border);padding:3px 10px;border-radius:100px;">
+          <span style="width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block;flex-shrink:0;animation:livepulse 2s infinite;"></span>
+          ${postedTxt}
+        </div>
+      </div>
 
-    <!-- ✅ Share Button -->
-    <button onclick="window.shareListing(window._currentListing)"
-    style="width:100%;background:rgba(56,189,248,0.08);color:#38bdf8;border:1px solid rgba(56,189,248,0.25);padding:11px;border-radius:10px;font-weight:600;font-size:13px;cursor:pointer;font-family:'Outfit',sans-serif;margin-bottom:10px;transition:all 0.2s;"
-    onmouseover="this.style.background='rgba(56,189,248,0.15)'"
-    onmouseout="this.style.background='rgba(56,189,248,0.08)'">
-    🔗 Share this Listing
-    </button>
+      <!-- Specs grid -->
+      <div class="specs">
+        <div class="spc"><strong>${r.type?.toUpperCase() || '—'}</strong>Type</div>
+        <div class="spc"><strong>${r.sqft || '~900'}</strong>Sq.Ft</div>
+        <div class="spc"><strong>${r.furnishing || r.furnish || 'Semi'}</strong>Furnish</div>
+        <div class="spc"><strong>Floor ${r.floor || 1}</strong>Level</div>
+      </div>
 
-    <!-- ✅ Report button — always visible -->
-    <button onclick="window.openReportModal('${r.id}')"
-    style="width:100%;background:transparent;border:1px solid rgba(244,63,94,0.2);color:var(--red);padding:9px;border-radius:8px;cursor:pointer;font-size:12px;font-family:'Outfit',sans-serif;margin-bottom:4px;transition:all 0.2s;"
-    onmouseover="this.style.borderColor='rgba(244,63,94,0.5)'"
-    onmouseout="this.style.borderColor='rgba(244,63,94,0.2)'">
-    🚩 Report this Listing
-    </button>
+      <!-- BAH + Available tags -->
+      <div style="margin-bottom:12px;display:flex;flex-wrap:wrap;gap:6px;">
+        <span class="tag" style="font-size:12px;padding:5px 12px;border-color:${bahColor};color:${bahColor};">${bahText}</span>
+        ${r.available ? `<span class="tag" style="font-size:12px;padding:5px 12px;">📅 Available: ${r.available}</span>` : ''}
+      </div>
+
+      <!-- Food nearby button -->
+      <button onclick="window.openFoodPanel('${r.city}')"
+        style="width:100%;background:rgba(255,153,51,0.08);color:var(--accent);border:1px solid rgba(255,153,51,0.3);padding:11px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;font-family:'Outfit',sans-serif;margin-bottom:8px;transition:all 0.2s;"
+        onmouseover="this.style.background='rgba(255,153,51,0.15)'"
+        onmouseout="this.style.background='rgba(255,153,51,0.08)'">
+        🍽️ Nearby Food &amp; Hotels in ${r.city}
+      </button>
     </div>
     `;
 
+    // ── Footer: Contact buttons ──
     if (!auth.currentUser) {
-        footer.innerHTML = `<button onclick="window.closeModals();window.openPostModal();" style="width:100%;background:var(--accent);color:#000;padding:14px;border:none;border-radius:8px;font-weight:800;font-size:15px;cursor:pointer;font-family:'Outfit',sans-serif;">🔒 Login to View Contact</button>
+        footer.innerHTML = `
+        <button onclick="window.closeModals();window.openPostModal();"
+          style="width:100%;background:var(--accent);color:#000;padding:14px;border:none;border-radius:10px;font-weight:800;font-size:15px;cursor:pointer;font-family:'Outfit',sans-serif;">
+          🔒 Login to View Contact
+        </button>
         <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:8px;">OTP login — takes 30 seconds</p>`;
     } else if (r.whatsapp) {
         footer.innerHTML = `
-        <a href="https://wa.me/91${r.whatsapp}?text=Hi, I saw your listing on Faujiadda — ${encodeURIComponent(r.name)}. Is it still available?" target="_blank"
-        style="display:flex;align-items:center;justify-content:center;gap:8px;background:#25D366;color:#000;padding:14px;border-radius:8px;text-decoration:none;font-weight:800;font-size:15px;">
-        💬 Chat on WhatsApp
-        </a>`;
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <a href="tel:+91${r.whatsapp}"
+            style="display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(56,189,248,0.12);color:#38bdf8;border:1px solid rgba(56,189,248,0.3);padding:13px;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px;transition:background 0.2s;"
+            onmouseover="this.style.background='rgba(56,189,248,0.22)'"
+            onmouseout="this.style.background='rgba(56,189,248,0.12)'">
+            📞 Call Owner
+          </a>
+          <a href="https://wa.me/91${r.whatsapp}?text=Hi%2C+I+saw+your+listing+on+Faujiadda+%E2%80%94+${encodeURIComponent(r.name)}%2E+Is+it+still+available%3F" target="_blank"
+            style="display:flex;align-items:center;justify-content:center;gap:8px;background:#25D366;color:#000;padding:13px;border-radius:10px;text-decoration:none;font-weight:800;font-size:14px;">
+            💬 WhatsApp
+          </a>
+        </div>`;
     } else {
-        footer.innerHTML = `<button disabled style="width:100%;background:#333;color:#666;padding:14px;border:none;border-radius:8px;font-weight:700;font-size:15px;">Contact Unavailable</button>`;
+        footer.innerHTML = `<button disabled style="width:100%;background:#333;color:#666;padding:14px;border:none;border-radius:10px;font-weight:700;font-size:15px;">Contact Unavailable</button>`;
     }
 
     modal.style.display = 'block';
@@ -178,34 +232,70 @@ window.submitReport = async () => {
 
 
 window.sendOTP = async () => {
-    const phoneInput = document.getElementById('auth_phone').value.trim();
+    let phoneInput = document.getElementById('auth_phone').value.trim();
     if (!phoneInput) { window.showToast?.('Enter your phone number', 'err'); return; }
+
+    // Auto-format: add +91 if bare 10-digit Indian number
+    if (/^[6-9]\d{9}$/.test(phoneInput)) {
+        phoneInput = '+91' + phoneInput;
+        document.getElementById('auth_phone').value = phoneInput;
+    } else if (/^0\d{10}$/.test(phoneInput)) {
+        phoneInput = '+91' + phoneInput.slice(1);
+        document.getElementById('auth_phone').value = phoneInput;
+    }
+
+    if (!/^\+[1-9]\d{9,14}$/.test(phoneInput)) {
+        window.showToast?.('Enter a valid phone number (e.g. +91XXXXXXXXXX)', 'err');
+        return;
+    }
+
+    // Ensure reCAPTCHA is ready
+    if (!window.recaptchaVerifier) {
+        window.initRecaptcha?.();
+        await new Promise(r => setTimeout(r, 800));
+    }
+    if (!window.recaptchaVerifier) {
+        window.showToast?.('reCAPTCHA not ready. Please refresh and try again.', 'err');
+        return;
+    }
+
     const btn = document.getElementById('btn-send-otp');
     btn.textContent = 'Sending... ⏳'; btn.disabled = true;
     try {
         const result = await signInWithPhoneNumber(auth, phoneInput, window.recaptchaVerifier);
         window.confirmationResult = result;
         document.getElementById('otp-section').style.display = 'block';
+        document.getElementById('auth_otp').focus();
         window.showToast?.('OTP sent! Check your SMS 📱', 'ok');
+        btn.textContent = 'Resend OTP 💬'; btn.disabled = false;
     } catch(e) {
-        window.showToast?.(e.message, 'err');
+        // Reset reCAPTCHA on error so user can retry
+        try { window.recaptchaVerifier.clear(); } catch(_) {}
+        window.recaptchaVerifier = null;
+        window.initRecaptcha?.();
+        window.showToast?.('Error: ' + (e.message || 'Could not send OTP'), 'err');
+        btn.textContent = 'Send OTP 💬'; btn.disabled = false;
     }
-    btn.textContent = 'Resend OTP 💬'; btn.disabled = false;
 };
 
 window.verifyOTP = async () => {
     const code = document.getElementById('auth_otp').value.trim();
-    if (!code) { window.showToast?.('Enter the OTP', 'err'); return; }
+    if (code.length < 6) { window.showToast?.('Enter the 6-digit OTP', 'err'); return; }
+    if (!window.confirmationResult) { window.showToast?.('Please send OTP first', 'err'); return; }
+    const verifyBtn = document.querySelector('#otp-section .bp');
+    if (verifyBtn) { verifyBtn.textContent = 'Verifying... ⏳'; verifyBtn.disabled = true; }
     try {
         const result = await window.confirmationResult.confirm(code);
         try { document.getElementById('f_phone').value = result.user.phoneNumber.replace('+91',''); } catch(e){}
         document.getElementById('step-auth').style.display = 'none';
         document.getElementById('step1').style.display = 'block';
         document.getElementById('stepper').style.display = 'flex';
-        // setStep(1) defined in app.html inline script
+        // Update stepper
+        if (typeof setStep === 'function') setStep(1);
         window.showToast?.('Verified! ✅ Fill in your listing details.', 'ok');
     } catch(e) {
-        window.showToast?.('Invalid OTP. Try again.', 'err');
+        window.showToast?.('Invalid OTP. Please try again.', 'err');
+        if (verifyBtn) { verifyBtn.textContent = 'Verify & Continue ✅'; verifyBtn.disabled = false; }
     }
 };
 
@@ -386,14 +476,23 @@ window.shareListing = (r) => {
 
 // ─── Recaptcha init (safe) ───
 window.initRecaptcha = () => {
-    if (!window.recaptchaVerifier) {
-        try {
-            window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-                size: 'normal',
-                callback: () => {},
-                                                             'expired-callback': () => { window.recaptchaVerifier = null; }
-            });
-            window.recaptchaVerifier.render();
-        } catch(e) { console.warn('reCaptcha init failed:', e.message); }
+    // Clear any broken existing verifier
+    if (window.recaptchaVerifier) {
+        try { window.recaptchaVerifier.clear(); } catch(_) {}
+        window.recaptchaVerifier = null;
     }
+    const container = document.getElementById('recaptcha-container');
+    if (!container) return;
+    container.innerHTML = ''; // Clear stale widget
+    try {
+        window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+            size: 'normal',
+            callback: () => {},
+            'expired-callback': () => {
+                window.recaptchaVerifier = null;
+                window.initRecaptcha();
+            }
+        });
+        window.recaptchaVerifier.render();
+    } catch(e) { console.warn('reCaptcha init failed:', e.message); }
 };

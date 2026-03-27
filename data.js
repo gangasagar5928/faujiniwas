@@ -27,10 +27,223 @@ export const SSB_DORMS = [
 ];
 
 export const FOOD_BY_CITY = {
-    'Prayagraj': [{ name: 'El Chico Restaurant', type: 'North Indian', budget: '₹₹', note: 'Great thali, AC seating' }, { name: 'Sharma Dhaba', type: 'Veg Dhaba', budget: '₹', note: 'Under ₹100 full meal' }],
-    'Bhopal': [{ name: 'Under The Mango Tree', type: 'Multi-cuisine', budget: '₹₹₹', note: 'Nice ambience' }, { name: 'Bapu Ki Kutia', type: 'Thali', budget: '₹', note: 'Unlimited thali ₹120' }],
-    'Kapurthala': [{ name: 'Punjabi Dhaba GT Road', type: 'Punjabi', budget: '₹', note: 'Best butter chicken' }, { name: 'Amritsari Kulcha Corner', type: 'Street Food', budget: '₹', note: '₹60 kulcha-chole' }],
-    'Bengaluru': [{ name: 'MTR Restaurant', type: 'South Indian', budget: '₹₹', note: 'Best idli-vada' }, { name: "Brahmin's Coffee Bar", type: 'Breakfast', budget: '₹', note: '₹30 idli-chutney' }],
-    'Mysuru': [{ name: 'Hotel RRR', type: 'South Indian Meals', budget: '₹', note: 'Unlimited meals ₹100' }, { name: 'Vinayaka Mylari', type: 'Breakfast', budget: '₹', note: 'Famous dosa' }],
-    'Pune': [{ name: 'Vaishali Restaurant', type: 'South Indian', budget: '₹₹', note: 'Iconic FC Road' }, { name: 'Cafe Goodluck', type: 'Irani Cafe', budget: '₹', note: 'Bun maska ₹40' }]
+    // Allahabad / Prayagraj
+    'Prayagraj': [
+        { name: 'El Chico Restaurant', type: 'North Indian', budget: '₹₹', note: 'Great thali, AC seating' },
+        { name: 'Sharma Dhaba', type: 'Veg Dhaba', budget: '₹', note: 'Under ₹100 full meal' },
+        { name: 'Kanha Restaurant', type: 'North Indian', budget: '₹', note: 'Famous kachori-sabzi' },
+        { name: 'Kabab-E-Grill', type: 'Mughlai', budget: '₹₹', note: 'Best seekh kabab' }
+    ],
+    // Bhopal
+    'Bhopal': [
+        { name: 'Under The Mango Tree', type: 'Multi-cuisine', budget: '₹₹₹', note: 'Nice ambience near VIP Rd' },
+        { name: 'Bapu Ki Kutia', type: 'Thali', budget: '₹', note: 'Unlimited thali ₹120' },
+        { name: 'Manohar Dairy & Restaurant', type: 'Sweets & Snacks', budget: '₹', note: 'Iconic since 1940' },
+        { name: 'Wind & Waves', type: 'Lakeside Cafe', budget: '₹₹', note: 'Great view of Upper Lake' }
+    ],
+    // Kapurthala
+    'Kapurthala': [
+        { name: 'Punjabi Dhaba GT Road', type: 'Punjabi', budget: '₹', note: 'Best butter chicken' },
+        { name: 'Amritsari Kulcha Corner', type: 'Street Food', budget: '₹', note: '₹60 kulcha-chole' },
+        { name: 'Hotel Bilga Highway', type: 'North Indian', budget: '₹', note: 'Full dal-sabzi meal ₹90' },
+        { name: 'Surya Sweets', type: 'Sweets & Snacks', budget: '₹', note: 'Fresh jalebis & lassi' }
+    ],
+    // Bangalore
+    'Bengaluru': [
+        { name: 'MTR Restaurant', type: 'South Indian', budget: '₹₹', note: 'Best idli-vada since 1924' },
+        { name: "Brahmin's Coffee Bar", type: 'Breakfast', budget: '₹', note: '₹30 idli-chutney, legendary' },
+        { name: 'Vidyarthi Bhavan', type: 'South Indian', budget: '₹', note: 'Famous masala dosa, Gandhi Bazaar' },
+        { name: 'Sri Sagar (CTR)', type: 'South Indian', budget: '₹', note: 'Butter benne masala dosa' }
+    ],
+    'Bangalore': [
+        { name: 'MTR Restaurant', type: 'South Indian', budget: '₹₹', note: 'Best idli-vada since 1924' },
+        { name: "Brahmin's Coffee Bar", type: 'Breakfast', budget: '₹', note: '₹30 idli-chutney, legendary' },
+        { name: 'Vidyarthi Bhavan', type: 'South Indian', budget: '₹', note: 'Famous masala dosa' },
+        { name: 'Shivaji Military Hotel', type: 'Meals', budget: '₹', note: 'Full meals ₹80' }
+    ],
+    // Mysore
+    'Mysuru': [
+        { name: 'Hotel RRR', type: 'South Indian Meals', budget: '₹', note: 'Unlimited meals ₹100' },
+        { name: 'Vinayaka Mylari', type: 'Breakfast', budget: '₹', note: 'Famous soft dosa' },
+        { name: 'Hanumanthu Military Hotel', type: 'Meals', budget: '₹', note: 'Rice meals ₹60' },
+        { name: 'Café Coffee Day (Sayyaji Rao)', type: 'Cafe', budget: '₹₹', note: 'Good for group meets' }
+    ],
+    'Mysore': [
+        { name: 'Hotel RRR', type: 'South Indian Meals', budget: '₹', note: 'Unlimited meals ₹100' },
+        { name: 'Vinayaka Mylari', type: 'Breakfast', budget: '₹', note: 'Famous soft dosa' }
+    ],
+    // Pune
+    'Pune': [
+        { name: 'Vaishali Restaurant', type: 'South Indian', budget: '₹₹', note: 'Iconic FC Road' },
+        { name: 'Cafe Goodluck', type: 'Irani Cafe', budget: '₹', note: 'Bun maska ₹40' },
+        { name: 'Goodluck Dhaba', type: 'North Indian', budget: '₹', note: 'Near Camp, full meal ₹120' },
+        { name: 'Kayani Bakery', type: 'Bakery', budget: '₹', note: 'Famous Shrewsbury biscuits' }
+    ],
+    // Dehradun
+    'Dehradun': [
+        { name: 'Ellora Restaurant', type: 'North Indian / Chinese', budget: '₹₹', note: 'Rajpur Road classic' },
+        { name: 'Hotel Osho Dhaba', type: 'Dhaba', budget: '₹', note: 'Full meal ₹100, open all day' },
+        { name: 'Sikkimese Cafe', type: 'Tibetan / Momos', budget: '₹', note: 'Best momos ₹60/plate' },
+        { name: 'Diwan Chand Pakodi Wala', type: 'Street Food', budget: '₹', note: 'Iconic since 1936' }
+    ],
+    // Delhi / New Delhi
+    'Delhi': [
+        { name: 'Karim\'s Jama Masjid', type: 'Mughlai', budget: '₹₹', note: 'Legendary since 1913' },
+        { name: 'Paranthe Wali Gali', type: 'Street Food', budget: '₹', note: 'Chandni Chowk, ₹50/paratha' },
+        { name: 'Sagar Ratna', type: 'South Indian', budget: '₹₹', note: 'All over Delhi, reliable' },
+        { name: 'Haldiram\'s Connaught Place', type: 'Veg / Sweets', budget: '₹', note: 'Thali ₹150' }
+    ],
+    'New Delhi': [
+        { name: 'Karim\'s Jama Masjid', type: 'Mughlai', budget: '₹₹', note: 'Legendary since 1913' },
+        { name: 'Paranthe Wali Gali', type: 'Street Food', budget: '₹', note: '₹50/paratha, Chandni Chowk' },
+        { name: 'Sagar Ratna', type: 'South Indian', budget: '₹₹', note: 'Reliable chain, AC seating' },
+        { name: 'Haldiram\'s CP', type: 'Veg / Sweets', budget: '₹', note: 'Thali ₹150' }
+    ],
+    // Chandigarh
+    'Chandigarh': [
+        { name: 'Pal Dhaba Sector 28', type: 'Punjabi', budget: '₹', note: 'Famous dal makhani, late night' },
+        { name: 'Gopal\'s Chinese', type: 'Chinese', budget: '₹', note: 'Sector 22, best Manchurian' },
+        { name: 'Sindhi Sweets Sector 17', type: 'Sweets & Chaat', budget: '₹', note: 'Raj kachori & lassi' },
+        { name: 'The Ghazal Restaurant', type: 'Multi-cuisine', budget: '₹₹', note: 'Good for groups' }
+    ],
+    // Chennai
+    'Chennai': [
+        { name: 'Saravana Bhavan', type: 'South Indian', budget: '₹', note: 'Reliable across Chennai' },
+        { name: 'Murugan Idli Shop', type: 'Breakfast', budget: '₹', note: 'Softest idli in Chennai' },
+        { name: 'Ratna Cafe', type: 'South Indian', budget: '₹', note: 'Sambar rice, legendary' },
+        { name: 'Hotel Palmgrove', type: 'Meals', budget: '₹', note: 'AC meals ₹180' }
+    ],
+    // Hyderabad / Secunderabad
+    'Hyderabad': [
+        { name: 'Paradise Biryani', type: 'Biryani', budget: '₹₹', note: 'Iconic Hyderabadi biryani' },
+        { name: 'Café Bahar', type: 'South Indian / Biryani', budget: '₹', note: 'Best Irani chai & Osmania biscuit' },
+        { name: 'Govind Dosa Camp Secunderabad', type: 'South Indian', budget: '₹', note: 'Quick & cheap dosas' },
+        { name: 'Nimra Café', type: 'Irani/Tea', budget: '₹', note: 'Near Charminar, Chai + biscuit ₹20' }
+    ],
+    'Secunderabad': [
+        { name: 'Paradise Biryani', type: 'Biryani', budget: '₹₹', note: 'Iconic Hyderabadi biryani' },
+        { name: 'Café Bahar', type: 'South Indian', budget: '₹', note: 'Best Irani chai' },
+        { name: 'Ram Babu Mess', type: 'Andhra Meals', budget: '₹', note: 'Full Andhra thali ₹80' },
+        { name: 'Minerva Coffee Shop', type: 'North/South Indian', budget: '₹', note: 'Near railway station' }
+    ],
+    // Kolkata
+    'Kolkata': [
+        { name: 'Arsalan Biryani', type: 'Biryani', budget: '₹₹', note: 'Best Kolkata biryani with aloo' },
+        { name: 'Peter Cat', type: 'Continental / Mughlai', budget: '₹₹₹', note: 'Iconic Park Street' },
+        { name: 'Anadi Cabin', type: 'Bengali / Mughlai', budget: '₹', note: 'Kathi roll birthplace' },
+        { name: 'Sharma Dhaba Khidirpur', type: 'North Indian', budget: '₹', note: 'Near military quarters' }
+    ],
+    // Lucknow
+    'Lucknow': [
+        { name: 'Tunday Kababi', type: 'Mughlai', budget: '₹', note: 'World-famous galouti kebab' },
+        { name: 'Dastarkhwan', type: 'Awadhi', budget: '₹₹', note: 'Dum biryani & nihari' },
+        { name: 'Shirin Restaurant', type: 'Veg / Chaat', budget: '₹', note: 'Tokri chaat & sweets' },
+        { name: 'Sharma Ji Ki Chai Gomti Nagar', type: 'Tea & Snacks', budget: '₹', note: 'Masala chai ₹15' }
+    ],
+    // Jaipur
+    'Jaipur': [
+        { name: 'Laxmi Misthan Bhandar (LMB)', type: 'Rajasthani', budget: '₹₹', note: 'Dal baati churma, iconic' },
+        { name: 'Chokhi Dhani Village Dhaba', type: 'Rajasthani Thali', budget: '₹₹', note: 'Cultural experience' },
+        { name: 'Rawat Mishthan Bhandar', type: 'Sweets & Kachori', budget: '₹', note: 'Pyaaz kachori ₹20' },
+        { name: 'Hotel Shivam Ajmer Road', type: 'Dal Baati', budget: '₹', note: 'Near military area' }
+    ],
+    // Jabalpur
+    'Jabalpur': [
+        { name: 'Quality Restaurant', type: 'North Indian', budget: '₹₹', note: 'Near Cantt, AC' },
+        { name: 'Naulakha Restaurant', type: 'Veg North Indian', budget: '₹', note: 'Full thali ₹100' },
+        { name: 'Shree Krishna Dhaba', type: 'Dhaba', budget: '₹', note: 'Open 24 hrs near station' },
+        { name: 'Bade Mian ka Dhaba', type: 'North Indian', budget: '₹', note: 'Army cantt area' }
+    ],
+    // Ambala
+    'Ambala': [
+        { name: 'Haveli Restaurant NH1', type: 'Punjabi', budget: '₹', note: 'Truck driver style, huge portions' },
+        { name: 'Bombay Sweets Ambala City', type: 'Sweets / Snacks', budget: '₹', note: 'Famous milk cake' },
+        { name: 'Highway Dhaba Ambala', type: 'Dhaba', budget: '₹', note: 'Dal-roti ₹80' },
+        { name: 'Hotel Kwality', type: 'Multi-cuisine', budget: '₹₹', note: 'Near Cantonment' }
+    ],
+    // Meerut
+    'Meerut': [
+        { name: 'Sukhdev Dhaba Muzzaffarnagar Highway', type: 'North Indian', budget: '₹', note: 'Legendary truck stop dhaba' },
+        { name: 'Giani Ice Cream & Snacks', type: 'Snacks & Sweets', budget: '₹', note: 'Kachori & rabri' },
+        { name: 'Hotel Sindhi Restaurant', type: 'North Indian', budget: '₹', note: 'Near Cantt' },
+        { name: 'Shiva Dhaba', type: 'Dhaba', budget: '₹', note: 'Dal makhani & roti ₹70' }
+    ],
+    // Ahmedabad
+    'Ahmedabad': [
+        { name: 'Gordhan Thal', type: 'Gujarati Thali', budget: '₹₹', note: 'Unlimited Gujarati thali' },
+        { name: 'Agashiye', type: 'Gujarati', budget: '₹₹₹', note: 'Rooftop thali, iconic' },
+        { name: 'Manek Chowk Street Food', type: 'Street Food', budget: '₹', note: 'Khichdi, lassi, pav bhaji' },
+        { name: 'Shree Vijay Farsan Mart', type: 'Farsan / Snacks', budget: '₹', note: 'Best fafda-jalebi' }
+    ],
+    // Nagpur
+    'Nagpur': [
+        { name: 'Zabardast Chicken', type: 'Chicken Specialties', budget: '₹₹', note: 'Famous dry chicken' },
+        { name: 'Hotel Kwality', type: 'Multi-cuisine', budget: '₹₹', note: 'Central Ave landmark' },
+        { name: 'Bhonsle Military Hotel', type: 'Non-veg Meals', budget: '₹', note: 'Full meal ₹90' },
+        { name: 'Haldiram\'s Nagpur', type: 'Veg / Sweets', budget: '₹', note: 'Best in Nagpur for veg' }
+    ],
+    // Pathankot
+    'Pathankot': [
+        { name: 'Aman Dhaba', type: 'Punjabi', budget: '₹', note: 'Near railway station' },
+        { name: 'Rajdhani Dhaba NH44', type: 'North Indian', budget: '₹', note: 'Truckers dhaba, huge portions' },
+        { name: 'Giani Di Hatti', type: 'Sweets & Kulfi', budget: '₹', note: 'Famous kulfi-falooda' },
+        { name: 'Hotel Archana Residency', type: 'Multi-cuisine', budget: '₹₹', note: 'AC dining near Cantt' }
+    ],
+    // Shimla
+    'Shimla': [
+        { name: 'Ashiana & Goofa Restaurant', type: 'Multi-cuisine', budget: '₹₹', note: 'Ridge area, great views' },
+        { name: 'Baljees Restaurant', type: 'North Indian / Snacks', budget: '₹', note: 'Since 1944, Himachali food' },
+        { name: 'Café Sol', type: 'Cafe', budget: '₹₹', note: 'Cozy, pasta & coffee' },
+        { name: 'Victory Tea House', type: 'Tibetan', budget: '₹', note: 'Thukpa & momos ₹80' }
+    ],
+    // Kochi
+    'Kochi': [
+        { name: 'Dhe Puttu', type: 'Kerala Style', budget: '₹', note: 'Best puttu & kadala curry ₹80' },
+        { name: 'Pai Brothers', type: 'Mess-style Meals', budget: '₹', note: 'Rice meals ₹70' },
+        { name: 'Hotel Abad', type: 'Kerala / Chinese', budget: '₹₹', note: 'Near Navy area' },
+        { name: 'Kayees Rahmathulla Hotel', type: 'Biryani / Kerala', budget: '₹₹', note: 'Thalassery biryani' }
+    ],
+    // Trivandrum
+    'Thiruvananthapuram': [
+        { name: 'Hotel Ariya Nivaas', type: 'Kerala Meals', budget: '₹', note: 'Sadhya-style meals ₹90' },
+        { name: 'Sri Padmanabha Swamy Mess', type: 'Mess', budget: '₹', note: 'Near fort area, full meals' },
+        { name: 'Zam Zam Hotel', type: 'Biryani', budget: '₹₹', note: 'Malabar biryani' },
+        { name: 'Indian Coffee House', type: 'Breakfast / Coffee', budget: '₹', note: 'Iconic since 1958' }
+    ],
+    'Trivandrum': [
+        { name: 'Hotel Ariya Nivaas', type: 'Kerala Meals', budget: '₹', note: 'Sadhya-style meals ₹90' },
+        { name: 'Indian Coffee House', type: 'Breakfast / Coffee', budget: '₹', note: 'Iconic since 1958' }
+    ],
+    // Guwahati
+    'Guwahati': [
+        { name: 'Paradise Restaurant', type: 'Assamese / North Indian', budget: '₹₹', note: 'Near Pan Bazar' },
+        { name: 'Panbazar Fish Market Dhaba', type: 'Assamese Fish', budget: '₹', note: 'Fresh rohu curry ₹100' },
+        { name: 'Hotel Nandan', type: 'Multi-cuisine', budget: '₹₹', note: 'Good for non-veg' },
+        { name: 'Dynasty Restaurant', type: 'Chinese / Assamese', budget: '₹₹', note: 'Near Cantonment' }
+    ],
+    // Ranchi
+    'Ranchi': [
+        { name: 'Kaveri Restaurant', type: 'South Indian', budget: '₹', note: 'Dosa-idli, popular with officers' },
+        { name: 'Hotel Capitol Hill', type: 'Multi-cuisine', budget: '₹₹', note: 'Near Cantt' },
+        { name: 'Tandoor Express', type: 'North Indian', budget: '₹', note: 'Full meals ₹100' },
+        { name: 'Rolls & More', type: 'Fast Food', budget: '₹', note: 'Kathi rolls ₹60' }
+    ],
+    // Jodhpur
+    'Jodhpur': [
+        { name: 'Gypsy Restaurant', type: 'Rajasthani', budget: '₹₹', note: 'Dal baati churma, rooftop' },
+        { name: 'Janta Sweet Home', type: 'Sweets / Snacks', budget: '₹', note: 'Mirchi bada ₹15' },
+        { name: 'Akshaya Dhaba', type: 'Dhaba', budget: '₹', note: 'Near Air Force Station' },
+        { name: 'Omelette Shop Nai Sarak', type: 'Egg dishes', budget: '₹', note: '₹30 omelette, famous' }
+    ],
+    // Belgaum / Belagavi
+    'Belagavi': [
+        { name: 'Hotel Sanman', type: 'North Karnataka Meals', budget: '₹', note: 'Jolada roti + ennegai ₹80' },
+        { name: 'Chapata Shahi Biryani', type: 'Biryani', budget: '₹₹', note: 'Popular near Cantt' },
+        { name: 'Sri Ram Hotel', type: 'South Indian', budget: '₹', note: 'Dosa & upma ₹50' },
+        { name: 'Kamat Upahara Darshini', type: 'South Indian', budget: '₹', note: 'Bisi bele bath ₹60' }
+    ],
+    'Belgaum': [
+        { name: 'Hotel Sanman', type: 'North Karnataka Meals', budget: '₹', note: 'Jolada roti ₹80' },
+        { name: 'Chapata Shahi Biryani', type: 'Biryani', budget: '₹₹', note: 'Popular near Cantt' }
+    ],
 };

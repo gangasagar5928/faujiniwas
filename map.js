@@ -132,11 +132,14 @@ export function render() {
         const card = document.createElement('div');
         card.className = 'lc';
         card.id = 'card-' + r.id;
+        const verifiedBadge = r.verified
+            ? `<span style="font-size:10px;font-weight:700;color:#22c55e;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);padding:2px 7px;border-radius:100px;vertical-align:middle;">✅</span>`
+            : '';
         card.innerHTML = `
         <div class="lc-thumb"><img src="${thumb}" loading="lazy"></div>
         <div class="lc-info">
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-        <strong style="font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px;">${r.name}</strong>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;">
+        <strong style="font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px;">${r.name} ${verifiedBadge}</strong>
         <b style="color:var(--gold);white-space:nowrap;font-size:14px;">₹${r.price.toLocaleString()}</b>
         </div>
         <small style="color:var(--muted);display:block;margin-top:2px;">📍 ${r.area}, ${r.city}</small>

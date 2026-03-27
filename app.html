@@ -614,16 +614,27 @@
         // Post modal
         window.openPostModal = () => {
             document.getElementById('postModal').style.display = 'block';
+            // Reset OTP section state
+            document.getElementById('otp-section').style.display = 'none';
+            const otpInput = document.getElementById('auth_otp');
+            if (otpInput) otpInput.value = '';
+            const sendBtn = document.getElementById('btn-send-otp');
+            if (sendBtn) { sendBtn.textContent = 'Send OTP 💬'; sendBtn.disabled = false; }
             setTimeout(() => {
-                const authed = typeof auth !== 'undefined' && auth.currentUser;
+                // Check auth via firebase auth object exposed by ui.js module
+                const fbAuth = window._fbAuth || null;
+                const authed = fbAuth && fbAuth.currentUser;
                 document.getElementById('stepper').style.display = authed ? 'flex' : 'none';
                 document.getElementById('step-auth').style.display = authed ? 'none' : 'block';
                 document.getElementById('step1').style.display = authed ? 'block' : 'none';
-                if(authed){ setStep(1); try{document.getElementById('f_phone').value=auth.currentUser.phoneNumber.replace('+91','');}catch(e){} }
-                else if(!window.recaptchaVerifier && typeof RecaptchaVerifier!=='undefined'){
-                    try{ window.recaptchaVerifier=new RecaptchaVerifier(auth,'recaptcha-container',{size:'normal'}); window.recaptchaVerifier.render(); }catch(e){}
+                if (authed) {
+                    setStep(1);
+                    try { document.getElementById('f_phone').value = fbAuth.currentUser.phoneNumber.replace('+91',''); } catch(e){}
+                } else {
+                    // Init recaptcha via the function exposed by ui.js
+                    if (window.initRecaptcha) window.initRecaptcha();
                 }
-            }, 80);
+            }, 100);
         };
         window.closePostModal = () => document.getElementById('postModal').style.display='none';
 
