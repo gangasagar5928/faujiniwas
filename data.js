@@ -8,7 +8,11 @@ export const state = {
     maxPrice: 100000,
     listings: [],
     draftCoords: { lat: 22.9074, lng: 79.1469 },
-    currentReportId: null
+    currentReportId: null,
+    // Advanced filters
+    furnishFilter: 'all',   // all | Fully | Semi | Unfurnished
+    availFilter:   'all',   // all | now | 3mo
+    sqftFilter:    'all',   // all | lt500 | 500to1000 | gt1000
 };
 
 export const SSB_DORMS = [

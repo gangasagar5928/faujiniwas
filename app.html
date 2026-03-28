@@ -45,6 +45,10 @@
             flex-direction: column;
         }
 
+        /* Make the overall layout account for the collapsible filter bar */
+        body { display: flex; flex-direction: column; }
+        .main { flex: 1; min-height: 0; }
+
         /* LOADER */
         #app-loader {
             position: fixed; inset: 0; z-index: 99999;
@@ -391,6 +395,59 @@
             font-weight:600; padding:0; text-decoration:underline;
         }
         .auth-divider { text-align:center; color:var(--muted); font-size:12px; margin:4px 0 10px; }
+
+        /* ADVANCED FILTER PANEL */
+        .adv-filter-bar {
+            background: var(--nav);
+            border-bottom: 1px solid var(--border);
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height .38s cubic-bezier(0.4,0,0.2,1), padding .35s ease;
+            padding: 0 14px;
+            flex-shrink: 0;
+            will-change: max-height;
+        }
+        .adv-filter-bar.open {
+            max-height: 220px;
+            padding: 12px 14px 14px;
+        }
+        .adv-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 4px;
+        }
+        @media (max-width: 480px) {
+            .adv-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        .adv-label {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .06em; color: var(--muted); margin-bottom: 4px;
+        }
+        .adv-select {
+            width: 100%; padding: 8px 10px; background: var(--card); border: 1px solid var(--border2);
+            color: var(--text); border-radius: 8px; font-size: 12px; font-family: 'Outfit', sans-serif;
+            outline: none; transition: border-color .2s;
+            -webkit-appearance: none; appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a8fa8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 8px center;
+            padding-right: 22px; cursor: pointer;
+        }
+        .adv-select:focus { border-color: var(--accent); }
+        .adv-select option { background: var(--card); color: var(--text); }
+        .filter-toggle-btn {
+            background: var(--card); border: 1px solid var(--border2); color: var(--muted);
+            padding: 6px 12px; border-radius: 100px; font-size: 12px; font-weight: 600;
+            cursor: pointer; transition: all .2s; font-family: 'Outfit', sans-serif;
+            display: flex; align-items: center; gap: 5px; white-space: nowrap; flex-shrink: 0;
+        }
+        .filter-toggle-btn.active-filters { border-color: var(--accent); color: var(--accent); background: rgba(255,153,51,.08); }
+        .filter-toggle-btn:hover { border-color: var(--accent); color: var(--accent); }
+        #adv-filter-indicator {
+            width: 7px; height: 7px; background: var(--accent); border-radius: 50%;
+            display: none; animation: livepulse 2s infinite;
+        }
+        .filter-toggle-btn.active-filters #adv-filter-indicator { display: inline-block; }
     </style>
 </head>
 <body>
@@ -403,18 +460,69 @@
 
     <header>
         <div class="hdr-top">
-            <a href="index.html" class="logo"><span>Fauji</span>adda</a>
+            <div>
+                <a href="index.html" class="logo"><span>Fauji</span>adda</a>
+                <div style="font-size:10px;color:var(--muted);margin-top:1px;letter-spacing:.04em;">Defence Housing &nbsp;·&nbsp; Verified Listings &nbsp;·&nbsp; Fair Price AI</div>
+            </div>
             <button class="fb-accent" onclick="window.openProfileModal()">👤 Profile</button>
         </div>
-        <div class="filter-row">
-            <button class="fb active" onclick="window.setFilter('all',this)">🏠 All</button>
-            <button class="fb" onclick="window.setFilter('1bhk',this)">1 BHK</button>
-            <button class="fb" onclick="window.setFilter('2bhk',this)">2 BHK</button>
-            <button class="fb" onclick="window.setFilter('3bhk',this)">3 BHK</button>
-            <button class="fb" onclick="window.setFilter('pg',this)">PG/Room</button>
-            <button class="fb" style="border-color:var(--gold);color:var(--gold);" onclick="window.setFilter('dorm',this)">🏨 SSB Dorms</button>
+        <div class="filter-row" id="main-filter-row">
+            <button class="fb active" onclick="window.setFilter('all',this)" id="ftype-all">🏠 All</button>
+            <button class="fb" onclick="window.setFilter('1bhk',this)" id="ftype-1bhk">1 BHK</button>
+            <button class="fb" onclick="window.setFilter('2bhk',this)" id="ftype-2bhk">2 BHK</button>
+            <button class="fb" onclick="window.setFilter('3bhk',this)" id="ftype-3bhk">3 BHK</button>
+            <button class="fb" onclick="window.setFilter('pg',this)" id="ftype-pg">PG/Room</button>
+            <button class="fb" style="border-color:var(--gold);color:var(--gold);" onclick="window.setFilter('dorm',this)" id="ftype-dorm">🏨 SSB Dorms</button>
+            <button class="filter-toggle-btn" id="advFilterToggle" onclick="window.toggleAdvFilters()">
+                ⚡ More Filters
+                <span id="adv-filter-indicator"></span>
+            </button>
         </div>
     </header>
+
+    <!-- Advanced Filter Panel (collapsible, below header) -->
+    <div class="adv-filter-bar" id="advFilterBar">
+        <div class="adv-grid">
+            <div>
+                <div class="adv-label">🛋️ Furnishing</div>
+                <select class="adv-select" id="furnishFilter" onchange="window.setFurnishFilter(this.value)">
+                    <option value="all">Any</option>
+                    <option value="Fully">Fully Furnished</option>
+                    <option value="Semi">Semi-Furnished</option>
+                    <option value="Unfurnished">Unfurnished</option>
+                </select>
+            </div>
+            <div>
+                <div class="adv-label">📐 Size</div>
+                <select class="adv-select" id="sqftFilter" onchange="window.setSqftFilter(this.value)">
+                    <option value="all">Any Size</option>
+                    <option value="lt500">&lt; 500 sq.ft</option>
+                    <option value="500to1000">500–1000 sq.ft</option>
+                    <option value="gt1000">&gt; 1000 sq.ft</option>
+                </select>
+            </div>
+            <div>
+                <div class="adv-label">📅 Availability</div>
+                <select class="adv-select" id="availFilter" onchange="window.setAvailFilter(this.value)">
+                    <option value="all">Any Time</option>
+                    <option value="now">Available Now</option>
+                    <option value="3mo">Within 3 Months</option>
+                </select>
+            </div>
+            <div>
+                <div class="adv-label">🔃 Sort By</div>
+                <select class="adv-select" id="sortFilterAdv" onchange="window.setSort(this.value)">
+                    <option value="new">⏱ Newest</option>
+                    <option value="near">📍 Nearest</option>
+                    <option value="priceAsc">₹ Low → High</option>
+                    <option value="priceDesc">₹ High → Low</option>
+                </select>
+            </div>
+        </div>
+        <div style="margin-top:10px;display:flex;justify-content:flex-end;">
+            <button onclick="window.resetAdvFilters()" style="background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:underline;">↺ Reset Filters</button>
+        </div>
+    </div>
 
     <div class="main">
         <div class="sidebar" id="sidebar">
@@ -434,6 +542,7 @@
                         <option value="new">⏱ Newest</option>
                         <option value="near">📍 Nearest</option>
                         <option value="priceAsc">₹ Low→High</option>
+                        <option value="priceDesc">₹ High→Low</option>
                     </select>
                 </div>
                 <div class="cnt" id="cnt"><div class="live-dot"></div> Loading listings...</div>

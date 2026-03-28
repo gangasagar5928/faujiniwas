@@ -1,4 +1,5 @@
 import { state, SSB_DORMS } from './data.js';
+import { getSuggestionBadgeHTML } from './suggest.js';
 
 // ─── Skeleton Loader ───
 export function showLoadingSkeleton() {
@@ -82,15 +83,42 @@ export function render() {
     const listEl = document.getElementById('list');
     const cntEl  = document.getElementById('cnt');
 
+    const now = Date.now();
+    const threeMonths = 90 * 24 * 60 * 60 * 1000;
+
     let filtered = state.listings.filter(r => {
         if (r.reportCount >= 3) return false;
         if (state.maxPrice < 100000 && r.price > state.maxPrice) return false;
-        const typeOk   = state.typeFilter === 'all' || r.type === state.typeFilter;
+
+        // Type filter
+        const typeOk = state.typeFilter === 'all' || r.type === state.typeFilter;
+
+        // Search filter
         const searchOk = !state.smartSearchQ
-        || r.name.toLowerCase().includes(state.smartSearchQ)
-        || r.area.toLowerCase().includes(state.smartSearchQ)
-        || r.city.toLowerCase().includes(state.smartSearchQ);
-        return typeOk && searchOk;
+            || r.name.toLowerCase().includes(state.smartSearchQ)
+            || r.area.toLowerCase().includes(state.smartSearchQ)
+            || r.city.toLowerCase().includes(state.smartSearchQ);
+
+        // Furnishing filter
+        const furnishOk = state.furnishFilter === 'all'
+            || (r.furnishing || r.furnish || '').toLowerCase() === state.furnishFilter.toLowerCase();
+
+        // Availability filter
+        let availOk = true;
+        if (state.availFilter === 'now') {
+            availOk = !r.available || r.available === '' || new Date(r.available) <= new Date();
+        } else if (state.availFilter === '3mo') {
+            availOk = !r.available || r.available === '' || (new Date(r.available) - new Date()) <= threeMonths;
+        }
+
+        // Sq.Ft filter
+        const sqft = parseInt(r.sqft) || 0;
+        let sqftOk = true;
+        if (state.sqftFilter === 'lt500')     sqftOk = sqft > 0 && sqft < 500;
+        else if (state.sqftFilter === '500to1000') sqftOk = sqft >= 500 && sqft <= 1000;
+        else if (state.sqftFilter === 'gt1000')    sqftOk = sqft > 1000;
+
+        return typeOk && searchOk && furnishOk && availOk && sqftOk;
     });
 
     filtered.sort((a, b) => {
@@ -129,6 +157,8 @@ export function render() {
         ? r.mediaUrls[0]
         : 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=200&q=80';
 
+        const aiBadge = getSuggestionBadgeHTML(r, state.listings);
+
         const card = document.createElement('div');
         card.className = 'lc';
         card.id = 'card-' + r.id;
@@ -148,6 +178,7 @@ export function render() {
         ${dateTag}
         <span class="tag">${r.type?.toUpperCase() || 'FLAT'}</span>
         ${bahTag}
+        ${aiBadge}
         </div>
         </div>`;
 

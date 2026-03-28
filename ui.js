@@ -1,5 +1,6 @@
 import { state, FOOD_BY_CITY } from './data.js';
 import { db, auth, collection, addDoc, doc, updateDoc, increment, query, where, getDocs, deleteDoc, RecaptchaVerifier, signInWithPhoneNumber, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut } from './firebase.js';
+import { getAIPanelHTML, getSuggestionBadgeHTML } from './suggest.js';
 
 // Expose auth to inline scripts
 window._fbAuth = auth;
@@ -67,16 +68,19 @@ window._openDetailModal = (r) => {
 
     // ── Time display ──
     const daysAgo = r.createdAt ? Math.floor((Date.now() - r.createdAt) / 86400000) : null;
-    let postedTxt = 'Listing date unknown';
+    let postedTxt = 'Date unknown';
+    let postedFull = '';
     if (daysAgo !== null) {
-        if (daysAgo === 0) postedTxt = 'Updated today';
-        else if (daysAgo === 1) postedTxt = 'Updated yesterday';
-        else if (daysAgo < 30) postedTxt = `Updated ${daysAgo}d ago`;
-        else {
-            const d = new Date(r.createdAt);
-            postedTxt = `Updated ${d.toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })}`;
-        }
+        const d = new Date(r.createdAt);
+        postedFull = d.toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+        if (daysAgo === 0)      postedTxt = 'Today';
+        else if (daysAgo === 1) postedTxt = 'Yesterday';
+        else if (daysAgo < 7)   postedTxt = `${daysAgo} days ago`;
+        else if (daysAgo < 30)  postedTxt = `${Math.ceil(daysAgo/7)}w ago`;
+        else                    postedTxt = postedFull;
     }
+    const freshness = daysAgo !== null && daysAgo <= 3
+        ? `<span style="font-size:10px;font-weight:700;color:#22c55e;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.25);padding:2px 7px;border-radius:100px;margin-left:6px;">🔥 Fresh</span>` : '';
 
     // Verified badge
     const verifiedBadge = r.verified
@@ -113,98 +117,151 @@ window._openDetailModal = (r) => {
       <div class="car" onscroll="window.updateCarousel(this,${images.length})">${photosHtml}</div>
       <div class="car-badge" id="c-badge">1/${images.length} 📷</div>
       <div class="car-dots">${dotsHtml}</div>
-
-      <!-- ✕ Close — top left -->
       <button onclick="window.closeDetailModal()"
         style="${oBtn}background:rgba(0,0,0,0.6);color:#fff;top:10px;left:10px;"
-        title="Close" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">✕</button>
-
-      <!-- Share — top right -->
+        onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">✕</button>
       <button onclick="window.shareListing(window._currentListing)"
         style="${oBtn}background:rgba(56,189,248,0.75);color:#fff;top:10px;right:52px;"
-        title="Share" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">🔗</button>
-
-      <!-- Report — top right -->
+        onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">🔗</button>
       <button onclick="window.openReportModal('${r.id}')"
         style="${oBtn}background:rgba(244,63,94,0.75);color:#fff;top:10px;right:10px;"
-        title="Report" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">🚩</button>
+        onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">🚩</button>
     </div>
 
     <div style="padding:14px 16px 0;">
-      <!-- Name + Verified badge + Price -->
+
+      <!-- ── Name + Price ── -->
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;gap:8px;">
         <div style="flex:1;min-width:0;">
-          <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px;">
-            <h2 style="font-size:19px;line-height:1.25;margin:0;">${r.name}</h2>
-            ${verifiedBadge}
-          </div>
+          <h2 style="font-size:18px;line-height:1.25;margin:0 0 4px;">${r.name}</h2>
+          <div style="color:var(--muted);font-size:12px;">📍 ${r.area}, ${r.city}</div>
         </div>
         <div style="text-align:right;flex-shrink:0;">
-          <div style="font-size:20px;font-weight:800;color:var(--gold);line-height:1;">₹${r.price.toLocaleString()}</div>
+          <div style="font-size:22px;font-weight:800;color:var(--gold);line-height:1;">₹${r.price.toLocaleString()}</div>
           <div style="font-size:11px;color:var(--muted);margin-top:2px;">/month</div>
         </div>
       </div>
 
-      <!-- Location + Last Updated -->
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:4px;">
-        <div style="color:var(--muted);font-size:13px;">📍 ${r.area}, ${r.city}</div>
-        <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted2);background:var(--bg);border:1px solid var(--border);padding:3px 10px;border-radius:100px;">
-          <span style="width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block;flex-shrink:0;animation:livepulse 2s infinite;"></span>
-          ${postedTxt}
+      <!-- ── Trust Strip ── -->
+      <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;">
+        ${r.verified
+          ? `<div style="display:flex;align-items:center;gap:5px;"><span style="font-size:18px;">✅</span><div><div style="font-size:12px;font-weight:700;color:#22c55e;">Verified Listing</div><div style="font-size:10px;color:var(--muted);">ID-checked by Faujiadda</div></div></div>`
+          : `<div style="display:flex;align-items:center;gap:5px;"><span style="font-size:18px;">⏳</span><div><div style="font-size:12px;font-weight:700;color:#f4c542;">Under Review</div><div style="font-size:10px;color:var(--muted);">Verification pending</div></div></div>`
+        }
+        <div style="width:1px;height:32px;background:var(--border2);flex-shrink:0;"></div>
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--text);">🕒 ${postedTxt}${freshness}</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:1px;">${postedFull ? 'Listed ' + postedFull : 'Recently listed'}</div>
+        </div>
+        <div style="width:1px;height:32px;background:var(--border2);flex-shrink:0;"></div>
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--text);">👤 Direct Owner</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:1px;">No broker fee</div>
         </div>
       </div>
 
-      <!-- Specs grid -->
-      <div class="specs">
+      <!-- ── Specs grid ── -->
+      <div class="specs" style="margin-bottom:12px;">
         <div class="spc"><strong>${r.type?.toUpperCase() || '—'}</strong>Type</div>
-        <div class="spc"><strong>${r.sqft || '~900'}</strong>Sq.Ft</div>
+        <div class="spc"><strong>${r.sqft ? r.sqft + ' ft²' : '~900 ft²'}</strong>Area</div>
         <div class="spc"><strong>${r.furnishing || r.furnish || 'Semi'}</strong>Furnish</div>
-        <div class="spc"><strong>Floor ${r.floor || 1}</strong>Level</div>
+        <div class="spc"><strong>Floor ${r.floor || 'G'}</strong>Level</div>
       </div>
 
-      <!-- BAH + Available tags -->
+      <!-- ── BAH + Available tags ── -->
       <div style="margin-bottom:12px;display:flex;flex-wrap:wrap;gap:6px;">
         <span class="tag" style="font-size:12px;padding:5px 12px;border-color:${bahColor};color:${bahColor};">${bahText}</span>
-        ${r.available ? `<span class="tag" style="font-size:12px;padding:5px 12px;">📅 Available: ${r.available}</span>` : ''}
+        ${r.available
+          ? `<span class="tag" style="font-size:12px;padding:5px 12px;color:#38bdf8;border-color:#38bdf8;">📅 From ${r.available}</span>`
+          : `<span class="tag" style="font-size:12px;padding:5px 12px;color:#22c55e;border-color:#22c55e;">⚡ Available Now</span>`}
       </div>
 
-      <!-- Food nearby button -->
+      <!-- ── AI Rent Suggestion ── -->
+      <div id="ai-suggestion-panel"></div>
+
+      <!-- ── Food nearby ── -->
       <button onclick="window.openFoodPanel('${r.city}')"
-        style="width:100%;background:rgba(255,153,51,0.08);color:var(--accent);border:1px solid rgba(255,153,51,0.3);padding:11px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;font-family:'Outfit',sans-serif;margin-bottom:8px;transition:all 0.2s;"
+        style="width:100%;background:rgba(255,153,51,0.08);color:var(--accent);border:1px solid rgba(255,153,51,0.3);padding:10px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;font-family:'Outfit',sans-serif;margin-bottom:10px;transition:all 0.2s;"
         onmouseover="this.style.background='rgba(255,153,51,0.15)'"
         onmouseout="this.style.background='rgba(255,153,51,0.08)'">
-        🍽️ Nearby Food &amp; Hotels in ${r.city}
+        🍽️ Nearby Mess &amp; Hotels in ${r.city}
       </button>
+
+      <!-- ── Similar listings ── -->
+      <div id="similar-listings-wrap"></div>
     </div>
     `;
 
     // ── Footer: Contact buttons ──
+    const maskedNum = r.whatsapp
+        ? `+91 ●●●●●● ${r.whatsapp.toString().slice(-4)}`
+        : '+91 ●●●● ●●●●';
+    const ownerIdLine = auth.currentUser
+        ? (auth.currentUser.phoneNumber || auth.currentUser.email || 'Verified User')
+        : maskedNum;
+    const ownerVerifiedLine = r.verified
+        ? `<span style="font-size:11px;color:#22c55e;font-weight:700;">✅ Verified Owner</span>`
+        : `<span style="font-size:11px;color:#f4c542;font-weight:700;">⏳ Verification Pending</span>`;
+
     if (!auth.currentUser) {
         footer.innerHTML = `
-        <button onclick="window.closeModals();window.openPostModal();"
-          style="width:100%;background:var(--accent);color:#000;padding:14px;border:none;border-radius:10px;font-weight:800;font-size:15px;cursor:pointer;font-family:'Outfit',sans-serif;">
-          🔒 Login to View Contact
-        </button>
-        <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:8px;">OTP login — takes 30 seconds</p>`;
+        <div style="background:linear-gradient(135deg,rgba(255,153,51,0.1),rgba(255,153,51,0.04));border:1px solid rgba(255,153,51,0.3);border-radius:12px;padding:14px;margin-bottom:10px;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:13px;">
+            <div style="width:44px;height:44px;border-radius:50%;background:rgba(255,153,51,0.15);border:2px solid rgba(255,153,51,0.35);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">👤</div>
+            <div>
+              <div style="font-weight:800;font-size:14px;">Owner Contact Hidden</div>
+              <div style="font-size:12px;color:var(--muted);margin-top:3px;">📞 ${maskedNum} &nbsp;·&nbsp; 💬 WhatsApp</div>
+              <div style="margin-top:4px;">${ownerVerifiedLine}</div>
+            </div>
+          </div>
+          <button onclick="window.closeModals();window.openPostModal();"
+            style="width:100%;background:var(--accent);color:#000;padding:13px;border:none;border-radius:10px;font-weight:800;font-size:15px;cursor:pointer;font-family:'Outfit',sans-serif;transition:transform .15s;"
+            onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='none'">
+            🔐 Login to Reveal Contact
+          </button>
+          <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:8px;">Phone OTP — <b style="color:var(--accent);">30 seconds</b>, 100% free.</p>
+        </div>`;
     } else if (r.whatsapp) {
         footer.innerHTML = `
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-          <a href="tel:+91${r.whatsapp}"
-            style="display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(56,189,248,0.12);color:#38bdf8;border:1px solid rgba(56,189,248,0.3);padding:13px;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px;transition:background 0.2s;"
-            onmouseover="this.style.background='rgba(56,189,248,0.22)'"
-            onmouseout="this.style.background='rgba(56,189,248,0.12)'">
-            📞 Call Owner
-          </a>
-          <a href="https://wa.me/91${r.whatsapp}?text=Hi%2C+I+saw+your+listing+on+Faujiadda+%E2%80%94+${encodeURIComponent(r.name)}%2E+Is+it+still+available%3F" target="_blank"
-            style="display:flex;align-items:center;justify-content:center;gap:8px;background:#25D366;color:#000;padding:13px;border-radius:10px;text-decoration:none;font-weight:800;font-size:14px;">
-            💬 WhatsApp
-          </a>
+        <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+            <div style="width:40px;height:40px;border-radius:50%;background:${r.verified ? 'rgba(34,197,94,0.12)' : 'rgba(255,153,51,0.08)'};border:2px solid ${r.verified ? 'rgba(34,197,94,0.3)' : 'rgba(255,153,51,0.2)'};display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">👤</div>
+            <div>
+              <div style="font-weight:800;font-size:13px;">Direct Owner</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:2px;">📞 +91 ${r.whatsapp}</div>
+              <div style="margin-top:3px;">${ownerVerifiedLine}</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;">
+            <a href="tel:+91${r.whatsapp}"
+              style="display:flex;align-items:center;justify-content:center;gap:7px;background:rgba(56,189,248,0.12);color:#38bdf8;border:1px solid rgba(56,189,248,0.3);padding:13px;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px;transition:background .2s;"
+              onmouseover="this.style.background='rgba(56,189,248,0.22)'" onmouseout="this.style.background='rgba(56,189,248,0.12)'">
+              📞 Call Owner
+            </a>
+            <a href="https://wa.me/91${r.whatsapp}?text=Hi%2C+I+saw+your+listing+on+Faujiadda+%E2%80%94+${encodeURIComponent(r.name)}%2E+Is+it+still+available%3F" target="_blank"
+              style="display:flex;align-items:center;justify-content:center;gap:7px;background:#25D366;color:#000;padding:13px;border-radius:10px;text-decoration:none;font-weight:800;font-size:14px;">
+              💬 WhatsApp
+            </a>
+          </div>
         </div>`;
     } else {
-        footer.innerHTML = `<button disabled style="width:100%;background:#333;color:#666;padding:14px;border:none;border-radius:10px;font-weight:700;font-size:15px;">Contact Unavailable</button>`;
+        footer.innerHTML = `
+        <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;text-align:center;">
+          <div style="font-size:28px;margin-bottom:6px;">📵</div>
+          <div style="font-weight:700;margin-bottom:4px;">Contact Not Provided</div>
+          <div style="font-size:12px;color:var(--muted);">Owner hasn't added a WhatsApp number yet.</div>
+        </div>`;
     }
 
     modal.style.display = 'block';
+
+    // Inject AI rent panel
+    const aiPanel = document.getElementById('ai-suggestion-panel');
+    if (aiPanel) aiPanel.innerHTML = getAIPanelHTML(r, state.listings);
+
+    // Inject Similar listings
+    const simWrap = document.getElementById('similar-listings-wrap');
+    if (simWrap) renderSimilarListings(r, simWrap);
 };
 
 window.closeDetailModal = () => { document.getElementById('detailModal').style.display='none'; };
@@ -213,6 +270,52 @@ window.updateCarousel = (el, total) => {
     document.getElementById('c-badge').innerText = `${idx+1}/${total} 📷`;
     document.querySelectorAll('.dot').forEach((d,i) => d.className = 'dot' + (i===idx?' on':''));
 };
+
+// ─── Similar Listings ───
+function renderSimilarListings(current, container) {
+    const PHOTO_POOL = [
+        'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=300&q=80',
+        'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=300&q=80',
+        'https://images.unsplash.com/photo-1502672260266-1c1de2d9d00c?w=300&q=80',
+        'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=300&q=80',
+        'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=300&q=80',
+    ];
+
+    const similar = state.listings
+        .filter(l =>
+            l.id !== current.id &&
+            l.city?.toLowerCase() === current.city?.toLowerCase() &&
+            l.price >= current.price * 0.7 &&
+            l.price <= current.price * 1.3
+        )
+        .sort((a,b) => (b.createdAt||0) - (a.createdAt||0))
+        .slice(0, 3);
+
+    if (!similar.length) { container.innerHTML = ''; return; }
+
+    container.innerHTML = `
+    <div style="margin-bottom:10px;">
+      <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:10px;">🔁 Similar in ${current.city}</p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+      ${similar.map(s => {
+        const thumb = s.mediaUrls?.[0] || PHOTO_POOL[Math.abs((s.createdAt||0) % PHOTO_POOL.length)];
+        const bahColor = s.price <= 15000 ? '#22c55e' : s.price <= 30000 ? '#f4c542' : '#f43f5e';
+        const aiBadge = getSuggestionBadgeHTML(s, state.listings);
+        return `<div onclick="window.openDetailModal('${s.id}')" style="display:flex;gap:10px;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px;cursor:pointer;transition:border-color .18s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+          <img src="${thumb}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;border:1px solid var(--border);flex-shrink:0;" loading="lazy">
+          <div style="flex:1;overflow:hidden;">
+            <div style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.name}</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px;">📍 ${s.area}</div>
+            <div style="display:flex;gap:5px;margin-top:5px;flex-wrap:wrap;align-items:center;">
+              <span style="font-weight:800;font-size:13px;color:${bahColor};">₹${s.price.toLocaleString()}/mo</span>
+              ${aiBadge}
+            </div>
+          </div>
+        </div>`;
+      }).join('')}
+      </div>
+    </div>`;
+}
 
 // ─── Report Modal ───
 window.openReportModal = (id) => {
@@ -510,13 +613,21 @@ window.openProfileModal = async () => {
         return;
     }
     document.getElementById('profileModal').style.display = 'block';
+    const userIdentity = auth.currentUser.phoneNumber || auth.currentUser.email || 'Unknown User';
+    const userIcon = auth.currentUser.phoneNumber ? '📱' : '✉️';
     document.getElementById('profile-details').innerHTML = `
-    <div style="display:flex;justify-content:space-between;align-items:center;background:var(--card2);padding:14px;border-radius:10px;border:1px solid var(--border);">
-    <div>
-    <div style="font-size:12px;color:var(--muted);margin-bottom:2px;">Logged in as</div>
-    <div style="font-weight:700;">${auth.currentUser.phoneNumber}</div>
-    </div>
-    <button onclick="window.logoutUser()" style="background:rgba(244,63,94,.1);color:var(--red);border:1px solid rgba(244,63,94,.3);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">Log Out</button>
+    <div style="background:var(--card2);padding:14px;border-radius:12px;border:1px solid var(--border);">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:42px;height:42px;border-radius:50%;background:rgba(255,153,51,0.12);border:2px solid rgba(255,153,51,0.3);display:flex;align-items:center;justify-content:center;font-size:20px;">${userIcon}</div>
+          <div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:2px;">Logged in as</div>
+            <div style="font-weight:700;font-size:14px;">${userIdentity}</div>
+            <div style="font-size:10px;color:#22c55e;margin-top:2px;">✅ Verified defence member</div>
+          </div>
+        </div>
+        <button onclick="window.logoutUser()" style="background:rgba(244,63,94,.1);color:var(--red);border:1px solid rgba(244,63,94,.3);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;flex-shrink:0;">Log Out</button>
+      </div>
     </div>`;
 
     const container = document.getElementById('my-listings-container');
