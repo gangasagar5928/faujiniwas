@@ -512,10 +512,12 @@
             border-radius: 24px;
             padding: 45px 35px;
             opacity: 0;
-            transform: translateY(40px);
-            transition: var(--transition-slow);
+            transform: translateY(30px);
+            transition: opacity 0.5s cubic-bezier(0.4,0,0.2,1), transform 0.5s cubic-bezier(0.4,0,0.2,1),
+                        border-color 0.3s ease, box-shadow 0.3s ease;
             position: relative;
             overflow: hidden;
+            will-change: transform, opacity;
         }
 
         .feature-box.scroll-visible {
@@ -525,8 +527,8 @@
 
         .feature-box:hover {
             border-color: rgba(255, 153, 51, 0.5);
-            transform: translateY(-10px) !important;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+            transform: translateY(-8px) !important;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35);
         }
 
         .feature-box::before {
@@ -621,8 +623,9 @@
             position: relative;
             z-index: 1;
             opacity: 0;
-            transform: translateX(-30px);
-            transition: var(--transition-slow);
+            transform: translateX(-24px);
+            transition: opacity 0.5s cubic-bezier(0.4,0,0.2,1), transform 0.5s cubic-bezier(0.4,0,0.2,1);
+            will-change: transform, opacity;
         }
 
         .step-row.scroll-visible {
@@ -1113,8 +1116,19 @@
 
         /* Animation Keyframe Utilities */
         @keyframes elementFadeUp {
-            from { opacity: 0; transform: translateY(30px); }
+            from { opacity: 0; transform: translateY(28px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Reduced motion accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            .particle { display: none; }
+            .hero-blob { display: none; }
         }
     </style>
 </head>

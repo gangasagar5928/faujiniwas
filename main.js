@@ -3,19 +3,24 @@ import { db, onSnapshot, query, collection, where } from './firebase.js';
 import { initMap, render } from './map.js';
 import './ui.js';
 
-// 1. Immediate initialization
+// ─── Global modal closer ─────────────────────────────────
+window.closeModals = () => {
+    ['detailModal','postModal','profileModal','reportModal'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    });
+};
+
+// ─── App Bootstrap ────────────────────────────────────────
 function startApp() {
     try {
         initMap();
 
-        // Show loading state in count bar
         const cnt = document.getElementById('cnt');
         if (cnt) cnt.innerHTML = `<div class="live-dot"></div> Connecting…`;
 
-        // 2. Start Firebase listener AFTER map is ready
         const verifiedQuery = query(collection(db, 'rentals'), where('verified', '==', true));
 
-        // Set a timeout fallback — if Firestore hasn't responded in 8s, show offline message
         let firstLoad = true;
         const offlineTimer = setTimeout(() => {
             if (firstLoad && cnt) {
@@ -28,11 +33,20 @@ function startApp() {
             firstLoad = false;
             state.listings = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
             render();
+
+            // Deep-link: auto-open listing from ?listing=ID in URL
+            if (!window._deepLinkHandled) {
+                window._deepLinkHandled = true;
+                const params = new URLSearchParams(window.location.search);
+                const sharedId = params.get('listing');
+                if (sharedId && window.openDetailModal) {
+                    setTimeout(() => window.openDetailModal(sharedId), 400);
+                }
+            }
         }, (error) => {
             clearTimeout(offlineTimer);
             console.warn('Firestore error:', error.message);
             if (cnt) cnt.innerHTML = `<div class="live-dot" style="background:var(--red)"></div> Offline — retrying…`;
-            // Render with empty/stale data so the UI isn't frozen
             render();
         });
     } catch (e) {
@@ -40,12 +54,12 @@ function startApp() {
     }
 }
 
-// Ensure the DOM is fully parsed before running
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', startApp);
 } else {
     startApp();
 }
+
 
 // Wiring for UI
 window.setFilter = (v, btn) => {

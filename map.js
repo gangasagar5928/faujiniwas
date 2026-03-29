@@ -1,6 +1,16 @@
 import { state, SSB_DORMS } from './data.js';
 import { getSuggestionBadgeHTML } from './suggest.js';
 
+// ─── One-time marker arrow style injection ───
+(function injectMarkerStyles() {
+    if (document.getElementById('pm-arrow-style')) return;
+    const s = document.createElement('style');
+    s.id = 'pm-arrow-style';
+    // We use CSS variables set per-marker to drive the arrow color
+    s.textContent = '.pm::after{border-top-color:var(--pm-color,#FF9933)!important;}';
+    document.head.appendChild(s);
+})();
+
 // ─── Skeleton Loader ───
 export function showLoadingSkeleton() {
     const el = document.getElementById('list');
@@ -19,9 +29,9 @@ export function showLoadingSkeleton() {
 // ─── Render SSB Dorms ───
 export function renderDorms() {
     const listEl = document.getElementById('list');
-    const cntEl  = document.getElementById('cnt');
+    const cntEl = document.getElementById('cnt');
     listEl.innerHTML = '';
-    cntEl.innerHTML  = `<div class="live-dot"></div> ${SSB_DORMS.length} SSB dorms found`;
+    cntEl.innerHTML = `<div class="live-dot"></div> ${SSB_DORMS.length} SSB dorms found`;
 
     state.markerCluster.clearLayers();
     state.markers = {};
@@ -42,7 +52,7 @@ export function renderDorms() {
         <p style="font-size:12px;color:var(--muted);margin-bottom:8px;">${d.desc}</p>
         <div class="dorm-badges">
         <span class="dorm-badge">${d.type}</span>
-        ${d.amenities.map(a=>`<span class="dorm-badge">${a}</span>`).join('')}
+        ${d.amenities.map(a => `<span class="dorm-badge">${a}</span>`).join('')}
         </div>`;
         card.onclick = () => {
             state.map.flyTo([d.lat, d.lng], 15, { duration: 0.6 });
@@ -76,12 +86,15 @@ export function renderDorms() {
     state.markerCluster.addLayers(newMarkers);
 }
 
+// Persist random distances across renders (avoids flickering on re-render)
+const _distCache = new Map();
+
 // ─── Main Render ───
 export function render() {
     if (state.typeFilter === 'dorm') { renderDorms(); return; }
 
     const listEl = document.getElementById('list');
-    const cntEl  = document.getElementById('cnt');
+    const cntEl = document.getElementById('cnt');
 
     const now = Date.now();
     const threeMonths = 90 * 24 * 60 * 60 * 1000;
@@ -114,17 +127,17 @@ export function render() {
         // Sq.Ft filter
         const sqft = parseInt(r.sqft) || 0;
         let sqftOk = true;
-        if (state.sqftFilter === 'lt500')     sqftOk = sqft > 0 && sqft < 500;
+        if (state.sqftFilter === 'lt500') sqftOk = sqft > 0 && sqft < 500;
         else if (state.sqftFilter === '500to1000') sqftOk = sqft >= 500 && sqft <= 1000;
-        else if (state.sqftFilter === 'gt1000')    sqftOk = sqft > 1000;
+        else if (state.sqftFilter === 'gt1000') sqftOk = sqft > 1000;
 
         return typeOk && searchOk && furnishOk && availOk && sqftOk;
     });
 
     filtered.sort((a, b) => {
-        if (state.sortPref === 'priceAsc')  return a.price - b.price;
+        if (state.sortPref === 'priceAsc') return a.price - b.price;
         if (state.sortPref === 'priceDesc') return b.price - a.price;
-        if (state.sortPref === 'near')      return parseFloat(a.distance || 2) - parseFloat(b.distance || 2);
+        if (state.sortPref === 'near') return parseFloat(a.distance || 2) - parseFloat(b.distance || 2);
         return (b.createdAt || 0) - (a.createdAt || 0);
     });
 
@@ -144,18 +157,22 @@ export function render() {
     }
 
     filtered.forEach(r => {
-        if (!r.distance) r.distance = (Math.random() * 3 + 0.5).toFixed(1);
-
-        const bahColor = r.price <= 15000 ? '#22c55e' : r.price <= 30000 ? '#f4c542' : '#f43f5e';
-        const bahLabel = r.price <= 15000 ? '🟢 OR'  : r.price <= 30000 ? '🟡 JCO' : '🔴 Offr';
-        const bahTag   = `<span class="tag" style="border-color:${bahColor};color:${bahColor};">${bahLabel}</span>`;
-        const dateTag  = r.available
-        ? `<span class="tag" style="color:var(--gold);border-color:var(--gold);">📅 ${r.available}</span>`
-        : `<span class="tag" style="color:#22c55e;border-color:#22c55e;">⚡ Immediate</span>`;
+        // Stable distance: persist random fallback per listing ID
+        if (!r.distance) {
+            if (!_distCache.has(r.id)) _distCache.set(r.id, (Math.random() * 3 + 0.5).toFixed(1));
+            r.distance = _distCache.get(r.id);
+        }
+        const price = r.price || 0;
+        const bahColor = price <= 15000 ? '#22c55e' : price <= 30000 ? '#f4c542' : '#f43f5e';
+        const bahLabel = price <= 15000 ? '🟢 OR' : price <= 30000 ? '🟡 JCO' : '🔴 Offr';
+        const bahTag = `<span class="tag" style="border-color:${bahColor};color:${bahColor};">${bahLabel}</span>`;
+        const dateTag = r.available
+            ? `<span class="tag" style="color:var(--gold);border-color:var(--gold);">📅 ${r.available}</span>`
+            : `<span class="tag" style="color:#22c55e;border-color:#22c55e;">⚡ Immediate</span>`;
 
         const thumb = r.mediaUrls?.length > 0
-        ? r.mediaUrls[0]
-        : 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=200&q=80';
+            ? r.mediaUrls[0]
+            : 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=200&q=80';
 
         const aiBadge = getSuggestionBadgeHTML(r, state.listings);
 
@@ -163,32 +180,33 @@ export function render() {
         card.className = 'lc';
         card.id = 'card-' + r.id;
         const verifiedBadge = r.verified
-            ? `<span style="font-size:10px;font-weight:700;color:#22c55e;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);padding:2px 7px;border-radius:100px;vertical-align:middle;">✅</span>`
+            ? `<span style="font-size:10px;font-weight:700;color:var(--green);background:var(--green-bg);border:1px solid rgba(22,163,74,0.3);padding:2px 7px;border-radius:100px;">✅ Verified</span>`
             : '';
         card.innerHTML = `
-        <div class="lc-thumb"><img src="${thumb}" loading="lazy"></div>
+        <div class="lc-thumb">
+            <img src="${thumb}" loading="lazy" decoding="async">
+            <div style="position:absolute;top:8px;left:8px;">
+                <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;background:rgba(0,0,0,0.68);color:${bahColor};">${bahLabel}</span>
+            </div>
+            <div style="position:absolute;top:8px;right:8px;font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;background:rgba(0,0,0,0.68);color:${r.available ? '#60a5fa' : '#4ade80'};">${r.available ? r.available : '⚡ Now'}</div>
+        </div>
         <div class="lc-info">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;">
-        <strong style="font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px;">${r.name} ${verifiedBadge}</strong>
-        <b style="color:var(--gold);white-space:nowrap;font-size:14px;">₹${r.price.toLocaleString()}</b>
+            <div class="lc-name">${r.name} ${verifiedBadge}</div>
+            <div class="lc-loc">📍 ${r.area}, ${r.city} &nbsp;·&nbsp; 🚶 ${r.distance} km</div>
+            <div class="lc-tags">
+                <span class="tag">${r.type?.toUpperCase() || 'FLAT'}</span>
+                ${aiBadge}
+            </div>
         </div>
-        <small style="color:var(--muted);display:block;margin-top:2px;">📍 ${r.area}, ${r.city}</small>
-        <small style="color:var(--muted2);display:block;">🚶 ${r.distance} km from gate</small>
-        <div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:4px;">
-        ${dateTag}
-        <span class="tag">${r.type?.toUpperCase() || 'FLAT'}</span>
-        ${bahTag}
-        ${aiBadge}
-        </div>
+        <div class="lc-bottom">
+            <div class="lc-price">₹${price.toLocaleString()}<span>/mo</span></div>
+            <span style="font-size:11px;color:var(--muted);">View Details →</span>
         </div>`;
 
-        // Map marker
+        // Map marker — use CSS variable for arrow color (avoids style tag per marker)
         const customIcon = L.divIcon({
             className: '',
-            html: `<div class="pm" style="border-color:${bahColor};color:${bahColor};">
-            <style>.pm::after{border-top-color:${bahColor}!important;}</style>
-            ₹${(r.price/1000).toFixed(0)}K
-            </div>`,
+            html: `<div class="pm" style="--pm-color:${bahColor};border-color:${bahColor};color:${bahColor};">₹${(price / 1000).toFixed(0)}K</div>`,
             iconAnchor: [30, 34], popupAnchor: [0, -38], iconSize: [60, 34]
         });
 
@@ -198,10 +216,10 @@ export function render() {
         </button>`;
 
         const m = L.marker([r.lat, r.lng], { icon: customIcon })
-        .bindPopup(`<div style="font-family:'Outfit',sans-serif;min-width:180px;">
+            .bindPopup(`<div style="font-family:'Outfit',sans-serif;min-width:180px;">
         <b style="font-size:15px;">${r.name}</b><br>
         <span style="color:var(--muted);font-size:13px;">📍 ${r.area}, ${r.city}</span><br>
-        <b style="color:#22c55e;font-size:15px;">₹${r.price.toLocaleString()}/mo</b>
+        <b style="color:#22c55e;font-size:15px;">₹${price.toLocaleString()}/mo</b>
         ${popupBtn}
         </div>`);
 
@@ -247,7 +265,7 @@ export function initMap() {
             const count = cluster.getChildCount();
             return L.divIcon({
                 html: `<div style="background:var(--accent);color:#000;font-weight:800;font-size:13px;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(255,153,51,.4);font-family:'Outfit',sans-serif;">${count}</div>`,
-                             className: '', iconSize: [36, 36]
+                className: '', iconSize: [36, 36]
             });
         }
     });
@@ -260,7 +278,7 @@ export function initMap() {
     if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition(
             pos => state.map.flyTo([pos.coords.latitude, pos.coords.longitude], 12, { duration: 1.5 }),
-                                                 () => {}
+            () => { }
         );
     }
 }

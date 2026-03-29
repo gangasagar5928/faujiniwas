@@ -21,11 +21,8 @@ let miniMap, miniMarker;
 
 // ─── Food Panel ───
 window.openFoodPanel = (city) => {
-    // Close detail modal if open so they don't layer
-    const dm = document.getElementById('detailModal');
-    if (dm) dm.style.display = 'none';
-
     const panel = document.getElementById('foodPanel');
+    const backdrop = document.getElementById('foodBackdrop');
     const grid  = document.getElementById('foodGrid');
     const label = document.getElementById('foodCity');
     if (!panel) return;
@@ -46,10 +43,23 @@ window.openFoodPanel = (city) => {
             </div>`;
         }).join('');
     }
-    panel.classList.add('open');
+
+    // Smooth animation — force reflow before adding class
+    panel.classList.remove('open');
+    void panel.offsetHeight; // trigger reflow
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            panel.classList.add('open');
+    if(backdrop) backdrop.classList.add('open');
+        });
+    });
 };
 
-window.closeFoodPanel = () => document.getElementById('foodPanel').classList.remove('open');
+window.closeFoodPanel = () => {
+    document.getElementById('foodPanel').classList.remove('open');
+    const bd = document.getElementById('foodBackdrop');
+    if(bd) bd.classList.remove('open');
+};
 
 // ─── Detail Modal ───
 window.openDetailModal = (id) => {
@@ -80,12 +90,12 @@ window._openDetailModal = (r) => {
         else                    postedTxt = postedFull;
     }
     const freshness = daysAgo !== null && daysAgo <= 3
-        ? `<span style="font-size:10px;font-weight:700;color:#22c55e;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.25);padding:2px 7px;border-radius:100px;margin-left:6px;">🔥 Fresh</span>` : '';
+    ? `<span style="font-size:10px;font-weight:700;color:#22c55e;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.25);padding:2px 7px;border-radius:100px;margin-left:6px;">🔥 Fresh</span>` : '';
 
     // Verified badge
     const verifiedBadge = r.verified
-        ? `<span style="display:inline-flex;align-items:center;gap:4px;background:rgba(34,197,94,0.12);color:#22c55e;border:1px solid rgba(34,197,94,0.35);font-size:11px;font-weight:700;padding:3px 9px;border-radius:100px;margin-left:8px;vertical-align:middle;letter-spacing:0.03em;">✅ Verified</span>`
-        : `<span style="display:inline-flex;align-items:center;gap:4px;background:rgba(244,197,66,0.1);color:#f4c542;border:1px solid rgba(244,197,66,0.3);font-size:11px;font-weight:700;padding:3px 9px;border-radius:100px;margin-left:8px;vertical-align:middle;letter-spacing:0.03em;">⏳ Pending</span>`;
+    ? `<span style="display:inline-flex;align-items:center;gap:4px;background:rgba(34,197,94,0.12);color:#22c55e;border:1px solid rgba(34,197,94,0.35);font-size:11px;font-weight:700;padding:3px 9px;border-radius:100px;margin-left:8px;vertical-align:middle;letter-spacing:0.03em;">✅ Verified</span>`
+    : `<span style="display:inline-flex;align-items:center;gap:4px;background:rgba(244,197,66,0.1);color:#f4c542;border:1px solid rgba(244,197,66,0.3);font-size:11px;font-weight:700;padding:3px 9px;border-radius:100px;margin-left:8px;vertical-align:middle;letter-spacing:0.03em;">⏳ Pending</span>`;
 
     // ── Fallback photos ──
     const PHOTO_POOL = [
@@ -109,159 +119,162 @@ window._openDetailModal = (r) => {
     const bahColor = r.price <= 15000 ? '#22c55e' : r.price <= 30000 ? '#f4c542' : '#f43f5e';
     const bahText  = r.price <= 15000 ? '🟢 Within OR Limit' : r.price <= 30000 ? '🟡 Within JCO Limit' : '🔴 Officer BAH';
 
-    // Small overlay button style (reused)
-    const oBtn = `position:absolute;border:none;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:15px;transition:transform 0.18s,background 0.18s;`;
+    // Small overlay button style (no backdrop-filter — causes mobile jank)
+    const oBtn = `position:absolute;border:none;cursor:pointer;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:15px;transition:opacity 0.18s;`;
 
     content.innerHTML = `
     <div class="car-wrap">
-      <div class="car" onscroll="window.updateCarousel(this,${images.length})">${photosHtml}</div>
-      <div class="car-badge" id="c-badge">1/${images.length} 📷</div>
-      <div class="car-dots">${dotsHtml}</div>
-      <button onclick="window.closeDetailModal()"
-        style="${oBtn}background:rgba(0,0,0,0.6);color:#fff;top:10px;left:10px;"
-        onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">✕</button>
-      <button onclick="window.shareListing(window._currentListing)"
-        style="${oBtn}background:rgba(56,189,248,0.75);color:#fff;top:10px;right:52px;"
-        onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">🔗</button>
-      <button onclick="window.openReportModal('${r.id}')"
-        style="${oBtn}background:rgba(244,63,94,0.75);color:#fff;top:10px;right:10px;"
-        onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">🚩</button>
+    <div class="car" onscroll="window.updateCarousel(this,${images.length})">${photosHtml}</div>
+    <div class="car-badge" id="c-badge">1/${images.length} 📷</div>
+    <div class="car-dots">${dotsHtml}</div>
+    <button onclick="window.closeDetailModal()"
+    style="${oBtn}background:rgba(0,0,0,0.65);color:#fff;top:10px;left:10px;"
+    aria-label="Close">✕</button>
+    <button onclick="window.shareListing(window._currentListing)"
+    style="${oBtn}background:rgba(56,189,248,0.8);color:#fff;top:10px;right:52px;"
+    aria-label="Share">🔗</button>
+    <button onclick="window.openReportModal('${r.id}')"
+    style="${oBtn}background:rgba(244,63,94,0.8);color:#fff;top:10px;right:10px;"
+    aria-label="Report">🚩</button>
     </div>
 
     <div style="padding:14px 16px 0;">
 
-      <!-- ── Name + Price ── -->
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;gap:8px;">
-        <div style="flex:1;min-width:0;">
-          <h2 style="font-size:18px;line-height:1.25;margin:0 0 4px;">${r.name}</h2>
-          <div style="color:var(--muted);font-size:12px;">📍 ${r.area}, ${r.city}</div>
+    <!-- ── Name + Price ── -->
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;gap:8px;">
+    <div style="flex:1;min-width:0;">
+    <h2 style="font-size:18px;line-height:1.25;margin:0 0 4px;">${r.name}</h2>
+    <div style="color:var(--muted);font-size:12px;">📍 ${r.area}, ${r.city}</div>
+    </div>
+    <div style="text-align:right;flex-shrink:0;">
+    <div style="font-size:22px;font-weight:800;color:var(--gold);line-height:1;">₹${r.price.toLocaleString()}</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:2px;">/month</div>
+    </div>
+    </div>
+
+    <!-- ── Trust Strip ── -->
+    <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;">
+    ${r.verified
+        ? `<div style="display:flex;align-items:center;gap:5px;"><span style="font-size:18px;">✅</span><div><div style="font-size:12px;font-weight:700;color:#22c55e;">Verified Listing</div><div style="font-size:10px;color:var(--muted);">ID-checked by Faujiadda</div></div></div>`
+        : `<div style="display:flex;align-items:center;gap:5px;"><span style="font-size:18px;">⏳</span><div><div style="font-size:12px;font-weight:700;color:#f4c542;">Under Review</div><div style="font-size:10px;color:var(--muted);">Verification pending</div></div></div>`
+    }
+    <div style="width:1px;height:32px;background:var(--border2);flex-shrink:0;"></div>
+    <div>
+    <div style="font-size:11px;font-weight:700;color:var(--text);">🕒 ${postedTxt}${freshness}</div>
+    <div style="font-size:10px;color:var(--muted);margin-top:1px;">${postedFull ? 'Listed ' + postedFull : 'Recently listed'}</div>
+    </div>
+    <div style="width:1px;height:32px;background:var(--border2);flex-shrink:0;"></div>
+    <div>
+    <div style="font-size:11px;font-weight:700;color:var(--text);">👤 Direct Owner</div>
+    <div style="font-size:10px;color:var(--muted);margin-top:1px;">No broker fee</div>
+    </div>
+    </div>
+
+    <!-- ── Specs grid ── -->
+    <div class="specs" style="margin-bottom:12px;">
+    <div class="spc"><strong>${r.type?.toUpperCase() || '—'}</strong>Type</div>
+    <div class="spc"><strong>${r.sqft ? r.sqft + ' ft²' : '~900 ft²'}</strong>Area</div>
+    <div class="spc"><strong>${r.furnishing || r.furnish || 'Semi'}</strong>Furnish</div>
+    <div class="spc"><strong>Floor ${r.floor || 'G'}</strong>Level</div>
+    </div>
+
+    <!-- ── BAH + Available tags ── -->
+    <div style="margin-bottom:12px;display:flex;flex-wrap:wrap;gap:6px;">
+    <span class="tag" style="font-size:12px;padding:5px 12px;border-color:${bahColor};color:${bahColor};">${bahText}</span>
+    ${r.available
+        ? `<span class="tag" style="font-size:12px;padding:5px 12px;color:#38bdf8;border-color:#38bdf8;">📅 From ${r.available}</span>`
+        : `<span class="tag" style="font-size:12px;padding:5px 12px;color:#22c55e;border-color:#22c55e;">⚡ Available Now</span>`}
         </div>
-        <div style="text-align:right;flex-shrink:0;">
-          <div style="font-size:22px;font-weight:800;color:var(--gold);line-height:1;">₹${r.price.toLocaleString()}</div>
-          <div style="font-size:11px;color:var(--muted);margin-top:2px;">/month</div>
-        </div>
-      </div>
 
-      <!-- ── Trust Strip ── -->
-      <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;">
-        ${r.verified
-          ? `<div style="display:flex;align-items:center;gap:5px;"><span style="font-size:18px;">✅</span><div><div style="font-size:12px;font-weight:700;color:#22c55e;">Verified Listing</div><div style="font-size:10px;color:var(--muted);">ID-checked by Faujiadda</div></div></div>`
-          : `<div style="display:flex;align-items:center;gap:5px;"><span style="font-size:18px;">⏳</span><div><div style="font-size:12px;font-weight:700;color:#f4c542;">Under Review</div><div style="font-size:10px;color:var(--muted);">Verification pending</div></div></div>`
-        }
-        <div style="width:1px;height:32px;background:var(--border2);flex-shrink:0;"></div>
-        <div>
-          <div style="font-size:11px;font-weight:700;color:var(--text);">🕒 ${postedTxt}${freshness}</div>
-          <div style="font-size:10px;color:var(--muted);margin-top:1px;">${postedFull ? 'Listed ' + postedFull : 'Recently listed'}</div>
-        </div>
-        <div style="width:1px;height:32px;background:var(--border2);flex-shrink:0;"></div>
-        <div>
-          <div style="font-size:11px;font-weight:700;color:var(--text);">👤 Direct Owner</div>
-          <div style="font-size:10px;color:var(--muted);margin-top:1px;">No broker fee</div>
-        </div>
-      </div>
+        <!-- ── AI Rent Suggestion ── -->
+        <div id="ai-suggestion-panel"></div>
 
-      <!-- ── Specs grid ── -->
-      <div class="specs" style="margin-bottom:12px;">
-        <div class="spc"><strong>${r.type?.toUpperCase() || '—'}</strong>Type</div>
-        <div class="spc"><strong>${r.sqft ? r.sqft + ' ft²' : '~900 ft²'}</strong>Area</div>
-        <div class="spc"><strong>${r.furnishing || r.furnish || 'Semi'}</strong>Furnish</div>
-        <div class="spc"><strong>Floor ${r.floor || 'G'}</strong>Level</div>
-      </div>
-
-      <!-- ── BAH + Available tags ── -->
-      <div style="margin-bottom:12px;display:flex;flex-wrap:wrap;gap:6px;">
-        <span class="tag" style="font-size:12px;padding:5px 12px;border-color:${bahColor};color:${bahColor};">${bahText}</span>
-        ${r.available
-          ? `<span class="tag" style="font-size:12px;padding:5px 12px;color:#38bdf8;border-color:#38bdf8;">📅 From ${r.available}</span>`
-          : `<span class="tag" style="font-size:12px;padding:5px 12px;color:#22c55e;border-color:#22c55e;">⚡ Available Now</span>`}
-      </div>
-
-      <!-- ── AI Rent Suggestion ── -->
-      <div id="ai-suggestion-panel"></div>
-
-      <!-- ── Food nearby ── -->
-      <button onclick="window.openFoodPanel('${r.city}')"
+        <!-- ── Food nearby ── -->
+        <button onclick="window.openFoodPanel('${r.city}')"
         style="width:100%;background:rgba(255,153,51,0.08);color:var(--accent);border:1px solid rgba(255,153,51,0.3);padding:10px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;font-family:'Outfit',sans-serif;margin-bottom:10px;transition:all 0.2s;"
         onmouseover="this.style.background='rgba(255,153,51,0.15)'"
         onmouseout="this.style.background='rgba(255,153,51,0.08)'">
         🍽️ Nearby Mess &amp; Hotels in ${r.city}
-      </button>
+        </button>
 
-      <!-- ── Similar listings ── -->
-      <div id="similar-listings-wrap"></div>
-    </div>
-    `;
+        <!-- ── Similar listings ── -->
+        <div id="similar-listings-wrap"></div>
+        </div>
+        `;
 
-    // ── Footer: Contact buttons ──
-    const maskedNum = r.whatsapp
+        // ── Footer: Contact buttons ──
+        const maskedNum = r.whatsapp
         ? `+91 ●●●●●● ${r.whatsapp.toString().slice(-4)}`
         : '+91 ●●●● ●●●●';
-    const ownerIdLine = auth.currentUser
+        const ownerIdLine = auth.currentUser
         ? (auth.currentUser.phoneNumber || auth.currentUser.email || 'Verified User')
         : maskedNum;
-    const ownerVerifiedLine = r.verified
+        const ownerVerifiedLine = r.verified
         ? `<span style="font-size:11px;color:#22c55e;font-weight:700;">✅ Verified Owner</span>`
         : `<span style="font-size:11px;color:#f4c542;font-weight:700;">⏳ Verification Pending</span>`;
 
-    if (!auth.currentUser) {
-        footer.innerHTML = `
-        <div style="background:linear-gradient(135deg,rgba(255,153,51,0.1),rgba(255,153,51,0.04));border:1px solid rgba(255,153,51,0.3);border-radius:12px;padding:14px;margin-bottom:10px;">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:13px;">
+        if (!auth.currentUser) {
+            footer.innerHTML = `
+            <div style="background:linear-gradient(135deg,rgba(255,153,51,0.1),rgba(255,153,51,0.04));border:1px solid rgba(255,153,51,0.3);border-radius:12px;padding:14px;margin-bottom:10px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:13px;">
             <div style="width:44px;height:44px;border-radius:50%;background:rgba(255,153,51,0.15);border:2px solid rgba(255,153,51,0.35);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">👤</div>
             <div>
-              <div style="font-weight:800;font-size:14px;">Owner Contact Hidden</div>
-              <div style="font-size:12px;color:var(--muted);margin-top:3px;">📞 ${maskedNum} &nbsp;·&nbsp; 💬 WhatsApp</div>
-              <div style="margin-top:4px;">${ownerVerifiedLine}</div>
+            <div style="font-weight:800;font-size:14px;">Owner Contact Hidden</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:3px;">📞 ${maskedNum} &nbsp;·&nbsp; 💬 WhatsApp</div>
+            <div style="margin-top:4px;">${ownerVerifiedLine}</div>
             </div>
-          </div>
-          <button onclick="window.closeModals();window.openPostModal();"
+            </div>
+            <button onclick="window.closeModals();window.openPostModal();"
             style="width:100%;background:var(--accent);color:#000;padding:13px;border:none;border-radius:10px;font-weight:800;font-size:15px;cursor:pointer;font-family:'Outfit',sans-serif;transition:transform .15s;"
             onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='none'">
             🔐 Login to Reveal Contact
-          </button>
-          <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:8px;">Phone OTP — <b style="color:var(--accent);">30 seconds</b>, 100% free.</p>
-        </div>`;
-    } else if (r.whatsapp) {
-        footer.innerHTML = `
-        <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px;">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+            </button>
+            <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:8px;">Phone OTP — <b style="color:var(--accent);">30 seconds</b>, 100% free.</p>
+            </div>`;
+        } else if (r.whatsapp) {
+            footer.innerHTML = `
+            <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
             <div style="width:40px;height:40px;border-radius:50%;background:${r.verified ? 'rgba(34,197,94,0.12)' : 'rgba(255,153,51,0.08)'};border:2px solid ${r.verified ? 'rgba(34,197,94,0.3)' : 'rgba(255,153,51,0.2)'};display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">👤</div>
             <div>
-              <div style="font-weight:800;font-size:13px;">Direct Owner</div>
-              <div style="font-size:11px;color:var(--muted);margin-top:2px;">📞 +91 ${r.whatsapp}</div>
-              <div style="margin-top:3px;">${ownerVerifiedLine}</div>
+            <div style="font-weight:800;font-size:13px;">Direct Owner</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px;">📞 +91 ${r.whatsapp}</div>
+            <div style="margin-top:3px;">${ownerVerifiedLine}</div>
             </div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;">
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;">
             <a href="tel:+91${r.whatsapp}"
-              style="display:flex;align-items:center;justify-content:center;gap:7px;background:rgba(56,189,248,0.12);color:#38bdf8;border:1px solid rgba(56,189,248,0.3);padding:13px;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px;transition:background .2s;"
-              onmouseover="this.style.background='rgba(56,189,248,0.22)'" onmouseout="this.style.background='rgba(56,189,248,0.12)'">
-              📞 Call Owner
+            style="display:flex;align-items:center;justify-content:center;gap:7px;background:rgba(56,189,248,0.12);color:#38bdf8;border:1px solid rgba(56,189,248,0.3);padding:13px;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px;transition:background .2s;"
+            onmouseover="this.style.background='rgba(56,189,248,0.22)'" onmouseout="this.style.background='rgba(56,189,248,0.12)'">
+            📞 Call Owner
             </a>
             <a href="https://wa.me/91${r.whatsapp}?text=Hi%2C+I+saw+your+listing+on+Faujiadda+%E2%80%94+${encodeURIComponent(r.name)}%2E+Is+it+still+available%3F" target="_blank"
-              style="display:flex;align-items:center;justify-content:center;gap:7px;background:#25D366;color:#000;padding:13px;border-radius:10px;text-decoration:none;font-weight:800;font-size:14px;">
-              💬 WhatsApp
+            style="display:flex;align-items:center;justify-content:center;gap:7px;background:#25D366;color:#000;padding:13px;border-radius:10px;text-decoration:none;font-weight:800;font-size:14px;">
+            💬 WhatsApp
             </a>
-          </div>
-        </div>`;
-    } else {
-        footer.innerHTML = `
-        <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;text-align:center;">
-          <div style="font-size:28px;margin-bottom:6px;">📵</div>
-          <div style="font-weight:700;margin-bottom:4px;">Contact Not Provided</div>
-          <div style="font-size:12px;color:var(--muted);">Owner hasn't added a WhatsApp number yet.</div>
-        </div>`;
-    }
+            </div>
+            </div>`;
+        } else {
+            footer.innerHTML = `
+            <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;text-align:center;">
+            <div style="font-size:28px;margin-bottom:6px;">📵</div>
+            <div style="font-weight:700;margin-bottom:4px;">Contact Not Provided</div>
+            <div style="font-size:12px;color:var(--muted);">Owner hasn't added a WhatsApp number yet.</div>
+            </div>`;
+        }
 
-    modal.style.display = 'block';
+        // Inject AI rent panel (before display so there's no flash of empty)
+        const aiPanel = document.getElementById('ai-suggestion-panel');
+        if (aiPanel) aiPanel.innerHTML = getAIPanelHTML(r, state.listings);
 
-    // Inject AI rent panel
-    const aiPanel = document.getElementById('ai-suggestion-panel');
-    if (aiPanel) aiPanel.innerHTML = getAIPanelHTML(r, state.listings);
+        // Inject Similar listings
+        const simWrap = document.getElementById('similar-listings-wrap');
+        if (simWrap) renderSimilarListings(r, simWrap);
 
-    // Inject Similar listings
-    const simWrap = document.getElementById('similar-listings-wrap');
-    if (simWrap) renderSimilarListings(r, simWrap);
+        modal.style.display = 'block';
+        // Reset #detail-content scroll (the actual scroll container) to top
+        const dc = document.getElementById('detail-content');
+        if (dc) dc.scrollTop = 0;
 };
 
 window.closeDetailModal = () => { document.getElementById('detailModal').style.display='none'; };
@@ -282,38 +295,38 @@ function renderSimilarListings(current, container) {
     ];
 
     const similar = state.listings
-        .filter(l =>
-            l.id !== current.id &&
-            l.city?.toLowerCase() === current.city?.toLowerCase() &&
-            l.price >= current.price * 0.7 &&
-            l.price <= current.price * 1.3
-        )
-        .sort((a,b) => (b.createdAt||0) - (a.createdAt||0))
-        .slice(0, 3);
+    .filter(l =>
+    l.id !== current.id &&
+    l.city?.toLowerCase() === current.city?.toLowerCase() &&
+    l.price >= current.price * 0.7 &&
+    l.price <= current.price * 1.3
+    )
+    .sort((a,b) => (b.createdAt||0) - (a.createdAt||0))
+    .slice(0, 3);
 
     if (!similar.length) { container.innerHTML = ''; return; }
 
     container.innerHTML = `
     <div style="margin-bottom:10px;">
-      <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:10px;">🔁 Similar in ${current.city}</p>
-      <div style="display:flex;flex-direction:column;gap:8px;">
-      ${similar.map(s => {
+    <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:10px;">🔁 Similar in ${current.city}</p>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+    ${similar.map(s => {
         const thumb = s.mediaUrls?.[0] || PHOTO_POOL[Math.abs((s.createdAt||0) % PHOTO_POOL.length)];
         const bahColor = s.price <= 15000 ? '#22c55e' : s.price <= 30000 ? '#f4c542' : '#f43f5e';
         const aiBadge = getSuggestionBadgeHTML(s, state.listings);
         return `<div onclick="window.openDetailModal('${s.id}')" style="display:flex;gap:10px;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px;cursor:pointer;transition:border-color .18s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
-          <img src="${thumb}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;border:1px solid var(--border);flex-shrink:0;" loading="lazy">
-          <div style="flex:1;overflow:hidden;">
-            <div style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.name}</div>
-            <div style="font-size:11px;color:var(--muted);margin-top:2px;">📍 ${s.area}</div>
-            <div style="display:flex;gap:5px;margin-top:5px;flex-wrap:wrap;align-items:center;">
-              <span style="font-weight:800;font-size:13px;color:${bahColor};">₹${s.price.toLocaleString()}/mo</span>
-              ${aiBadge}
-            </div>
-          </div>
+        <img src="${thumb}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;border:1px solid var(--border);flex-shrink:0;" loading="lazy">
+        <div style="flex:1;overflow:hidden;">
+        <div style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.name}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;">📍 ${s.area}</div>
+        <div style="display:flex;gap:5px;margin-top:5px;flex-wrap:wrap;align-items:center;">
+        <span style="font-weight:800;font-size:13px;color:${bahColor};">₹${s.price.toLocaleString()}/mo</span>
+        ${aiBadge}
+        </div>
+        </div>
         </div>`;
-      }).join('')}
-      </div>
+    }).join('')}
+    </div>
     </div>`;
 }
 
@@ -617,17 +630,17 @@ window.openProfileModal = async () => {
     const userIcon = auth.currentUser.phoneNumber ? '📱' : '✉️';
     document.getElementById('profile-details').innerHTML = `
     <div style="background:var(--card2);padding:14px;border-radius:12px;border:1px solid var(--border);">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div style="width:42px;height:42px;border-radius:50%;background:rgba(255,153,51,0.12);border:2px solid rgba(255,153,51,0.3);display:flex;align-items:center;justify-content:center;font-size:20px;">${userIcon}</div>
-          <div>
-            <div style="font-size:11px;color:var(--muted);margin-bottom:2px;">Logged in as</div>
-            <div style="font-weight:700;font-size:14px;">${userIdentity}</div>
-            <div style="font-size:10px;color:#22c55e;margin-top:2px;">✅ Verified defence member</div>
-          </div>
-        </div>
-        <button onclick="window.logoutUser()" style="background:rgba(244,63,94,.1);color:var(--red);border:1px solid rgba(244,63,94,.3);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;flex-shrink:0;">Log Out</button>
-      </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+    <div style="display:flex;align-items:center;gap:10px;">
+    <div style="width:42px;height:42px;border-radius:50%;background:rgba(255,153,51,0.12);border:2px solid rgba(255,153,51,0.3);display:flex;align-items:center;justify-content:center;font-size:20px;">${userIcon}</div>
+    <div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:2px;">Logged in as</div>
+    <div style="font-weight:700;font-size:14px;">${userIdentity}</div>
+    <div style="font-size:10px;color:#22c55e;margin-top:2px;">✅ Verified defence member</div>
+    </div>
+    </div>
+    <button onclick="window.logoutUser()" style="background:rgba(244,63,94,.1);color:var(--red);border:1px solid rgba(244,63,94,.3);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;flex-shrink:0;">Log Out</button>
+    </div>
     </div>`;
 
     const container = document.getElementById('my-listings-container');
@@ -696,14 +709,13 @@ window.shareListing = (r) => {
 
 // ─── Recaptcha init (safe) ───
 window.initRecaptcha = () => {
-    // Clear any broken existing verifier
     if (window.recaptchaVerifier) {
         try { window.recaptchaVerifier.clear(); } catch(_) {}
         window.recaptchaVerifier = null;
     }
     const container = document.getElementById('recaptcha-container');
     if (!container) return;
-    container.innerHTML = ''; // Clear stale widget
+    container.innerHTML = '';
     try {
         window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
             size: 'normal',

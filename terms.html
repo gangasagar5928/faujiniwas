@@ -3,41 +3,428 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Terms of Service - Faujiadda</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <title>Terms of Service — Faujiadda</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪖</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
     <style>
-        body { font-family: 'Outfit', sans-serif; background-color: #0b1325; color: #fff; line-height: 1.6; margin: 0; }
-        .nav { padding: 20px 50px; background: rgba(11, 19, 37, 0.95); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
-        .nav-logo { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; text-decoration: none; color: #fff; }
-        .nav-logo span { color: #FF9933; }
-        .container { max-width: 800px; margin: 80px auto; padding: 0 24px 80px; }
-        h1 { font-family: 'Playfair Display', serif; font-size: 42px; margin-bottom: 15px; color: #FF9933; }
-        h2 { font-size: 20px; margin-top: 40px; margin-bottom: 15px; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
-        p { color: #a0aec0; margin-bottom: 20px; font-size: 15px; }
-        .update-date { font-size: 13px; color: #4a5568; margin-bottom: 40px; }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --navy: #0b1325;
+            --navy-light: #111d36;
+            --navy-lighter: #1a2642;
+            --border: rgba(42,59,92,0.5);
+            --saffron: #FF9933;
+            --green: #22c55e;
+            --white: #f0f4ff;
+            --muted: #7a8fa8;
+            --muted2: #4a5f7a;
+            --red: #f43f5e;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--navy);
+            color: var(--white);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: sticky; top: 0; z-index: 100;
+            padding: 18px 48px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(11,19,37,0.96);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-logo { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; text-decoration: none; color: var(--white); }
+        .nav-logo span { color: var(--saffron); }
+        .nav-back { color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 6px; transition: color .2s; }
+        .nav-back:hover { color: var(--saffron); }
+        @media (max-width: 600px) { nav { padding: 16px 20px; } }
+
+        /* ── HERO ── */
+        .hero {
+            background: linear-gradient(135deg, var(--navy-lighter) 0%, var(--navy) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 72px 48px 56px;
+            position: relative; overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 80% 50%, rgba(255,153,51,0.06) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-inner { max-width: 820px; margin: 0 auto; position: relative; }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255,153,51,0.1); border: 1px solid rgba(255,153,51,0.3);
+            border-radius: 100px; padding: 6px 16px;
+            font-size: 12px; font-weight: 700; letter-spacing: .1em;
+            text-transform: uppercase; color: var(--saffron);
+            margin-bottom: 24px;
+        }
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(32px, 6vw, 52px);
+            font-weight: 900; line-height: 1.1;
+            margin-bottom: 18px;
+        }
+        .hero p { font-size: 16px; color: var(--muted); max-width: 600px; line-height: 1.75; }
+        .hero-meta {
+            display: flex; gap: 24px; flex-wrap: wrap; margin-top: 28px;
+        }
+        .meta-pill {
+            display: flex; align-items: center; gap: 7px;
+            background: var(--navy-lighter); border: 1px solid var(--border);
+            border-radius: 8px; padding: 8px 14px;
+            font-size: 13px; color: var(--muted);
+        }
+        .meta-pill strong { color: var(--white); }
+        @media (max-width: 600px) { .hero { padding: 48px 20px 40px; } }
+
+        /* ── LAYOUT ── */
+        .page-body { max-width: 820px; margin: 0 auto; padding: 56px 48px 100px; }
+        @media (max-width: 600px) { .page-body { padding: 40px 20px 80px; } }
+
+        /* ── TOC ── */
+        .toc {
+            background: var(--navy-lighter); border: 1px solid var(--border);
+            border-radius: 16px; padding: 28px 32px; margin-bottom: 52px;
+        }
+        .toc-title { font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
+        .toc ol { padding-left: 20px; }
+        .toc li { margin-bottom: 8px; }
+        .toc a { color: var(--saffron); text-decoration: none; font-size: 14px; font-weight: 500; transition: opacity .2s; }
+        .toc a:hover { opacity: 0.75; }
+
+        /* ── SECTIONS ── */
+        .section { margin-bottom: 52px; scroll-margin-top: 90px; }
+        .section-num {
+            display: inline-block;
+            font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+            color: var(--saffron); margin-bottom: 10px;
+        }
+        .section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px; font-weight: 700;
+            color: var(--white); margin-bottom: 16px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+        .section p { color: var(--muted); font-size: 15px; margin-bottom: 14px; }
+        .section p:last-child { margin-bottom: 0; }
+
+        /* ── HIGHLIGHT BOXES ── */
+        .box {
+            border-radius: 12px; padding: 18px 22px; margin: 20px 0;
+            border-left: 4px solid; font-size: 14px; line-height: 1.65;
+        }
+        .box-saffron { background: rgba(255,153,51,.07); border-color: var(--saffron); color: #e8c47f; }
+        .box-green   { background: rgba(34,197,94,.07);  border-color: var(--green);   color: #7ee8a2; }
+        .box-red     { background: rgba(244,63,94,.07);  border-color: var(--red);     color: #f8899a; }
+        .box-blue    { background: rgba(14,165,233,.07); border-color: #0ea5e9;        color: #7dd3fc; }
+        .box strong  { display: block; margin-bottom: 4px; font-weight: 700; }
+
+        /* ── LIST ── */
+        ul.nice { padding-left: 0; list-style: none; }
+        ul.nice li {
+            padding: 10px 0 10px 28px;
+            position: relative; color: var(--muted); font-size: 15px;
+            border-bottom: 1px solid rgba(255,255,255,.04);
+        }
+        ul.nice li:last-child { border-bottom: none; }
+        ul.nice li::before {
+            content: ''; position: absolute; left: 0; top: 18px;
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--saffron);
+        }
+
+        /* ── WARNING BANNER ── */
+        .warn-banner {
+            background: rgba(244,63,94,.08); border: 1px solid rgba(244,63,94,.3);
+            border-radius: 14px; padding: 22px 24px; margin: 24px 0;
+            display: flex; gap: 14px; align-items: flex-start;
+        }
+        .warn-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+        .warn-text h4 { font-size: 15px; font-weight: 700; color: #f8899a; margin-bottom: 5px; }
+        .warn-text p  { font-size: 13px; color: var(--muted); margin: 0; }
+
+        /* ── CONTACT CARD ── */
+        .contact-card {
+            background: var(--navy-lighter); border: 1px solid var(--border);
+            border-radius: 16px; padding: 32px; text-align: center;
+            margin-top: 56px;
+        }
+        .contact-card h3 { font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 10px; }
+        .contact-card p { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+        .contact-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--saffron); color: #000; font-weight: 700;
+            padding: 12px 28px; border-radius: 100px; text-decoration: none;
+            font-size: 14px; transition: all .2s;
+        }
+        .contact-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,153,51,.3); }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 32px 48px;
+            display: flex; justify-content: space-between; align-items: center;
+            color: var(--muted2); font-size: 13px; flex-wrap: wrap; gap: 12px;
+        }
+        footer a { color: var(--muted); text-decoration: none; }
+        footer a:hover { color: var(--saffron); }
+        @media (max-width: 600px) { footer { padding: 24px 20px; flex-direction: column; text-align: center; } }
     </style>
 </head>
 <body>
-    <div class="nav">
-        <a href="index.html" class="nav-logo"><span>Fauji</span>adda</a>
-    </div>
-    <div class="container">
+
+<nav>
+    <a href="index.html" class="nav-logo"><span>Fauji</span>adda</a>
+    <a href="index.html" class="nav-back">← Back to Home</a>
+</nav>
+
+<div class="hero">
+    <div class="hero-inner">
+        <div class="hero-badge">📋 Legal Document</div>
         <h1>Terms of Service</h1>
-        <div class="update-date">Last Updated: March 28, 2026</div>
-
-        <p>By accessing or using Faujiadda, you agree to be bound by these Terms of Service. This platform is provided strictly for educational and peer-to-peer informational networking within the defence community.</p>
-
-        <h2>1. Zero Brokerage Guarantee</h2>
-        <p>Faujiadda strictly prohibits the listing or conducting of commercial brokerage services. Users found attempting to extort "brokerage fees", "commissions", or "finders fees" from defence personnel will be permanently IP-banned.</p>
-
-        <h2>2. Content Accuracy & AI Disclaimer</h2>
-        <p>The "AI Fair Price Engine" and associated metric badges (e.g., 'Great Deal', 'Premium Priced') are algorithmically generated estimates based on community data points and standard military BAH limits. They do not constitute financial advice, and Faujiadda is not liable for rent negotiations or lease agreements established outside the platform.</p>
-
-        <h2>3. User Conduct</h2>
-        <p>You agree to only post genuine, currently available accommodation details. Spamming, posting false imagery, or misrepresenting rent amounts and distance-to-gate will result in account suspension.</p>
-
-        <h2>4. Platform Moderation</h2>
-        <p>We reserve the right to flag, modify, or remove any listing that violates these terms or receives significant community reports via our reporting tool. Faujiadda's moderation decisions are final.</p>
+        <p>Please read these terms carefully before using Faujiadda. By accessing our platform, you agree to be bound by these terms, which are designed to protect every member of India's defence community.</p>
+        <div class="hero-meta">
+            <div class="meta-pill">📅 <strong>Last Updated:</strong>&nbsp; March 28, 2026</div>
+            <div class="meta-pill">🇮🇳 <strong>Jurisdiction:</strong>&nbsp; Republic of India</div>
+            <div class="meta-pill">⚖️ <strong>Version:</strong>&nbsp; 2.0</div>
+        </div>
     </div>
+</div>
+
+<div class="page-body">
+
+    <!-- TABLE OF CONTENTS -->
+    <div class="toc">
+        <div class="toc-title">📖 Table of Contents</div>
+        <ol>
+            <li><a href="#s1">Acceptance of Terms</a></li>
+            <li><a href="#s2">Who Can Use Faujiadda</a></li>
+            <li><a href="#s3">Zero Brokerage Policy</a></li>
+            <li><a href="#s4">User Responsibilities & Content Standards</a></li>
+            <li><a href="#s5">Verification & Account Security</a></li>
+            <li><a href="#s6">AI-Powered Features & Disclaimer</a></li>
+            <li><a href="#s7">Prohibited Activities</a></li>
+            <li><a href="#s8">Platform Moderation & Enforcement</a></li>
+            <li><a href="#s9">Intellectual Property</a></li>
+            <li><a href="#s10">Limitation of Liability</a></li>
+            <li><a href="#s11">Privacy & Data</a></li>
+            <li><a href="#s12">Changes to These Terms</a></li>
+            <li><a href="#s13">Governing Law</a></li>
+            <li><a href="#s14">Contact Us</a></li>
+        </ol>
+    </div>
+
+    <!-- SECTION 1 -->
+    <div class="section" id="s1">
+        <span class="section-num">Section 01</span>
+        <h2>Acceptance of Terms</h2>
+        <p>By accessing, browsing, or using the Faujiadda platform — available at <strong>fauji-adda.web.app</strong> and any associated web pages — you confirm that you have read, understood, and agree to be bound by these Terms of Service ("Terms") and our Privacy Policy.</p>
+        <p>If you do not agree with any part of these Terms, you must discontinue your use of the platform immediately. Your continued use following any updates to these Terms constitutes acceptance of the revised version.</p>
+        <div class="box box-saffron">
+            <strong>🪖 A note from us:</strong>
+            This platform is built exclusively for India's defence community — active duty personnel, veterans, SSB aspirants, and their families. These terms exist to protect you, not to burden you.
+        </div>
+    </div>
+
+    <!-- SECTION 2 -->
+    <div class="section" id="s2">
+        <span class="section-num">Section 02</span>
+        <h2>Who Can Use Faujiadda</h2>
+        <p>Faujiadda is a community platform for India's Armed Forces ecosystem. The following are eligible to register and use the platform:</p>
+        <ul class="nice">
+            <li>Active duty officers, JCOs, and other ranks (OR) of the Indian Army, Navy, and Air Force</li>
+            <li>Retired/veteran defence personnel and their immediate families</li>
+            <li>Defence civilian employees posted to cantonments</li>
+            <li>SSB and NDA/CDS aspirants seeking accommodation near selection centres</li>
+            <li>Property owners within or adjacent to defence cantonment areas wishing to list verified rentals</li>
+        </ul>
+        <p>Faujiadda reserves the right to verify user eligibility and suspend accounts that do not belong to the defence community ecosystem. Commercial real estate agents and brokers operating for profit are explicitly excluded from listing on this platform.</p>
+    </div>
+
+    <!-- SECTION 3 -->
+    <div class="section" id="s3">
+        <span class="section-num">Section 03</span>
+        <h2>Zero Brokerage Policy</h2>
+        <div class="box box-green">
+            <strong>✅ Our Core Promise:</strong>
+            Faujiadda is and will always remain a ₹0 brokerage platform. Connecting defence families with verified housing is a mission, not a marketplace for middlemen.
+        </div>
+        <p>Users are strictly prohibited from charging, soliciting, or accepting any brokerage fees, commission, finders fees, service charges, or any other monetary compensation for facilitating a rental connection through this platform.</p>
+        <p>All contact between property owners and prospective tenants occurs directly via WhatsApp. Faujiadda does not intermediate, manage, or take any cut from rental agreements.</p>
+        <div class="warn-banner">
+            <div class="warn-icon">🚨</div>
+            <div class="warn-text">
+                <h4>Strict Enforcement</h4>
+                <p>Any user found charging brokerage fees through leads generated on Faujiadda will be permanently IP-banned, their listings removed, and the violation reported to the relevant cantonment administration where applicable.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 4 -->
+    <div class="section" id="s4">
+        <span class="section-num">Section 04</span>
+        <h2>User Responsibilities & Content Standards</h2>
+        <p>By posting a listing, you represent and warrant that:</p>
+        <ul class="nice">
+            <li>The property is genuinely available for rent at the stated price at the time of posting</li>
+            <li>All photographs uploaded are authentic images of the actual property — no stock photos, AI-generated images, or images of different properties</li>
+            <li>The stated distance from the cantonment gate is accurate to the best of your knowledge</li>
+            <li>Your WhatsApp number is active and you will respond to genuine inquiries within a reasonable timeframe</li>
+            <li>You will update or remove the listing promptly once the property is rented</li>
+            <li>All information provided — including rent, sq. footage, floor number, and furnishing status — is truthful and not misleading</li>
+        </ul>
+        <p>Faujiadda operates on community trust. Misrepresentation not only violates these Terms but harms fellow soldiers and their families who rely on this platform during stressful relocation periods.</p>
+    </div>
+
+    <!-- SECTION 5 -->
+    <div class="section" id="s5">
+        <span class="section-num">Section 05</span>
+        <h2>Verification & Account Security</h2>
+        <p>Faujiadda uses mobile OTP verification (via Firebase Authentication) as the primary mechanism for account creation. This one-time verification ties each listing to a real, active Indian mobile number, creating accountability for all posted content.</p>
+        <p>You are responsible for maintaining the confidentiality of your account credentials. Any activity performed from your verified account is your responsibility. If you suspect unauthorised use of your account, contact us immediately.</p>
+        <div class="box box-blue">
+            <strong>📱 OTP Integrity:</strong>
+            Never share your OTP with anyone, including anyone claiming to be from Faujiadda. Our team will never ask for your OTP. Report any such requests to us immediately.
+        </div>
+    </div>
+
+    <!-- SECTION 6 -->
+    <div class="section" id="s6">
+        <span class="section-num">Section 06</span>
+        <h2>AI-Powered Features & Disclaimer</h2>
+        <p>Faujiadda may use algorithmically generated estimates and badges, including but not limited to:</p>
+        <ul class="nice">
+            <li><strong>"Fair Price Engine"</strong> — rent estimates based on BAH data, area averages, and community-reported prices</li>
+            <li><strong>Deal quality badges</strong> (e.g., "Great Deal", "Premium Priced") — generated by comparing listing rent to local BAH limits and similar properties</li>
+            <li><strong>Gate distance estimates</strong> — calculated using mapping data, which may vary from actual walking/driving routes</li>
+        </ul>
+        <p>All AI-generated features are provided for informational guidance only. They do not constitute financial advice, legal advice, or a guarantee of any kind. Faujiadda is not liable for any decision — including lease agreements, rent negotiations, or relocation choices — made in reliance on platform-generated estimates.</p>
+        <div class="box box-saffron">
+            <strong>⚠️ Always verify independently:</strong>
+            Visit the property in person before signing any lease. Use Faujiadda as a discovery tool, not as a substitute for due diligence.
+        </div>
+    </div>
+
+    <!-- SECTION 7 -->
+    <div class="section" id="s7">
+        <span class="section-num">Section 07</span>
+        <h2>Prohibited Activities</h2>
+        <p>The following activities are strictly prohibited on Faujiadda and may result in immediate account suspension and/or legal action:</p>
+        <ul class="nice">
+            <li>Charging or soliciting brokerage, commission, or finder's fees</li>
+            <li>Posting fraudulent listings with false prices, photographs, or availability dates</li>
+            <li>Impersonating a defence personnel, veteran, or official</li>
+            <li>Using the platform to harvest contact information for spam or unsolicited marketing</li>
+            <li>Attempting to circumvent OTP verification or creating fake accounts</li>
+            <li>Using automated bots or scripts to post multiple listings or scrape data</li>
+            <li>Posting listings for properties outside cantonment areas or clearly outside the defence community ecosystem</li>
+            <li>Any activity that violates applicable Indian law, including the IT Act, 2000</li>
+            <li>Harassment, threatening, or abusing other platform users</li>
+            <li>Attempting to manipulate or abuse the community reporting system</li>
+        </ul>
+    </div>
+
+    <!-- SECTION 8 -->
+    <div class="section" id="s8">
+        <span class="section-num">Section 08</span>
+        <h2>Platform Moderation & Enforcement</h2>
+        <p>Faujiadda employs a community-first moderation model. Any user may report a listing using the in-app reporting tool. Listings that accumulate a threshold of verified reports are automatically flagged for review and temporarily hidden from public view.</p>
+        <p>The platform team reviews flagged listings and may take the following actions:</p>
+        <ul class="nice">
+            <li>Request the listing owner to provide additional verification</li>
+            <li>Temporarily suspend a listing pending review</li>
+            <li>Permanently remove a listing that violates these Terms</li>
+            <li>Suspend or permanently ban the associated account</li>
+            <li>Issue a warning for first-time, minor violations</li>
+        </ul>
+        <p>Faujiadda's moderation decisions are final. However, if you believe a listing was incorrectly removed, you may appeal via our contact form, and we will review your appeal within 5 business days.</p>
+    </div>
+
+    <!-- SECTION 9 -->
+    <div class="section" id="s9">
+        <span class="section-num">Section 09</span>
+        <h2>Intellectual Property</h2>
+        <p>The Faujiadda name, logo, platform design, source code, and all associated content are the intellectual property of Faujiadda and its creators. You may not reproduce, distribute, or create derivative works without prior written permission.</p>
+        <p>By uploading photographs or content to the platform, you grant Faujiadda a non-exclusive, royalty-free, worldwide license to display and use that content solely for the purpose of operating the platform. You retain full ownership of your content and may remove it at any time by deleting your listing.</p>
+    </div>
+
+    <!-- SECTION 10 -->
+    <div class="section" id="s10">
+        <span class="section-num">Section 10</span>
+        <h2>Limitation of Liability</h2>
+        <p>Faujiadda is a peer-to-peer listing platform. We do not own, manage, or control any of the properties listed. We are not a party to any rental agreement and do not verify the physical condition of listed properties.</p>
+        <p>To the maximum extent permitted by applicable law, Faujiadda and its creators shall not be liable for any direct, indirect, incidental, consequential, or punitive damages arising from:</p>
+        <ul class="nice">
+            <li>Inaccurate or misleading listing information posted by users</li>
+            <li>Any rental dispute, lease agreement, or financial loss arising from use of the platform</li>
+            <li>Temporary unavailability of the platform due to maintenance or technical issues</li>
+            <li>Unauthorised access to your account resulting from failure to secure your credentials</li>
+        </ul>
+        <div class="box box-red">
+            <strong>⚖️ No Liability Cap:</strong>
+            In all cases, Faujiadda's maximum aggregate liability to any user shall not exceed ₹0, as the platform is provided free of charge. Users access and use the platform entirely at their own risk.
+        </div>
+    </div>
+
+    <!-- SECTION 11 -->
+    <div class="section" id="s11">
+        <span class="section-num">Section 11</span>
+        <h2>Privacy & Data</h2>
+        <p>Your use of Faujiadda is also governed by our <a href="privacy.html" style="color:var(--saffron);text-decoration:underline;">Privacy Policy</a>, which is incorporated into these Terms by reference. We collect only the minimum data necessary to operate the platform, and we never sell user data to third parties.</p>
+        <p>Mobile numbers collected via OTP verification are stored securely through Firebase Authentication and are used solely for account verification and listing attribution purposes.</p>
+    </div>
+
+    <!-- SECTION 12 -->
+    <div class="section" id="s12">
+        <span class="section-num">Section 12</span>
+        <h2>Changes to These Terms</h2>
+        <p>We may update these Terms from time to time to reflect changes in our platform, legal requirements, or community feedback. When we do, we will update the "Last Updated" date at the top of this page.</p>
+        <p>For significant changes that materially affect your rights, we will provide additional notice via a prominent banner on the platform. Your continued use of Faujiadda after any updates constitutes your acceptance of the revised Terms.</p>
+    </div>
+
+    <!-- SECTION 13 -->
+    <div class="section" id="s13">
+        <span class="section-num">Section 13</span>
+        <h2>Governing Law</h2>
+        <p>These Terms shall be governed by and construed in accordance with the laws of the Republic of India. Any disputes arising from or relating to these Terms or your use of Faujiadda shall be subject to the exclusive jurisdiction of the competent courts of India.</p>
+        <p>We encourage users to resolve disputes amicably and in good faith before pursuing legal remedies. Most concerns can be addressed quickly by contacting our support team.</p>
+    </div>
+
+    <!-- SECTION 14 / CONTACT -->
+    <div class="section" id="s14">
+        <span class="section-num">Section 14</span>
+        <h2>Contact Us</h2>
+        <p>If you have questions about these Terms, want to report a violation, or need to appeal a moderation decision, please reach out to us. We are committed to responding within 48 hours on working days.</p>
+    </div>
+
+    <div class="contact-card">
+        <h3>Have questions about these Terms?</h3>
+        <p>We're here to help. Reach us via our contact page or send a message directly.</p>
+        <a href="contact.html" class="contact-btn">📬 Contact Support</a>
+    </div>
+
+</div>
+
+<footer>
+    <div>© 2026 Faujiadda. All rights reserved. Built for those who serve. 🇮🇳</div>
+    <div style="display:flex;gap:20px;">
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Service</a>
+        <a href="contact.html">Contact</a>
+    </div>
+</footer>
+
 </body>
 </html>
