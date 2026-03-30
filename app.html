@@ -7,6 +7,8 @@
     <title>Faujiadda — Live Map</title>
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪖</text></svg>">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#121212">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1550,6 +1552,34 @@
         .filter-toggle-btn.active-filters #adv-filter-indicator {
             display: inline-block;
         }
+
+        /* App Tabs Navigation */
+        .bottom-nav { display: none; }
+        .desktop-nav { display: flex; gap: 8px; align-items: center; margin-left: 20px; }
+        .desktop-nav button { background:none; border:none; color:var(--muted); font-size:14px; font-weight:700; cursor:pointer; padding:6px 12px; border-radius:100px; font-family:'Outfit',sans-serif; transition:all 0.2s; display:flex; align-items:center; gap:6px; }
+        .desktop-nav button.active { background:rgba(255,153,51,0.1); color:var(--accent); }
+        .desktop-nav button:hover { color: var(--text); }
+
+        @media (max-width: 768px) {
+            .desktop-nav { display: none; }
+            .bottom-nav { 
+                display: flex; position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; 
+                background: var(--nav); border-top: 1px solid var(--border); z-index: 2000; 
+                justify-content: space-around; align-items: center; padding-bottom: env(safe-area-inset-bottom);
+            }
+            .bottom-nav button { 
+                background: none; border: none; color: var(--muted); font-family: 'Outfit'; 
+                font-size: 11px; font-weight: 600; display: flex; flex-direction: column; 
+                align-items: center; gap: 4px; padding: 5px 0; flex:1;
+            }
+            .bottom-nav button.active { color: var(--accent); }
+            .bottom-nav button span:first-child { font-size: 20px; }
+            
+            /* Give space above the bottom bar */
+            .sidebar { height: calc(55vh - 60px); }
+            .fab { bottom: 84px; }
+            #toast { bottom: 80px; }
+        }
     </style>
 </head>
 
@@ -1565,10 +1595,16 @@
 
     <header>
         <div class="hdr-top">
-            <div>
-                <a href="index.html" class="logo"><span>Fauji</span>adda</a>
-                <div style="font-size:10px;color:var(--muted);margin-top:1px;letter-spacing:.04em;">Defence Housing
-                    &nbsp;·&nbsp; Verified Listings &nbsp;·&nbsp; Fair Price AI</div>
+            <div style="display:flex; align-items:center;">
+                <div>
+                    <a href="index.html" class="logo"><span>Fauji</span>adda</a>
+                    <div style="font-size:10px;color:var(--muted);margin-top:1px;letter-spacing:.04em;">Housing & Marketplace</div>
+                </div>
+                <div class="desktop-nav">
+                    <button class="active" onclick="window.switchTab('housing')">🏠 Housing</button>
+                    <button onclick="window.switchTab('market')">🏷️ Market</button>
+                    <button onclick="window.switchTab('chat')">💬 Messages <span id="dt-unread" style="display:none;background:var(--red);color:#fff;border-radius:100px;font-size:10px;padding:1px 5px;margin-left:4px;">0</span></button>
+                </div>
             </div>
             <button class="fb-accent" onclick="window.openProfileModal()">👤 Profile</button>
         </div>
@@ -1614,6 +1650,21 @@
                     <option value="all">Any Time</option>
                     <option value="now">Available Now</option>
                     <option value="3mo">Within 3 Months</option>
+                </select>
+            </div>
+            <div>
+                <div class="adv-label">👤 Owner Type</div>
+                <select class="adv-select" id="ownerFilterAdv" onchange="window.setOwnerFilter(this.value)">
+                    <option value="all">Any</option>
+                    <option value="defence">🎖️ Defence Only</option>
+                    <option value="nobroker">🚫 No Brokerage</option>
+                </select>
+            </div>
+            <div>
+                <div class="adv-label">🧳 Duration</div>
+                <select class="adv-select" id="termFilterAdv" onchange="window.setTermFilter(this.value)">
+                    <option value="all">Any Term</option>
+                    <option value="short">Short-term (TD)</option>
                 </select>
             </div>
             <div>
@@ -1679,6 +1730,36 @@
     </div>
 
     <button class="fab" onclick="window.openPostModal()">＋ Post Room</button>
+
+    <!-- App Navigation (Mobile Bottom Bar) -->
+    <nav class="bottom-nav" id="mobileNav">
+        <button class="active" onclick="window.switchTab('housing')"><span>🏠</span><span>Housing</span></button>
+        <button onclick="window.switchTab('market')"><span>🏷️</span><span>Market</span></button>
+        <button onclick="window.switchTab('chat')" style="position:relative;"><span>💬</span><span>Messages</span><span id="unread-badge" style="display:none;position:absolute;top:5px;right:20px;background:var(--red);color:#fff;border-radius:50%;width:12px;height:12px;font-size:8px;"></span></button>
+    </nav>
+
+    <!-- Chat App Layer -->
+    <div id="chat-app-layer" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:1500; background:var(--bg); flex-direction:column; padding-bottom:env(safe-area-inset-bottom);">
+        <div style="background:var(--nav); padding: 15px 20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+             <div style="font-size:18px; font-weight:700;">💬 Messages</div>
+        </div>
+        <!-- Inbox list -->
+        <div id="chat-inbox" style="flex:1; overflow-y:auto; padding: 10px;">
+             <div style="text-align:center;color:var(--muted);margin-top:40px;">No messages yet. Message an owner to start a chat!</div>
+        </div>
+        <!-- Thread -->
+        <div id="chat-thread" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; z-index:1600; background:var(--bg); flex-direction:column;">
+            <div style="background:var(--nav); padding:15px; border-bottom:1px solid var(--border); margin-top:env(safe-area-inset-top); display:flex; align-items:center; gap:15px;">
+                 <button onclick="window.closeChatThread()" style="background:none; border:none; color:var(--text); font-size:24px; cursor:pointer;" aria-label="Back">←</button>
+                 <div id="chat-thread-title" style="font-weight:700; font-size:16px;">User</div>
+            </div>
+            <div id="chat-messages" style="flex:1; overflow-y:auto; padding:15px; display:flex; flex-direction:column; gap:10px;"></div>
+            <div style="padding:10px 15px; border-top:1px solid var(--border); background:var(--card); display:flex; gap:10px; padding-bottom:calc(10px + env(safe-area-inset-bottom));">
+                 <input type="text" id="chat-input" class="fi" style="margin:0; flex:1;" placeholder="Message..." onkeyup="if(event.key==='Enter') window.sendChatMessage()">
+                 <button onclick="window.sendChatMessage()" class="bp" id="chatSendBtn" style="width:auto; padding:0 20px;">Send</button>
+            </div>
+        </div>
+    </div>
 
     <div id="toast"></div>
 
@@ -1802,6 +1883,17 @@
                             <option value="Unfurnished">Unfurnished</option>
                             <option value="Semi">Semi-Furnished</option>
                             <option value="Fully">Fully Furnished</option>
+                        </select>
+                    </div>
+                    <div class="frow">
+                        <select id="f_owner_type" class="fi" style="border-color:var(--gold);color:var(--gold);">
+                            <option value="defence">🎖️ Defence Personnel (Owner)</option>
+                            <option value="civilian">👤 Civilian Owner (No Broker)</option>
+                            <option value="broker">🏢 Broker / Agent</option>
+                        </select>
+                        <select id="f_lease_term" class="fi">
+                            <option value="standard">📅 Long term (11+ mos)</option>
+                            <option value="short">🧳 Short term (TD/Course)</option>
                         </select>
                     </div>
                     <div class="frow">
@@ -1952,9 +2044,18 @@
             panel.addEventListener('touchend', () => {
                 if (!isDragging) return;
                 isDragging = false;
+                
+                // Re-enable smooth transitions
                 panel.style.transition = '';
-                if (currentY > 80) window.closeFoodPanel();
-                else panel.style.transform = 'translateY(0)';
+                
+                if (currentY > 80) {
+                    // Wipe mid-drag position synchronously so the CSS rule `translateY(100%)` takes over smoothly
+                    panel.style.transform = '';
+                    window.closeFoodPanel();
+                } else {
+                    // Spring back open
+                    panel.style.transform = '';
+                }
                 currentY = 0;
             });
         })();
@@ -2121,6 +2222,15 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
     <script type="module" src="main.js?v=4.1"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').then(reg => {
+                    console.log('SW Registered', reg.scope);
+                }).catch(err => console.error('SW Registration failed', err));
+            });
+        }
+    </script>
 
     <!-- Site Footer (visible on PC sidebar bottom) -->
     <style>

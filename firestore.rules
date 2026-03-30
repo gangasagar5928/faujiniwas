@@ -24,13 +24,18 @@ service cloud.firestore {
         && request.resource.data.area is string
         && request.resource.data.whatsapp is string;
 
-      // UPDATE: Only the owner can update their own listing.
-      // They CANNOT change uid, verified status, or reportCount (admin-only fields).
-      allow update: if request.auth != null
-        && resource.data.uid == request.auth.uid
-        && request.resource.data.uid == resource.data.uid          // uid immutable
-        && request.resource.data.verified == resource.data.verified // cannot self-verify
-        && request.resource.data.reportCount == resource.data.reportCount; // cannot clear reports
+      // UPDATE:
+      // Case 1: Owner updating their own listing. Cannot change uid, verified, or reportCount.
+      // Case 2: Anyone reporting a listing. Can ONLY increment the reportCount by exactly 1.
+      allow update: if 
+        (request.auth != null
+         && resource.data.uid == request.auth.uid
+         && request.resource.data.uid == resource.data.uid
+         && request.resource.data.verified == resource.data.verified
+         && request.resource.data.reportCount == resource.data.reportCount)
+        ||
+        (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reportCount'])
+         && request.resource.data.reportCount == resource.data.reportCount + 1);
 
       // DELETE: Only the owner can delete their own listing.
       allow delete: if request.auth != null
@@ -44,6 +49,23 @@ service cloud.firestore {
     }
 
     // ── Reports are stored as a field on rentals (reportCount), not a
-    //    separate collection — no extra rules needed. ────────────────────────
+    // ── Secure Real-Time Chat ───────────────────────────────────────────────
+    match /chats/{chatId} {
+      // Only participants (buyer/owner) can read or update their thread
+      allow read, update: if request.auth != null && request.auth.uid in resource.data.participants;
+      
+      // Starting a new thread requires the initiator to be a participant
+      allow create: if request.auth != null && request.auth.uid in request.resource.data.participants;
+      
+      match /messages/{messageId} {
+        // Only chat participants can read messages
+        allow read: if request.auth != null && request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
+        
+        // Sender must be authentic and a participant of the parent chat
+        allow create: if request.auth != null 
+          && request.auth.uid == request.resource.data.senderId
+          && request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
+      }
+    }
   }
 }

@@ -131,7 +131,14 @@ export function render() {
         else if (state.sqftFilter === '500to1000') sqftOk = sqft >= 500 && sqft <= 1000;
         else if (state.sqftFilter === 'gt1000') sqftOk = sqft > 1000;
 
-        return typeOk && searchOk && furnishOk && availOk && sqftOk;
+        // Owner  & Term filter
+        const ownerOk = state.ownerFilter === 'all' 
+            || (state.ownerFilter === 'defence' && r.ownerType === 'defence')
+            || (state.ownerFilter === 'nobroker' && r.ownerType !== 'broker');
+        
+        const termOk = state.termFilter === 'all' || r.term === state.termFilter;
+
+        return typeOk && searchOk && furnishOk && availOk && sqftOk && ownerOk && termOk;
     });
 
     filtered.sort((a, b) => {
@@ -176,6 +183,13 @@ export function render() {
 
         const aiBadge = getSuggestionBadgeHTML(r, state.listings);
 
+        let ownerBadge = '';
+        if (r.ownerType === 'defence') ownerBadge = `<span class="tag" style="background:rgba(255,153,51,0.15);border-color:var(--gold);color:var(--gold);">🎖️ Fauji Owner</span>`;
+        else if (r.ownerType === 'civilian') ownerBadge = `<span class="tag" style="background:rgba(255,153,51,0.05);border-color:var(--muted);color:var(--muted);">👤 No Broker</span>`;
+
+        let termBadge = '';
+        if (r.term === 'short') termBadge = `<span class="tag" style="background:rgba(96,165,250,0.1);border-color:#60a5fa;color:#60a5fa;">🧳 Short-term (TD)</span>`;
+
         const card = document.createElement('div');
         card.className = 'lc';
         card.id = 'card-' + r.id;
@@ -195,6 +209,8 @@ export function render() {
             <div class="lc-loc">📍 ${r.area}, ${r.city} &nbsp;·&nbsp; 🚶 ${r.distance} km</div>
             <div class="lc-tags">
                 <span class="tag">${r.type?.toUpperCase() || 'FLAT'}</span>
+                ${ownerBadge}
+                ${termBadge}
                 ${aiBadge}
             </div>
         </div>
@@ -240,17 +256,22 @@ export function render() {
 
 // ─── Map Init ───
 export function initMap() {
-    const indiaBounds = L.latLngBounds(L.latLng(6.5, 68.0), L.latLng(35.5, 97.5));
+    // Accurate India bounds: covers J&K (north), Arunachal (east), Tamil Nadu (south),
+    // Lakshadweep (west), and Andaman & Nicobar Islands (far east/south)
+    const indiaBounds = L.latLngBounds(
+        L.latLng(6.0, 68.0),   // SW corner — near Thiruvananthapuram / Lakshadweep
+        L.latLng(37.1, 97.5)   // NE corner — Arunachal Pradesh / Siachen
+    );
     state.map = L.map('map', {
         zoomControl: false,
         maxBounds: indiaBounds,
-        maxBoundsViscosity: 1.0,
+        maxBoundsViscosity: 0.85, // slightly elastic — doesn't feel like a hard wall
         preferCanvas: true
-    }).setView([22.9074, 79.1469], 5);
+    }).setView([22.5, 82.0], 5); // Geographic centroid of India
 
-    // Clean light map tiles
+    // Clean map tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 20, minZoom: 5, noWrap: true,
+        maxZoom: 20, minZoom: 4, noWrap: true,
         attribution: '&copy; OpenStreetMap contributors'
     }).addTo(state.map);
 

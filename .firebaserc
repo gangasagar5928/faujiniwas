@@ -1,29 +1,5 @@
 {
   "projects": {
-    "default": "rentmap-live",
-    "legacy": "rentmap-8075d"
-  },
-  "targets": {
-    "rentmap-live": {
-      "hosting": {
-        "faujiadda": [
-          "fauji-adda"
-        ],
-        "faujirentals": [
-          "faujirentals"
-        ]
-      }
-    },
-    "rentmap-8075d": {
-      "hosting": {
-        "faujiadda": [
-          "fauji-adda"
-        ],
-        "faujirentals": [
-          "faujirentals"
-        ]
-      }
-    }
-  },
-  "etags": {}
+    "default": "rentmap-live"
+  }
 }

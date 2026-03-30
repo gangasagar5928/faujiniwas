@@ -2,16 +2,10 @@ import { state } from './data.js';
 import { db, onSnapshot, query, collection, where } from './firebase.js';
 import { initMap, render } from './map.js';
 import './ui.js';
-
-// ─── Global modal closer ─────────────────────────────────
-window.closeModals = () => {
-    ['detailModal','postModal','profileModal','reportModal'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.style.display = 'none';
-    });
-};
+import './chat.js';
 
 // ─── App Bootstrap ────────────────────────────────────────
+
 function startApp() {
     try {
         initMap();
@@ -85,19 +79,23 @@ window.setSort = (v) => {
 window.setFurnishFilter = (v) => { state.furnishFilter = v; _updateAdvIndicator(); render(); };
 window.setSqftFilter    = (v) => { state.sqftFilter    = v; _updateAdvIndicator(); render(); };
 window.setAvailFilter   = (v) => { state.availFilter   = v; _updateAdvIndicator(); render(); };
+window.setOwnerFilter   = (v) => { state.ownerFilter   = v; _updateAdvIndicator(); render(); };
+window.setTermFilter    = (v) => { state.termFilter    = v; _updateAdvIndicator(); render(); };
 
 window.resetAdvFilters = () => {
     state.furnishFilter = 'all';
     state.sqftFilter    = 'all';
     state.availFilter   = 'all';
-    const ids = ['furnishFilter','sqftFilter','availFilter'];
+    state.ownerFilter   = 'all';
+    state.termFilter    = 'all';
+    const ids = ['furnishFilter','sqftFilter','availFilter','ownerFilterAdv','termFilterAdv'];
     ids.forEach(id => { const el = document.getElementById(id); if (el) el.value = 'all'; });
     _updateAdvIndicator();
     render();
 };
 
 function _updateAdvIndicator() {
-    const active = state.furnishFilter !== 'all' || state.sqftFilter !== 'all' || state.availFilter !== 'all';
+    const active = state.furnishFilter !== 'all' || state.sqftFilter !== 'all' || state.availFilter !== 'all' || state.ownerFilter !== 'all' || state.termFilter !== 'all';
     const btn = document.getElementById('advFilterToggle');
     if (btn) btn.classList.toggle('active-filters', active);
 }

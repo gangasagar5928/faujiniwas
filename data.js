@@ -7,12 +7,14 @@ export const state = {
     sortPref: 'new',
     maxPrice: 100000,
     listings: [],
-    draftCoords: { lat: 22.9074, lng: 79.1469 },
+    draftCoords: { lat: 22.5, lng: 82.0 },
     currentReportId: null,
     // Advanced filters
     furnishFilter: 'all',   // all | Fully | Semi | Unfurnished
     availFilter:   'all',   // all | now | 3mo
     sqftFilter:    'all',   // all | lt500 | 500to1000 | gt1000
+    ownerFilter:   'all',   // all | defence | civilian | broker
+    termFilter:    'all',   // all | short
 };
 
 export const SSB_DORMS = [
