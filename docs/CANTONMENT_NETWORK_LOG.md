@@ -12,3 +12,7 @@
 - Base: Kumaon Regiment & Naga Regiment Centre
 - Cantonment Board water distribution and family quarters index.
 
+## Dehradun Military Station
+- Units: IMA, RIMC, Ordnance Factory Raipur
+- Liaison office and transit facility directory.
+
