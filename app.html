@@ -1676,6 +1676,15 @@
                     <option value="priceDesc">₹ High → Low</option>
                 </select>
             </div>
+            <div>
+                <div class="adv-label">🏫 School Proximity</div>
+                <select class="adv-select" id="schoolFilter" onchange="window.setSchoolFilter(this.value)">
+                    <option value="all">Any Distance</option>
+                    <option value="2">Within 2 km</option>
+                    <option value="5">Within 5 km</option>
+                    <option value="10">Within 10 km</option>
+                </select>
+            </div>
         </div>
         <div style="margin-top:10px;display:flex;justify-content:flex-end;">
             <button onclick="window.resetAdvFilters()"
@@ -1715,6 +1724,11 @@
 
             <!-- Sidebar Footer -->
             <div id="sidebar-footer">
+                <!-- Feature Quick Access -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px;">
+                    <button onclick="window.openTransferAlert()" style="background:rgba(255,153,51,0.08);border:1px solid rgba(255,153,51,0.3);color:var(--accent);border-radius:10px;padding:9px 8px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;" onmouseover="this.style.background='rgba(255,153,51,0.18)'" onmouseout="this.style.background='rgba(255,153,51,0.08)'">🗺️ Transfer Alert</button>
+                    <button onclick="window.openCabFinder()" style="background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.3);color:#60a5fa;border-radius:10px;padding:9px 8px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;" onmouseover="this.style.background='rgba(96,165,250,0.18)'" onmouseout="this.style.background='rgba(96,165,250,0.08)'">🚗 Shared Cab</button>
+                </div>
                 <div class="sf-links">
                     <a href="index.html">🏠 Home</a>
                     <a href="about.html">About</a>
@@ -1729,7 +1743,7 @@
         <div id="map"></div>
     </div>
 
-    <button class="fab" onclick="window.openPostModal()">＋ Post Room</button>
+    <button class="fab" onclick="window.openPostModal()">＋ Post Ad</button>
 
     <!-- App Navigation (Mobile Bottom Bar) -->
     <nav class="bottom-nav" id="mobileNav">
@@ -1762,6 +1776,29 @@
     </div>
 
     <div id="toast"></div>
+
+    <!-- PWA Install Banner -->
+    <div id="pwa-banner" style="
+        display:none; position:fixed; bottom:80px; left:16px; right:16px;
+        background:var(--card2); border:1px solid var(--accent);
+        border-radius:16px; padding:14px 16px; z-index:10002;
+        box-shadow:0 8px 32px rgba(0,0,0,0.5);
+        animation: mslide .3s cubic-bezier(0.4,0,0.2,1);
+        display:none; align-items:center; gap:12px;">
+        <div style="font-size:28px;">🪖</div>
+        <div style="flex:1;">
+            <div style="font-weight:700;font-size:14px;color:var(--text);">Install Faujiadda</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:2px;">Add to home screen for quick access</div>
+        </div>
+        <button onclick="window.installPWA()" style="
+            background:var(--accent);color:#000;border:none;
+            padding:8px 16px;border-radius:100px;font-weight:700;
+            font-size:13px;cursor:pointer;font-family:'Outfit',sans-serif;
+            white-space:nowrap;">Install</button>
+        <button onclick="document.getElementById('pwa-banner').style.display='none'" style="
+            background:none;border:none;color:var(--muted);
+            font-size:20px;cursor:pointer;padding:0 4px;line-height:1;">✕</button>
+    </div>
 
     <!-- Food Panel Backdrop -->
     <div id="foodBackdrop" onclick="window.closeFoodPanel()"></div>
@@ -1861,46 +1898,71 @@
 
                 <!-- Step 1 -->
                 <div id="step1" style="display:none;">
-                    <input type="text" id="f_name" class="fi" placeholder="Property Name (e.g., AWHO Township)">
+                    <div style="display:flex; gap:4px; margin-bottom:12px; background:var(--bg); border:1px solid var(--border2); padding:4px; border-radius:12px;">
+                        <button type="button" id="post-type-rental" class="auth-tab auth-tab-active" onclick="window.setListingType('rental')" style="flex:1; border:none; border-radius:8px; padding:10px; font-weight:700;">🏠 Rent Room</button>
+                        <button type="button" id="post-type-market" class="auth-tab" onclick="window.setListingType('market')" style="flex:1; border:none; border-radius:8px; padding:10px; font-weight:700;">🏷️ Sell Item</button>
+                    </div>
+                    
+                    <!-- Common Fields -->
                     <div class="frow">
                         <input type="text" id="f_area" class="fi" placeholder="Area / Locality">
                         <input type="text" id="f_city" class="fi" placeholder="City / Cantt">
                     </div>
-                    <div class="frow">
+                    <input type="tel" id="f_phone" class="fi" placeholder="WhatsApp No. (starts with +91)">
+
+                    <!-- Rental-Specific -->
+                    <div id="rental-fields">
+                        <input type="text" id="f_name" class="fi" placeholder="Property Name (e.g., AWHO Township)">
                         <input type="number" id="f_price" class="fi" placeholder="Monthly Rent (₹)">
-                        <input type="tel" id="f_phone" class="fi" placeholder="WhatsApp No.">
+                        <div class="frow">
+                            <select id="f_type" class="fi">
+                                <option value="Flat">Flat</option>
+                                <option value="1bhk">1 BHK</option>
+                                <option value="2bhk">2 BHK</option>
+                                <option value="3bhk">3 BHK</option>
+                                <option value="pg">PG / Room</option>
+                                <option value="Villa">Villa</option>
+                            </select>
+                            <select id="f_furnish" class="fi">
+                                <option value="Unfurnished">Unfurnished</option>
+                                <option value="Semi">Semi-Furnished</option>
+                                <option value="Fully">Fully Furnished</option>
+                            </select>
+                        </div>
+                        <div class="frow">
+                            <select id="f_owner_type" class="fi" style="border-color:var(--gold);color:var(--gold);">
+                                <option value="defence">🎖️ Defence Personnel</option>
+                                <option value="civilian">👤 Civilian Owner</option>
+                                <option value="broker">🏢 Broker / Agent</option>
+                            </select>
+                            <select id="f_lease_term" class="fi">
+                                <option value="standard">📅 Long term (11+ mo)</option>
+                                <option value="short">🧳 Short term (TD/Course)</option>
+                            </select>
+                        </div>
+                        <div class="frow">
+                            <input type="number" id="f_sqft" class="fi" placeholder="Area (sq ft)">
+                            <input type="number" id="f_floor" class="fi" placeholder="Floor No.">
+                        </div>
+                        <input type="date" id="f_date" class="fi">
                     </div>
-                    <div class="frow">
-                        <select id="f_type" class="fi">
-                            <option value="Flat">Flat</option>
-                            <option value="1bhk">1 BHK</option>
-                            <option value="2bhk">2 BHK</option>
-                            <option value="3bhk">3 BHK</option>
-                            <option value="pg">PG / Room</option>
-                            <option value="Villa">Villa</option>
-                        </select>
-                        <select id="f_furnish" class="fi">
-                            <option value="Unfurnished">Unfurnished</option>
-                            <option value="Semi">Semi-Furnished</option>
-                            <option value="Fully">Fully Furnished</option>
-                        </select>
+
+                    <!-- Market-Specific -->
+                    <div id="market-fields" style="display:none;">
+                        <input type="text" id="m_title" class="fi" placeholder="Item Name (e.g., Bullet 350, Study Table, AC)">
+                        <div class="frow">
+                            <input type="number" id="m_price" class="fi" placeholder="Selling Price (₹)">
+                            <select id="m_category" class="fi">
+                                <option value="Vehicles">🚗 Vehicles</option>
+                                <option value="Furniture">🪑 Furniture</option>
+                                <option value="Appliances">📺 Appliances</option>
+                                <option value="Electronics">📱 Electronics & Appliances</option>
+                                <option value="Flatmate">🤝 Need Flatmate</option>
+                            </select>
+                        </div>
+                        <textarea id="m_desc" class="fi" placeholder="Condition, year, reasons for selling..." rows="3" style="resize:none; padding-top:12px;"></textarea>
                     </div>
-                    <div class="frow">
-                        <select id="f_owner_type" class="fi" style="border-color:var(--gold);color:var(--gold);">
-                            <option value="defence">🎖️ Defence Personnel (Owner)</option>
-                            <option value="civilian">👤 Civilian Owner (No Broker)</option>
-                            <option value="broker">🏢 Broker / Agent</option>
-                        </select>
-                        <select id="f_lease_term" class="fi">
-                            <option value="standard">📅 Long term (11+ mos)</option>
-                            <option value="short">🧳 Short term (TD/Course)</option>
-                        </select>
-                    </div>
-                    <div class="frow">
-                        <input type="number" id="f_sqft" class="fi" placeholder="Area (sq ft)">
-                        <input type="number" id="f_floor" class="fi" placeholder="Floor No.">
-                    </div>
-                    <input type="date" id="f_date" class="fi">
+
                     <button onclick="window.goToStep2()" id="step1NextBtn" class="bp">Next: Pin Location 📍</button>
                 </div>
 
@@ -1942,18 +2004,38 @@
 
     <!-- Profile Modal -->
     <div id="profileModal" class="modal">
-        <div class="mc">
+        <div class="mc" style="max-width:600px;">
             <div class="mhdr">
-                <h2 class="mh2">My Profile</h2>
+                <h2 class="mh2">👤 My Profile</h2>
                 <button class="cbtn" onclick="window.closeProfileModal()">✕</button>
             </div>
-            <div class="mbody">
+            <div class="mbody" style="padding-top:12px;">
                 <div id="profile-details"></div>
-                <div style="margin-top:18px;">
-                    <p
-                        style="font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;">
-                        My Listings</p>
+
+                <!-- Profile Tabs -->
+                <div style="display:flex;gap:0;border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin:16px 0 14px;" id="profile-tab-bar">
+                    <button id="ptab-listings" class="auth-tab auth-tab-active" onclick="window.switchProfileTab('listings')" style="flex:1;padding:10px 6px;font-size:12px;font-weight:700;">
+                        🏠 My Listings
+                    </button>
+                    <button id="ptab-contacted" class="auth-tab" onclick="window.switchProfileTab('contacted')" style="flex:1;padding:10px 6px;font-size:12px;font-weight:700;border-left:1px solid var(--border2);border-right:1px solid var(--border2);">
+                        📞 Contacted
+                    </button>
+                    <button id="ptab-saved" class="auth-tab" onclick="window.switchProfileTab('saved')" style="flex:1;padding:10px 6px;font-size:12px;font-weight:700;">
+                        🔖 Saved
+                    </button>
+                </div>
+
+                <!-- Tab Panes -->
+                <div id="profile-pane-listings">
                     <div id="my-listings-container"></div>
+                </div>
+
+                <div id="profile-pane-contacted" style="display:none;">
+                    <div id="contacted-listings-container"></div>
+                </div>
+
+                <div id="profile-pane-saved" style="display:none;">
+                    <div id="saved-listings-container"></div>
                 </div>
             </div>
         </div>
@@ -2010,6 +2092,32 @@
                 l.classList.add('fade-out');
                 setTimeout(() => l.remove(), 500);
             }, 1500);
+        });
+
+        // PWA Install prompt
+        let _deferredInstallPrompt = null;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            _deferredInstallPrompt = e;
+            // Show banner after 4 seconds if not dismissed
+            setTimeout(() => {
+                const banner = document.getElementById('pwa-banner');
+                if (banner && _deferredInstallPrompt) {
+                    banner.style.display = 'flex';
+                }
+            }, 4000);
+        });
+        window.installPWA = async () => {
+            if (!_deferredInstallPrompt) return;
+            _deferredInstallPrompt.prompt();
+            const { outcome } = await _deferredInstallPrompt.userChoice;
+            _deferredInstallPrompt = null;
+            document.getElementById('pwa-banner').style.display = 'none';
+            if (outcome === 'accepted') window.showToast?.('Faujiadda installed! 🪖', 'ok', 3000);
+        };
+        window.addEventListener('appinstalled', () => {
+            document.getElementById('pwa-banner').style.display = 'none';
+            _deferredInstallPrompt = null;
         });
 
         // Backdrop close — ONLY fires when tapping the dark backdrop itself, not the modal card
@@ -2321,7 +2429,97 @@
         .main {
             animation: pageIn 0.3s ease;
         }
+
+        /* ── New Feature Modals ── */
+        .feat-modal-wrap {
+            position:fixed;inset:0;z-index:10800;display:none;align-items:flex-end;
+            background:rgba(0,0,0,0);transition:background .3s ease;
+        }
+        .feat-modal-wrap.open {
+            display:flex;background:rgba(0,0,0,0.62);
+        }
+        .feat-sheet {
+            background:var(--card);border-radius:20px 20px 0 0;border-top:2px solid var(--accent);
+            width:100%;max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;
+            overscroll-behavior:contain;padding:0 16px calc(env(safe-area-inset-bottom,0px) + 24px);
+            transform:translateY(100%);transition:transform .36s cubic-bezier(0.32,0.72,0,1);
+        }
+        .feat-modal-wrap.open .feat-sheet { transform:translateY(0); }
+        .feat-sheet::before {
+            content:'';display:block;width:40px;height:4px;background:var(--border2);
+            border-radius:2px;margin:12px auto 8px;
+        }
+        @media(min-width:769px){
+            .feat-modal-wrap { align-items:center;justify-content:center; }
+            .feat-sheet { border-radius:16px;max-width:620px;max-height:80vh;transform:scale(0.95);opacity:0;transition:transform .28s ease,opacity .28s ease; }
+            .feat-modal-wrap.open .feat-sheet { transform:scale(1);opacity:1; }
+        }
+        .feat-hdr { display:flex;justify-content:space-between;align-items:center;padding:4px 0 14px;border-bottom:1px solid var(--border);margin-bottom:14px; }
+        .feat-title { font-size:17px;font-weight:800; }
+        .feat-close { background:var(--card2);border:1px solid var(--border2);border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center; }
+        .rating-star { font-size:28px;cursor:pointer;transition:transform .15s; }
+        .rating-star:hover { transform:scale(1.25); }
+        .cab-card { background:var(--card2);border:1px solid var(--border2);border-radius:12px;padding:13px;margin-bottom:10px;transition:border-color .18s; }
+        .cab-card:hover { border-color:var(--accent); }
+        .school-chip { display:inline-flex;align-items:center;gap:5px;background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:8px 11px;font-size:12px;margin:4px; }
+        .agreement-field { background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:9px 12px;width:100%;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;box-sizing:border-box;margin-bottom:10px; }
+        .agreement-field:focus { outline:none;border-color:var(--accent); }
     </style>
+
+    <!-- ① Transfer Season Alert Modal -->
+    <div class="feat-modal-wrap" id="transferAlertModal" onclick="if(event.target===this)window.closeFeatureModal('transferAlertModal')">
+        <div class="feat-sheet">
+            <div class="feat-hdr">
+                <span class="feat-title">🗺️ Transfer Season Alert</span>
+                <button class="feat-close" onclick="window.closeFeatureModal('transferAlertModal')">✕</button>
+            </div>
+            <div id="transfer-alert-body"></div>
+        </div>
+    </div>
+
+    <!-- ② Owner Rating Modal -->
+    <div class="feat-modal-wrap" id="ownerRatingModal" onclick="if(event.target===this)window.closeFeatureModal('ownerRatingModal')">
+        <div class="feat-sheet">
+            <div class="feat-hdr">
+                <span class="feat-title">⭐ Rate This Owner</span>
+                <button class="feat-close" onclick="window.closeFeatureModal('ownerRatingModal')">✕</button>
+            </div>
+            <div id="owner-rating-body"></div>
+        </div>
+    </div>
+
+    <!-- ③ Rent Agreement Modal -->
+    <div class="feat-modal-wrap" id="rentAgreementModal" onclick="if(event.target===this)window.closeFeatureModal('rentAgreementModal')">
+        <div class="feat-sheet">
+            <div class="feat-hdr">
+                <span class="feat-title">📄 Digital Rent Agreement</span>
+                <button class="feat-close" onclick="window.closeFeatureModal('rentAgreementModal')">✕</button>
+            </div>
+            <div id="rent-agreement-body"></div>
+        </div>
+    </div>
+
+    <!-- ④ Shared Cab Finder Modal -->
+    <div class="feat-modal-wrap" id="cabFinderModal" onclick="if(event.target===this)window.closeFeatureModal('cabFinderModal')">
+        <div class="feat-sheet">
+            <div class="feat-hdr">
+                <span class="feat-title">🚗 Shared Cab Finder</span>
+                <button class="feat-close" onclick="window.closeFeatureModal('cabFinderModal')">✕</button>
+            </div>
+            <div id="cab-finder-body"></div>
+        </div>
+    </div>
+
+    <!-- ⑤ School Proximity Modal -->
+    <div class="feat-modal-wrap" id="schoolProximityModal" onclick="if(event.target===this)window.closeFeatureModal('schoolProximityModal')">
+        <div class="feat-sheet">
+            <div class="feat-hdr">
+                <span class="feat-title">🏫 KV / Army School Proximity</span>
+                <button class="feat-close" onclick="window.closeFeatureModal('schoolProximityModal')">✕</button>
+            </div>
+            <div id="school-proximity-body"></div>
+        </div>
+    </div>
 </body>
 
 </html>

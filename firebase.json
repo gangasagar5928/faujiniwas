@@ -1,16 +1,43 @@
 {
-  "hosting": {
-    "public": ".",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/app.html"
-      }
-    ]
-  }
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "hosting": [
+    {
+      "target": "fauji-adda",
+      "public": ".",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**",
+        "faujiadda_app/**",
+        "*.sh",
+        "*.txt"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/app.html"
+        }
+      ]
+    },
+    {
+      "target": "faujirentals",
+      "public": ".",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**",
+        "faujiadda_app/**",
+        "*.sh",
+        "*.txt"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/app.html"
+        }
+      ]
+    }
+  ]
 }

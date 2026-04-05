@@ -1,5 +1,5 @@
 import { state, SSB_DORMS } from './data.js';
-import { getSuggestionBadgeHTML } from './suggest.js';
+import { getSuggestionBadgeHTML, getProximityEstimates } from './suggest.js';
 
 // ─── One-time marker arrow style injection ───
 (function injectMarkerStyles() {
@@ -98,8 +98,13 @@ export function render() {
 
     const now = Date.now();
     const threeMonths = 90 * 24 * 60 * 60 * 1000;
+    const isMarket = window._activeView === 'market';
 
     let filtered = state.listings.filter(r => {
+        // Base filter by active view
+        if (isMarket && r._collection !== 'market') return false;
+        if (!isMarket && r._collection !== 'rentals') return false;
+
         if (r.reportCount >= 3) return false;
         if (state.maxPrice < 100000 && r.price > state.maxPrice) return false;
 
@@ -183,6 +188,25 @@ export function render() {
 
         const aiBadge = getSuggestionBadgeHTML(r, state.listings);
 
+        // AI distance strip — compact 4-badge row
+        const prox = getProximityEstimates(r);
+        let distStrip = '';
+        if (prox && prox.mh !== 'N/A') {
+            function dc(d) { 
+                const n = parseFloat(d);
+                return n < 2 ? '#22c55e' : n < 5 ? '#f4c542' : '#f43f5e';
+            }
+            const facs = [
+                { label: '🏥 MH',  val: prox.mh },
+                { label: '🛒 CSD', val: prox.csd },
+                { label: '🎒 KV',  val: prox.kv },
+                { label: '🏫 APS', val: prox.aps }
+            ];
+            distStrip = `<div style="display:flex;gap:4px;flex-wrap:nowrap;overflow:hidden;margin:5px 0 2px;">
+                ${facs.map(f => `<span style="font-size:9.5px;font-weight:700;padding:2px 5px;border-radius:5px;background:rgba(0,0,0,0.3);color:${dc(f.val)};border:1px solid ${dc(f.val)}44;white-space:nowrap;flex-shrink:0;">${f.label} ${f.val}km</span>`).join('')}
+            </div>`;
+        }
+
         let ownerBadge = '';
         if (r.ownerType === 'defence') ownerBadge = `<span class="tag" style="background:rgba(255,153,51,0.15);border-color:var(--gold);color:var(--gold);">🎖️ Fauji Owner</span>`;
         else if (r.ownerType === 'civilian') ownerBadge = `<span class="tag" style="background:rgba(255,153,51,0.05);border-color:var(--muted);color:var(--muted);">👤 No Broker</span>`;
@@ -207,6 +231,7 @@ export function render() {
         <div class="lc-info">
             <div class="lc-name">${r.name} ${verifiedBadge}</div>
             <div class="lc-loc">📍 ${r.area}, ${r.city} &nbsp;·&nbsp; 🚶 ${r.distance} km</div>
+            ${distStrip}
             <div class="lc-tags">
                 <span class="tag">${r.type?.toUpperCase() || 'FLAT'}</span>
                 ${ownerBadge}
@@ -219,25 +244,63 @@ export function render() {
             <span style="font-size:11px;color:var(--muted);">View Details →</span>
         </div>`;
 
-        // Map marker — use CSS variable for arrow color (avoids style tag per marker)
-        const customIcon = L.divIcon({
-            className: '',
-            html: `<div class="pm" style="--pm-color:${bahColor};border-color:${bahColor};color:${bahColor};">₹${(price / 1000).toFixed(0)}K</div>`,
-            iconAnchor: [30, 34], popupAnchor: [0, -38], iconSize: [60, 34]
-        });
+        // Map marker logic
+        let pinIcon, popupContent;
 
-        const popupBtn = `<button ontouchend="event.preventDefault();window.openDetailModal('${r.id}')" onclick="window.openDetailModal('${r.id}')"
-        style="width:100%;background:var(--accent);color:#000;padding:10px;border:none;border-radius:7px;font-weight:800;margin-top:10px;cursor:pointer;font-family:'Outfit',sans-serif;">
-        View Full Details →
-        </button>`;
+        if (isMarket) {
+            pinIcon = L.divIcon({
+                className: '',
+                html: `<div class="pm" style="--pm-color:#14b8a6;border-color:#14b8a6;color:#14b8a6;">🏷️ ₹${(price / 1000).toFixed(0)}K</div>`,
+                iconAnchor: [30, 34], popupAnchor: [0, -38], iconSize: [60, 34]
+            });
+            popupContent = `<div style="font-family:'Outfit',sans-serif;min-width:180px;">
+                <b style="font-size:15px;">${r.title || r.name}</b><br>
+                <span style="color:var(--muted);font-size:13px;">📍 ${r.area}, ${r.city}</span><br>
+                <b style="color:#22c55e;font-size:15px;">₹${price.toLocaleString()}</b>
+                <button ontouchend="event.preventDefault();window.openDetailModal('${r.id}')" onclick="window.openDetailModal('${r.id}')"
+                style="width:100%;background:var(--accent);color:#000;padding:10px;border:none;border-radius:7px;font-weight:800;margin-top:10px;cursor:pointer;font-family:'Outfit',sans-serif;">
+                View Item →
+                </button>
+            </div>`;
+            
+            // Override LC layout for Market
+            card.innerHTML = `
+            <div class="lc-thumb">
+                <img src="${thumb}" loading="lazy" decoding="async">
+            </div>
+            <div class="lc-info">
+                <div class="lc-name">${r.title || r.name}</div>
+                <div class="lc-loc">📍 ${r.area}, ${r.city} &nbsp;·&nbsp; 🚶 ${r.distance} km</div>
+                <div class="lc-tags">
+                    <span class="tag" style="background:rgba(20,184,166,0.1);color:#14b8a6;border-color:#14b8a6;">${r.category || 'Item'}</span>
+                </div>
+            </div>
+            <div class="lc-bottom">
+                <div class="lc-price" style="color:#14b8a6;">₹${price.toLocaleString()}</div>
+                <span style="font-size:11px;color:var(--muted);">View Details →</span>
+            </div>`;
 
-        const m = L.marker([r.lat, r.lng], { icon: customIcon })
-            .bindPopup(`<div style="font-family:'Outfit',sans-serif;min-width:180px;">
-        <b style="font-size:15px;">${r.name}</b><br>
-        <span style="color:var(--muted);font-size:13px;">📍 ${r.area}, ${r.city}</span><br>
-        <b style="color:#22c55e;font-size:15px;">₹${price.toLocaleString()}/mo</b>
-        ${popupBtn}
-        </div>`);
+        } else {
+            pinIcon = L.divIcon({
+                className: '',
+                html: `<div class="pm" style="--pm-color:${bahColor};border-color:${bahColor};color:${bahColor};">₹${(price / 1000).toFixed(0)}K</div>`,
+                iconAnchor: [30, 34], popupAnchor: [0, -38], iconSize: [60, 34]
+            });
+            
+            const popupBtn = `<button ontouchend="event.preventDefault();window.openDetailModal('${r.id}')" onclick="window.openDetailModal('${r.id}')"
+            style="width:100%;background:var(--accent);color:#000;padding:10px;border:none;border-radius:7px;font-weight:800;margin-top:10px;cursor:pointer;font-family:'Outfit',sans-serif;">
+            View Full Details →
+            </button>`;
+            
+            popupContent = `<div style="font-family:'Outfit',sans-serif;min-width:180px;">
+                <b style="font-size:15px;">${r.name}</b><br>
+                <span style="color:var(--muted);font-size:13px;">📍 ${r.area}, ${r.city}</span><br>
+                <b style="color:#22c55e;font-size:15px;">₹${price.toLocaleString()}/mo</b>
+                ${popupBtn}
+            </div>`;
+        }
+
+        const m = L.marker([r.lat, r.lng], { icon: pinIcon }).bindPopup(popupContent);
 
         newMarkers.push(m);
         state.markers[r.id] = m;
@@ -256,23 +319,15 @@ export function render() {
 
 // ─── Map Init ───
 export function initMap() {
-    // Accurate India bounds: covers J&K (north), Arunachal (east), Tamil Nadu (south),
-    // Lakshadweep (west), and Andaman & Nicobar Islands (far east/south)
-    const indiaBounds = L.latLngBounds(
-        L.latLng(6.0, 68.0),   // SW corner — near Thiruvananthapuram / Lakshadweep
-        L.latLng(37.1, 97.5)   // NE corner — Arunachal Pradesh / Siachen
-    );
     state.map = L.map('map', {
         zoomControl: false,
-        maxBounds: indiaBounds,
-        maxBoundsViscosity: 0.85, // slightly elastic — doesn't feel like a hard wall
         preferCanvas: true
     }).setView([22.5, 82.0], 5); // Geographic centroid of India
 
-    // Clean map tiles
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    // Clean map tiles - Google Maps (gl=IN forces Survey of India bounds for POK/Aksai Chin)
+    L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&hl=en-IN&gl=IN', {
         maxZoom: 20, minZoom: 4, noWrap: true,
-        attribution: '&copy; OpenStreetMap contributors'
+        attribution: '&copy; Google Maps'
     }).addTo(state.map);
 
     // Zoom control (bottom-right)
@@ -295,11 +350,5 @@ export function initMap() {
     setTimeout(() => state.map.invalidateSize(), 600);
     showLoadingSkeleton();
 
-    // Auto-locate user
-    if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(
-            pos => state.map.flyTo([pos.coords.latitude, pos.coords.longitude], 12, { duration: 1.5 }),
-            () => { }
-        );
-    }
+    // Auto-locate removed to prevent the map randomly resetting view during pitch demos.
 }

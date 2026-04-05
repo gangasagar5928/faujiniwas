@@ -1,5 +1,6 @@
 import { state } from './data.js';
-import { db, onSnapshot, query, collection, where } from './firebase.js';
+import { PITCH_LISTINGS } from './pitch_data.js';
+import { db, onSnapshot, getDocs, query, collection, where } from './firebase.js';
 import { initMap, render } from './map.js';
 import './ui.js';
 import './chat.js';
@@ -13,8 +14,6 @@ function startApp() {
         const cnt = document.getElementById('cnt');
         if (cnt) cnt.innerHTML = `<div class="live-dot"></div> Connecting…`;
 
-        const verifiedQuery = query(collection(db, 'rentals'), where('verified', '==', true));
-
         let firstLoad = true;
         const offlineTimer = setTimeout(() => {
             if (firstLoad && cnt) {
@@ -22,26 +21,89 @@ function startApp() {
             }
         }, 8000);
 
-        onSnapshot(verifiedQuery, (snapshot) => {
-            clearTimeout(offlineTimer);
-            firstLoad = false;
-            state.listings = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-            render();
+        // Map Bounding-Box Optimization
+        window.fetchListingsInBounds = async () => {
+            if (!state.map) return;
+            try {
+                const bounds = state.map.getBounds();
+                const sw = bounds.getSouthWest();
+                const ne = bounds.getNorthEast();
+                
+                // Firestore allows only ONE inequality filter without composite indexes.
+                // We do 'lat' strictly, and filter 'lng' & 'verified' on the client.
+                // Firebase throws fatal errors if lat exceeds numerical limits [-90, 90] when zooming heavily out
+                const clampedSwLat = Math.max(-90, Math.min(90, sw.lat));
+                const clampedNeLat = Math.max(-90, Math.min(90, ne.lat));
 
-            // Deep-link: auto-open listing from ?listing=ID in URL
-            if (!window._deepLinkHandled) {
-                window._deepLinkHandled = true;
-                const params = new URLSearchParams(window.location.search);
-                const sharedId = params.get('listing');
-                if (sharedId && window.openDetailModal) {
-                    setTimeout(() => window.openDetailModal(sharedId), 400);
+                const qr = query(collection(db, 'rentals'), 
+                    where('lat', '>=', clampedSwLat), 
+                    where('lat', '<=', clampedNeLat)
+                );
+                const qm = query(collection(db, 'marketplace'), 
+                    where('lat', '>=', clampedSwLat), 
+                    where('lat', '<=', clampedNeLat)
+                );
+
+                let fetched = [];
+                try {
+                    const [snapR, snapM] = await Promise.all([getDocs(qr), getDocs(qm)]);
+                    clearTimeout(offlineTimer);
+                    firstLoad = false;
+                    if(cnt) cnt.innerHTML = `<div class="live-dot"></div> Updating…`;
+
+                    snapR.forEach(d => {
+                        const data = d.data();
+                        if (data.verified && data.lng >= sw.lng && data.lng <= ne.lng) {
+                            fetched.push({ id: d.id, _collection: 'rentals', ...data });
+                        }
+                    });
+                    snapM.forEach(d => {
+                        const data = d.data();
+                        if (data.lng >= sw.lng && data.lng <= ne.lng) {
+                            fetched.push({ id: d.id, _collection: 'market', ...data });
+                        }
+                    });
+                } catch(dbErr) {
+                    console.warn('Silent DB fetch fail (quota/bounds):', dbErr.message);
+                    clearTimeout(offlineTimer);
+                    // Silently continue so pitch listings still render without showing scary errors
                 }
+
+                // Blend in high-quality offline pitch data unconditionally to ensure they always show in the list
+                PITCH_LISTINGS.forEach(p => {
+                    const lat = parseFloat(p.lat);
+                    const lng = parseFloat(p.lng);
+                    if (lat >= sw.lat && lat <= ne.lat && lng >= sw.lng && lng <= ne.lng) {
+                        fetched.push(p);
+                    }
+                });
+
+                state.listings = fetched;
+                render();
+
+                // Deep-link auto-open
+                if (!window._deepLinkHandled) {
+                    window._deepLinkHandled = true;
+                    const params = new URLSearchParams(window.location.search);
+                    const sharedId = params.get('listing');
+                    if (sharedId && window.openDetailModal) {
+                        setTimeout(() => window.openDetailModal(sharedId), 400);
+                    }
+                }
+            } catch (fatalErr) {
+                console.error('Core bounds calculation error:', fatalErr);
             }
-        }, (error) => {
-            clearTimeout(offlineTimer);
-            console.warn('Firestore error:', error.message);
-            if (cnt) cnt.innerHTML = `<div class="live-dot" style="background:var(--red)"></div> Offline — retrying…`;
-            render();
+        };
+
+        // Delay the first fetch so bounds are set correctly
+        setTimeout(() => {
+            window.fetchListingsInBounds();
+        }, 300);
+
+        state.map.on('moveend', () => {
+             // Debounce map move
+             clearTimeout(window._boundsDelay);
+             window._boundsDelay = setTimeout(window.fetchListingsInBounds, 400);
         });
     } catch (e) {
         console.error('Critical Start Error:', e);

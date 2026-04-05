@@ -2,13 +2,20 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getFirestore, collection, addDoc, onSnapshot, query, where, doc, updateDoc, increment, getDocs, deleteDoc, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
+const getEnv = (key) => {
+    try { if (typeof import.meta !== 'undefined' && import.meta.env) return import.meta.env[key]; } catch(e){}
+    try { if (typeof process !== 'undefined' && process.env) return process.env[key]; } catch(e){}
+    return '';
+};
+
+// Now reading keys from environment variables instead of hardcoded
 const firebaseConfig = {
-    apiKey: "AIzaSyCKMzqMBkRBOc9XJ1fDrH3LZ4HfltWVDmA",
-    authDomain: "rentmap-live.firebaseapp.com",
-    projectId: "rentmap-live",
-    storageBucket: "rentmap-live.firebasestorage.app",
-    messagingSenderId: "1018484183886",
-    appId: "1:1018484183886:web:b8e8236196e434187d041f"
+    apiKey: getEnv('VITE_FIREBASE_API_KEY') || getEnv('FIREBASE_API_KEY'),
+    authDomain: getEnv('VITE_FIREBASE_AUTH_DOMAIN') || getEnv('FIREBASE_AUTH_DOMAIN'),
+    projectId: getEnv('VITE_FIREBASE_PROJECT_ID') || getEnv('FIREBASE_PROJECT_ID'),
+    storageBucket: getEnv('VITE_FIREBASE_STORAGE_BUCKET') || getEnv('FIREBASE_STORAGE_BUCKET'),
+    messagingSenderId: getEnv('VITE_FIREBASE_MESSAGING_SENDER_ID') || getEnv('FIREBASE_MESSAGING_SENDER_ID'),
+    appId: getEnv('VITE_FIREBASE_APP_ID') || getEnv('FIREBASE_APP_ID')
 };
 
 export const app = initializeApp(firebaseConfig);

@@ -15,6 +15,7 @@ export const state = {
     sqftFilter:    'all',   // all | lt500 | 500to1000 | gt1000
     ownerFilter:   'all',   // all | defence | civilian | broker
     termFilter:    'all',   // all | short
+    schoolKmFilter: null,  // null | number (km from nearest school)
 };
 
 export const SSB_DORMS = [
@@ -29,7 +30,12 @@ export const SSB_DORMS = [
 { id: 'ssb9', name: 'Landmark PG House', ssb: '17 SSB Allahabad (Air)', city: 'Prayagraj', area: 'Bamrauli', lat: 25.4483, lng: 81.7337, price: 450, type: 'PG/Room', distance: '1.0', amenities: ['Fan', 'Mess', 'Attached Bath'], budget: '₹', desc: 'Closest budget PG to Air Force SSB gate.' },
 { id: 'ssb10', name: 'NDA Candidate Hostel', ssb: '19 SSB Bangalore', city: 'Bengaluru', area: 'Ulsoor', lat: 12.9790, lng: 77.6208, price: 250, type: 'Dormitory', distance: '3.5', amenities: ['Basic Meals', 'Locker', 'Common Bath'], budget: '₹', desc: 'No-frills dormitory.' },
 { id: 'ssb11', name: 'Hotel Landmark Mysore', ssb: '12 SSB Mysore', city: 'Mysuru', area: 'Nazarbad', lat: 12.3052, lng: 76.6552, price: 550, type: 'Single Room', distance: '2.0', amenities: ['AC', 'Hot Water', 'WiFi'], budget: '₹₹', desc: 'Clean rooms, 15 min from Mysore SSB.' },
-{ id: 'ssb12', name: 'Budget Stay – Ambad', ssb: '5 SSB Pune', city: 'Pune', area: 'Camp Area', lat: 18.5204, lng: 73.8567, price: 400, type: 'Dormitory', distance: '2.5', amenities: ['Fan', 'Common Bath', 'Mess'], budget: '₹', desc: 'Simple dorm near Pune SSB.' }
+{ id: 'ssb12', name: 'Budget Stay – Ambad', ssb: '5 SSB Pune', city: 'Pune', area: 'Camp Area', lat: 18.5204, lng: 73.8567, price: 400, type: 'Dormitory', distance: '2.5', amenities: ['Fan', 'Common Bath', 'Mess'], budget: '₹', desc: 'Simple dorm near Pune SSB.' },
+{ id: 'ssb13', name: 'Dehradun AFS Boarding', ssb: '1 AFSB Dehradun', city: 'Dehradun', area: 'Clement Town', lat: 30.2680, lng: 78.0050, price: 350, type: 'Dormitory', distance: '1.5', amenities: ['Common Bath', 'Locker', 'Meals'], budget: '₹', desc: 'Convenient stay near AFSB Dehradun.' },
+{ id: 'ssb14', name: 'Delhi Cantt Candidate Stay', ssb: 'SSB Delhi', city: 'New Delhi', area: 'Delhi Cantt', lat: 28.5961, lng: 77.1587, price: 600, type: 'Dormitory', distance: '1.2', amenities: ['AC', 'WiFi', 'Attached Bath'], budget: '₹₹', desc: 'Popular among Delhi SSB candidates.' },
+{ id: 'ssb15', name: 'Chennai Naval Hostel', ssb: 'NSB Chennai', city: 'Chennai', area: 'Fort St George', lat: 13.0800, lng: 80.2800, price: 400, type: 'Dormitory', distance: '2.0', amenities: ['Fan', 'Common Bath', 'Mess'], budget: '₹', desc: 'Budget option near Naval selection board.' },
+{ id: 'ssb16', name: 'Guwahati Transit Camp', ssb: 'SSB Guwahati', city: 'Guwahati', area: 'Narengi Cantt', lat: 26.1445, lng: 91.7362, price: 300, type: 'Dormitory', distance: '2.5', amenities: ['Locker', 'Fan', 'Common Bath'], budget: '₹', desc: 'Basic accommodation near Guwahati SSB.' },
+{ id: 'ssb17', name: 'Kochi Naval Stay', ssb: 'NSB Kochi', city: 'Kochi', area: 'Naval Base', lat: 9.9312, lng: 76.2673, price: 500, type: 'Single Room', distance: '1.8', amenities: ['WiFi', 'AC', 'Attached Bath'], budget: '₹₹', desc: 'Comfortable private rooms near Kochi board.' }
 ];
 
 export const FOOD_BY_CITY = {
@@ -253,3 +259,63 @@ export const FOOD_BY_CITY = {
         { name: 'Chapata Shahi Biryani', type: 'Biryani', budget: '₹₹', note: 'Popular near Cantt' }
     ],
 };
+
+// ─── Army Schools & KV Data ───
+export const ARMY_SCHOOLS = {
+    'Pune': [
+        { name: 'Army Public School Kirkee', type: 'APS', lat: 18.5736, lng: 73.8535, address: 'Kirkee Cantt' },
+        { name: 'Kendriya Vidyalaya Pune', type: 'KV', lat: 18.5204, lng: 73.8567, address: 'Cantonment' },
+    ],
+    'Delhi': [
+        { name: 'Army Public School Delhi Cantt', type: 'APS', lat: 28.6027, lng: 77.1348, address: 'Delhi Cantt' },
+        { name: 'Kendriya Vidyalaya No.1 Delhi Cantt', type: 'KV', lat: 28.5955, lng: 77.1387, address: 'Delhi Cantt' },
+    ],
+    'New Delhi': [
+        { name: 'Army Public School Delhi Cantt', type: 'APS', lat: 28.6027, lng: 77.1348, address: 'Delhi Cantt' },
+        { name: 'Kendriya Vidyalaya No.1 Delhi Cantt', type: 'KV', lat: 28.5955, lng: 77.1387, address: 'Delhi Cantt' },
+    ],
+    'Bengaluru': [
+        { name: 'Army Public School Bengaluru', type: 'APS', lat: 12.9989, lng: 77.6677, address: 'Hebbal Cantt' },
+        { name: 'Kendriya Vidyalaya ASC Centre South', type: 'KV', lat: 12.9716, lng: 77.5946, address: 'Bengaluru South' },
+    ],
+    'Bangalore': [
+        { name: 'Army Public School Bengaluru', type: 'APS', lat: 12.9989, lng: 77.6677, address: 'Hebbal Cantt' },
+        { name: 'Kendriya Vidyalaya ASC Centre South', type: 'KV', lat: 12.9716, lng: 77.5946, address: 'Bengaluru South' },
+    ],
+    'Secunderabad': [
+        { name: 'Army Public School Secunderabad', type: 'APS', lat: 17.4444, lng: 78.5016, address: 'Secunderabad Cantt' },
+        { name: 'Kendriya Vidyalaya Secunderabad', type: 'KV', lat: 17.4477, lng: 78.4982, address: 'Secunderabad' },
+    ],
+    'Mhow': [
+        { name: 'Army Public School Mhow', type: 'APS', lat: 22.5549, lng: 75.7617, address: 'Mhow Cantt' },
+        { name: 'Kendriya Vidyalaya Mhow', type: 'KV', lat: 22.5511, lng: 75.7583, address: 'Mhow' },
+    ],
+    'Ambala': [
+        { name: 'Army Public School Ambala', type: 'APS', lat: 30.3782, lng: 76.7767, address: 'Ambala Cantt' },
+        { name: 'Kendriya Vidyalaya Ambala Cantt', type: 'KV', lat: 30.3711, lng: 76.7821, address: 'Ambala Cantt' },
+    ],
+    'Jalandhar': [
+        { name: 'Army Public School Jalandhar', type: 'APS', lat: 31.3260, lng: 75.5762, address: 'Jalandhar Cantt' },
+        { name: 'Kendriya Vidyalaya Jalandhar Cantt', type: 'KV', lat: 31.3281, lng: 75.5728, address: 'Jalandhar Cantt' },
+    ],
+    'Dehradun': [
+        { name: 'Army Public School Dehradun', type: 'APS', lat: 30.3165, lng: 78.0322, address: 'Clement Town' },
+        { name: 'Kendriya Vidyalaya IMA Dehradun', type: 'KV', lat: 30.3395, lng: 78.0419, address: 'IMA Campus' },
+    ],
+    'Jodhpur': [
+        { name: 'Army Public School Jodhpur', type: 'APS', lat: 26.2635, lng: 73.0068, address: 'Ratanada Cantt' },
+        { name: 'Kendriya Vidyalaya Jodhpur Cantt', type: 'KV', lat: 26.2741, lng: 73.0112, address: 'Jodhpur Cantt' },
+    ],
+};
+
+// ─── Cab Share Routes ───
+export const CAB_ROUTES = [
+    { id: 'c1', from: 'Ambala Cantt', to: 'Delhi Cantt', via: 'NH44', distance: '~250 km', time: '4–5 hrs', typical: '₹400–600/seat', contact: 'Post on community board', peak: 'Jun–Jul' },
+    { id: 'c2', from: 'Pune', to: 'Mumbai Airport', via: 'Expressway', distance: '~150 km', time: '2.5–3 hrs', typical: '₹350–500/seat', contact: 'Post on community board', peak: 'All year' },
+    { id: 'c3', from: 'Mhow', to: 'Indore Airport', via: 'NH52', distance: '~25 km', time: '40 min', typical: '₹100–150/seat', contact: 'Post on community board', peak: 'Jun–Jul' },
+    { id: 'c4', from: 'Dehradun', to: 'Delhi', via: 'NH334', distance: '~300 km', time: '5–6 hrs', typical: '₹500–700/seat', contact: 'Post on community board', peak: 'Jun–Jul' },
+    { id: 'c5', from: 'Secunderabad', to: 'Hyderabad Airport', via: 'ORR', distance: '~40 km', time: '1–1.5 hrs', typical: '₹200–300/seat', contact: 'Post on community board', peak: 'All year' },
+    { id: 'c6', from: 'Jalandhar', to: 'Amritsar Airport', via: 'GT Road', distance: '~80 km', time: '1.5 hrs', typical: '₹200–300/seat', contact: 'Post on community board', peak: 'Jun–Jul' },
+    { id: 'c7', from: 'Bengaluru', to: 'Mysuru', via: 'NICE Road', distance: '~145 km', time: '2.5 hrs', typical: '₹300–450/seat', contact: 'Post on community board', peak: 'Jun–Jul' },
+    { id: 'c8', from: 'Jodhpur', to: 'Jaipur Airport', via: 'NH62', distance: '~340 km', time: '5 hrs', typical: '₹500–700/seat', contact: 'Post on community board', peak: 'Jun–Jul' },
+];

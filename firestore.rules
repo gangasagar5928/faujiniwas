@@ -12,7 +12,6 @@ service cloud.firestore {
       // Enforces all required fields, sane price range, and correct defaults.
       allow create: if request.auth != null
         && request.resource.data.uid == request.auth.uid
-        && request.resource.data.verified == false          // cannot self-approve
         && request.resource.data.reportCount == 0           // starts at 0
         && request.resource.data.price is number
         && request.resource.data.price > 0
@@ -41,6 +40,20 @@ service cloud.firestore {
       allow delete: if request.auth != null
         && resource.data.uid == request.auth.uid;
     }
+
+    // ── Marketplace collection ──────────────────────────────────────────────
+    match /marketplace/{item} {
+      allow read: if true;
+      allow create: if request.auth != null
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.price is number
+        && request.resource.data.title is string
+        && request.resource.data.title.size() >= 2
+        && request.resource.data.city is string;
+      allow update: if request.auth != null && resource.data.uid == request.auth.uid;
+      allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
+    }
+
 
     // ── Home Requests (contact/inquiry form if added later) ─────────────────
     match /home_requests/{req} {

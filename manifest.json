@@ -1,22 +1,44 @@
 {
-  "name": "Military Rent Map",
-  "short_name": "Rent Map",
-  "description": "Trusted housing platform for the Armed Forces.",
-  "start_url": "/",
+  "name": "Faujiadda",
+  "short_name": "Faujiadda",
+  "description": "Trusted housing & relocation platform for India's Armed Forces.",
+  "start_url": "/app.html",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#121212",
-  "theme_color": "#121212",
-  "orientation": "portrait",
+  "background_color": "#0B1325",
+  "theme_color": "#FF9933",
+  "orientation": "portrait-primary",
+  "categories": ["lifestyle", "utilities"],
+  "lang": "en-IN",
   "icons": [
     {
       "src": "https://cdn-icons-png.flaticon.com/512/2555/2555013.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "https://cdn-icons-png.flaticon.com/512/2555/2555013.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Find Rentals",
+      "short_name": "Rentals",
+      "description": "Browse verified defence rentals",
+      "url": "/app.html",
+      "icons": [{ "src": "https://cdn-icons-png.flaticon.com/512/2555/2555013.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "SSB Dorms",
+      "short_name": "SSB Dorms",
+      "description": "Find SSB dorms near selection centres",
+      "url": "/app.html#dorm",
+      "icons": [{ "src": "https://cdn-icons-png.flaticon.com/512/2555/2555013.png", "sizes": "192x192" }]
     }
   ]
 }

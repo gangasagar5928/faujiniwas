@@ -14,10 +14,13 @@ window.switchTab = (tab) => {
     if (tab === 'housing') {
         if(dBtns[0]) dBtns[0].classList.add('active');
         if(mBtns[0]) mBtns[0].classList.add('active');
+        window._activeView = 'housing';
+        if (window.render) window.render();
     } else if (tab === 'market') {
         if(dBtns[1]) dBtns[1].classList.add('active');
         if(mBtns[1]) mBtns[1].classList.add('active');
-        window.showToast?.('🏷️ Marketplace is coming in the next update!', 'ok');
+        window._activeView = 'market';
+        if (window.render) window.render();
     } else if (tab === 'chat') {
         if (!auth.currentUser) {
             window.showToast?.('Please Login to Message', 'err');
