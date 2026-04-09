@@ -20,3 +20,7 @@
 - Landour high-altitude recuperation centre
 - Clement Town joint defence signals unit documentation.
 
+## Chakrata Military Cantonment
+- Restricted cantonment access verification guidelines
+- Resident family transit entry procedures.
+
