@@ -24,3 +24,7 @@
 - Restricted cantonment access verification guidelines
 - Resident family transit entry procedures.
 
+## Nainital & Almora Stations
+- Holiday and transit officers mess protocol
+- Sub-area booking and verification procedures.
+
