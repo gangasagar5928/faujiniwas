@@ -28,3 +28,7 @@
 - Holiday and transit officers mess protocol
 - Sub-area booking and verification procedures.
 
+## Fatehgarh Cantonment
+- Base: The Rajput Regiment Centre
+- Cantonment area perimeter mapping and ward demarcation.
+
