@@ -1,0 +1,21 @@
+.loader {
+  position: fixed; inset: 0; z-index: 99999;
+  background: var(--bg);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 20px;
+}
+.logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px; font-weight: 700;
+}
+.logo span { color: var(--accent); }
+.bar { width: 200px; height: 3px; background: var(--border2); border-radius: 10px; overflow: hidden; }
+.fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #ffcc77);
+  border-radius: 10px;
+  animation: lfill 1.4s var(--ease) forwards;
+}
+@keyframes lfill { from { width: 0; } to { width: 100%; } }
+.sub { color: var(--muted); font-size: 14px; animation: blink 1.5s ease infinite; }
+@keyframes blink { 0%,100% { opacity:.4; } 50% { opacity:1; } }
