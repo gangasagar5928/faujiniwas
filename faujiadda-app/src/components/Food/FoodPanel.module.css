@@ -1,0 +1,49 @@
+.backdrop {
+  position: fixed; inset: 0; z-index: 10500;
+  background: rgba(0,0,0,0); pointer-events: none;
+  transition: background .34s ease; backdrop-filter: none;
+}
+.backdrop.open {
+  background: rgba(0,0,0,.55); pointer-events: all;
+  backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+}
+.panel {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  max-height: 72vh; background: var(--card);
+  border-top: 2px solid var(--accent);
+  border-radius: 20px 20px 0 0;
+  z-index: 10600; transform: translateY(100%); opacity: 0;
+  transition: transform .38s cubic-bezier(0.32,0.72,0,1), opacity .25s ease;
+  padding: 0 16px calc(env(safe-area-inset-bottom,0px) + 28px);
+  overflow-y: auto; overflow-x: hidden;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+}
+.panel.open { transform: translateY(0); opacity: 1; box-shadow: 0 -12px 60px rgba(0,0,0,.65); }
+.handle {
+  width: 40px; height: 4px; background: var(--border2);
+  border-radius: 2px; margin: 12px auto 4px;
+}
+.header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 0 12px;
+}
+.header h3 { font-size: 15px; font-weight: 700; }
+.closeBtn {
+  background: var(--card2); border: none; border-radius: 50%;
+  width: 28px; height: 28px; color: var(--muted); cursor: pointer;
+  font-size: 14px; display: flex; align-items: center; justify-content: center;
+}
+.empty { color: var(--muted); text-align: center; padding: 20px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 10px; padding-bottom: 8px; }
+.card {
+  background: var(--card2); border: 1px solid var(--border2);
+  border-radius: 10px; padding: 12px; transition: border-color .2s;
+}
+.card:hover { border-color: var(--accent); }
+.fname { font-weight: 700; font-size: 13px; margin-bottom: 3px; }
+.ftype { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+.fprice { font-size: 11px; padding: 2px 7px; border-radius: 100px; border: 1px solid; display: inline-block; }
+.fpLo  { color: var(--green); border-color: var(--green); background: rgba(34,197,94,.08); }
+.fpMid { color: #f4c542; border-color: #f4c542; background: rgba(244,197,66,.08); }
+.fpHi  { color: var(--red); border-color: var(--red); background: rgba(244,63,94,.08); }

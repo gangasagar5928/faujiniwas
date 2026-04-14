@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -10,17 +11,17 @@ void main() {
       statusBarIconBrightness: Brightness.light,
     ),
   );
-  runApp(const FaujiaddaApp());
+  runApp(const FaujiNiwasApp());
 }
 
-class FaujiaddaApp extends StatelessWidget {
-  const FaujiaddaApp({super.key});
+class FaujiNiwasApp extends StatelessWidget {
+  const FaujiNiwasApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Faujiadda',
+      title: 'Fauji Niwas',
       theme: ThemeData(
         scaffoldBackgroundColor: const Color(0xFF0B1325),
         colorScheme: ColorScheme.fromSeed(
@@ -102,18 +103,18 @@ class _SplashScreenState extends State<SplashScreen>
                   children: [
                     TextSpan(
                       text: 'Fauji',
-                      style: TextStyle(color: Color(0xFF4CAF50)),
+                      style: TextStyle(color: Color(0xFFFFD700)),
                     ),
                     TextSpan(
-                      text: 'adda',
-                      style: TextStyle(color: Color(0xFFFF9933)),
+                      text: ' Niwas',
+                      style: TextStyle(color: Color(0xFFFFFFFF)),
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 8),
               const Text(
-                'Find Your Rental Home',
+                'Fauji Housing — Simplified',
                 style: TextStyle(
                   color: Color(0xFF7A8FA8),
                   fontSize: 14,
@@ -151,18 +152,36 @@ class _WebViewScreenState extends State<WebViewScreen> {
   @override
   void initState() {
     super.initState();
-    _controller = WebViewController()
+    _initWebView();
+  }
+
+  Future<void> _initWebView() async {
+    _controller = WebViewController(
+      onPermissionRequest: (request) async {
+        // Grant microphone (Voice Search) and camera permissions
+        final grantable = {
+          WebViewPermissionResourceType.microphone,
+          WebViewPermissionResourceType.camera,
+        };
+        if (request.types.any((t) => grantable.contains(t))) {
+          await request.grant();
+        }
+      },
+    )
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(const Color(0xFF0B1325))
       ..setNavigationDelegate(NavigationDelegate(
         onPageStarted: (_) => setState(() => _isLoading = true),
-        onPageFinished: (_) {
-          setState(() => _isLoading = false);
-          _controller.runJavaScript("var meta = document.querySelector('meta[name=\"viewport\"]'); if(!meta) { meta = document.createElement('meta'); meta.name = 'viewport'; document.head.appendChild(meta); } meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no'; document.body.style.zoom = '100%'; document.body.style.touchAction = 'none'; document.documentElement.style.touchAction = 'none';");
-        },
+        onPageFinished: (_) => setState(() => _isLoading = false),
         onWebResourceError: (error) => setState(() => _isLoading = false),
       ))
-      ..loadRequest(Uri.parse('https://fauji-adda.web.app'));
+      ..loadRequest(Uri.parse('https://faujiniwas.web.app'));
+
+    // Enable GPS geolocation on Android (allows map to get real device location)
+    if (_controller.platform is AndroidWebViewController) {
+      await (_controller.platform as AndroidWebViewController)
+          .setGeolocationEnabled(true);
+    }
   }
 
   Future<bool> _onWillPop() async {
@@ -196,7 +215,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
                         ),
                         SizedBox(height: 16),
                         Text(
-                          'Loading Faujiadda...',
+                          'Loading Fauji Niwas...',
                           style: TextStyle(
                             color: Color(0xFF7A8FA8),
                             fontSize: 14,

@@ -3,10 +3,10 @@
     "default": "rentmap-live"
   },
   "targets": {
-    "rentmap-8075d": {
+    "rentmap-live": {
       "hosting": {
-        "fauji-adda": [
-          "fauji-adda"
+        "faujiniwas": [
+          "faujiniwas"
         ],
         "faujirentals": [
           "faujirentals"
