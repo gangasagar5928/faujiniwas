@@ -32,3 +32,7 @@
 - Base: The Rajput Regiment Centre
 - Cantonment area perimeter mapping and ward demarcation.
 
+## Bareilly Military Station
+- Headquarters Uttar Bharat Area & Jat Regimental Centre
+- Military Hospital Bareilly contact points and family quarters.
+
