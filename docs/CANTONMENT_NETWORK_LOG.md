@@ -36,3 +36,7 @@
 - Headquarters Uttar Bharat Area & Jat Regimental Centre
 - Military Hospital Bareilly contact points and family quarters.
 
+## Meerut Cantonment
+- RVC Centre & Pine Division headquarters
+- Station shopping complex and Kendriya Vidyalaya connectivity.
+
