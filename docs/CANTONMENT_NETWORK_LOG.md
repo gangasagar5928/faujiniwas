@@ -40,3 +40,7 @@
 - RVC Centre & Pine Division headquarters
 - Station shopping complex and Kendriya Vidyalaya connectivity.
 
+## Mathura Cantonment
+- Headquarters 1 Corps (Strike Corps)
+- Family housing zones and railway station transit lounge access.
+
