@@ -44,3 +44,7 @@
 - Headquarters 1 Corps (Strike Corps)
 - Family housing zones and railway station transit lounge access.
 
+## Jhansi & Babina Cantonments
+- 31 Armoured Division (White Tiger)
+- Integrated live firing range access protocol and defence colony data.
+
