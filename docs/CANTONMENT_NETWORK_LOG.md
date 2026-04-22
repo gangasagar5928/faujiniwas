@@ -48,3 +48,7 @@
 - 31 Armoured Division (White Tiger)
 - Integrated live firing range access protocol and defence colony data.
 
+## Kanpur Cantonment
+- Central Ordnance Depot & Air Force Station Chakeri
+- Housing allotment waitlist tracking and security check rules.
+
