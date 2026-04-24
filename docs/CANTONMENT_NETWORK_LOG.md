@@ -52,3 +52,7 @@
 - Central Ordnance Depot & Air Force Station Chakeri
 - Housing allotment waitlist tracking and security check rules.
 
+## Varanasi Cantonment
+- 39 Gorkha Training Centre (39 GTC)
+- Outstation posting transit desk and medical dispensary contacts.
+
