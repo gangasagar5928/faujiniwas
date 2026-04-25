@@ -56,3 +56,7 @@
 - 39 Gorkha Training Centre (39 GTC)
 - Outstation posting transit desk and medical dispensary contacts.
 
+## Danapur Cantonment
+- Headquarters Jharkhand and Bihar Sub-Area & Bihar Regimental Centre
+- Historic garrison housing norms and MES helpline numbers.
+
