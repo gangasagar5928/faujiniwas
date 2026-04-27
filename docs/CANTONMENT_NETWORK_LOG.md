@@ -60,3 +60,7 @@
 - Headquarters Jharkhand and Bihar Sub-Area & Bihar Regimental Centre
 - Historic garrison housing norms and MES helpline numbers.
 
+## Ramgarh Cantonment
+- The Sikh Regiment Centre & Punjab Regimental Centre
+- Cantonment civic utilities and transit quarters inventory.
+
