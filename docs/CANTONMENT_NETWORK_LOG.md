@@ -64,3 +64,7 @@
 - The Sikh Regiment Centre & Punjab Regimental Centre
 - Cantonment civic utilities and transit quarters inventory.
 
+## Barrackpore Military Cantonment
+- Oldest cantonment in India, Bengal Area
+- Defence land registry verification and riverfront transit mess.
+
