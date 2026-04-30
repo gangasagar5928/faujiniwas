@@ -68,3 +68,7 @@
 - Oldest cantonment in India, Bengal Area
 - Defence land registry verification and riverfront transit mess.
 
+## Shillong Cantonment
+- Headquarters 101 Area & Assam Regimental Centre Happy Valley
+- Hill station climate advisory and winter heating allowances.
+
