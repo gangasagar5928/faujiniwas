@@ -72,3 +72,7 @@
 - Headquarters 101 Area & Assam Regimental Centre Happy Valley
 - Hill station climate advisory and winter heating allowances.
 
+## Tezpur Military Station
+- Headquarters 4 Corps (Gajraj Corps)
+- Brahmaputra transit staging post and forward field supply depot.
+
