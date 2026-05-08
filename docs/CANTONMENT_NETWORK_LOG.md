@@ -76,3 +76,7 @@
 - Headquarters 4 Corps (Gajraj Corps)
 - Brahmaputra transit staging post and forward field supply depot.
 
+## Dimapur Military Cantonment
+- Headquarters 3 Corps (Spear Corps)
+- Transit facilities connecting Nagaland & Manipur field formations.
+
