@@ -80,3 +80,7 @@
 - Headquarters 3 Corps (Spear Corps)
 - Transit facilities connecting Nagaland & Manipur field formations.
 
+## Sukna Military Station
+- Headquarters 33 Corps (Trishakti Corps)
+- Siliguri corridor staging area and Army Public School transport routing.
+
