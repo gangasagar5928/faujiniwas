@@ -84,3 +84,7 @@
 - Headquarters 33 Corps (Trishakti Corps)
 - Siliguri corridor staging area and Army Public School transport routing.
 
+## Binnaguri & Bengdubi Cantonments
+- Dooars formation defence cantonments
+- Base hospital emergency contact numbers and medical evacuation paths.
+
