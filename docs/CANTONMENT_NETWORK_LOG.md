@@ -88,3 +88,7 @@
 - Dooars formation defence cantonments
 - Base hospital emergency contact numbers and medical evacuation paths.
 
+## Panagarh Military Station
+- Headquarters 17 Mountain Strike Corps & Air Force Station Arjan Singh
+- C-130J squadron family housing zone overview.
+
