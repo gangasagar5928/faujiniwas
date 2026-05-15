@@ -92,3 +92,7 @@
 - Headquarters 17 Mountain Strike Corps & Air Force Station Arjan Singh
 - C-130J squadron family housing zone overview.
 
+## Gopalpur Military Station
+- Army Air Defence College (AADC)
+- Coastal training establishment housing amenities and transit officers mess.
+
