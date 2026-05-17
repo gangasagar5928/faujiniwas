@@ -96,3 +96,7 @@
 - Army Air Defence College (AADC)
 - Coastal training establishment housing amenities and transit officers mess.
 
+## Secunderabad Cantonment
+- 54 Infantry Division (Bison Division) & EME Centre
+- Cantonment Board civic amenity portal integration notes.
+
