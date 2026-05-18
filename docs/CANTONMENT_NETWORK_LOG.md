@@ -100,3 +100,7 @@
 - 54 Infantry Division (Bison Division) & EME Centre
 - Cantonment Board civic amenity portal integration notes.
 
+## Wellington Military Cantonment
+- Defence Services Staff College (DSSC)
+- Nilgiri tea estate surroundings, student officer housing layout.
+
