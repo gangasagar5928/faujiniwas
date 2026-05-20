@@ -104,3 +104,7 @@
 - Defence Services Staff College (DSSC)
 - Nilgiri tea estate surroundings, student officer housing layout.
 
+## Belgaum Military Cantonment
+- The Maratha Light Infantry Regimental Centre (MLIRC) & Commando Training Wing
+- Southern Command transit facilities.
+
