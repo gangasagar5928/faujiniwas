@@ -108,3 +108,7 @@
 - The Maratha Light Infantry Regimental Centre (MLIRC) & Commando Training Wing
 - Southern Command transit facilities.
 
+## Deolali Cantonment
+- School of Artillery & Artillery Centre
+- Temple Hill transit accommodation and CSD depot inventory guide.
+
