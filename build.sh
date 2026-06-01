@@ -8,9 +8,9 @@
 set -e
 
 # ── Configuration ─────────────────────────────────────────
-BASE_DIR="/run/media/petronski/Local Disk D/military-rent-map"
-REACT_DIR="$BASE_DIR/faujiadda-app"
-FLUTTER_DIR="$BASE_DIR/faujiadda_app"
+BASE_DIR="/run/media/petronski/Local Disk D/fauji-niwas"
+REACT_DIR="$BASE_DIR/fauji-niwas-app"
+FLUTTER_DIR="$BASE_DIR/fauji-niwas_app"
 
 # Java 17 required for Gradle 8.3 compatibility
 export JAVA_HOME="/usr/lib/jvm/java-17-openjdk"
@@ -66,13 +66,17 @@ GRADLE
     # Build with low OS priority to prevent UI freezes
     echo "⏳ Compiling APK (this may take a few minutes)..."
     nice -n 19 ionice -c 3 flutter build apk --release --no-pub --target-platform android-arm64
+    echo "⏳ Compiling App Bundle (.aab) for Play Store..."
+    nice -n 19 ionice -c 3 flutter build appbundle --release --no-pub
 
     APK_PATH="$FLUTTER_DIR/build/app/outputs/flutter-apk/app-release.apk"
+    AAB_PATH="$FLUTTER_DIR/build/app/outputs/bundle/release/app-release.aab"
     APK_SIZE=$(du -sh "$APK_PATH" 2>/dev/null | cut -f1)
+    AAB_SIZE=$(du -sh "$AAB_PATH" 2>/dev/null | cut -f1)
     echo ""
-    echo "✅ APK build completed successfully!"
-    echo "📍 Location : $APK_PATH"
-    echo "📦 Size     : $APK_SIZE"
+    echo "✅ Android artifacts completed!"
+    echo "📍 APK (Testing)    : $APK_PATH ($APK_SIZE)"
+    echo "📍 AAB (Play Store) : $AAB_PATH ($AAB_SIZE)"
 else
     echo "⚠️  Flutter directory not found at $FLUTTER_DIR. Skipping..."
 fi

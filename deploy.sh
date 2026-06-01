@@ -7,11 +7,11 @@ echo "🚀 FaujiNiwas Zero-Downtime Build & Deploy"
 echo "=========================================================="
 
 echo "[1/4] Preparing Environment..."
-cd "/run/media/petronski/Local Disk D/military-rent-map"
+cd "/run/media/petronski/Local Disk D/fauji-niwas"
 echo "✅ Environment ready."
 
 echo "[2/4] Building React App (Production Mode)..."
-cd faujiadda-app
+cd fauji-niwas-app
 # limit node memory usage to prevent system freezing on lower-ram machines
 NODE_OPTIONS="--max-old-space-size=1024" npm run build
 
@@ -24,7 +24,7 @@ echo "✅ Build completed successfully."
 echo "[3/4] Preparing Deployment Files..."
 cd ../
 # Add a safety check to ensure dist exists
-if [ ! -d "faujiadda-app/dist" ]; then
+if [ ! -d "fauji-niwas-app/dist" ]; then
   echo "❌ Dist folder not found! Aborting deploy."
   exit 1
 fi
