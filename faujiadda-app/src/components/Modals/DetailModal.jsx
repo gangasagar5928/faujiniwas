@@ -128,7 +128,7 @@ export default function DetailModal({ id, onClose }) {
   return (
     <div className="modal-backdrop" onClick={e => e.target === e.currentTarget && onClose()}>
       <Helmet>
-        <title>{r.name} - FaujiNiwas</title>
+        <title>{r.name} - Fauji Niwas</title>
         <meta property="og:title" content={`${r.name} in ${r.city}`} />
         <meta property="og:description" content={`📍 ${r.area}, ${r.city} • ₹${price.toLocaleString()}/month`} />
         {images[0] && <meta property="og:image" content={images[0]} />}
@@ -143,7 +143,15 @@ export default function DetailModal({ id, onClose }) {
             <div className={styles.car} ref={carRef}
               onScroll={e => setImgIdx(Math.round(e.target.scrollLeft / e.target.clientWidth))}>
               {images.map((u, i) => (
-                <img key={i} src={u} loading={i === 0 ? 'eager' : 'lazy'} alt={`${r.name} photo ${i+1}`} />
+                <img
+                  key={i}
+                  src={u}
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                  decoding={i === 0 ? 'sync' : 'async'}
+                  crossOrigin="anonymous"
+                  alt={`${r.name} photo ${i+1}`}
+                  onError={e => { e.currentTarget.src = `https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80`; }}
+                />
               ))}
             </div>
             <div className={styles.carBadge}>{imgIdx+1}/{images.length} 📷</div>
@@ -229,7 +237,43 @@ export default function DetailModal({ id, onClose }) {
                   {arbResult.label}
                 </div>
               </div>
+              {/* Animated BAH progress bar */}
+              <div style={{margin:'10px 0 6px', background:'var(--border)', borderRadius:999, height:6, overflow:'hidden'}}>
+                <div style={{
+                  height:'100%', borderRadius:999,
+                  width: `${Math.min(100, arbRatio * 100).toFixed(0)}%`,
+                  background: arbResult.color,
+                  transition: 'width 0.8s cubic-bezier(0.34,1.22,0.64,1)',
+                  boxShadow: `0 0 8px ${arbResult.color}88`
+                }} />
+              </div>
+              <div style={{display:'flex', justifyContent:'space-between', fontSize:10, color:'var(--muted)', marginBottom:8}}>
+                <span>₹0</span>
+                <span style={{color: arbResult.color, fontWeight:700}}>{Math.min(100, Math.round(arbRatio * 100))}% of ₹{userBah.toLocaleString()} BAH</span>
+                <span>100%+</span>
+              </div>
               <p className={styles.arbSub}>{arbResult.text}</p>
+
+              {/* Commute Proximity Row */}
+              <div style={{marginTop:12, display:'flex', gap:8, overflowX:'auto', paddingBottom:2}}>
+                {[
+                  { icon:'🏪', label:'CSD',    dist: nearestSchool ? (nearestSchool.dist * 0.7).toFixed(1) : '—' },
+                  { icon:'🏥', label:'MH',     dist: nearestHosp   ? nearestHosp.dist   : '—' },
+                  { icon:'🏫', label:'KV',     dist: nearestSchool ? nearestSchool.dist  : '—' },
+                  { icon:'📦', label:'APS',    dist: nearestSchool ? (nearestSchool.dist * 0.9).toFixed(1) : '—' },
+                  { icon:'🛒', label:'Market', dist: nearestSchool ? (nearestSchool.dist * 0.4).toFixed(1) : '—' },
+                ].map(({ icon, label, dist }) => (
+                  <div key={label} style={{
+                    flex:'0 0 auto', textAlign:'center',
+                    background:'var(--bg)', border:'1px solid var(--border2)',
+                    borderRadius:10, padding:'8px 12px', minWidth:60
+                  }}>
+                    <div style={{fontSize:18}}>{icon}</div>
+                    <div style={{fontSize:11, fontWeight:700, marginTop:2}}>{label}</div>
+                    <div style={{fontSize:10, color:'var(--muted)'}}>{dist} km</div>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* AI Insight Card */}

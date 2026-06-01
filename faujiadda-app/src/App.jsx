@@ -39,13 +39,19 @@ export default function App() {
 
   // Handle hardware back button using History API
   useEffect(() => {
-    const handlePopState = () => {
-      setOpenModal(null);
-      setFoodCity(null);
+    const handlePopState = (e) => {
+      const state = e.state;
+      if (state?.modal === 'food' || (!state?.modal && foodCity)) {
+        setFoodCity(null);
+      } else {
+        setOpenModal(null);
+        setDetailId(null);
+        setReportId(null);
+      }
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
+  }, [foodCity]);
 
   const showToast = (msg, type = 'ok', duration = 3000) => {
     setToast({ msg, type });
@@ -60,19 +66,31 @@ export default function App() {
   };
 
   const closeModal = () => {
-    if (openModal || foodCity) window.history.back();
+    if (openModal) {
+      setOpenModal(null);
+      setDetailId(null);
+      setReportId(null);
+      window.history.back();
+    }
+  };
+
+  const closeFoodOnly = () => {
+    if (foodCity) {
+      setFoodCity(null);
+      window.history.back();
+    }
   };
 
   const ctxValue = {
     showToast,
-    openDetail: (id) => { pushModalState(); setDetailId(id); setOpenModal('detail'); },
-    openPost:   ()   => { pushModalState(); setOpenModal('post'); },
-    openProfile:()   => { pushModalState(); setOpenModal('profile'); },
-    openReport: (id) => { pushModalState(); setReportId(id); setOpenModal('report'); },
-    openTransfers:() => { pushModalState(); setOpenModal('transfers'); },
-    openCompare: () => { pushModalState(); setOpenModal('compare'); },
-    openFood:   (city) => { pushModalState(); setFoodCity(city); },
-    closeFood:  closeModal,
+    openDetail: (id) => { window.history.pushState({ modal: 'detail' }, ''); setDetailId(id); setOpenModal('detail'); },
+    openPost:   ()   => { window.history.pushState({ modal: 'post' }, '');   setOpenModal('post'); },
+    openProfile:()   => { window.history.pushState({ modal: 'profile' }, ''); setOpenModal('profile'); },
+    openReport: (id) => { window.history.pushState({ modal: 'report' }, ''); setReportId(id); setOpenModal('report'); },
+    openTransfers:() => { window.history.pushState({ modal: 'transfers' }, ''); setOpenModal('transfers'); },
+    openCompare: () => { window.history.pushState({ modal: 'compare' }, ''); setOpenModal('compare'); },
+    openFood:   (city) => { window.history.pushState({ modal: 'food' }, ''); setFoodCity(city); },
+    closeFood:  closeFoodOnly,
     closeAll:   closeModal,
   };
 
