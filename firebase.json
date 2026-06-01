@@ -5,7 +5,7 @@
   "hosting": [
     {
       "target": "faujiniwas",
-      "public": "faujiadda-app/dist",
+      "public": "fauji-niwas-app/dist",
       "ignore": [
         "firebase.json",
         "**/.*",
@@ -21,13 +21,6 @@
           "headers": [{ "key": "X-Content-Type-Options", "value": "nosniff" }]
         }
       ],
-      "redirects": [
-        {
-          "source": "/",
-          "destination": "/home.html",
-          "type": 302
-        }
-      ],
       "rewrites": [
         {
           "source": "**",
@@ -37,7 +30,7 @@
     },
     {
       "target": "faujirentals",
-      "public": "faujiadda-app/dist",
+      "public": "fauji-niwas-app/dist",
       "ignore": [
         "firebase.json",
         "**/.*",
@@ -49,17 +42,26 @@
           "headers": [{ "key": "Cache-Control", "value": "public,max-age=31536000,immutable" }]
         }
       ],
-      "redirects": [
-        {
-          "source": "/",
-          "destination": "/home.html",
-          "type": 302
-        }
-      ],
       "rewrites": [
         {
           "source": "**",
           "destination": "/index.html"
+        }
+      ]
+    },
+    {
+      "target": "fauji-adda",
+      "public": "fauji-niwas-app/dist",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "redirects": [
+        {
+          "source": "**",
+          "destination": "https://faujiniwas.web.app",
+          "type": 301
         }
       ]
     }

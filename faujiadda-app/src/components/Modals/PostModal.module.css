@@ -1,5 +1,0 @@
-.header { padding: 18px 18px 0; display: flex; justify-content: space-between; align-items: center; }
-.body { padding: 18px; overflow-y: auto; flex: 1; min-height: 0; }
-.closeBtn { width:32px;height:32px;background:var(--card2);border:none;border-radius:50%;color:var(--muted);font-size:18px;cursor:pointer; display:flex;align-items:center;justify-content:center; }
-.closeBtn:hover { background:var(--border2);color:var(--text); }
-.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }

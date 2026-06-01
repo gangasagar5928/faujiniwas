@@ -1,0 +1,25 @@
+.card {
+  background: var(--card); border: 1px solid var(--border);
+  border-left: 3px solid transparent;
+  border-radius: var(--radius); padding: 13px;
+  margin-bottom: 9px; cursor: pointer;
+  transition: border-left-color .2s, transform .2s, background .2s, box-shadow .2s;
+}
+.card:hover { 
+  border-left-color: #f4c542; 
+  background: var(--card2); 
+  transform: translateY(-2px) scale(1.02); 
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+.row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; }
+.row h4 { font-size: 14px; }
+.price { font-weight: 700; color: #f4c542; font-size: 14px; }
+.meta { font-size: 12px; color: var(--muted); margin-bottom: 6px; line-height: 1.4; }
+.dist { font-size: 11px; }
+.desc { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+.badges { display: flex; flex-wrap: wrap; gap: 4px; }
+.badge {
+  font-size: 10px; padding: 2px 7px; border-radius: 100px;
+  background: rgba(244,197,66,.1); color: #f4c542;
+  border: 1px solid rgba(244,197,66,.3);
+}
