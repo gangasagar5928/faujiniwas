@@ -801,25 +801,38 @@ This section specifies deliverables for the requested items—Threat Modeling, R
 
 ---
 
-## 18. V4.2.0 ELITE UI/UX & SECURE FEATURE REFACTOR (IN PROGRESS)
+## 18. V4.2.0 ELITE UI/UX & SECURE FEATURE REFACTOR (✅ COMPLETED)
 
 ### 18.1 Unified React SPA & Cinematic Motion
 *   **Objective**: Merge legacy static landing pages into a unified React Router DOM SPA to enable heavy-inertia Framer Motion choreographies and asymmetric Tailwind v4 grid structures.
-*   **Key Deliverables**: 5038.jpg Asymmetrical Bento Grid, Left Navigation Command Dock, Massive Typography Masks ("NIWAS").
+*   **Status**: ✅ Completed.
 
 ### 18.2 Automated "Military Break Clause" Lease Generator
 *   **Objective**: Protect service members from lost security deposits due to sudden posting orders.
-*   **Key Deliverables**: Client-side PDF builder injecting legally binding 15-day break clauses upon production of movement orders.
+*   **Status**: ✅ Completed. Client-side PDF builder injecting legally binding 15-day break clauses upon production of movement orders.
 
 ### 18.3 WASM-Based Edge Document Masking
 *   **Objective**: Comply with DPDP Act 2023 by zero-trusting admin panels with raw PII.
-*   **Key Deliverables**: Tesseract.js / Face-API.js WASM integration to detect and pixelate ID numbers and faces in the browser *before* Firebase upload.
+*   **Status**: ✅ Completed. Tesseract.js / Face-API.js WASM integration to detect and pixelate ID numbers and faces in the browser *before* Firebase upload.
 
 ### 18.4 Crowdsourced CSD / URC Token & Inventory Pulse
 *   **Objective**: Real-time insights on cantonment Unit Run Canteens.
-*   **Key Deliverables**: Hyper-local ticker embedded in the Bento grid for upvoting wait times and liquor/grocery quota availability.
+*   **Status**: ✅ Completed. Tesseract/TFLite-styled hyper-local ticker embedded in the Bento grid for upvoting wait times and liquor/grocery quota availability.
 
 ---
 
-**Status**: Milestone In Progress (v4.2.0 Elite UI/UX & Security Refactor) | **Last Updated**: 2026-06-14 
+## 19. V4.2.1 EDITORIAL LANDING REDESIGN & DASHBOARD GRID FIX (✅ COMPLETED)
+
+### 19.1 Premium Editorial Landing Page Redesign
+*   **Objective**: Redesign the landing page with a premium, editorial real estate aesthetic (Architectural Digest meets Indian Army).
+*   **Status**: ✅ Completed. Implemented #f5f4f0 off-white theme, Google Font "Syne" for headings, "Inter" for body copy, minimal navigation, massive typography "FAUJI NIWAS" hero section overlaying a full-bleed 4k estate image, and a 4-feature bento grid with detail overlay popups on click.
+
+### 19.2 Strict Dashboard CSS Grid Layout
+*   **Objective**: Resolve layout breakages and position elements in accordance with the specified 3-row, 2-column layout.
+*   **Status**: ✅ Completed. Implemented grid structure (56px header, 320px left sidebar, full-bleed map, and 200px bottom listings horizontal scroll panel). Relocated search, HRA tier budget select, and "+ Post Listing" orange pill button to the header, and moved metrics, recommended cantonment cards, and active property cards to the bottom listings scroll panel. Override marker cluster icons to a clean purple style with a white border.
+
+---
+
+**Status**: ✅ Version 4.2.1 Stable Production | **Last Updated**: 2026-06-14 
+
 
