@@ -553,6 +553,11 @@ export default function ProfileModal({ onClose }) {
                 <div className={styles.empty}>
                   <div style={{fontSize:32,marginBottom:8}}>💬</div>
                   <p style={{fontSize:14,color:'var(--muted)'}}>No active chats yet.</p>
+                  <div style={{marginTop:12, display:'flex', gap:10}}>
+                    <button onClick={() => window.location.href = '/about.html'} style={{background:'var(--card2)', border:'1px solid var(--border2)', color:'var(--accent)', fontSize:11, padding:'6px 12px', borderRadius:8, cursor:'pointer'}}>ℹ️ About Us</button>
+                    <button onClick={ctx.openLegal} style={{background:'var(--card2)', border:'1px solid var(--border2)', color:'var(--accent)', fontSize:11, padding:'6px 12px', borderRadius:8, cursor:'pointer'}}>⚖️ Privacy Policy</button>
+                    <button onClick={ctx.openLegal} style={{background:'var(--card2)', border:'1px solid var(--border2)', color:'var(--accent)', fontSize:11, padding:'6px 12px', borderRadius:8, cursor:'pointer'}}>📜 Terms of Use</button>
+                  </div>
                   <p style={{fontSize:12,color:'var(--muted)',marginTop:4}}>Reach out to owners via the map to start an encrypted conversation.</p>
                 </div>
               ) : activeChats.map(c => (
@@ -578,6 +583,7 @@ export default function ProfileModal({ onClose }) {
                   Your account is secured by your phone number. You can delete your data permanently here.
                 </p>
                 <div style={{marginTop:12, display:'flex', gap:10}}>
+                  <button onClick={() => window.location.href = '/about.html'} style={{background:'var(--card2)', border:'1px solid var(--border2)', color:'var(--accent)', fontSize:11, padding:'6px 12px', borderRadius:8, cursor:'pointer'}}>ℹ️ About Us</button>
                   <button onClick={ctx.openLegal} style={{background:'var(--card2)', border:'1px solid var(--border2)', color:'var(--accent)', fontSize:11, padding:'6px 12px', borderRadius:8, cursor:'pointer'}}>⚖️ Privacy Policy</button>
                   <button onClick={ctx.openLegal} style={{background:'var(--card2)', border:'1px solid var(--border2)', color:'var(--accent)', fontSize:11, padding:'6px 12px', borderRadius:8, cursor:'pointer'}}>📜 Terms of Use</button>
                 </div>

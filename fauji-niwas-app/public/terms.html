@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service — Fauji Niwas</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚖️</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0B0F1A;
+            --white: #F1F1EE;
+            --muted: #8892A4;
+            --accent: #FF9933;
+            --border: rgba(255, 255, 255, 0.08);
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-blur: blur(12px);
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--white);
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .logo {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+        .logo span {
+            color: var(--accent);
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            color: var(--muted);
+            font-size: 14px;
+        }
+        .card {
+            background: var(--glass);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+        h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        p {
+            font-size: 14px;
+            color: #d1d5db;
+            margin-bottom: 16px;
+        }
+        ul {
+            margin-left: 20px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            color: #d1d5db;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .back-btn:hover {
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">⚖️ <span>Fauji</span>Niwas</div>
+            <h1>Terms of Service</h1>
+            <p class="subtitle">Last Updated: June 9, 2026</p>
+        </header>
+
+        <main>
+            <section class="card">
+                <h2>⚖️ 1. Platform Eligibility</h2>
+                <p>
+                    Fauji Niwas is a direct-to-soldier utility built for the Indian Armed Forces (Army, Navy, Air Force), 
+                    para-military forces, veterans, and SSB candidates. By signing up and using the app, you warrant that 
+                    you are a serving/retired member of these forces or a verified SSB candidate.
+                </p>
+            </section>
+
+            <section class="card">
+                <h2>🚫 2. Strict Zero Brokerage Policy</h2>
+                <p>
+                    Commercial real estate brokers, agents, and middlemen are strictly prohibited from listing properties 
+                    or operating on this platform. If a listing is reported as a broker listing or violates direct-owner 
+                    rules, it will be quarantined immediately. Repeat offenders will face permanent phone blockades.
+                </p>
+            </section>
+
+            <section class="card">
+                <h2>📝 3. User Listing Commitments</h2>
+                <ul>
+                    <li>You agree to list properties with honest pricing and precise, non-deceptive cantonment proximity information.</li>
+                    <li>Rental prices should align with standard local market rates or HRA rules. Listings with abnormal pricing deviations (Z-score > 1.5) will be flagged for manual moderator review.</li>
+                    <li>Listing content must not contain sensitive military deployment details or classified coordinates.</li>
+                </ul>
+            </section>
+
+            <section class="card">
+                <h2>🔒 4. End-to-End Encryption & Code Conduct</h2>
+                <p>
+                    All communication between users on the platform is end-to-end encrypted. You agree not to abuse, spam, 
+                    or perform replay attacks on chat sessions. Sequence nonces are actively monitored, and any detected 
+                    session tampering will result in immediate session teardown.
+                </p>
+            </section>
+        </main>
+
+        <footer style="text-align: center; margin-top: 20px;">
+            <a href="/" class="back-btn">← Back to Homepage</a>
+        </footer>
+    </div>
+</body>
+</html>

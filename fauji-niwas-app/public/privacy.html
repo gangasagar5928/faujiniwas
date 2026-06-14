@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy — Fauji Niwas</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔒</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0B0F1A;
+            --white: #F1F1EE;
+            --muted: #8892A4;
+            --accent: #FF9933;
+            --border: rgba(255, 255, 255, 0.08);
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-blur: blur(12px);
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--white);
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .logo {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+        .logo span {
+            color: var(--accent);
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            color: var(--muted);
+            font-size: 14px;
+        }
+        .card {
+            background: var(--glass);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+        h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        p {
+            font-size: 14px;
+            color: #d1d5db;
+            margin-bottom: 16px;
+        }
+        ul {
+            margin-left: 20px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            color: #d1d5db;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .back-btn:hover {
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">🔒 <span>Fauji</span>Niwas</div>
+            <h1>Privacy Policy</h1>
+            <p class="subtitle">Last Updated: June 9, 2026</p>
+        </header>
+
+        <main>
+            <section class="card">
+                <h2>🛡️ Privacy-First Foundation</h2>
+                <p>
+                    Fauji Niwas is designed from the ground up to respect the privacy of India's Armed Forces. 
+                    Unlike traditional housing portals, we do not monitor your search activity, sell user data, 
+                    or use commercial ad tracking SDKs.
+                </p>
+            </section>
+
+            <section class="card">
+                <h2>📊 Data We Collect & How We Use It</h2>
+                <ul>
+                    <li><strong>Phone Number (OTP Verification):</strong> Used solely to authenticate your account and ensure only verified personnel can list properties or interact.</li>
+                    <li><strong>Listings Data:</strong> Property descriptions, prices, photos, and approximate coordinates. Photos are auto-compressed client-side to strip metadata like camera model and exact GPS location to protect operational security.</li>
+                    <li><strong>E2EE Chats:</strong> Peer-to-peer chats are encrypted on your device using Web Crypto API. We do not store cleartext chat histories on our central database.</li>
+                    <li><strong>Local Vault Documents (ECHS):</strong> Health card vaults and verification proofs are encrypted locally on your browser with AES-256 and stored in IndexedDB. They are not sent to our cloud.</li>
+                </ul>
+            </section>
+
+            <section class="card">
+                <h2>🇮🇳 DPDP Act 2023 Compliance</h2>
+                <p>
+                    Fauji Niwas operates in full compliance with India's Digital Personal Data Protection (DPDP) Act 2023. 
+                    You retain full ownership of your data, including the right to delete your listings, close your account, 
+                    and purge all stored telemetry at any time.
+                </p>
+            </section>
+
+            <section class="card">
+                <h2>🔐 Information Security Boundaries</h2>
+                <p>
+                    We use Firebase Auth and Firebase Security Rules to isolate user data. App Check attestation blockades 
+                    are deployed to protect against data scraping bots and unauthorized API requests.
+                </p>
+            </section>
+        </main>
+
+        <footer style="text-align: center; margin-top: 20px;">
+            <a href="/" class="back-btn">← Back to Homepage</a>
+        </footer>
+    </div>
+</body>
+</html>
