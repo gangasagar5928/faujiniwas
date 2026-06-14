@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@theme {
+  --font-heading: "Syne", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --color-brand-gold: #c9a84c;
+  --color-brand-bg: #f5f4f0;
+  --color-brand-dark: #111111;
+}
+
+html, body, #root {
+  height: auto !important;
+  min-height: 100vh !important;
+  overflow: auto !important;
+  overflow-x: hidden !important;
+  display: block !important;
+  background: #f5f4f0 !important;
+  color: #111111 !important;
+  font-family: "Inter", sans-serif;
+}
+
+/* Custom scrollbar for landing page */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #f5f4f0; }
+::-webkit-scrollbar-thumb { background: #dcdad4; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #c9a84c; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Syne", sans-serif;
+}
+
+.editorial-line {
+  height: 1px;
+  background-color: #111111;
+  width: 100%;
+}
+
+.editorial-double-line {
+  border-top: 1px solid #111111;
+  border-bottom: 1px solid #111111;
+  height: 4px;
+  width: 100%;
+}
