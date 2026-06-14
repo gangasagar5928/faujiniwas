@@ -40,7 +40,7 @@ export default function ListingCard({ listing: r, index, onClick }) {
   const isCommandRecommended = repScore >= 90;
 
   return (
-    <div className={styles.card} onClick={onClick} role="button" tabIndex={0}
+    <div className={`${styles.card} listing-card`} onClick={onClick} role="button" tabIndex={0}
       style={{ '--delay': `${index * 0.05}s` }}
       onKeyDown={e => e.key === 'Enter' && onClick()}>
 

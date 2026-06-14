@@ -1,18 +1,18 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   plugins: [
+    tailwindcss(),
     react(),
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff2}'],
-        globIgnores: ['**/index.html'],
         maximumFileSizeToCacheInBytes: 4000000,
-        navigateFallbackDenylist: [/^\/index\.html/]
       },
       manifest: false, // We already have a manifest in public/manifest.json
     })
@@ -21,7 +21,8 @@ export default defineConfig({
     outDir: 'dist',
     rollupOptions: {
       input: {
-        main: './app.html'
+        main: './index.html',
+        app: './app.html'
       },
       output: {
         manualChunks(id) {
@@ -31,13 +32,13 @@ export default defineConfig({
           if (id.includes('node_modules/firebase')) {
             return 'firebase';
           }
-          if (id.includes('node_modules/react') || id.includes('node_modules/zustand')) {
+          if (id.includes('node_modules/react') || id.includes('node_modules/zustand') || id.includes('node_modules/framer-motion') || id.includes('node_modules/react-router-dom')) {
             return 'vendor';
           }
         },
       },
     },
-    chunkSizeWarningLimit: 1200,
+    chunkSizeWarningLimit: 1500,
   },
   optimizeDeps: {
     include: ['leaflet', 'react-leaflet', 'react-leaflet-cluster'],

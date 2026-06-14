@@ -2,7 +2,7 @@ import styles from './DormCard.module.css';
 
 export default function DormCard({ dorm: d, onFoodClick }) {
   return (
-    <div className={styles.card} onClick={() => onFoodClick?.(d.city)}>
+    <div className={`${styles.card} listing-card`} onClick={() => onFoodClick?.(d.city)}>
       <div className={styles.row}>
         <h4>🏨 {d.name}</h4>
         <span className={styles.price}>₹{d.price}/night</span>

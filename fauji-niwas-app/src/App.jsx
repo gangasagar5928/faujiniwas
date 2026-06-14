@@ -3,7 +3,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { useListings } from './hooks/useListings';
 import { useAuth } from './hooks/useAuth';
 import { useFilterStore } from './store/filterStore';
-import AppShell from './components/AppShell/AppShell';
+import UnifiedBentoDashboard from './components/AppShell/UnifiedBentoDashboard';
 import Loader from './components/UI/Loader';
 import Toast from './components/UI/Toast';
 import WelcomeGuide from './components/UI/WelcomeGuide';
@@ -139,7 +139,7 @@ export default function App() {
       <ModalContext.Provider value={ctxValue}>
         <SessionGuard>
           <ErrorBoundary>
-            <AppShell />
+            <UnifiedBentoDashboard />
             <WelcomeGuide />
           </ErrorBoundary>
 

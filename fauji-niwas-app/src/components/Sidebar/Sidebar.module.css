@@ -1,5 +1,5 @@
 .sidebar {
-  width: 440px;
+  width: 100%;
   background:
     linear-gradient(180deg, rgba(16, 25, 43, 0.72), rgba(11, 18, 31, 0.68)),
     rgba(15, 23, 42, 0.5);

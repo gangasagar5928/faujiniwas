@@ -20,7 +20,7 @@ export default function MarketCard({ item, index, onClick }) {
   };
 
   return (
-    <div className={styles.card} onClick={onClick} style={{ '--delay': `${index * 0.05}s` }}>
+    <div className={`${styles.card} listing-card`} onClick={onClick} style={{ '--delay': `${index * 0.05}s` }}>
       <div className={styles.imgWrap}>
         <img src={thumb} alt={name} className={styles.img} />
         <div className={styles.categoryBadge}>{getIcon(category)} {category}</div>

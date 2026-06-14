@@ -2,9 +2,6 @@ import { useContext, useState, useMemo } from 'react';
 import { useFilterStore, getFilteredListings } from '../../store/filterStore';
 import { SSB_DORMS } from '../../data';
 import { ModalContext } from '../../App';
-import ListingCard from './ListingCard';
-import MarketCard from './MarketCard';
-import DormCard from './DormCard';
 import SearchBar from './SearchBar';
 import FilterBar from './FilterBar';
 import StationPulse from './StationPulse';
@@ -17,19 +14,17 @@ export default function Sidebar() {
   const listings = getFilteredListings(allState);
   const isLoaded = allState.listings.length > 0;
   
+  const { 
+    showSchools, setShowSchools, 
+    showHospitals, setShowHospitals 
+  } = useFilterStore();
+
   const [minimized, setMinimized] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(30);
 
   const items = useMemo(() => activeView === 'dorms' ? SSB_DORMS : listings, [activeView, listings]);
   const count = items.length;
   
-  const isMarketEntry = (item) => item._collection === 'market' || item._collection === 'marketplace';
-  
-  // Lightweight Virtualization (Slicing)
-  const visibleItems = items.slice(0, visibleCount);
-  const hasMore = count > visibleCount;
-
   const verifiedCount = items.filter((item) => item.verified).length;
   const pricedItems = items.filter((item) => Number.isFinite(item.price) && item.price > 0);
   const avgPrice = pricedItems.length
@@ -41,7 +36,7 @@ export default function Sidebar() {
     rentals: {
       eyebrow: 'Live Housing Intel',
       title: 'Scan the current defence housing picture, not a flat list of cards.',
-      blurb: 'Verified signals, direct-owner bias, and price awareness stay visible while you move between pins and listings.',
+      blurb: 'Verified signals, direct-owner bias, and price awareness stay visible while you move between pins.',
       chips: [
         `${count || 0} live rentals`,
         count ? `${verifiedPct}% verified` : 'Verification layer primed',
@@ -50,8 +45,8 @@ export default function Sidebar() {
     },
     market: {
       eyebrow: 'Posting-Out Pulse',
-      title: 'The marketplace feels more like a live relocation feed now.',
-      blurb: 'Fresh civilian-noise-free listings surface from people actually moving stations, not random local classifieds.',
+      title: 'Relocate with peer-to-peer handoffs.',
+      blurb: 'Fresh civilian-noise-free listings surface from people actually moving stations.',
       chips: [
         `${count || 0} active items`,
         'Peer-to-peer handoff',
@@ -60,8 +55,8 @@ export default function Sidebar() {
     },
     dorms: {
       eyebrow: 'SSB Scout Mode',
-      title: 'Board-adjacent dorm hunting should feel fast, calm, and tactical.',
-      blurb: 'This view stays oriented around exam movement, nearby food, and quick elimination of weak options.',
+      title: 'Board-adjacent dorm hunting.',
+      blurb: 'Oriented around exam movement, nearby food, and quick elimination of weak options.',
       chips: [
         `${count || 0} dorm options`,
         'Food + stay context',
@@ -70,8 +65,8 @@ export default function Sidebar() {
     },
     saved: {
       eyebrow: 'Shortlist Locker',
-      title: 'Saved options now sit inside a cleaner decision zone.',
-      blurb: 'Keep the shortlist compact, compare calmly, and reopen the strongest candidates without re-running the whole search.',
+      title: 'Saved options sitting inside a decision zone.',
+      blurb: 'Keep the shortlist compact, compare calmly, and reopen the strongest candidates.',
       chips: [
         `${count || 0} shortlisted`,
         'Check alerts',
@@ -81,7 +76,7 @@ export default function Sidebar() {
   }[activeView];
 
   return (
-    <aside className={`${styles.sidebar} ${minimized ? styles.minimized : ''} ${fullscreen ? styles.fullscreen : ''}`}>
+    <aside className={`${styles.sidebar} sidebar ${minimized ? styles.minimized : ''} ${fullscreen ? styles.fullscreen : ''}`}>
       {/* Drag handle (mobile) */}
       <div 
         className={styles.dragHandle} 
@@ -103,14 +98,12 @@ export default function Sidebar() {
              const endY = e2.changedTouches[0].clientY;
              const diff = startY - endY; // positive = swipe up, negative = swipe down
              if (diff > 40) {
-               // Swipe UP
                if (minimized) {
                  setMinimized(false);
                } else if (!fullscreen) {
                  setFullscreen(true);
                }
              } else if (diff < -40) {
-               // Swipe DOWN
                if (fullscreen) {
                  setFullscreen(false);
                } else if (!minimized) {
@@ -125,18 +118,47 @@ export default function Sidebar() {
         <div className={styles.dragBar} />
       </div>
 
+      {/* Tagline Header (Fixed wrapping and 13px size) */}
+      <div style={{ padding: '16px 16px 8px 16px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <h2 style={{ fontSize: '13px', lineHeight: '1.4', fontWeight: 600, color: '#f8fafc', margin: 0 }}>
+          {intel.title}
+        </h2>
+      </div>
+
       {/* Search + filters */}
       <div className={styles.sTop}>
         <SearchBar />
         <FilterBar />
         
+        {/* Map Layers POI Toggles inside Sidebar */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', margin: '12px 0', padding: '10px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px' }}>
+          <span style={{ fontSize: '9px', fontWeight: 800, color: 'var(--accent)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+            🛰️ Quick POI Layer Toggles
+          </span>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
+            <button 
+              className={`fb ${showSchools ? 'active' : ''}`}
+              onClick={() => setShowSchools(!showSchools)}
+              style={{ fontSize: '10px', padding: '6px 8px', borderRadius: '6px', textAlign: 'center', width: '100%' }}
+            >
+              🏫 Army Schools
+            </button>
+            <button 
+              className={`fb ${showHospitals ? 'active' : ''}`}
+              onClick={() => setShowHospitals(!showHospitals)}
+              style={{ fontSize: '10px', padding: '6px 8px', borderRadius: '6px', textAlign: 'center', width: '100%' }}
+            >
+              🏥 Mil Hospitals
+            </button>
+          </div>
+        </div>
+
         <StationPulse items={items} />
 
         <div className={styles.intelPanel}>
           <div className={styles.intelCopy}>
             <div className={styles.intelEyebrow}>{intel.eyebrow}</div>
-            <h2>{intel.title}</h2>
-            <p>{intel.blurb}</p>
+            <p style={{ margin: 0, fontSize: '11px', lineHeight: '1.4' }}>{intel.blurb}</p>
             <div className={styles.intelChips}>
               {intel.chips.map((chip, idx) => (
                 <span key={chip} className={styles.intelChip} style={{ '--chip-delay': `${idx * 0.08}s` }}>
@@ -145,14 +167,8 @@ export default function Sidebar() {
               ))}
             </div>
           </div>
-          <div className={styles.intelModel} aria-hidden="true">
-            <span className={`${styles.intelPlane} ${styles.intelPlaneLow}`} />
-            <span className={`${styles.intelPlane} ${styles.intelPlaneMid}`} />
-            <span className={`${styles.intelPlane} ${styles.intelPlaneTop}`} />
-            <span className={styles.intelHalo} />
-            <span className={styles.intelBeacon} />
-          </div>
         </div>
+
         <div className={styles.cnt}>
           <div className="live-dot" />
           {isLoaded
@@ -165,51 +181,10 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* Listings */}
-      <div className={styles.listings}>
-        {!isLoaded ? (
-          // Skeleton
-          Array(4).fill(0).map((_, i) => (
-            <div key={i} className={styles.skelCard}>
-              <div className={`skel-img ${styles.skelImg}`} />
-              <div className={styles.skelLines}>
-                <div className="skel-line" style={{ width: '75%', height: 13 }} />
-                <div className="skel-line" style={{ width: '50%', height: 11 }} />
-              </div>
-            </div>
-          ))
-        ) : !count ? (
-          <div className={styles.empty}>
-            <div className={styles.emptyIco}>{activeView === 'saved' ? '⭐' : '🔍'}</div>
-            <h3>{activeView === 'saved' ? 'No saved properties' : 'No results found'}</h3>
-            <p>{activeView === 'saved' ? 'Click the ⭐ Save button on any listing to bookmark it here.' : 'Try adjusting filters or searching a different area.'}</p>
-          </div>
-        ) : activeView === 'dorms' ? (
-          visibleItems.map(d => <DormCard key={d.id} dorm={d} onFoodClick={ctx.openFood} />)
-        ) : (
-          visibleItems.map((r, i) => isMarketEntry(r)
-            ? <MarketCard key={r.id} item={r} index={i} onClick={() => ctx.openDetail(r.id)} />
-            : <ListingCard key={r.id} listing={r} index={i} onClick={() => ctx.openDetail(r.id)} />
-          )
-        )}
-
-        {hasMore && (
-           <div style={{padding: '20px', textAlign: 'center'}}>
-             <button className="fb glass-tactical" 
-                     onClick={() => setVisibleCount(p => p + 50)}
-                     style={{width: '100%', padding: '12px', border: '1px solid var(--accent)'}}>
-               Show More Signals ({count - visibleCount} remaining)
-             </button>
-           </div>
-        )}
-      </div>
-
       {/* Footer */}
-      <div className={styles.footer}>
+      <div className={styles.footer} style={{ marginTop: 'auto' }}>
         <span>FaujiNiwas — Defence Housing</span>
-        <a href="/about.html" style={{ color: 'var(--muted)', textDecoration: 'none', fontSize: 11 }}>About Us</a>
-        <a href="/privacy.html" style={{ color: 'var(--muted)', textDecoration: 'none', fontSize: 11 }}>Privacy</a>
-        <a href="/terms.html" style={{ color: 'var(--muted)', textDecoration: 'none', fontSize: 11 }}>Terms</a>
+        <a href="/about.html" style={{ color: 'var(--muted)', textDecoration: 'none', fontSize: 11 }}>About</a>
       </div>
     </aside>
   );
