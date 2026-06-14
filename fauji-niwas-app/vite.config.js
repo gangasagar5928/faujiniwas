@@ -10,9 +10,9 @@ export default defineConfig({
       injectRegister: 'auto',
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff2}'],
-        globIgnores: ['**/home.html'],
+        globIgnores: ['**/index.html'],
         maximumFileSizeToCacheInBytes: 4000000,
-        navigateFallbackDenylist: [/^\/home\.html/]
+        navigateFallbackDenylist: [/^\/index\.html/]
       },
       manifest: false, // We already have a manifest in public/manifest.json
     })
@@ -20,6 +20,9 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     rollupOptions: {
+      input: {
+        main: './app.html'
+      },
       output: {
         manualChunks(id) {
           if (id.includes('node_modules/leaflet') || id.includes('node_modules/react-leaflet') || id.includes('react-leaflet-cluster')) {

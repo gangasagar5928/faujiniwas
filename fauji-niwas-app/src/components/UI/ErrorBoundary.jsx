@@ -7,7 +7,7 @@ export default class ErrorBoundary extends React.Component {
   }
 
   static getDerivedStateFromError(error) {
-    return { hasError: true };
+    return { hasError: true, error };
   }
 
   componentDidCatch(error, errorInfo) {
@@ -27,6 +27,10 @@ export default class ErrorBoundary extends React.Component {
           <p style={{color: '#7a8fa8', maxWidth: 400, marginTop: 10}}>
             An unexpected error occurred in the command center. 
             The system is attempting to stabilize.
+            <br /><br />
+            <span style={{color: 'red', fontSize: '14px', fontFamily: 'monospace'}}>
+              {this.state.error && this.state.error.toString()}
+            </span>
           </p>
           <button 
             onClick={() => window.location.reload()}

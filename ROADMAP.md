@@ -801,5 +801,25 @@ This section specifies deliverables for the requested items—Threat Modeling, R
 
 ---
 
-**Status**: Milestone Complete (v3.6.0 Security Hardening Roadmap Update) | **Last Updated**: 2026-06-01 | **Build Verification**: Documentation update only (no code changes executed). 
+## 18. V4.2.0 ELITE UI/UX & SECURE FEATURE REFACTOR (IN PROGRESS)
+
+### 18.1 Unified React SPA & Cinematic Motion
+*   **Objective**: Merge legacy static landing pages into a unified React Router DOM SPA to enable heavy-inertia Framer Motion choreographies and asymmetric Tailwind v4 grid structures.
+*   **Key Deliverables**: 5038.jpg Asymmetrical Bento Grid, Left Navigation Command Dock, Massive Typography Masks ("NIWAS").
+
+### 18.2 Automated "Military Break Clause" Lease Generator
+*   **Objective**: Protect service members from lost security deposits due to sudden posting orders.
+*   **Key Deliverables**: Client-side PDF builder injecting legally binding 15-day break clauses upon production of movement orders.
+
+### 18.3 WASM-Based Edge Document Masking
+*   **Objective**: Comply with DPDP Act 2023 by zero-trusting admin panels with raw PII.
+*   **Key Deliverables**: Tesseract.js / Face-API.js WASM integration to detect and pixelate ID numbers and faces in the browser *before* Firebase upload.
+
+### 18.4 Crowdsourced CSD / URC Token & Inventory Pulse
+*   **Objective**: Real-time insights on cantonment Unit Run Canteens.
+*   **Key Deliverables**: Hyper-local ticker embedded in the Bento grid for upvoting wait times and liquor/grocery quota availability.
+
+---
+
+**Status**: Milestone In Progress (v4.2.0 Elite UI/UX & Security Refactor) | **Last Updated**: 2026-06-14 
 

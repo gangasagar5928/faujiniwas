@@ -207,6 +207,7 @@ export default function Sidebar() {
       {/* Footer */}
       <div className={styles.footer}>
         <span>FaujiNiwas — Defence Housing</span>
+        <a href="/about.html" style={{ color: 'var(--muted)', textDecoration: 'none', fontSize: 11 }}>About Us</a>
         <a href="/privacy.html" style={{ color: 'var(--muted)', textDecoration: 'none', fontSize: 11 }}>Privacy</a>
         <a href="/terms.html" style={{ color: 'var(--muted)', textDecoration: 'none', fontSize: 11 }}>Terms</a>
       </div>

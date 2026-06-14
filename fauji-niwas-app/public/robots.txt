@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /app.html?view=admin
 
 Sitemap: https://faujiniwas.web.app/sitemap.xml

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Fauji Niwas — India's Privacy-First Military Relocation OS</title>
+  <title>Fauji Niwas — Flat for rent in Pune for Faujis & Defence Housing</title>
   <meta name="description" content="India's #1 platform for rooms for rent for faujis. Verified army housing near cantonment. Zero brokerage. AES-256 encrypted. Founded by Aman Kumar Singh."/>
   <meta name="keywords" content="room for rent for faujis, defence housing India, army housing rent, SSB dorms, Fauji accommodation, cantonment housing, fauji rent, Founder of Faujiniwas Aman Kumar Singh"/>
   <meta name="author" content="Aman Kumar Singh, Founder of Faujiniwas"/>
@@ -151,10 +151,10 @@
     }
     .hero-img{
       width:100%;height:100%;object-fit:cover;object-position:center;
-      mask-image:linear-gradient(to left,rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.1) 60%,transparent 90%);
-      -webkit-mask-image:linear-gradient(to left,rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.1) 60%,transparent 90%);
+      mask-image:linear-gradient(to left,rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.1) 60%,transparent 90%);
+      -webkit-mask-image:linear-gradient(to left,rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.1) 60%,transparent 90%);
       border-radius:0;
-      opacity:.45;filter:saturate(0.8) hue-rotate(160deg);
+      opacity:.35;filter:saturate(0.7) hue-rotate(160deg);
     }
 
     /* ── STATS BAR ── */
@@ -189,33 +189,26 @@
     }
     .bc{
       grid-column:span 4;
-      background:rgba(10,16,26,0.65);
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:24px;padding:2.2rem;
+      background:var(--card-bg);
+      border:1px solid var(--border);
+      border-radius:20px;padding:2rem;
       position:relative;overflow:hidden;
-      transition:border-color .4s, background .4s, box-shadow .4s;
+      transition:all .5s cubic-bezier(.23,1,.32,1);
       cursor:pointer;
-      backdrop-filter:blur(30px) saturate(180%);
-      -webkit-backdrop-filter:blur(30px) saturate(180%);
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02), 0 20px 40px rgba(0,0,0,0.3);
-      transform-style:preserve-3d;
-      will-change:transform;
+      backdrop-filter:blur(20px);
+      -webkit-backdrop-filter:blur(20px);
     }
     .bc::before{
       content:'';position:absolute;inset:0;
-      background:radial-gradient(circle at top left,rgba(0,212,255,.15),transparent 70%);
-      opacity:0;transition:opacity .4s;border-radius:24px;
+      background:radial-gradient(circle at top left,rgba(0,212,255,.1),transparent 60%);
+      opacity:0;transition:opacity .4s;border-radius:20px;
     }
     .bc::after{
-      content:'';position:absolute;inset:-1px;border-radius:25px;
-      background:linear-gradient(135deg,rgba(0,212,255,.4),rgba(124,58,237,.3),transparent);
+      content:'';position:absolute;inset:-1px;border-radius:21px;
+      background:linear-gradient(135deg,rgba(0,212,255,.3),rgba(124,58,237,.2),transparent);
       opacity:0;transition:opacity .4s;z-index:-1;
     }
-    .bc:hover{
-       box-shadow: inset 0 0 0 1px rgba(0,212,255,0.2), 0 30px 80px rgba(0,0,0,0.6), 0 0 40px rgba(0,212,255,0.15);
-       border-color: rgba(0,212,255,0.3);
-       background: rgba(15,25,40,0.75);
-    }
+    .bc:hover{transform:translateY(-6px) scale(1.01);box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 0 1px rgba(0,212,255,.15);}
     .bc:hover::before{opacity:1}
     .bc:hover::after{opacity:1}
     .bc.w6{grid-column:span 6}
@@ -377,10 +370,10 @@
     .fb-d{font-size:.68rem;color:rgba(136,146,164,.45);max-width:560px;text-align:right}
 
     /* ── ANIMATIONS ── */
-    .fade{opacity:0;transform:translateY(40px) scale(0.98);filter:blur(8px);transition:all 1s cubic-bezier(.19,1,.22,1)}
-    .fade.in{opacity:1;transform:none;filter:blur(0)}
-    .stagger .bc{opacity:0;transform:translateY(40px) scale(.95);filter:blur(8px);transition:opacity 0.8s cubic-bezier(.19,1,.22,1), transform 0.8s cubic-bezier(.19,1,.22,1), filter 0.8s cubic-bezier(.19,1,.22,1)}
-    .stagger .bc.in{opacity:1;transform:none;filter:blur(0)}
+    .fade{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s ease}
+    .fade.in{opacity:1;transform:none}
+    .stagger .bc{opacity:0;transform:translateY(32px) scale(.98);transition:opacity .6s ease,transform .6s ease}
+    .stagger .bc.in{opacity:1;transform:none}
 
     /* ── MOBILE ── */
     @media(max-width:1100px){
@@ -408,6 +401,7 @@
       .fg{grid-template-columns:1fr}
     }
   </style>
+    <link rel="canonical" href="https://faujiniwas.web.app/pune.html">
 </head>
 <body>
 
@@ -446,7 +440,7 @@
 
 <!-- HERO -->
 <section id="hero">
-  <img src="https://images.unsplash.com/photo-1584714268709-c3dd9c92b378?w=3840&q=100&auto=format&fit=crop" alt="" class="hero-img" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.15;filter:saturate(.5) hue-rotate(170deg);z-index:0;pointer-events:none"/>
+  <img src="https://images.unsplash.com/photo-1584714268709-c3dd9c92b378?w=1800&q=90&auto=format&fit=crop" alt="" class="hero-img" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.12;filter:saturate(.4) hue-rotate(170deg);z-index:0;pointer-events:none"/>
 
   <div style="position:relative;z-index:1">
     <div class="hero-tag fade in"><div class="ping"></div>India's #1 Military Relocation Platform</div>
@@ -591,7 +585,7 @@
   </div>
   <div class="city-grid">
     <a href="/delhi.html" class="city-card fade">
-      <img src="https://images.unsplash.com/photo-1587474260584-136574528ed5?w=3840&q=100&auto=format&fit=crop" alt="Delhi Cantonment" class="city-img" loading="lazy"/>
+      <img src="https://images.unsplash.com/photo-1587474260584-136574528ed5?w=800&q=85&auto=format&fit=crop" alt="Delhi Cantonment" class="city-img" loading="lazy"/>
       <div class="city-info">
         <div class="city-name">Delhi Cantonment</div>
         <div class="city-meta">342+ verified listings · Army HQ zone</div>
@@ -599,7 +593,7 @@
       </div>
     </a>
     <a href="/pune.html" class="city-card fade">
-      <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=3840&q=100&auto=format&fit=crop" alt="Pune Cantonment" class="city-img" loading="lazy"/>
+      <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=85&auto=format&fit=crop" alt="Pune Cantonment" class="city-img" loading="lazy"/>
       <div class="city-info">
         <div class="city-name">Pune Cantonment</div>
         <div class="city-meta">218+ verified listings · Southern Command</div>
@@ -607,7 +601,7 @@
       </div>
     </a>
     <a href="/ambala.html" class="city-card fade">
-      <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=3840&q=100&auto=format&fit=crop" alt="Ambala Cantonment" class="city-img" loading="lazy"/>
+      <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=85&auto=format&fit=crop" alt="Ambala Cantonment" class="city-img" loading="lazy"/>
       <div class="city-info">
         <div class="city-name">Ambala Cantonment</div>
         <div class="city-meta">156+ verified listings · Western Command</div>
@@ -615,7 +609,7 @@
       </div>
     </a>
     <a href="/secunderabad.html" class="city-card fade">
-      <img src="https://images.unsplash.com/photo-1572097662693-5a73db9a5d7f?w=3840&q=100&auto=format&fit=crop" alt="Secunderabad Cantonment" class="city-img" loading="lazy"/>
+      <img src="https://images.unsplash.com/photo-1572097662693-5a73db9a5d7f?w=800&q=85&auto=format&fit=crop" alt="Secunderabad Cantonment" class="city-img" loading="lazy"/>
       <div class="city-info">
         <div class="city-name">Secunderabad</div>
         <div class="city-meta">184+ listings · Southern Command HQ</div>
@@ -623,7 +617,7 @@
       </div>
     </a>
     <a href="/bangalore.html" class="city-card fade">
-      <img src="https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=3840&q=100&auto=format&fit=crop" alt="Bangalore Cantonment" class="city-img" loading="lazy"/>
+      <img src="https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=800&q=85&auto=format&fit=crop" alt="Bangalore Cantonment" class="city-img" loading="lazy"/>
       <div class="city-info">
         <div class="city-name">Bangalore Cantonment</div>
         <div class="city-meta">201+ listings · Southern Command</div>
@@ -803,46 +797,7 @@ document.querySelectorAll('.fade').forEach(el=>io.observe(el));
 
 // stagger bento cards
 const bento=document.querySelector('.bento');
-if(bento){
-  const bio=new IntersectionObserver(es=>{
-    es.forEach(e=>{
-      if(e.isIntersecting){
-        const cards=e.target.querySelectorAll('.bc');
-        cards.forEach((c,i)=>setTimeout(()=>c.classList.add('in'),i*120));
-        bio.unobserve(e.target);
-      }
-    })
-  },{threshold:.05});
-  bio.observe(bento);
-}
-
-// ── 3D GLASSMORPHISM BENTO TILT ──
-if(window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
-  document.querySelectorAll('.bc').forEach(card => {
-    let tId;
-    card.addEventListener('mousemove', (e) => {
-      if(!card.classList.contains('in')) return;
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      const rotateX = ((y - centerY) / centerY) * -5;
-      const rotateY = ((x - centerX) / centerX) * 5;
-      card.style.transition = 'none'; // Instant tracking
-      card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02) translateY(-6px)`;
-    });
-    card.addEventListener('mouseleave', () => {
-      card.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.4s, border-color 0.4s, background 0.4s';
-      card.style.transform = '';
-      clearTimeout(tId);
-      tId = setTimeout(()=> card.style.transition='', 600); // clear custom transition so hover works
-    });
-    card.addEventListener('mouseenter', () => {
-      card.style.transition = 'transform 0.1s ease';
-    });
-  });
-}
+if(bento){const bio=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const cards=e.target.querySelectorAll('.bc');cards.forEach((c,i)=>setTimeout(()=>c.classList.add('in'),i*100));bio.unobserve(e.target)}})},{threshold:.05});bio.observe(bento);}
 
 // ── COUNTERS ──
 const cio=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting&&!e.target._done){e.target._done=true;const t=+e.target.dataset.t,sf=e.target.dataset.s||'',dur=2200,st=performance.now();const u=n=>{const p=Math.min((n-st)/dur,1),v=Math.floor((1-Math.pow(1-p,3))*t);e.target.textContent=v>=1000?(v/1000).toFixed(0)+'K'+sf:v+sf;if(p<1)requestAnimationFrame(u)};requestAnimationFrame(u)}})},{threshold:.5});
