@@ -16,7 +16,8 @@ export default function UnifiedBentoDashboard() {
   const { 
     activeView, setActiveView,
     smartSearchQ, setSmartSearchQ,
-    maxPrice, setMaxPrice
+    maxPrice, setMaxPrice,
+    bhkFilter, setBhkFilter
   } = useFilterStore();
 
   const allState = useFilterStore((s) => s);
@@ -82,24 +83,42 @@ export default function UnifiedBentoDashboard() {
           ))}
         </div>
 
-        {/* Search Bar & HRA Filter */}
+        {/* Search Bar, HRA Filter & BHK Filter */}
         <div className="flex items-center gap-3 bg-[#171c24] border border-[#2d3646] px-4 py-1.5 rounded-full">
           <input 
             type="text" 
             placeholder="Search cantt, city, area..." 
             value={smartSearchQ}
             onChange={(e) => setSmartSearchQ(e.target.value)}
-            className="bg-transparent text-xs text-white outline-none w-56 placeholder-slate-600"
+            className="bg-transparent text-xs text-white outline-none w-48 placeholder-slate-600"
           />
           <div className="h-4 w-[1px] bg-slate-800" />
+          
+          {/* HRA Filter */}
           <select 
             value={getHraValue()}
             onChange={handleHraChange}
             className="bg-transparent text-xs text-slate-400 outline-none cursor-pointer font-medium"
+            title="HRA Budget Tier"
           >
             <option value="Officer">Officer (₹30k+)</option>
             <option value="JCO">JCO (₹15k-₹30k)</option>
             <option value="OR">OR (₹5k-₹15k)</option>
+          </select>
+
+          <div className="h-4 w-[1px] bg-slate-800" />
+
+          {/* BHK Filter */}
+          <select 
+            value={bhkFilter}
+            onChange={(e) => setBhkFilter(e.target.value)}
+            className="bg-transparent text-xs text-slate-400 outline-none cursor-pointer font-medium"
+            title="BHK Size"
+          >
+            <option value="all">All BHK</option>
+            <option value="1">1 BHK</option>
+            <option value="2">2 BHK</option>
+            <option value="3+">3+ BHK</option>
           </select>
         </div>
 
@@ -126,22 +145,19 @@ export default function UnifiedBentoDashboard() {
             👤
           </button>
 
-          {/* Post Listing Pill */}
+          {/* Post Listing Button */}
           <button 
             onClick={() => ctx.openPost && ctx.openPost()}
-            className="px-4 py-1.5 text-white text-xs font-bold rounded-full transition-all flex items-center gap-1 shadow-md hover:brightness-110"
-            style={{ backgroundColor: '#f97316' }}
+            className="post-listing-btn"
           >
-            <span className="text-[14px] leading-none">+</span> Post Listing
+            + Post Listing
           </button>
 
         </div>
       </header>
 
       {/* 2. LEFT SIDEBAR (grid-row: 2, grid-column: 1) */}
-      <aside className="sidebar">
-        <Sidebar />
-      </aside>
+      <Sidebar />
 
       {/* 3. MAP Container (grid-row: 2, grid-column: 2) */}
       <div id="map">
