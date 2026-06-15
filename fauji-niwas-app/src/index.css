@@ -435,6 +435,7 @@ body:not(.landing-page) {
   width: 100%;
   height: 100%;
   z-index: 1;
+  position: relative;
 }
 
 .listings-panel {
@@ -485,6 +486,11 @@ body:not(.landing-page) {
   padding: 12px;
   min-width: 220px;
   backdrop-filter: blur(10px);
+  pointer-events: auto;
+}
+
+.leaflet-top.leaflet-right {
+  z-index: 1001 !important;
 }
 
 .listing-card {
@@ -514,20 +520,43 @@ body:not(.landing-page) {
   flex-shrink: 0;
 }
 
-.marker-cluster-small, 
-.marker-cluster-medium,
-.marker-cluster-large,
+.marker-cluster-small div,
+.marker-cluster-medium div,
+.marker-cluster-large div,
 .mc-cluster {
   background: rgba(124, 92, 252, 0.9) !important;
-  border: 2px solid #fff !important;
-  border-radius: 50% !important;
   color: white !important;
   font-weight: 700 !important;
   font-size: 12px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  box-shadow: 0 4px 12px rgba(124, 92, 252, 0.4) !important;
+  border-radius: 50% !important;
+}
+
+.marker-cluster-small,
+.marker-cluster-medium,
+.marker-cluster-large {
+  background: rgba(124, 92, 252, 0.4) !important;
+  border-radius: 50% !important;
+}
+
+.post-listing-btn {
+  padding: 8px 20px;
+  background: #ff6b35 !important;
+  color: white !important;
+  border-radius: 99px;
+  font-weight: 700;
+  white-space: nowrap;
+  border: none !important;
+  cursor: pointer;
+  font-size: 12px !important;
+  margin-left: auto;
+  transition: background 0.2s;
+}
+
+.post-listing-btn:hover {
+  background: #ff8552 !important;
 }
 
 @media (max-width: 768px) {

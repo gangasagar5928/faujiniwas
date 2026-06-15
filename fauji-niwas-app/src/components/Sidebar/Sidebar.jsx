@@ -35,7 +35,7 @@ export default function Sidebar() {
   const intel = {
     rentals: {
       eyebrow: 'Live Housing Intel',
-      title: 'Scan the current defence housing picture, not a flat list of cards.',
+      title: 'Scan defence housing. Not flat listings.',
       blurb: 'Verified signals, direct-owner bias, and price awareness stay visible while you move between pins.',
       chips: [
         `${count || 0} live rentals`,
@@ -65,7 +65,7 @@ export default function Sidebar() {
     },
     saved: {
       eyebrow: 'Shortlist Locker',
-      title: 'Saved options sitting inside a decision zone.',
+      title: 'Shortlist decision zone.',
       blurb: 'Keep the shortlist compact, compare calmly, and reopen the strongest candidates.',
       chips: [
         `${count || 0} shortlisted`,
