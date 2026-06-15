@@ -49,12 +49,15 @@ export default function App() {
     return () => clearTimeout(timer);
   }, [authLoading]);
 
-  // Read ?view=dorms (or ?listing=id) from landing page CTAs
+  // Read ?view=dorms, ?search=q (or ?listing=id) from landing page CTAs
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const view = params.get('view');
     if (view === 'dorms') setActiveView('dorms');
     else if (view === 'market') setActiveView('market');
+
+    const search = params.get('search');
+    if (search) useFilterStore.getState().setSmartSearchQ(search);
   }, [setActiveView]);
 
   // Handle hardware back button using History API
