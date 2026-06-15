@@ -404,6 +404,8 @@ body:not(.landing-page) {
   height: 100vh;
   background: #0d0f12;
   color: #f8fafc;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
 .header { 

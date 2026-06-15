@@ -285,7 +285,49 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 5. Editorial Footer */}
+      {/* 5. SEO & Popular Searches Links */}
+      <section className="w-full max-w-[1400px] mx-auto border-t border-[#111111]/10 pt-12 pb-6 text-xs text-[#777777]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <h5 className="font-heading font-bold uppercase tracking-wider text-[#111111] mb-3">Active Military Stations & Cantonments</h5>
+            <div className="flex flex-wrap gap-x-4 gap-y-2">
+              <a href="/pune.html" className="hover:text-[#c9a84c] hover:underline">Pune Cantt</a>
+              <span className="text-slate-400">·</span>
+              <a href="/delhi.html" className="hover:text-[#c9a84c] hover:underline">Delhi Cantt</a>
+              <span className="text-slate-400">·</span>
+              <a href="/bangalore.html" className="hover:text-[#c9a84c] hover:underline">Bangalore Cantt</a>
+              <span className="text-slate-400">·</span>
+              <a href="/ambala.html" className="hover:text-[#c9a84c] hover:underline">Ambala Cantt</a>
+              <span className="text-slate-400">·</span>
+              <a href="/bhopal.html" className="hover:text-[#c9a84c] hover:underline">Bhopal Cantt</a>
+              <span className="text-slate-400">·</span>
+              <a href="/coimbatore.html" className="hover:text-[#c9a84c] hover:underline">Coimbatore Cantt</a>
+              <span className="text-slate-400">·</span>
+              <a href="/kapurthala.html" className="hover:text-[#c9a84c] hover:underline">Kapurthala Cantt</a>
+              <span className="text-slate-400">·</span>
+              <a href="/prayagraj.html" className="hover:text-[#c9a84c] hover:underline">Prayagraj Cantt</a>
+              <span className="text-slate-400">·</span>
+              <a href="/secunderabad.html" className="hover:text-[#c9a84c] hover:underline">Secunderabad Cantt</a>
+            </div>
+          </div>
+          <div>
+            <h5 className="font-heading font-bold uppercase tracking-wider text-[#111111] mb-3">Popular Relocation Queries</h5>
+            <div className="flex flex-wrap gap-x-4 gap-y-2">
+              <a href="/app.html?search=room" className="hover:text-[#c9a84c] hover:underline">Room for Rent for Army</a>
+              <span className="text-slate-400">·</span>
+              <a href="/app.html?search=fauji" className="hover:text-[#c9a84c] hover:underline">Fauji Room for Rent</a>
+              <span className="text-slate-400">·</span>
+              <a href="/app.html?view=dorms" className="hover:text-[#c9a84c] hover:underline">SSB Transit Accommodation</a>
+              <span className="text-slate-400">·</span>
+              <a href="/app.html" className="hover:text-[#c9a84c] hover:underline">Zero Brokerage Military Quarters</a>
+              <span className="text-slate-400">·</span>
+              <a href="/app.html" className="hover:text-[#c9a84c] hover:underline">Defence Family Relocation India</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. Editorial Footer */}
       <footer className="w-full max-w-[1400px] mx-auto border-t border-[#111111]/10 py-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-[#777777]">
         <div className="flex items-center gap-2">
           <Shield size={16} className="text-[#c9a84c]" />
@@ -293,9 +335,9 @@ export default function LandingPage() {
           <span>&copy; {new Date().getFullYear()}</span>
         </div>
         <div className="flex gap-6 font-semibold uppercase text-[10px] tracking-wider">
-          <a href="#" className="hover:text-[#111111] transition-colors">Privacy Policy</a>
-          <a href="#" className="hover:text-[#111111] transition-colors">Terms of Service</a>
-          <a href="#" className="hover:text-[#111111] transition-colors">Contact Defence Admin</a>
+          <a href="/privacy.html" className="hover:text-[#111111] transition-colors">Privacy Policy</a>
+          <a href="/terms.html" className="hover:text-[#111111] transition-colors">Terms of Service</a>
+          <a href="/contact.html" className="hover:text-[#111111] transition-colors">Contact Defence Admin</a>
         </div>
         <div className="flex items-center gap-1.5">
           Made with <Heart size={10} className="fill-red-500 text-red-500" /> for the Armed Forces
