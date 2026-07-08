@@ -6,7 +6,6 @@ import { useFilterStore } from './store/filterStore';
 import UnifiedBentoDashboard from './components/AppShell/UnifiedBentoDashboard';
 import Loader from './components/UI/Loader';
 import Toast from './components/UI/Toast';
-import WelcomeGuide from './components/UI/WelcomeGuide';
 import ErrorBoundary from './components/UI/ErrorBoundary';
 import SessionGuard from './components/Auth/SessionGuard';
 
@@ -49,15 +48,25 @@ export default function App() {
     return () => clearTimeout(timer);
   }, [authLoading]);
 
-  // Read ?view=dorms, ?search=q (or ?listing=id) from landing page CTAs
+  // Read URL params from landing page / SEO city CTAs
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const view = params.get('view');
     if (view === 'dorms') setActiveView('dorms');
     else if (view === 'market') setActiveView('market');
 
-    const search = params.get('search');
+    const search = params.get('search') || params.get('city');
     if (search) useFilterStore.getState().setSmartSearchQ(search);
+
+    const listingId = params.get('listing');
+    if (listingId) {
+      const timer = setTimeout(() => {
+        window.history.replaceState({ modal: 'detail' }, '');
+        setDetailId(listingId);
+        setOpenModal('detail');
+      }, 600);
+      return () => clearTimeout(timer);
+    }
   }, [setActiveView]);
 
   // Handle hardware back button using History API
@@ -143,45 +152,44 @@ export default function App() {
         <SessionGuard>
           <ErrorBoundary>
             <UnifiedBentoDashboard />
-            <WelcomeGuide />
+
+            {/* Separate Suspense boundaries prevent sibling lazy-loads from unmounting each other */}
+            <Suspense fallback={null}>
+              {openModal === 'detail' && <DetailModal id={detailId} onClose={closeModal} />}
+            </Suspense>
+            <Suspense fallback={null}>
+              {openModal === 'post' && <PostModal onClose={closeModal} />}
+            </Suspense>
+            <Suspense fallback={null}>
+              {openModal === 'profile' && <ProfileModal onClose={closeModal} />}
+            </Suspense>
+            <Suspense fallback={null}>
+              {openModal === 'report' && <ReportModal id={reportId} onClose={closeModal} />}
+            </Suspense>
+            <Suspense fallback={null}>
+              {openModal === 'transfers' && <TransfersModal onClose={closeModal} />}
+            </Suspense>
+            <Suspense fallback={null}>
+              {openModal === 'compare' && <CompareModal onClose={closeModal} />}
+            </Suspense>
+            <Suspense fallback={null}>
+              {openModal === 'legal' && <LegalModal onClose={closeModal} />}
+            </Suspense>
+            <Suspense fallback={null}>
+              {foodCity && <FoodPanel city={foodCity} onClose={closeFoodOnly} />}
+            </Suspense>
+            <Suspense fallback={null}>
+              {openModal === 'chat' && chatConfig && <ChatModal config={chatConfig} onClose={closeModal} />}
+            </Suspense>
+            <Suspense fallback={null}>
+              {openModal === 'admin' && <AdminModal onClose={closeModal} />}
+            </Suspense>
+            <Suspense fallback={null}>
+              {openModal === 'relocation' && <RelocationModal onClose={closeModal} />}
+            </Suspense>
+
+            {toast && <Toast msg={toast.msg} type={toast.type} />}
           </ErrorBoundary>
-
-        {/* Separate Suspense boundaries prevent sibling lazy-loads from unmounting each other */}
-        <Suspense fallback={null}>
-          {openModal === 'detail' && <DetailModal id={detailId} onClose={closeModal} />}
-        </Suspense>
-        <Suspense fallback={null}>
-          {openModal === 'post' && <PostModal onClose={closeModal} />}
-        </Suspense>
-        <Suspense fallback={null}>
-          {openModal === 'profile' && <ProfileModal onClose={closeModal} />}
-        </Suspense>
-        <Suspense fallback={null}>
-          {openModal === 'report' && <ReportModal id={reportId} onClose={closeModal} />}
-        </Suspense>
-        <Suspense fallback={null}>
-          {openModal === 'transfers' && <TransfersModal onClose={closeModal} />}
-        </Suspense>
-        <Suspense fallback={null}>
-          {openModal === 'compare' && <CompareModal onClose={closeModal} />}
-        </Suspense>
-        <Suspense fallback={null}>
-          {openModal === 'legal' && <LegalModal onClose={closeModal} />}
-        </Suspense>
-        <Suspense fallback={null}>
-          {foodCity && <FoodPanel city={foodCity} onClose={closeFoodOnly} />}
-        </Suspense>
-        <Suspense fallback={null}>
-          {openModal === 'chat' && chatConfig && <ChatModal config={chatConfig} onClose={closeModal} />}
-        </Suspense>
-        <Suspense fallback={null}>
-          {openModal === 'admin' && <AdminModal onClose={closeModal} />}
-        </Suspense>
-        <Suspense fallback={null}>
-          {openModal === 'relocation' && <RelocationModal onClose={closeModal} />}
-        </Suspense>
-
-        {toast && <Toast msg={toast.msg} type={toast.type} />}
         </SessionGuard>
       </ModalContext.Provider>
     </HelmetProvider>

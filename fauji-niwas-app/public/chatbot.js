@@ -4,7 +4,7 @@
  * Matches rank + destination to live listings.
  */
 
-const BAH_LIMITS = {
+const HRA_LIMITS = {
     'OR':      { max: 9000,  label: 'Other Rank (OR)',    icon: '🪖' },
     'NCO':     { max: 11000, label: 'NCO / Havildar',     icon: '⭐' },
     'JCO':     { max: 15000, label: 'JCO / Sub / Nb Sub', icon: '🎖️' },
@@ -25,7 +25,7 @@ const FLOW = [
     {
         id: 'start',
         msg: '👋 <b>Jai Hind!</b> I\'m your AI Transfer Assistant.<br><br>I\'ll help you find the perfect home for your next posting. Let\'s start — <b>what\'s your rank category?</b>',
-        options: Object.entries(BAH_LIMITS).map(([k, v]) => ({ label: `${v.icon} ${v.label}`, value: k })),
+        options: Object.entries(HRA_LIMITS).map(([k, v]) => ({ label: `${v.icon} ${v.label}`, value: k })),
         key: 'rank'
     },
 {
@@ -50,14 +50,14 @@ const FLOW = [
 {
     id: 'budget',
     msg: (state) => {
-        const limit = BAH_LIMITS[state.rank]?.max || 15000;
-        return `💰 Your BAH limit is approx <b>₹${limit.toLocaleString()}/month</b>.<br>Should I filter within your BAH, or search a custom range?`;
+        const limit = HRA_LIMITS[state.rank]?.max || 15000;
+        return `💰 Your HRA limit is approx <b>₹${limit.toLocaleString()}/month</b>.<br>Should I filter within your HRA, or search a custom range?`;
     },
     options: (state) => {
-        const limit = BAH_LIMITS[state.rank]?.max || 15000;
+        const limit = HRA_LIMITS[state.rank]?.max || 15000;
         return [
-            { label: `✅ Within BAH (up to ₹${limit.toLocaleString()})`, value: 'bah' },
-            { label: '🔼 Slightly above BAH (+20%)', value: 'above' },
+            { label: `✅ Within HRA (up to ₹${limit.toLocaleString()})`, value: 'hra' },
+            { label: '🔼 Slightly above HRA (+20%)', value: 'above' },
             { label: '🔍 Show all prices', value: 'all' }
         ];
     },
@@ -80,12 +80,12 @@ function createChatbotUI() {
     position: fixed;
     bottom: 24px;
     right: 24px;
-    z-index: 9999;
+    z-index: 999;
     font-family: 'Outfit', sans-serif;
     }
     @media (max-width: 768px) {
-        #fauji-chatbot { bottom: 150px; right: 16px; }
-        #cb-window { bottom: 210px; }
+        #fauji-chatbot { bottom: 90px; right: 16px; }
+        #cb-window { bottom: 74px; right: 0; max-height: 60vh; }
     }
     #cb-bubble {
     width: 60px; height: 60px; border-radius: 50%;
@@ -384,7 +384,13 @@ function cbAddMsg(text, who = 'bot') {
     const msgs = document.getElementById('cb-messages');
     const div = document.createElement('div');
     div.className = `cb-msg ${who}`;
-    div.innerHTML = text;
+    if (who === 'user') {
+        // User messages: use textContent to prevent XSS from free-text input
+        div.textContent = text;
+    } else {
+        // Bot messages: controlled HTML from our code, safe to render
+        div.innerHTML = text;
+    }
     msgs.appendChild(div);
     msgs.scrollTop = msgs.scrollHeight;
 }
@@ -477,8 +483,8 @@ function cbShowResults() {
         const station = botState.station || '';
         const bhk = botState.bhk || 'any';
         const rank = botState.rank || 'JCO';
-        const budgetMode = botState.budget || 'bah';
-        const limit = BAH_LIMITS[rank]?.max || 15000;
+        const budgetMode = botState.budget || 'hra';
+        const limit = HRA_LIMITS[rank]?.max || 15000;
 
         let maxPrice = limit;
         if (budgetMode === 'above') maxPrice = Math.round(limit * 1.2);
@@ -513,7 +519,7 @@ function cbShowResults() {
             return;
         }
 
-        cbAddMsg(`✅ Found <b>${results.length} listing${results.length > 1 ? 's' : ''}</b> for <b>${BAH_LIMITS[rank]?.label}</b> in <b>${station}</b>:`, 'bot');
+        cbAddMsg(`✅ Found <b>${results.length} listing${results.length > 1 ? 's' : ''}</b> for <b>${HRA_LIMITS[rank]?.label || rank}</b> in <b>${station}</b>:`, 'bot');
 
         results.forEach(l => {
             const card = document.createElement('div');
@@ -532,7 +538,7 @@ function cbShowResults() {
                     window.openDetailModal(l.id);
                 } else {
                     // On index.html, navigate to app with listing param
-                    window.location.href = `app.html?listing=${l.id}`;
+                    window.location.href = `/app?listing=${l.id}`;
                 }
             };
             resEl.appendChild(card);

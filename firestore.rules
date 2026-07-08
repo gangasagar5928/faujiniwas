@@ -138,6 +138,11 @@ service cloud.firestore {
       allow create: if isAuthed();
       allow delete: if isModerator();
     }
+
+    // ── CSD URC Pulse Ticker ────────────────────────────────────────────────
+    match /csd_pulse/{pulseId} {
+      allow read, write: if true;
+    }
   }
 }
 

@@ -1,43 +1,362 @@
-@import "tailwindcss";
-
-@theme {
-  --font-heading: "Syne", sans-serif;
-  --font-body: "Inter", sans-serif;
-  --color-brand-gold: #c9a84c;
-  --color-brand-bg: #f5f4f0;
-  --color-brand-dark: #111111;
+html {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  height: auto !important;
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px; /* Compensate for 64px fixed navbar */
 }
 
-html, body, #root {
+body {
   height: auto !important;
   min-height: 100vh !important;
-  overflow: auto !important;
-  overflow-x: hidden !important;
-  display: block !important;
-  background: #f5f4f0 !important;
-  color: #111111 !important;
+  overflow: visible !important;
+  background: #FAF9F6 !important;
+  color: #1e293b !important;
   font-family: "Inter", sans-serif;
 }
 
-/* Custom scrollbar for landing page */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #f5f4f0; }
-::-webkit-scrollbar-thumb { background: #dcdad4; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #c9a84c; }
+#root {
+  width: 100%;
+  display: block !important;
+  overflow: visible !important;
+}
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: "Syne", sans-serif;
+  font-family: "Outfit", sans-serif;
 }
 
-.editorial-line {
-  height: 1px;
-  background-color: #111111;
-  width: 100%;
+/* Premium Glassmorphic panels - light theme */
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 12px 40px 0 rgba(15, 23, 42, 0.06), inset 0 1px 1px 0 rgba(255, 255, 255, 0.8);
 }
 
-.editorial-double-line {
-  border-top: 1px solid #111111;
-  border-bottom: 1px solid #111111;
-  height: 4px;
-  width: 100%;
+.glass-card-olive {
+  background: rgba(244, 246, 240, 0.9);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(59, 83, 35, 0.15);
+  box-shadow: 0 12px 40px 0 rgba(59, 83, 35, 0.08), inset 0 1px 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.glass-card-gold {
+  background: rgba(253, 251, 242, 0.9);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(245, 158, 11, 0.18);
+  box-shadow: 0 12px 40px 0 rgba(245, 158, 11, 0.08), inset 0 1px 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.gradient-text-gold {
+  background: linear-gradient(135deg, #0f172a 0%, #d97706 70%, #b45309 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-olive {
+  background: linear-gradient(135deg, #0f172a 0%, #3b5323 70%, #263617 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glow-ambient {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(130px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+  animation: glowShift 10s ease-in-out infinite alternate;
+}
+.glow-olive { background: radial-gradient(circle, rgba(59,83,35,0.9) 0%, rgba(59,83,35,0.3) 50%, transparent 80%); }
+.glow-gold  { background: radial-gradient(circle, rgba(245,158,11,0.75) 0%, rgba(245,158,11,0.2) 50%, transparent 80%); }
+
+@keyframes glowShift {
+  0%   { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(5%, 5%) scale(1.12); }
+}
+
+.grid-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(15, 23, 42, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, black 40%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, black 40%, transparent 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.btn-glass-gold {
+  background: rgba(245, 158, 11, 0.06);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #b45309;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-glass-gold:hover {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: rgba(245, 158, 11, 0.6);
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.15);
+  transform: translateY(-1px);
+}
+
+.btn-solid-gold {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  color: #030712;
+  font-weight: 700;
+  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.2);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-solid-gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(245, 158, 11, 0.4);
+}
+
+.btn-glass-olive {
+  background: rgba(59, 83, 35, 0.05);
+  border: 1px solid rgba(59, 83, 35, 0.35);
+  color: #263617;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-glass-olive:hover {
+  background: rgba(59, 83, 35, 0.15);
+  border-color: rgba(59, 83, 35, 0.6);
+  box-shadow: 0 0 25px rgba(59, 83, 35, 0.25);
+  transform: translateY(-1px);
+}
+
+/* Bento Grid dense styling */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-auto-flow: dense;
+  gap: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 640px) {
+  .bento-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 3D Parallax Tilt container */
+.parallax-container {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.parallax-layer-base {
+  transform: translateZ(0px);
+}
+
+.parallax-layer-mid {
+  transform: translateZ(15px);
+}
+
+.parallax-layer-top {
+  transform: translateZ(30px);
+}
+
+/* ──────────────────────────────────────────────────────────
+   DYNAMIC LIGHT THEME SELECTOR OVERRIDES
+   ────────────────────────────────────────────────────────── */
+.landing-page {
+  background-color: #FAF9F6 !important;
+  color: #1e293b !important;
+}
+
+/* Background video opacity */
+.landing-page #bg-video {
+  opacity: 0.03 !important;
+}
+
+/* Navigation overrides */
+.landing-page nav {
+  background: rgba(250, 249, 246, 0.85) !important;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06) !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+.landing-page nav a.logo {
+  color: #0f172a !important;
+}
+
+.landing-page nav .nav-links a,
+.landing-page nav a,
+.landing-page nav button {
+  color: #475569 !important;
+}
+
+.landing-page nav a:hover,
+.landing-page nav button:hover {
+  color: #f59e0b !important;
+}
+
+/* Hero Typography */
+.landing-page h1,
+.landing-page h2,
+.landing-page h3,
+.landing-page h4,
+.landing-page h5 {
+  color: #0f172a !important;
+}
+
+.landing-page p,
+.landing-page .text-gray-400,
+.landing-page .text-slate-400,
+.landing-page .text-slate-300,
+.landing-page .text-gray-300 {
+  color: #475569 !important;
+}
+
+.landing-page .text-white {
+  color: #0f172a !important;
+}
+
+/* Tags and Badges */
+.landing-page .bg-lime-500\/10 {
+  background-color: rgba(59, 83, 35, 0.08) !important;
+  border-color: rgba(59, 83, 35, 0.2) !important;
+  color: #263617 !important;
+}
+
+.landing-page .bg-amber-500\/10 {
+  background-color: rgba(245, 158, 11, 0.08) !important;
+  border-color: rgba(245, 158, 11, 0.25) !important;
+  color: #b45309 !important;
+}
+
+.landing-page .bg-white\/5 {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
+  color: #475569 !important;
+}
+
+.landing-page .text-gray-300 {
+  color: #475569 !important;
+}
+
+/* Mockup elements */
+.landing-page .mockup-container #mockup-layer1 {
+  background: #ffffff !important;
+  border: 1px solid rgba(245, 158, 11, 0.3) !important;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.1) !important;
+}
+
+.landing-page .mockup-container .z-20 {
+  background: #ffffff !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.1) !important;
+}
+
+.landing-page .mockup-container #mockup-layer3 {
+  background: #f4f6f0 !important;
+  border: 1px solid rgba(59, 83, 35, 0.15) !important;
+}
+
+.landing-page .mockup-container .bg-white\/5,
+.landing-page .mockup-container .bg-gray-950\/40 {
+  background: rgba(15, 23, 42, 0.02) !important;
+  border: 1px solid rgba(15, 23, 42, 0.04) !important;
+}
+
+.landing-page .mockup-container h4,
+.landing-page .mockup-container span,
+.landing-page .mockup-container div {
+  color: #0f172a !important;
+}
+
+/* Stats panel */
+.landing-page .relative.z-10.border-y.border-white\/5.bg-gray-950\/40 {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(15, 23, 42, 0.06) !important;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.02) !important;
+}
+
+.landing-page .relative.z-10.border-y.border-white\/5.bg-gray-950\/40 .text-gray-400 {
+  color: #64748b !important;
+}
+
+/* Bento cards and details */
+.landing-page .glass-card,
+.landing-page .glass-card-olive,
+.landing-page .glass-card-gold {
+  background: #ffffff !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04) !important;
+}
+
+.landing-page .glass-card h3,
+.landing-page .glass-card h4,
+.landing-page .glass-card p,
+.landing-page .glass-card span {
+  color: #1e293b !important;
+}
+
+.landing-page .bg-gray-900\/50,
+.landing-page .bg-slate-900\/50,
+.landing-page .bg-emerald-950\/30,
+.landing-page .bg-amber-950\/30 {
+  background: rgba(15, 23, 42, 0.02) !important;
+  border-color: rgba(15, 23, 42, 0.04) !important;
+}
+
+.landing-page .text-gray-200,
+.landing-page .text-slate-200 {
+  color: #334155 !important;
+}
+
+/* Testimonials / Timeline */
+.landing-page .border-white\/10 {
+  border-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+.landing-page .bg-slate-950\/40 {
+  background-color: #ffffff !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04) !important;
+}
+
+/* FAQ Accordion */
+.landing-page .bg-gray-900\/40 {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(15, 23, 42, 0.06) !important;
+}
+
+.landing-page .bg-gray-900\/40 button {
+  color: #0f172a !important;
+}
+
+/* Footer Section */
+.landing-page footer {
+  background-color: #f1efe9 !important;
+  border-top: 1px solid rgba(15, 23, 42, 0.06) !important;
+}
+
+.landing-page footer h3,
+.landing-page footer a,
+.landing-page footer p,
+.landing-page footer span {
+  color: #475569 !important;
+}
+
+.landing-page footer a:hover {
+  color: #f59e0b !important;
 }

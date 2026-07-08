@@ -5,122 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Support — Fauji Niwas</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📞</text></svg>">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;900&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #0B0F1A;
-            --white: #F1F1EE;
-            --muted: #8892A4;
-            --accent: #FF9933;
-            --border: rgba(255, 255, 255, 0.08);
-            --glass: rgba(255, 255, 255, 0.03);
-            --glass-blur: blur(12px);
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <script>
+      (function() {
+        if (localStorage.getItem('elderly-mode') === 'true') {
+          document.documentElement.classList.add('is-elderly-mode');
         }
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: 'Outfit', sans-serif;
-            background-color: var(--bg);
-            color: var(--white);
-            line-height: 1.6;
-            padding: 40px 20px;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        .logo {
-            font-size: 28px;
-            font-weight: 900;
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
-        }
-        .logo span {
-            color: var(--accent);
-        }
-        h1 {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--white);
-            margin-bottom: 8px;
-        }
-        .subtitle {
-            color: var(--muted);
-            font-size: 14px;
-        }
-        .card {
-            background: var(--glass);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 32px;
-            margin-bottom: 24px;
-        }
-        h2 {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--accent);
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        p {
-            font-size: 14px;
-            color: #d1d5db;
-            margin-bottom: 16px;
-        }
-        .contact-method {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 16px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            margin-bottom: 16px;
-        }
-        .contact-icon {
-            font-size: 24px;
-            color: var(--accent);
-        }
-        .contact-details h3 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-        .contact-details p {
-            margin-bottom: 0;
-            font-size: 13px;
-            color: var(--muted);
-        }
-        .contact-details a {
-            color: var(--accent);
-            text-decoration: none;
-            font-family: monospace;
-            font-size: 14px;
-            font-weight: bold;
-        }
-        .back-btn {
-            display: inline-block;
-            margin-top: 20px;
-            font-size: 14px;
-            color: var(--muted);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-        .back-btn:hover {
-            color: var(--accent);
-        }
-    </style>
+      })();
+    </script>
 </head>
 <body>
     <div class="container">

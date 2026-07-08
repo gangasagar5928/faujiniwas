@@ -38,6 +38,7 @@ export const useFilterStore = create(
       showHospitals: true,
       showSchools: true,
       showCanteens: true,
+      sidebarOpen: true,
 
       setTypeFilter: (v) => set({ typeFilter: v }),
       setSmartSearchQ: (v) => set({ smartSearchQ: v.toLowerCase().trim() }),
@@ -55,6 +56,7 @@ export const useFilterStore = create(
       setShowHospitals: (v) => set({ showHospitals: v }),
       setShowSchools: (v) => set({ showSchools: v }),
       setShowCanteens: (v) => set({ showCanteens: v }),
+      setSidebarOpen: (v) => set({ sidebarOpen: v }),
 
       resetAdvancedFilters: () => set({
         furnishFilter: 'all', availFilter: 'all', sqftFilter: 'all',
@@ -86,6 +88,7 @@ export const useFilterStore = create(
         petFilter: state.petFilter,
         categoryFilter: state.categoryFilter,
         draftCoords: state.draftCoords,
+        sidebarOpen: state.sidebarOpen,
       }),
     }
   )

@@ -22,8 +22,8 @@ function getFallbackPhotos(seed) {
   return Array.from({ length: 5 }, (_, i) => PHOTO_POOL[(idx + i) % PHOTO_POOL.length]);
 }
 
-function getBahColor(p) { return p <= 15000 ? '#22c55e' : p <= 30000 ? '#f4c542' : '#f43f5e'; }
-function getBahText(p)  { return p <= 15000 ? '🟢 Within OR Limit' : p <= 30000 ? '🟡 Within JCO Limit' : '🔴 Officer HRA'; }
+function getHraColor(p) { return p <= 15000 ? '#22c55e' : p <= 30000 ? '#f4c542' : '#f43f5e'; }
+function getHraText(p)  { return p <= 15000 ? '🟢 Within OR Limit' : p <= 30000 ? '🟡 Within JCO Limit' : '🔴 Officer HRA'; }
 
 export default function DetailModal({ id, onClose }) {
   const listings = useFilterStore((s) => s.listings);
@@ -93,8 +93,8 @@ export default function DetailModal({ id, onClose }) {
 
   const images = r.mediaUrls?.length >= 1 ? r.mediaUrls : getFallbackPhotos(r.createdAt);
   const price = r.price || 0;
-  const bahColor = getBahColor(price);
-  const bahText  = getBahText(price);
+  const hraColor = getHraColor(price);
+  const hraText  = getHraText(price);
 
   const daysAgo = r.createdAt ? Math.floor((Date.now() - r.createdAt) / 86400000) : null;
   const postedTxt = daysAgo === null ? 'Unknown' : daysAgo === 0 ? 'Today' : daysAgo === 1 ? 'Yesterday' : daysAgo < 7 ? `${daysAgo}d ago` : `${Math.ceil(daysAgo/7)}w ago`;
@@ -106,9 +106,9 @@ export default function DetailModal({ id, onClose }) {
   ).slice(0, 3);
 
   // HRA Arbitrage Logic
-  const bahRates = { OR: 12000, JCO: 22000, Officer: 35000 };
-  const userBah = bahRates[rank] || 15000;
-  const arbRatio = price / userBah;
+  const hraRates = { OR: 12000, JCO: 22000, Officer: 35000 };
+  const userHra = hraRates[rank] || 15000;
+  const arbRatio = price / userHra;
   const arbResult = arbRatio < 0.85 ? { label: '💎 Great Deal', color: '#22c55e', text: `This property is priced well below the average HRA for an ${rank}. Choosing this could net you significant monthly savings.` } :
                     arbRatio <= 1.1 ? { label: '⚖️ Fair Value', color: '#f4c542', text: `Price is in line with the standard HRA for your rank. This represents a safe, market-rate choice.` } :
                     { label: '✨ Premium', color: '#8a2be2', text: `This property exceeds the standard ${rank} HRA. It may offer superior amenities or location, but will require out-of-pocket spending.` };
@@ -347,7 +347,7 @@ export default function DetailModal({ id, onClose }) {
               </div>
               <div style={{display:'flex', justifyContent:'space-between', fontSize:10, color:'var(--muted)', marginBottom:8}}>
                 <span>₹0</span>
-                <span style={{color: arbResult.color, fontWeight:700}}>{Math.min(100, Math.round(arbRatio * 100))}% of ₹{userBah.toLocaleString()} HRA</span>
+                <span style={{color: arbResult.color, fontWeight:700}}>{Math.min(100, Math.round(arbRatio * 100))}% of ₹{userHra.toLocaleString()} HRA</span>
                 <span>100%+</span>
               </div>
               <p className={styles.arbSub}>{arbResult.text}</p>
@@ -424,9 +424,9 @@ export default function DetailModal({ id, onClose }) {
               ))}
             </div>
 
-            {/* BAH tag */}
+            {/* HRA tag */}
             <div className={styles.tags}>
-              <span className="tag" style={{fontSize:12,padding:'5px 12px',borderColor:bahColor,color:bahColor}}>{bahText}</span>
+              <span className="tag" style={{fontSize:12,padding:'5px 12px',borderColor:hraColor,color:hraColor}}>{hraText}</span>
               {r.available && <span className="tag" style={{fontSize:12,padding:'5px 12px',color:'#60a5fa',borderColor:'#60a5fa'}}>📅 From {r.available}</span>}
             </div>
 
@@ -502,7 +502,7 @@ export default function DetailModal({ id, onClose }) {
                     <div>
                       <div className={styles.similarName}>{s.name}</div>
                       <div className={styles.similarLoc}>📍 {s.area}</div>
-                      <div className={styles.similarPrice} style={{color:getBahColor(s.price)}}>₹{s.price.toLocaleString()}/mo</div>
+                      <div className={styles.similarPrice} style={{color:getHraColor(s.price)}}>₹{s.price.toLocaleString()}/mo</div>
                     </div>
                   </div>
                 ))}

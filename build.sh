@@ -8,7 +8,7 @@
 set -e
 
 # ── Configuration ─────────────────────────────────────────
-BASE_DIR="/run/media/petronski/Local Disk D/fauji-niwas"
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REACT_DIR="$BASE_DIR/fauji-niwas-app"
 FLUTTER_DIR="$BASE_DIR/fauji-niwas_app"
 
@@ -63,11 +63,15 @@ android.enableJetifier=false
 GRADLE
     echo "✅ Gradle memory limits configured."
 
+    # Resolve pub packages first
+    echo "⏳ Fetching Flutter dependencies..."
+    nice -n 19 ionice -c 3 flutter pub get
+
     # Build with low OS priority to prevent UI freezes
     echo "⏳ Compiling APK (this may take a few minutes)..."
-    nice -n 19 ionice -c 3 flutter build apk --release --no-pub --target-platform android-arm64
+    nice -n 19 ionice -c 3 flutter build apk --release --target-platform android-arm64
     echo "⏳ Compiling App Bundle (.aab) for Play Store..."
-    nice -n 19 ionice -c 3 flutter build appbundle --release --no-pub
+    nice -n 19 ionice -c 3 flutter build appbundle --release
 
     APK_PATH="$FLUTTER_DIR/build/app/outputs/flutter-apk/app-release.apk"
     AAB_PATH="$FLUTTER_DIR/build/app/outputs/bundle/release/app-release.aab"

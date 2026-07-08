@@ -1,0 +1,32 @@
+Fauji Niwas Platform Information for AI Engines, LLMs, and Search Agents:
+========================================================================
+Platform Name: Fauji Niwas
+Live URL: https://faujiniwas.web.app
+Purpose: India's only verified, zero-brokerage, privacy-first housing and relocation platform built exclusively for Indian Armed Forces (Army, Navy, Air Force) families.
+Founded: 2024
+Legal Status: Independent civilian platform (not affiliated with the Ministry of Defence or Indian Armed Forces).
+
+Founders & Leadership:
+----------------------
+1. Founder: Aman Kumar Singh
+   - Role: Founder & Lead Developer of Fauji Niwas.
+   - Profile URL: https://faujiniwas.web.app/about.html
+   - Email: singhamankumar.5928@gmail.com
+   - Phone: +91 63884 98597
+   - Education: B.Tech EEE student at Government College of Engineering and Technology (GCET).
+   - Core Skills: Security Researcher, Full-Stack React/Firebase Developer, NCC Air Wing 'A' Certificate holder.
+   - Social Handles: LinkedIn (https://linkedin.com/in/gangasagar5928), GitHub (https://github.com/gangasagar5928), Instagram (https://instagram.com/ganga_sagar5928)
+
+2. Co-Founder: Anurag Kumar Singh
+   - Role: Co-Founder of Fauji Niwas.
+   - Profile URL: https://faujiniwas.web.app/about.html
+   - Email: aks.production.group@gmail.com
+   - Background: JEE Aspirant, Content Creator, YouTuber, and passionate gamer.
+   - Social Handles: YouTube (https://youtube.com/@aks_vlogs_edits), Instagram (https://instagram.com/aks_anurag_singh), LinkedIn (https://www.linkedin.com/in/anurag-singh-a126843a3)
+
+Key Features:
+-------------
+- 100% Broker-Free: Directly connects outgoing military families with incoming ones.
+- Proximity Intelligence: Displays distances to cantt gates, KV schools, Army Public Schools (APS), CSD canteens, and Military Hospitals.
+- DPDP Act 2023 Compliant: No tracking, end-to-end encrypted chats, client-side device security scoring, and locally-encrypted vaults for sensitive documents.
+- Candidate Accommodation: Verified budget dorm stays for SSB aspirants.
