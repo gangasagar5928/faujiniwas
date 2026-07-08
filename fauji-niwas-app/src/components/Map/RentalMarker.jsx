@@ -3,7 +3,7 @@ import { Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { ModalContext } from '../../App';
 
-function getBahColor(price) {
+function getHraColor(price) {
   return price <= 15000 ? '#22c55e' : price <= 30000 ? '#f4c542' : '#f43f5e';
 }
 
@@ -12,7 +12,7 @@ export default function RentalMarker({ listing: r }) {
   const ctx = useContext(ModalContext);
   const price = r.price || 0;
   const isMarket = r._collection === 'market' || r._collection === 'marketplace';
-  const color = isMarket ? '#14b8a6' : getBahColor(price);
+  const color = isMarket ? '#14b8a6' : getHraColor(price);
   const label = isMarket
     ? `🏷️ ₹${(price / 1000).toFixed(0)}K`
     : `₹${(price / 1000).toFixed(0)}K`;

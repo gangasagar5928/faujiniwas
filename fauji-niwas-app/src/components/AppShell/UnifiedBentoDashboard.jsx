@@ -1,12 +1,9 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { ModalContext } from '../../App';
 import { useAuth } from '../../hooks/useAuth';
-import { useFilterStore, getFilteredListings } from '../../store/filterStore';
+import { useFilterStore } from '../../store/filterStore';
 import MapView from '../Map/MapView';
 import Sidebar from '../Sidebar/Sidebar';
-import ListingCard from '../Sidebar/ListingCard';
-import MarketCard from '../Sidebar/MarketCard';
-import DormCard from '../Sidebar/DormCard';
 
 export default function UnifiedBentoDashboard() {
   const ctx = useContext(ModalContext);
@@ -17,16 +14,13 @@ export default function UnifiedBentoDashboard() {
     activeView, setActiveView,
     smartSearchQ, setSmartSearchQ,
     maxPrice, setMaxPrice,
-    bhkFilter, setBhkFilter
+    bhkFilter, setBhkFilter,
+    sidebarOpen, setSidebarOpen
   } = useFilterStore();
 
-  const allState = useFilterStore((s) => s);
-  const listings = getFilteredListings(allState);
-  const isLoaded = allState.listings.length > 0;
+  // Mobile layout active tab state
+  const [activeMobileTab, setActiveMobileTab] = useState('listings');
 
-  const isMarketEntry = (item) => item._collection === 'market' || item._collection === 'marketplace';
-
-  // HRA allowance helper
   const handleHraChange = (e) => {
     const val = e.target.value;
     if (val === 'OR') {
@@ -46,193 +40,376 @@ export default function UnifiedBentoDashboard() {
     return 'Officer';
   };
 
-  // Secure admin button check
   const showAdminButton = user && (isAdmin || user.email === 'admin@faujiniwas.com' || user.isAdmin);
 
   return (
-    <div className="app-container">
+    <div className={`app-container select-none ${sidebarOpen ? '' : 'sidebar-closed'}`}>
       
-      {/* 1. HEADER spans full width */}
+      {/* 1. TOP HEADER */}
       <header className="header justify-between">
         
-        {/* Logo */}
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-bold tracking-tight text-slate-300 flex items-center gap-2">
-            <a href="/" className="hover:text-white transition-colors uppercase tracking-wider">FaujiNiwas</a> 
-            <span className="text-[10px] text-slate-500 font-mono px-2 py-0.5 bg-[#171c24] rounded-full border border-[#232833]">v4.2.0</span>
+        {/* Left: Brand logo */}
+        <div className="flex items-center gap-3 shrink-0">
+          <span className="flex items-center gap-2 text-slate-100 uppercase tracking-widest font-heading font-black">
+            <span className="text-amber-500 text-lg">🪖</span> 
+            <span className="flex flex-col text-left">
+              <span className="text-sm font-black tracking-tight text-white leading-none">FAUJINIWAS</span>
+              <span className="text-[7px] text-[#22c55e] font-bold tracking-wider mt-0.5">SECURE. VERIFIED. FOR OURS.</span>
+            </span>
           </span>
         </div>
 
-        {/* Dynamic Collection Tab Switcher */}
-        <div className="flex gap-1 bg-[#171c24] border border-[#2d3646] p-1 rounded-full">
-          {[
-            { id: 'rentals', label: '🏠 Rentals' },
-            { id: 'market', label: '📦 Marketplace' },
-            { id: 'dorms', label: '🏨 SSB Dorms' },
-            { id: 'saved', label: '⭐ Shortlist' }
-          ].map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveView(tab.id)}
-              className={`px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-wider transition-all ${
-                activeView === tab.id ? 'bg-[#c9a84c] text-black shadow-md' : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+        {/* Center: Search & Capsule Tab Swappers */}
+        <div className="hidden md:flex items-center gap-4 flex-1 justify-center max-w-4xl px-4">
+          
+          {/* Header Search input */}
+          <div className="flex items-center bg-[#090d16] border border-[#1e293b] px-3.5 py-1.5 rounded-full w-[280px] hover:border-amber-500/30 transition-colors">
+            <span className="text-slate-500 mr-2 text-[10px]">🔍</span>
+            <input 
+              type="text" 
+              placeholder="Search cantonment, area or city..." 
+              value={smartSearchQ}
+              onChange={(e) => setSmartSearchQ(e.target.value)}
+              className="bg-transparent text-[10px] text-white outline-none w-full placeholder-slate-500 font-medium"
+            />
+            <span className="text-slate-600 text-[8px] font-mono ml-2 border border-slate-800 px-1.5 py-0.25 rounded">⌘K</span>
+          </div>
+
+          {/* Capsule Tab Switcher */}
+          <div className="flex gap-1 bg-[#090d16] border border-[#1e293b] p-1 rounded-full whitespace-nowrap">
+            {[
+              { id: 'rentals', label: 'Rentals', icon: '🏠' },
+              { id: 'market', label: 'Marketplace', icon: '🛍️' },
+              { id: 'dorms', label: 'SSR Dorms', icon: '🏨' },
+              { id: 'saved', label: 'Shortlist', icon: '⭐' }
+            ].map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveView(tab.id)}
+                className={`px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-wider transition-all duration-200 cursor-pointer flex items-center gap-1 ${
+                  activeView === tab.id 
+                    ? 'bg-[#18233c] text-white border border-[#1e293b] shadow-md' 
+                    : 'text-slate-500 border border-transparent hover:text-slate-300'
+                }`}
+              >
+                <span>{tab.icon}</span>
+                <span>{tab.label}</span>
+              </button>
+            ))}
+          </div>
+
         </div>
 
-        {/* Search Bar, HRA Filter & BHK Filter */}
-        <div className="flex items-center gap-3 bg-[#171c24] border border-[#2d3646] px-4 py-1.5 rounded-full">
-          <input 
-            type="text" 
-            placeholder="Search cantt, city, area..." 
-            value={smartSearchQ}
-            onChange={(e) => setSmartSearchQ(e.target.value)}
-            className="bg-transparent text-xs text-white outline-none w-48 placeholder-slate-600"
-          />
-          <div className="h-4 w-[1px] bg-slate-800" />
+        {/* Right: Notification and Dropdown Profile badge */}
+        <div className="flex items-center gap-3 shrink-0">
           
-          {/* HRA Filter */}
-          <select 
-            value={getHraValue()}
-            onChange={handleHraChange}
-            className="bg-transparent text-xs text-slate-400 outline-none cursor-pointer font-medium"
-            title="HRA Budget Tier"
-          >
-            <option value="Officer">Officer (₹30k+)</option>
-            <option value="JCO">JCO (₹15k-₹30k)</option>
-            <option value="OR">OR (₹5k-₹15k)</option>
-          </select>
+          {/* Notification Bell */}
+          <button className="relative w-8 h-8 flex items-center justify-center rounded-full bg-[#10192e] border border-[#1e293b] text-slate-300 hover:text-white transition-all cursor-pointer">
+            🔔
+            <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-emerald-500/20 text-[#22c55e] border border-emerald-500/40 flex items-center justify-center text-[8px] font-black font-mono">3</span>
+          </button>
 
-          <div className="h-4 w-[1px] bg-slate-800" />
-
-          {/* BHK Filter */}
-          <select 
-            value={bhkFilter}
-            onChange={(e) => setBhkFilter(e.target.value)}
-            className="bg-transparent text-xs text-slate-400 outline-none cursor-pointer font-medium"
-            title="BHK Size"
-          >
-            <option value="all">All BHK</option>
-            <option value="1">1 BHK</option>
-            <option value="2">2 BHK</option>
-            <option value="3+">3+ BHK</option>
-          </select>
-        </div>
-
-        {/* Post Button & Account Actions */}
-        <div className="flex items-center gap-3">
-          
-          {/* Admin SIEM shortcut */}
-          {showAdminButton && (
-            <button 
-              onClick={() => ctx.openAdmin && ctx.openAdmin()}
-              className="w-8 h-8 flex items-center justify-center rounded-full bg-red-950/40 text-red-400 border border-red-900/40 hover:bg-red-900/20 transition-all"
-              title="Admin & Security"
-            >
-              🛡️
-            </button>
-          )}
-
-          {/* Profile Button */}
-          <button 
+          {/* User Profile dropdown Badge */}
+          <div 
             onClick={() => ctx.openProfile && ctx.openProfile()}
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-[#1c222c] border border-[#2d3646] text-slate-300 hover:text-white"
+            className="flex items-center gap-2.5 bg-[#10192e] border border-[#1e293b] pl-2 pr-3.5 py-1 rounded-full cursor-pointer hover:border-amber-500/50 transition-all text-left"
             title="Profile Locker"
           >
-            👤
-          </button>
-
-          {/* Post Listing Button */}
-          <button 
-            onClick={() => ctx.openPost && ctx.openPost()}
-            className="post-listing-btn"
-          >
-            + Post Listing
-          </button>
+            <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-emerald-500/20 to-emerald-600/30 text-[#22c55e] border border-[#22c55e]/25 flex items-center justify-center text-[10px] font-bold font-mono">AS</div>
+            <div className="flex flex-col leading-tight">
+              <span className="text-[9px] font-extrabold text-white">Major Sharma</span>
+              <span className="text-[7px] font-bold text-[#22c55e] uppercase tracking-wider">JCO COMMAND</span>
+            </div>
+            <span className="text-slate-500 text-[8px] font-bold ml-1">▼</span>
+          </div>
 
         </div>
       </header>
 
-      {/* 2. LEFT SIDEBAR (grid-row: 2, grid-column: 1) */}
-      <Sidebar />
+      {/* 2. BENTO METRICS BAR */}
+      <div className="bento-row px-6 py-3 border-b border-[#1e293b] bg-[#0b1120]">
+        <div className="max-w-[1920px] mx-auto grid grid-cols-6 gap-4">
+          
+          {/* Card 1: Verified Listings */}
+          <div className="bg-[#10192e] border border-[#1e293b] p-3 rounded-2xl flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-[#22c55e]/15 border border-[#22c55e]/30 flex items-center justify-center text-emerald-400">
+              ⚡
+            </div>
+            <div className="flex flex-col text-left leading-tight">
+              <span className="text-[8px] font-black uppercase text-slate-400 tracking-wider">Verified Listings</span>
+              <span className="text-lg font-black text-white mt-0.5">1,395</span>
+              <span className="text-[7px] font-bold uppercase text-[#22c55e] tracking-widest mt-0.5">Active Beacons</span>
+            </div>
+          </div>
 
-      {/* 3. MAP Container (grid-row: 2, grid-column: 2) */}
-      <div id="map">
-        <MapView />
+          {/* Card 2: Today's New */}
+          <div className="bg-[#10192e] border border-[#1e293b] p-3 rounded-2xl flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-pink-500/10 border border-pink-500/20 flex items-center justify-center text-pink-400">
+              🌸
+            </div>
+            <div className="flex flex-col text-left leading-tight">
+              <span className="text-[8px] font-black uppercase text-slate-400 tracking-wider">Today's New</span>
+              <span className="text-lg font-black text-white mt-0.5">48</span>
+              <span className="text-[7px] font-bold uppercase text-slate-500 tracking-widest mt-0.5 font-mono">New Additions</span>
+            </div>
+          </div>
+
+          {/* Card 3: Average Rent */}
+          <div className="bg-[#10192e] border border-[#1e293b] p-3 rounded-2xl flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500">
+              🪙
+            </div>
+            <div className="flex flex-col text-left leading-tight">
+              <span className="text-[8px] font-black uppercase text-slate-400 tracking-wider">Average Rent</span>
+              <span className="text-lg font-black text-white mt-0.5">₹12,452</span>
+              <span className="text-[7px] font-bold uppercase text-slate-500 tracking-widest mt-0.5 font-mono">Per Month</span>
+            </div>
+          </div>
+
+          {/* Card 4: Occupancy Rate */}
+          <div className="bg-[#10192e] border border-[#1e293b] p-3 rounded-2xl flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+                📊
+              </div>
+              <div className="flex flex-col text-left leading-tight">
+                <span className="text-[8px] font-black uppercase text-slate-400 tracking-wider">Occupancy Rate</span>
+                <span className="text-lg font-black text-white mt-0.5">86%</span>
+                <span className="text-[7px] font-bold uppercase text-slate-500 tracking-widest mt-0.5 font-mono">Across India</span>
+              </div>
+            </div>
+            <span className="text-slate-500 text-xs font-mono pr-1 select-none">&gt;</span>
+          </div>
+
+          {/* Card 5: AppSec Status */}
+          <div className="bg-[#10192e] border border-[#1e293b] p-3 rounded-2xl flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-[#22c55e]/15 border border-[#22c55e]/30 flex items-center justify-center text-emerald-400">
+              🛡️
+            </div>
+            <div className="flex flex-col text-left leading-tight">
+              <span className="text-[8px] font-black uppercase text-slate-400 tracking-wider">AppSec Status</span>
+              <span className="text-lg font-black text-[#22c55e] mt-0.5">ACTIVE</span>
+              <span className="text-[7px] font-bold uppercase text-[#22c55e] tracking-widest mt-0.5 font-mono">AES-256 Encrypted</span>
+            </div>
+          </div>
+
+          {/* Card 6: Family Accommodation */}
+          <div className="bg-[#10192e] border border-[#1e293b] p-3 rounded-2xl flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+              👥
+            </div>
+            <div className="flex flex-col text-left leading-tight">
+              <span className="text-[8px] font-black uppercase text-slate-400 tracking-wider">Family Accommodation</span>
+              <span className="text-[10px] font-black text-white mt-1 uppercase tracking-wider">Family Quarters</span>
+              <span className="text-[7px] font-bold uppercase text-[#22c55e] tracking-widest mt-0.5">View Options</span>
+            </div>
+          </div>
+
+        </div>
       </div>
 
-      {/* 4. BOTTOM PANEL horizontal scroll listing cards (grid-row: 3, grid-column: 1 / -1) */}
-      <div className="listings-panel custom-scrollbar">
+      {/* 3. LEFT-MOST NAVIGATION SIDEBAR */}
+      <aside className="nav-sidebar">
         
-        {/* Special Card: Station Metrics */}
-        <div 
-          className="listing-card"
-          style={{ width: '280px', minWidth: '280px', height: '150px', padding: '16px', background: '#0f1923', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px' }}
-        >
-          <div>
-            <h3 className="text-xs font-bold text-white tracking-tight">Fauji Niwas Station Metrics</h3>
-            <p className="text-[10px] text-slate-400 mt-1 leading-normal">
-              Zero-brokerage routing infrastructure built to secure locational privacy across active transfer corridors.
-            </p>
-          </div>
-          <div className="text-[9px] text-[#c9a84c] font-mono uppercase tracking-wider font-bold">
-            🛡️ Encrypted Database
-          </div>
+        {/* Navigation list */}
+        <div className="flex flex-col items-center gap-3">
+          {[
+            { id: 'rentals', label: '🏠', active: activeView === 'rentals' },
+            { id: 'market', label: '🛍️', active: activeView === 'market' },
+            { id: 'dorms', label: '👥', active: activeView === 'dorms' },
+            { id: 'saved', label: '⭐', active: activeView === 'saved' }
+          ].map(btn => (
+            <button
+              key={btn.id}
+              onClick={() => setActiveView(btn.id)}
+              className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 cursor-pointer ${
+                btn.active 
+                  ? 'bg-[#22c55e]/15 border border-[#22c55e]/30 text-emerald-400 shadow-[0_0_12px_rgba(34,197,94,0.15)]' 
+                  : 'bg-transparent border border-transparent text-slate-500 hover:text-slate-300 hover:bg-white/5'
+              }`}
+            >
+              <span className="text-sm">{btn.label}</span>
+            </button>
+          ))}
+
+          {/* Secure Chat icon */}
+          <button 
+            onClick={() => alert("Secure Encrypted Chat Tunnel Initiated...")}
+            className="w-9 h-9 rounded-xl flex items-center justify-center bg-transparent border border-transparent text-slate-500 hover:text-slate-300 hover:bg-white/5 cursor-pointer"
+            title="Secure Messaging"
+          >
+            <span className="text-sm">💬</span>
+          </button>
+
+          {/* Settings icon */}
+          <button 
+            onClick={() => {
+              setMaxPrice(100000);
+              setBhkFilter('all');
+              setSmartSearchQ('');
+            }}
+            className="w-9 h-9 rounded-xl flex items-center justify-center bg-transparent border border-transparent text-slate-500 hover:text-slate-300 hover:bg-white/5 cursor-pointer"
+            title="Reset Controls"
+          >
+            <span className="text-sm">⚙️</span>
+          </button>
         </div>
 
-        {/* Special Card: Active Cantonment Housing */}
-        <div 
-          className="listing-card"
-          style={{ width: '380px', minWidth: '380px', height: '150px', background: '#141e2e', border: '1px solid rgba(255,255,255,0.08)', display: 'flex', gap: '12px', alignItems: 'center', borderRadius: '12px' }}
+        {/* Bottom Theme toggle trigger */}
+        <button 
+          onClick={() => alert("Command Center dark mode is locked to secure tactical levels.")}
+          className="w-9 h-9 rounded-xl flex items-center justify-center bg-transparent border border-transparent text-slate-500 hover:text-slate-300 cursor-pointer"
+          title="Toggle Darkness Mode"
         >
-          <div className="w-[100px] h-[126px] rounded-lg overflow-hidden relative bg-slate-800 shrink-0">
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
-            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=800&auto=format&fit=crop" className="w-full h-full object-cover" alt="House" />
-          </div>
-          <div className="flex-1 h-full flex flex-col justify-between py-1.5 pr-1">
-            <div>
-              <span className="px-2 py-0.5 bg-[#1c222c] text-amber-400 border border-amber-900/50 text-[8px] font-black tracking-wider uppercase rounded-full">🎖️ Command Recommended</span>
-              <h3 className="text-xs font-bold text-white mt-1.5">Active Cantonment Housing</h3>
-              <p className="text-[10px] text-slate-400 mt-0.5">3BHK • Independent Floor • Secure Boundary</p>
-            </div>
-            <div className="flex justify-between items-center border-t border-[#232833] pt-1.5">
-              <span className="text-[10px] font-bold text-emerald-400">Verified Direct</span>
-              <button 
-                onClick={() => alert("Secure request logged. Admin will review credentials.")} 
-                className="px-2.5 py-1 bg-white text-[#0d0f12] text-[9px] font-bold rounded-full shadow hover:bg-slate-200 transition-all"
-              >
-                Request Link ↗
-              </button>
-            </div>
-          </div>
-        </div>
+          <span className="text-sm">🌙</span>
+        </button>
 
-        {/* Render dynamic listing cards */}
-        {!isLoaded ? (
-          Array(4).fill(0).map((_, i) => (
-            <div key={i} className="listing-card" style={{ height: '150px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <div className="w-full h-12 bg-slate-800 animate-pulse rounded-md" />
-              <div className="w-2/3 h-4 bg-slate-800 animate-pulse rounded-md" />
-              <div className="w-1/2 h-3 bg-slate-800 animate-pulse rounded-md" />
-            </div>
-          ))
-        ) : listings.length === 0 ? (
-          <div className="text-slate-400 text-xs px-4">No matching listings found. Try resetting filters.</div>
-        ) : (
-          listings.slice(0, 30).map((r, i) => {
-            if (activeView === 'dorms') {
-              return <DormCard key={r.id} dorm={r} onFoodClick={ctx.openFood} />;
-            }
-            return isMarketEntry(r)
-              ? <MarketCard key={r.id} item={r} index={i} onClick={() => ctx.openDetail(r.id)} />
-              : <ListingCard key={r.id} listing={r} index={i} onClick={() => ctx.openDetail(r.id)} />;
-          })
-        )}
+      </aside>
+
+      {/* 4. LEFT SIDEBAR PANEL */}
+      <Sidebar activeMobileView={activeMobileTab === 'listings'} />
+
+      {/* 5. MAP COLUMN */}
+      <div id="map" className={`relative ${activeMobileTab === 'map' ? 'active-mobile-view' : ''}`}>
+        
+        {/* Leaflet map renderer */}
+        <MapView />
+
+        {/* Sidebar pop-out toggle button for desktop/tablet */}
+        <button 
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-[1000] w-6 h-16 bg-[#10192e]/90 hover:bg-[#18233c] text-slate-300 hover:text-white border-y border-r border-[#1e293b] rounded-r-xl items-center justify-center cursor-pointer shadow-2xl transition-all hover:w-7"
+          title={sidebarOpen ? "Collapse Sidebar" : "Expand Sidebar"}
+        >
+          <span className="text-[10px]">{sidebarOpen ? '◀' : '▶'}</span>
+        </button>
+
+        {/* Map filter facilities toolbar (Schools, Hospitals, Canteens, ATMs, More) */}
+        <div className="absolute bottom-5 right-5 z-[500] bg-[#10192e]/95 border border-[#1e293b] rounded-2xl p-2.5 shadow-xl flex items-center gap-4 text-[9px] font-black uppercase tracking-wider text-slate-300 backdrop-blur-md">
+          <button 
+            onClick={() => alert("Filtering local schools near cantonment...")}
+            className="flex items-center gap-1 hover:text-white transition-colors cursor-pointer select-none font-bold"
+          >
+            <span>🏫</span> Schools
+          </button>
+          <div className="w-px h-3.5 bg-[#1e293b]"></div>
+          <button 
+            onClick={() => alert("Filtering local Military and ECHS Hospitals...")}
+            className="flex items-center gap-1 hover:text-white transition-colors cursor-pointer select-none font-bold"
+          >
+            <span>🏥</span> Hospitals
+          </button>
+          <div className="w-px h-3.5 bg-[#1e293b]"></div>
+          <button 
+            onClick={() => alert("Filtering local CSD Canteens...")}
+            className="flex items-center gap-1 hover:text-white transition-colors cursor-pointer select-none font-bold"
+          >
+            <span>🛍️</span> Canteens
+          </button>
+          <div className="w-px h-3.5 bg-[#1e293b]"></div>
+          <button 
+            onClick={() => alert("Filtering local ATMs near base corridor...")}
+            className="flex items-center gap-1 hover:text-white transition-colors cursor-pointer select-none font-bold"
+          >
+            <span>🏧</span> ATMs
+          </button>
+          <div className="w-px h-3.5 bg-[#1e293b]"></div>
+          <button 
+            onClick={() => alert("Expanding extra local amenities...")}
+            className="flex items-center gap-1 hover:text-white transition-colors cursor-pointer select-none font-bold"
+          >
+            <span>•••</span> More
+          </button>
+        </div>
 
       </div>
+
+      {/* 6. BOTTOM STATUS FOOTER */}
+      <footer className="status-footer px-6 py-1.5 bg-[#090d16] border-t border-[#1e293b] flex items-center justify-between text-[8px] font-mono tracking-widest text-slate-500 select-none shrink-0 h-9">
+        
+        {/* Left: Encryption shield */}
+        <div className="flex items-center gap-1.5 text-[#22c55e]">
+          <span className="text-xs">🛡️</span>
+          <span className="font-extrabold uppercase">SECURE LINK</span>
+          <span className="text-slate-500 font-medium">· AES-256 ENCRYPTED</span>
+        </div>
+
+        {/* Center: Controls */}
+        <div className="flex items-center gap-4 text-[8px] font-bold">
+          
+          <div className="flex items-center gap-1">
+            <span>🌐</span>
+            <span className="text-slate-400 uppercase">INDIA</span>
+          </div>
+
+          <div className="h-3 w-px bg-[#1e293b]"></div>
+
+          <button 
+            onClick={() => alert("Pinpointing base coordinates via secure network...")}
+            className="flex items-center gap-1 text-slate-400 hover:text-white transition-colors cursor-pointer uppercase"
+          >
+            <span>🎯</span> LOCATE ME
+          </button>
+
+          <div className="h-3 w-px bg-[#1e293b]"></div>
+
+          <div className="flex items-center gap-1.5">
+            <span className="uppercase text-slate-400">OFFLINE</span>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" className="sr-only peer" />
+              <div className="w-6 h-3 bg-[#10192e] rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:bg-[#22c55e] after:rounded-full after:h-2.5 after:w-2.5 after:transition-all peer-checked:bg-[#22c55e]/20 border border-[#1e293b]"></div>
+            </label>
+          </div>
+
+        </div>
+
+        {/* Right: Help options */}
+        <div className="flex items-center gap-3">
+          <span className="uppercase text-slate-500 font-extrabold">HELP DESK:</span>
+          <button onClick={() => alert("Initiating admin messaging gateway...")} className="text-slate-400 hover:text-white transition-colors cursor-pointer">💬 CHAT</button>
+          <span className="text-slate-700">|</span>
+          <button onClick={() => alert("Dialing military support operator...")} className="text-slate-400 hover:text-white transition-colors cursor-pointer">📞 CALL</button>
+        </div>
+
+      </footer>
+
+      {/* 7. MOBILE BOTTOM NAVIGATION */}
+      <nav className="mobile-bottom-nav">
+        <button 
+          className={`nav-item ${activeMobileTab === 'map' ? 'active' : ''}`}
+          onClick={() => setActiveMobileTab('map')}
+        >
+          <span className="nav-item-icon">🗺️</span>
+          <span>Map</span>
+        </button>
+        <button 
+          className={`nav-item ${activeMobileTab === 'listings' && activeView === 'rentals' ? 'active' : ''}`}
+          onClick={() => {
+            setActiveMobileTab('listings');
+            setActiveView('rentals');
+          }}
+        >
+          <span className="nav-item-icon">📋</span>
+          <span>Housing</span>
+        </button>
+        <button 
+          className={`nav-item ${activeMobileTab === 'listings' && activeView === 'market' ? 'active' : ''}`}
+          onClick={() => {
+            setActiveMobileTab('listings');
+            setActiveView('market');
+          }}
+        >
+          <span className="nav-item-icon">📦</span>
+          <span>Market</span>
+        </button>
+        <button 
+          className="nav-item"
+          onClick={() => ctx.openProfile && ctx.openProfile()}
+        >
+          <span className="nav-item-icon">👤</span>
+          <span>Profile</span>
+        </button>
+      </nav>
 
     </div>
   );

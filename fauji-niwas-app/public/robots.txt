@@ -1,5 +1,27 @@
+# Welcome and guide AI Search & Generative AI Crawlers
+User-agent: GPTBot
+Allow: /
+Allow: /about.html
+Allow: /ai.txt
+
+User-agent: ClaudeBot
+Allow: /
+Allow: /about.html
+Allow: /ai.txt
+
+User-agent: Google-Extended
+Allow: /
+Allow: /about.html
+Allow: /ai.txt
+
+User-agent: PerplexityBot
+Allow: /
+Allow: /about.html
+Allow: /ai.txt
+
 User-agent: *
 Allow: /
 Disallow: /app.html?view=admin
 
 Sitemap: https://faujiniwas.web.app/sitemap.xml
+Link: https://faujiniwas.web.app/ai.txt

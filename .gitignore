@@ -68,3 +68,13 @@ node_modules/
 # dataconnect generated files
 .dataconnect
 faujiadda-app/.env
+
+# Vite builds
+dist/
+fauji-niwas-app/dist/
+fauji-niwas-app/dist-ssr/
+*.local
+
+# OS files
+.DS_Store
+Thumbs.db

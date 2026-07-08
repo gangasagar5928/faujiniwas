@@ -9,7 +9,7 @@ export function generateNeighborhoodInsight(listing, proximity = {}) {
   const distance = parseFloat(listing.distance) || 0;
   const isClose = distance > 0 && distance < 4;
   const price = listing.price || 0;
-  const bah = price <= 15000 ? 'within OR limits' : price <= 30000 ? 'within JCO limits' : 'in the Officer bracket';
+  const hra = price <= 15000 ? 'within OR limits' : price <= 30000 ? 'within JCO limits' : 'in the Officer bracket';
 
   // Seeded randomization basis
   const hash = (listing.id || "").split("").reduce((a, b) => a + b.charCodeAt(0), 0);
@@ -41,7 +41,7 @@ export function generateNeighborhoodInsight(listing, proximity = {}) {
     insight += `Immediate healthcare access: ${proximity.nearestHosp.name} is within ${proximity.nearestHosp.dist}km. `;
   }
 
-  insight += `Pricing is firmly ${bah}. The neighborhood is ${advantage}.`;
+  insight += `Pricing is firmly ${hra}. The neighborhood is ${advantage}.`;
   
   return insight;
 }

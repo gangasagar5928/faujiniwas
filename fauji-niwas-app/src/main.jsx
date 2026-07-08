@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
 
+document.documentElement.classList.add('app-shell');
+document.body.classList.add('app-shell');
+
 // Global ErrorBoundary — prevents silent white screen on mobile crashes
 class ErrorBoundary extends React.Component {
   constructor(props) { super(props); this.state = { error: null }; }
@@ -39,6 +42,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <App />
   </ErrorBoundary>
 );
+
+// Signal to the inline loader that the app has mounted — use rAF so loader
+// hides only after React's first real paint (prevents white-flash on slow devices)
+requestAnimationFrame(() => {
+  window.dispatchEvent(new Event('app-ready'));
+});
 
 // Register Service Worker for PWA caching
 if ('serviceWorker' in navigator && import.meta.env.PROD) {

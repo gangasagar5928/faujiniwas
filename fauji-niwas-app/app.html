@@ -1,85 +1,504 @@
 <!doctype html>
-<html lang="en-IN">
+<html lang="en-IN" class="app-shell">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
     <script>
-      (function() {
-        // Detect native app via User Agent immediately
+      (function () {
+        document.documentElement.classList.add('app-shell');
+        if (document.body) document.body.classList.add('app-shell');
         if (navigator.userAgent.includes('FaujiNiwas/1.0')) {
           window.faujiApp = true;
           document.documentElement.classList.add('is-native');
-          console.log('FaujiNiwas Native Shell Detected Early');
+        }
+        if (localStorage.getItem('elderly-mode') === 'true') {
+          document.documentElement.classList.add('is-elderly-mode');
         }
       })();
     </script>
-    <title>Fauji Niwas — Verified Defence Housing & Rentals</title>
-    <meta name="description" content="India's only verified, zero-brokerage housing platform built exclusively for Indian Armed Forces families." />
-    <meta name="theme-color" content="#0b1325" />
+    <style>
+      /* ====================================================
+         CRITICAL SHELL STYLES — inlined to prevent FOUC
+      ==================================================== */
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      html.app-shell, body.app-shell {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        height: 100dvh;
+        overflow: hidden;
+        overscroll-behavior: none;
+        background: #030712;
+        font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+      }
+      #root {
+        width: 100%; height: 100%; height: 100dvh;
+        overflow: hidden;
+        position: relative;
+        z-index: 1;
+      }
+      noscript {
+        display: block;
+        padding: 2rem;
+        text-align: center;
+        font-family: system-ui, sans-serif;
+        color: #f0f4ff;
+        background: #030712;
+      }
+    </style>
+
+    <title>Fauji Niwas — Verified Defence Housing Map</title>
+    <meta name="description" content="Interactive map for verified defence housing, SSB dorms, and cantonment-adjacent rentals across India. Zero brokerage." />
+    <meta name="theme-color" content="#030712" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="FaujiNiwas" />
     <link rel="apple-touch-icon" href="favicon.svg" />
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪖</text></svg>" />
-
-    <!-- SEO Meta Tags -->
-    <meta name="keywords" content="defence housing, military rent, army quarters, outliving, SSB dorms, FaujiNiwas, cantt rental, civil area rent, army homes, army housing near cantonment, defence family relocation India, zero brokerage military quarters, BAH housing India, fauji niwas" />
     <link rel="canonical" href="https://faujiniwas.web.app/app" />
+    <!-- App shell is auth-gated — do not index, but allow following outbound links -->
+    <meta name="robots" content="noindex, follow" />
 
-    <!-- Open Graph / Social Media -->
+    <meta name="keywords" content="defence housing map, military rent, cantt rental, SSB dorms, FaujiNiwas, HRA housing India" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://faujiniwas.web.app/app" />
-    <meta property="og:title" content="Fauji Niwas — Verified Defence Housing & Rentals" />
-    <meta property="og:description" content="India's only verified, zero-brokerage housing platform built exclusively for Indian Armed Forces families." />
+    <meta property="og:title" content="Fauji Niwas — Verified Defence Housing Map" />
+    <meta property="og:description" content="Interactive map for verified defence housing near cantonments across India. Zero brokerage for Indian Armed Forces." />
     <meta property="og:image" content="https://faujiniwas.web.app/og-image.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Fauji Niwas — Verified Defence Housing Map" />
+    <meta name="twitter:description" content="Interactive map for verified defence housing near cantonments across India. Zero brokerage." />
+    <meta name="twitter:image" content="https://faujiniwas.web.app/og-image.jpg" />
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://faujiniwas.web.app/app" />
-    <meta property="twitter:title" content="Fauji Niwas — Verified Defence Housing & Rentals" />
-    <meta property="twitter:description" content="India's only verified, zero-brokerage housing platform built exclusively for Indian Armed Forces families." />
-    <meta property="twitter:image" content="https://faujiniwas.web.app/og-image.jpg" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Fauji Niwas Housing Map",
+      "url": "https://faujiniwas.web.app/app",
+      "description": "Interactive defence housing map for Indian Armed Forces personnel. Find verified, zero-brokerage rentals near cantonments across India.",
+      "applicationCategory": "RealEstateApplication",
+      "operatingSystem": "Web, Android",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" },
+      "author": { "@type": "Person", "name": "Aman Kumar Singh", "url": "https://faujiniwas.web.app/about.html" }
+    }
+    </script>
 
-    <!-- Preconnect for Performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://basemaps.cartocdn.com" />
     <link rel="preconnect" href="https://firestore.googleapis.com" />
-    
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;700;800&family=Playfair+Display:wght@700&family=Syne:wght@700;800&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&family=Outfit:wght@400;700;800&display=swap" />
     <link rel="manifest" href="manifest.json" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   </head>
-  <body>
-    <div id="root">
-      <style>
-        #tactical-loader {
-          position: fixed; inset: 0; background: #0b1325;
-          display: flex; align-items: center; justify-content: center; z-index: 10000;
-        }
-        .tactical-pulse {
-          width: 70px; height: 70px; border-radius: 50%;
-          border: 3px solid rgba(255,153,51,0.2);
-          border-top-color: #FF9933;
-          animation: spin 1s infinite linear, pulse 2s infinite ease-in-out;
-        }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        @keyframes pulse { 50% { box-shadow: 0 0 30px rgba(255,153,51,0.4); } }
-      </style>
-      <div id="tactical-loader"><div class="tactical-pulse"></div></div>
-      <script>
-        // Safety fallback: ensure loader is hidden after 6s even if bundle fails
-        setTimeout(() => {
-          const l = document.getElementById('tactical-loader');
-          if (l) {
-            l.style.transition = 'opacity 0.8s ease';
-            l.style.opacity = '0';
-            setTimeout(() => l.style.display = 'none', 800);
-          }
-        }, 6000);
-      </script>
+  <body class="app-shell bg-[#030712] text-gray-100 font-sans antialiased">
+    <noscript>
+      <strong>Fauji Niwas requires JavaScript.</strong>
+      Please enable JavaScript or use the
+      <a href="/" class="text-amber-500">landing page</a>.
+    </noscript>
+
+    <!-- ═══════════════════════════════════════
+         TACTICAL LOADER — lives OUTSIDE #root
+         so React mount doesn't destroy it
+    ═══════════════════════════════════════ -->
+    <div id="tactical-loader" class="fixed inset-0 z-[100000] flex flex-col items-center justify-center overflow-hidden bg-[#030712] transition-opacity duration-700 ease-out" role="status" aria-live="polite" aria-label="Loading Fauji Niwas">
+
+      <!-- Animated particle grid canvas -->
+      <canvas id="loader-canvas" class="absolute inset-0 w-full h-full opacity-35" aria-hidden="true"></canvas>
+
+      <!-- Ambient glow orbs -->
+      <div class="absolute rounded-full w-[480px] h-[480px] -top-[15%] -left-[15%] pointer-events-none animate-orbPulse" style="background: radial-gradient(circle, rgba(245,158,11,0.22) 0%, transparent 70%);" aria-hidden="true"></div>
+      <div class="absolute rounded-full w-[360px] h-[360px] -bottom-[10%] -right-[10%] pointer-events-none animate-orbPulse" style="background: radial-gradient(circle, rgba(59,83,35,0.3) 0%, transparent 70%); animation-delay: 2s;" aria-hidden="true"></div>
+      <div class="absolute rounded-full w-[260px] h-[260px] top-[40%] left-[55%] pointer-events-none animate-orbPulse" style="background: radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%); animation-delay: 4s;" aria-hidden="true"></div>
+
+      <!-- Grid overlay -->
+      <div class="absolute inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px); background-size: 52px 52px; mask-image: radial-gradient(ellipse 65% 55% at 50% 50%, black 30%, transparent 100%); -webkit-mask-image: radial-gradient(ellipse 65% 55% at 50% 50%, black 30%, transparent 100%);" aria-hidden="true"></div>
+
+      <!-- Scan line -->
+      <div class="absolute inset-0 pointer-events-none opacity-40 z-5" style="background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.06) 3px, rgba(0,0,0,0.06) 4px);" aria-hidden="true"></div>
+
+      <!-- Main glass card -->
+      <div class="relative z-10 flex flex-col items-center p-10 bg-[#090d16]/70 backdrop-blur-3xl border border-amber-500/12 rounded-3xl shadow-[0_24px_64px_rgba(0,0,0,0.6)] min-w-[300px] max-w-[360px] text-center animate-cardFloat" id="loader-card">
+        <!-- Brand -->
+        <div class="text-2xl font-extrabold tracking-wide text-blue-50/90 uppercase mb-8">🪖 Fauji <span class="italic text-amber-500 bg-gradient-to-r from-amber-400 to-amber-500 bg-clip-text text-transparent">Niwas</span></div>
+
+        <!-- Concentric rings -->
+        <div class="relative w-20 h-20 mb-8 shrink-0" aria-hidden="true">
+          <div class="absolute inset-0 rounded-full border-2 border-transparent border-t-amber-500 border-r-amber-500/25 animate-[spin_1.4s_linear_infinite]"></div>
+          <div class="absolute inset-[10px] rounded-full border-2 border-transparent border-t-lime-400 border-l-lime-400/20 animate-[spin_1s_linear_infinite_reverse]"></div>
+          <div class="absolute inset-[20px] rounded-full border-2 border-transparent border-t-amber-500/50 border-b-amber-500/15 animate-[spin_0.7s_linear_infinite]"></div>
+          <div class="absolute inset-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_12px_4px_rgba(245,158,11,0.5)] animate-dotPulse"></div>
+        </div>
+
+        <!-- Status text -->
+        <div class="text-xs text-gray-400/90 tracking-wide font-mono min-h-[1.1em] mb-6" id="loader-status">Initializing secure session…</div>
+
+        <!-- Progress bar -->
+        <div class="w-full h-[3px] bg-white/5 rounded-full overflow-hidden mb-5">
+          <div class="h-full rounded-full bg-gradient-to-r from-lime-600 to-amber-500 transition-[width] duration-[1.6s] ease-[cubic-bezier(0.16,1,0.3,1)]" id="loader-progress" style="width: 0%;"></div>
+        </div>
+
+        <!-- Step indicators -->
+        <div class="flex gap-2 items-center" aria-hidden="true">
+          <div class="h-1 rounded-full transition-all duration-500 w-9 bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.5)]" id="lstep-1"></div>
+          <div class="h-1 rounded-full transition-all duration-500 w-5 bg-white/10" id="lstep-2"></div>
+          <div class="h-1 rounded-full transition-all duration-500 w-5 bg-white/10" id="lstep-3"></div>
+          <div class="h-1 rounded-full transition-all duration-500 w-5 bg-white/10" id="lstep-4"></div>
+        </div>
+      </div>
+
+      <div class="absolute bottom-5 font-mono text-[10px] text-slate-400/40 tracking-wider">v4.3.1 · SECURE SESSION · PRODUCTION</div>
     </div>
+
+    <div id="root"></div>
+
+    <style type="text/tailwindcss">
+      @theme {
+        --color-olive: #3b5323;
+        --color-amber-500: #f59e0b;
+        --color-amber-400: #fbbf24;
+      }
+      
+      @keyframes orbPulse {
+        0%   { transform: translate(0, 0) scale(1); }
+        100% { transform: translate(4%, 6%) scale(1.12); }
+      }
+      @keyframes dotPulse {
+        0%, 100% { box-shadow: 0 0 8px 2px rgba(245,158,11,0.5); transform: translate(-50%, -50%) scale(1); }
+        50%       { box-shadow: 0 0 20px 8px rgba(245,158,11,0.3); transform: translate(-50%, -50%) scale(1.3); }
+      }
+      @keyframes cardFloat {
+        from { opacity: 0; transform: translateY(24px) scale(0.96); }
+        to   { opacity: 1; transform: translateY(0) scale(1); }
+      }
+      
+      .animate-orbPulse {
+        animation: orbPulse 6s ease-in-out infinite alternate;
+      }
+      .animate-dotPulse {
+        animation: dotPulse 1.4s ease-in-out infinite;
+      }
+      .animate-cardFloat {
+        animation: cardFloat 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+    </style>
+
+    <script>
+    (function () {
+      /* ── Particle canvas ── */
+      var canvas = document.getElementById('loader-canvas');
+      var ctx = canvas && canvas.getContext('2d');
+      var particles = [];
+      var animFrame;
+
+      function resizeCanvas() {
+        if (!canvas) return;
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      // Spawn particles
+      for (var i = 0; i < 60; i++) {
+        particles.push({
+          x:  Math.random() * window.innerWidth,
+          y:  Math.random() * window.innerHeight,
+          vx: (Math.random() - 0.5) * 0.35,
+          vy: (Math.random() - 0.5) * 0.35,
+          r:  Math.random() * 1.4 + 0.4,
+          a:  Math.random() * 0.55 + 0.1,
+          c:  Math.random() > 0.55 ? '#f59e0b' : '#a3e635',
+        });
+      }
+
+      function drawParticles() {
+        if (!ctx) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (var i = 0; i < particles.length; i++) {
+          var p = particles[i];
+          p.x += p.vx; p.y += p.vy;
+          if (p.x < 0) p.x = canvas.width;
+          if (p.x > canvas.width) p.x = 0;
+          if (p.y < 0) p.y = canvas.height;
+          if (p.y > canvas.height) p.y = 0;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = p.c;
+          ctx.globalAlpha = p.a;
+          ctx.fill();
+        }
+        // Draw faint connecting lines between close particles
+        ctx.globalAlpha = 0.06;
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 0.6;
+        for (var i = 0; i < particles.length; i++) {
+          for (var j = i + 1; j < particles.length; j++) {
+            var dx = particles[i].x - particles[j].x;
+            var dy = particles[i].y - particles[j].y;
+            var dist = Math.sqrt(dx*dx + dy*dy);
+            if (dist < 100) {
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.stroke();
+            }
+          }
+        }
+        ctx.globalAlpha = 1;
+        animFrame = requestAnimationFrame(drawParticles);
+      }
+      drawParticles();
+
+      /* ── Loading stages ── */
+      var statusEl   = document.getElementById('loader-status');
+      var progressEl = document.getElementById('loader-progress');
+      var steps = [
+        document.getElementById('lstep-1'),
+        document.getElementById('lstep-2'),
+        document.getElementById('lstep-3'),
+        document.getElementById('lstep-4'),
+      ];
+
+      var stages = [
+        { msg: 'Initializing secure session…',    pct: 15 },
+        { msg: 'Loading cantonment map data…',     pct: 45 },
+        { msg: 'Preparing housing intelligence…',  pct: 75 },
+        { msg: 'Almost ready…',                    pct: 95 },
+      ];
+      var stageIdx = 0;
+
+      function applyStage(idx) {
+        if (!stages[idx]) return;
+        if (statusEl) statusEl.textContent = stages[idx].msg;
+        if (progressEl) progressEl.style.width = stages[idx].pct + '%';
+        steps.forEach(function(el, i) {
+          if (!el) return;
+          el.className = 'h-1 rounded-full transition-all duration-500 ' + (i < idx ? 'w-5 bg-[#a3e635]/50' : i === idx ? 'w-9 bg-[#f59e0b] shadow-[0_0_10px_rgba(245,158,11,0.5)]' : 'w-5 bg-white/10');
+        });
+      }
+      applyStage(0);
+
+      var tick = setInterval(function () {
+        stageIdx = Math.min(stageIdx + 1, stages.length - 1);
+        applyStage(stageIdx);
+        if (stageIdx >= stages.length - 1) clearInterval(tick);
+      }, 1700);
+
+      /* ── Hide on app-ready ── */
+      function hideLoader() {
+        var l = document.getElementById('tactical-loader');
+        if (l) l.classList.add('opacity-0');
+        setTimeout(function() {
+          if (l) l.style.display = 'none';
+        }, 700);
+        clearInterval(tick);
+        cancelAnimationFrame(animFrame);
+      }
+      window.addEventListener('app-ready', hideLoader);
+
+      /* ── Retry on timeout ── */
+      setTimeout(function () {
+        var l = document.getElementById('tactical-loader');
+        var card = document.getElementById('loader-card');
+        if (l && !l.classList.contains('opacity-0') && card) {
+          clearInterval(tick);
+          cancelAnimationFrame(animFrame);
+          card.innerHTML =
+            '<div class="flex flex-col items-center gap-4 text-[#f0f6ff]">' +
+            '<div class="text-[2.2rem]">📡</div>' +
+            '<div class="text-[0.85rem] text-gray-400/90 leading-relaxed">Slow connection detected.<br/>Map data is still loading…</div>' +
+            '<button class="bg-gradient-to-r from-amber-400 to-amber-500 hover:scale-105 active:scale-95 text-[#030712] font-bold text-xs px-7 py-2.5 rounded-full shadow-[0_4px_20px_rgba(245,158,11,0.4)] transition-all" onclick="location.reload()">Retry Connection</button>' +
+            '</div>';
+        }
+      }, 14000);
+    })();
+    </script>
+
     <script type="module" src="/src/main.jsx"></script>
-    <script src="/chatbot.js"></script>
+    <script src="/chatbot.js" defer></script>
+
+    <!-- ♿ ACCESSIBILITY WIDGET FOR OLD AGE PEOPLE -->
+    <div id="accessibility-widget" class="fixed bottom-24 right-5 z-[200000] flex flex-col items-end gap-2">
+      <!-- Toggle trigger button -->
+      <button id="acc-trigger" class="w-12 h-12 rounded-full bg-amber-500 hover:bg-amber-600 text-black flex items-center justify-center shadow-lg font-bold text-lg border-2 border-white select-none transition-all hover:scale-105 active:scale-95 cursor-pointer" title="Accessibility Panel / सुगम्यता सेटिंग्स">
+        ♿
+      </button>
+      
+      <!-- Panel popup menu -->
+      <div id="acc-menu" class="hidden flex-col bg-[#0f172a] border border-[#334155] rounded-2xl p-4 shadow-2xl min-w-[210px] text-left gap-3 text-white border-2">
+        <div class="text-xs font-extrabold text-amber-500 border-b border-[#334155] pb-2 uppercase tracking-wider flex items-center justify-between font-mono">
+          <span>Accessibility 🎖️</span>
+          <button id="acc-close" class="text-slate-400 hover:text-white text-base cursor-pointer font-bold">&times;</button>
+        </div>
+        
+        <!-- Text Size -->
+        <div class="flex flex-col gap-1.5">
+          <span class="text-[9px] font-extrabold uppercase text-slate-400 font-mono tracking-wider">Text Size / आकार</span>
+          <div class="flex gap-1">
+            <button id="fs-small" class="flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">A-</button>
+            <button id="fs-normal" class="flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">A</button>
+            <button id="fs-large" class="flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">A+</button>
+            <button id="fs-elderly" class="flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">Senior</button>
+          </div>
+        </div>
+        
+        <!-- Language Option -->
+        <div class="flex flex-col gap-1.5">
+          <span class="text-[9px] font-extrabold uppercase text-slate-400 font-mono tracking-wider">Language / भाषा</span>
+          <div class="flex gap-1">
+            <button id="lang-en" class="flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">EN</button>
+            <button id="lang-hi" class="flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">हिन्दी</button>
+            <button id="lang-pa" class="flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">ਪੰਜਾਬੀ</button>
+          </div>
+        </div>
+        
+        <!-- Dark/Light Theme -->
+        <div class="flex flex-col gap-1.5">
+          <span class="text-[9px] font-extrabold uppercase text-slate-400 font-mono tracking-wider">Contrast Theme / थीम</span>
+          <div class="flex gap-1">
+            <button id="theme-dark" class="flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">Dark</button>
+            <button id="theme-light" class="flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">Light</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+    (function() {
+      // Apply saved values immediately to prevent FOUC
+      var savedSize = localStorage.getItem('fn_fontsize') || '16px';
+      document.documentElement.style.fontSize = savedSize;
+
+      var savedTheme = localStorage.getItem('fn_theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.documentElement.classList.add('light-theme');
+        document.body.classList.add('light-theme');
+      } else {
+        document.documentElement.classList.remove('light-theme');
+        document.body.classList.remove('light-theme');
+      }
+
+      // Setup Accessibility Widget event handlers
+      window.addEventListener('DOMContentLoaded', function() {
+        var widget = document.getElementById('accessibility-widget');
+        var trigger = document.getElementById('acc-trigger');
+        var menu = document.getElementById('acc-menu');
+        var closeBtn = document.getElementById('acc-close');
+
+        if (!trigger || !menu) return;
+
+        trigger.addEventListener('click', function() {
+          menu.classList.toggle('hidden');
+          menu.classList.toggle('flex');
+        });
+
+        closeBtn.addEventListener('click', function() {
+          menu.classList.add('hidden');
+          menu.classList.remove('flex');
+        });
+
+        // Theme toggles
+        var themeDark = document.getElementById('theme-dark');
+        var themeLight = document.getElementById('theme-light');
+        
+        function updateThemeButtons(theme) {
+          if (theme === 'dark') {
+            themeDark.className = 'flex-1 py-1.5 text-xs font-black bg-amber-500 text-black rounded-lg transition-all cursor-pointer';
+            themeLight.className = 'flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer';
+          } else {
+            themeLight.className = 'flex-1 py-1.5 text-xs font-black bg-amber-500 text-black rounded-lg transition-all cursor-pointer';
+            themeDark.className = 'flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer';
+          }
+        }
+
+        themeDark.addEventListener('click', function() {
+          document.documentElement.classList.remove('light-theme');
+          document.body.classList.remove('light-theme');
+          localStorage.setItem('fn_theme', 'dark');
+          updateThemeButtons('dark');
+        });
+
+        themeLight.addEventListener('click', function() {
+          document.documentElement.classList.add('light-theme');
+          document.body.classList.add('light-theme');
+          localStorage.setItem('fn_theme', 'light');
+          updateThemeButtons('light');
+        });
+
+        updateThemeButtons(savedTheme);
+
+        // Font Size Toggles
+        var sizes = {
+          '14px': document.getElementById('fs-small'),
+          '16px': document.getElementById('fs-normal'),
+          '18px': document.getElementById('fs-large'),
+          '20px': document.getElementById('fs-elderly')
+        };
+
+        function updateSizeButtons(currentSize) {
+          Object.keys(sizes).forEach(function(size) {
+            var btn = sizes[size];
+            if (!btn) return;
+            if (size === currentSize) {
+              btn.className = 'flex-1 py-1.5 text-xs font-black bg-amber-500 text-black rounded-lg transition-all cursor-pointer';
+            } else {
+              btn.className = 'flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer';
+            }
+          });
+        }
+
+        Object.keys(sizes).forEach(function(size) {
+          var btn = sizes[size];
+          if (!btn) return;
+          btn.addEventListener('click', function() {
+            document.documentElement.style.fontSize = size;
+            localStorage.setItem('fn_fontsize', size);
+            updateSizeButtons(size);
+          });
+        });
+
+        updateSizeButtons(savedSize);
+
+        // Language Toggles
+        var savedLang = localStorage.getItem('fn_lang') || 'en';
+        var langs = {
+          'en': document.getElementById('lang-en'),
+          'hi': document.getElementById('lang-hi'),
+          'pa': document.getElementById('lang-pa')
+        };
+
+        function updateLangButtons(currentLang) {
+          Object.keys(langs).forEach(function(lang) {
+            var btn = langs[lang];
+            if (!btn) return;
+            if (lang === currentLang) {
+              btn.className = 'flex-1 py-1.5 text-xs font-black bg-amber-500 text-black rounded-lg transition-all cursor-pointer';
+            } else {
+              btn.className = 'flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer';
+            }
+          });
+        }
+
+        Object.keys(langs).forEach(function(lang) {
+          var btn = langs[lang];
+          if (!btn) return;
+          btn.addEventListener('click', function() {
+            localStorage.setItem('fn_lang', lang);
+            updateLangButtons(lang);
+            alert(lang === 'hi' ? 'भाषा बदलकर हिन्दी कर दी गई है! 🌐' : lang === 'pa' ? 'ਭਾਸ਼ਾ ਬਦਲ ਕੇ ਪੰਜਾਬੀ ਕਰ ਦਿੱਤੀ ਗਈ ਹੈ! 🌐' : 'Language set to English! 🌐');
+          });
+        });
+
+        updateLangButtons(savedLang);
+      });
+    })();
+    </script>
   </body>
 </html>

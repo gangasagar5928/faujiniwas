@@ -1,7 +1,8 @@
 .overlay {
   position: absolute;
   bottom: 28px;
-  left: 16px;
+  right: 20px;
+  left: auto;
   display: flex;
   flex-direction: column;
   gap: 8px;

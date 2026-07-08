@@ -7,7 +7,8 @@ echo "🚀 FaujiNiwas Zero-Downtime Build & Deploy"
 echo "=========================================================="
 
 echo "[1/4] Preparing Environment..."
-cd "/run/media/petronski/Local Disk D/fauji-niwas"
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$BASE_DIR"
 echo "✅ Environment ready."
 
 echo "[2/4] Building React App (Production Mode)..."

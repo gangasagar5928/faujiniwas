@@ -13,9 +13,22 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff2}'],
         maximumFileSizeToCacheInBytes: 4000000,
+        navigateFallbackDenylist: [/^\/.*\.html$/]
       },
       manifest: false, // We already have a manifest in public/manifest.json
-    })
+    }),
+    {
+      name: 'dev-server-app-rewrite',
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          const url = new URL(req.url, 'http://localhost');
+          if (url.pathname === '/app' || url.pathname.startsWith('/app/')) {
+            req.url = '/app.html' + url.search;
+          }
+          next();
+        });
+      }
+    }
   ],
   build: {
     outDir: 'dist',

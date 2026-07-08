@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, useMap, Circle, Marker, Popup } from 'react-le
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import L from 'leaflet';
 import { useFilterStore, getFilteredListings } from '../../store/filterStore';
-import { SSB_DORMS, ARMY_SCHOOLS, MILITARY_HOSPITALS, CANTEENS } from '../../data';
+import { SSB_DORMS, ARMY_SCHOOLS, MILITARY_HOSPITALS, CANTEENS, CITY_ALIASES } from '../../data';
 import RentalMarker from './RentalMarker';
 import DormMarker from './DormMarker';
 import MapOverlay from './MapOverlay';
@@ -170,9 +170,33 @@ export default function MapView() {
   const cityCandidates = searchCity ? [searchCity, ...citiesInView] : citiesInView;
   
   for (const city of cityCandidates) {
-    const formattedCity = city?.charAt(0).toUpperCase() + city?.slice(1).toLowerCase();
+    if (!city) continue;
+    let formattedCity = city.charAt(0).toUpperCase() + city.slice(1).toLowerCase();
+    const lowerCity = city.toLowerCase();
+    
+    // 1. Resolve alias
+    if (CITY_ALIASES[lowerCity]) {
+      const resolved = CITY_ALIASES[lowerCity];
+      formattedCity = resolved.charAt(0).toUpperCase() + resolved.slice(1).toLowerCase();
+    }
+    
+    // 2. Check ARMY_SCHOOLS
     if (ARMY_SCHOOLS[formattedCity]) {
       activeCantt = ARMY_SCHOOLS[formattedCity][0]; // centroid
+      break;
+    }
+    
+    // 3. Check SSB_DORMS
+    const dormMatch = SSB_DORMS.find(d => d.city?.toLowerCase() === lowerCity || d.city?.toLowerCase() === formattedCity.toLowerCase());
+    if (dormMatch) {
+      activeCantt = { lat: dormMatch.lat, lng: dormMatch.lng, city: dormMatch.city };
+      break;
+    }
+    
+    // 4. Check dynamic listings fallback
+    const listingMatch = filtered.find(l => l.city?.toLowerCase() === lowerCity);
+    if (listingMatch && listingMatch.lat && listingMatch.lng) {
+      activeCantt = { lat: listingMatch.lat, lng: listingMatch.lng, city: listingMatch.city };
       break;
     }
   }
