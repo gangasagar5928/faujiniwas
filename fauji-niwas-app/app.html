@@ -492,7 +492,7 @@
           btn.addEventListener('click', function() {
             localStorage.setItem('fn_lang', lang);
             updateLangButtons(lang);
-            alert(lang === 'hi' ? 'भाषा बदलकर हिन्दी कर दी गई है! 🌐' : lang === 'pa' ? 'ਭਾਸ਼ਾ ਬਦਲ ਕੇ ਪੰਜਾਬੀ ਕਰ ਦਿੱਤੀ ਗਈ ਹੈ! 🌐' : 'Language set to English! 🌐');
+            location.reload();
           });
         });
 
