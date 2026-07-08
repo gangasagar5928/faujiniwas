@@ -51,3 +51,20 @@
   border: 1px solid rgba(244,197,66,.28);
   backdrop-filter: blur(4px);
 }
+
+/* Light Theme Overrides */
+:global(.light-theme) .card {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08) !important;
+}
+:global(.light-theme) .card h4 {
+  color: #0f172a !important;
+}
+:global(.light-theme) .price {
+  color: #d97706 !important;
+}
+:global(.light-theme) .meta,
+:global(.light-theme) .desc {
+  color: #475569 !important;
+}

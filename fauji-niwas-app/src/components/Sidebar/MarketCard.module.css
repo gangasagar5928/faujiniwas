@@ -182,3 +182,29 @@
   .card { animation: none !important; }
   .img, .chatBtn, .viewBtn { transition: none; }
 }
+
+/* Light Theme Overrides */
+:global(.light-theme) .card {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08) !important;
+}
+:global(.light-theme) .title {
+  color: #0f172a !important;
+}
+:global(.light-theme) .meta {
+  color: #475569 !important;
+}
+:global(.light-theme) .price {
+  color: #d97706 !important;
+}
+:global(.light-theme) .chatBtn {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #475569 !important;
+}
+:global(.light-theme) .chatBtn:hover {
+  background: rgba(245, 158, 11, 0.1) !important;
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+}

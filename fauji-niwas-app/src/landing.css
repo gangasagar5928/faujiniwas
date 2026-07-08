@@ -360,3 +360,94 @@ h1, h2, h3, h4, h5, h6 {
 .landing-page footer a:hover {
   color: #f59e0b !important;
 }
+
+/* ── Feature Cards Theme Styling (GEO & Contrast optimization) ── */
+.feature-card {
+  position: relative;
+  background-color: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+.feature-card:hover {
+  border-color: var(--accent-amber) !important;
+  box-shadow: 0 16px 36px rgba(245, 158, 11, 0.1) !important;
+}
+.feature-card:nth-child(1) { background-image: url('https://images.unsplash.com/photo-1524661135-423995f22d0b?w=500&q=75'); background-size: cover; background-position: center; }
+.feature-card:nth-child(2) { background-image: url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=500&q=75'); background-size: cover; background-position: center; }
+.feature-card:nth-child(3) { background-image: url('https://images.unsplash.com/photo-1589758438368-0ad531db3366?w=500&q=75'); background-size: cover; background-position: center; }
+.feature-card:nth-child(4) { background-image: url('https://images.unsplash.com/photo-1508962914676-134849a727f0?w=500&q=75'); background-size: cover; background-position: center; }
+.feature-card:nth-child(5) { background-image: url('https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=500&q=75'); background-size: cover; background-position: center; }
+.feature-card:nth-child(6) { background-image: url('https://images.unsplash.com/photo-1450133064473-71024230f91b?w=500&q=75'); background-size: cover; background-position: center; }
+
+.feature-card-overlay {
+  background: rgba(255, 255, 255, 0.93) !important;
+}
+.feature-card-badge {
+  color: var(--accent-amber-dark) !important;
+}
+.feature-card-btn {
+  background: rgba(245, 158, 11, 0.08) !important;
+  border: 1px solid rgba(245, 158, 11, 0.25) !important;
+}
+.feature-card-btn:hover {
+  background: rgba(245, 158, 11, 0.2) !important;
+}
+.feature-card-arrow {
+  color: var(--accent-amber-dark) !important;
+}
+.feature-card-title {
+  color: var(--text-primary) !important;
+}
+.feature-card-desc {
+  color: var(--text-secondary) !important;
+}
+
+/* Dark Theme overrides */
+.dark-theme .feature-card {
+  background-color: #111827 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+.dark-theme .feature-card:hover {
+  border-color: var(--accent-amber) !important;
+  box-shadow: 0 16px 36px rgba(245, 158, 11, 0.25) !important;
+}
+.dark-theme .feature-card-overlay {
+  background: rgba(17, 24, 39, 0.85) !important;
+}
+.dark-theme .feature-card-badge {
+  color: #fbbf24 !important;
+}
+.dark-theme .feature-card-btn {
+  background: rgba(251, 191, 36, 0.15) !important;
+  border-color: rgba(251, 191, 36, 0.3) !important;
+}
+.dark-theme .feature-card-arrow {
+  color: #fbbf24 !important;
+}
+.dark-theme .feature-card-title {
+  color: #fbbf24 !important;
+}
+.dark-theme .feature-card-desc {
+  color: #e2e8f0 !important;
+}
+
+/* Founders Section Dark Theme overrides */
+.dark-theme .landing-page section div.bg-white\/45 {
+  background-color: rgba(19, 27, 44, 0.65) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+.dark-theme .landing-page section h2,
+.dark-theme .landing-page section h3 {
+  color: #ffffff !important;
+}
+.dark-theme .landing-page section p {
+  color: #cbd5e1 !important;
+}
+.dark-theme .landing-page section a {
+  color: #fbbf24 !important;
+}
+.dark-theme .landing-page section a:hover {
+  color: #f59e0b !important;
+}
+.dark-theme .landing-page section span.text-amber-700 {
+  color: #fbbf24 !important;
+}

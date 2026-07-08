@@ -247,3 +247,43 @@
   .card, .hraBadge, .availBadge { animation: none !important; }
   .card::before, .card::after, .thumb img, .cta, .actBtn { transition: none; }
 }
+
+/* Light Theme Overrides */
+:global(.light-theme) .card {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08) !important;
+}
+:global(.light-theme) .card::before,
+:global(.light-theme) .card::after {
+  display: none !important;
+}
+:global(.light-theme) .name {
+  color: #0f172a !important;
+}
+:global(.light-theme) .loc {
+  color: #475569 !important;
+}
+:global(.light-theme) .price {
+  color: #d97706 !important;
+}
+:global(.light-theme) .price span {
+  color: #64748b !important;
+}
+:global(.light-theme) .actions {
+  background: #f8fafc !important;
+  border-top-color: #cbd5e1 !important;
+}
+:global(.light-theme) .actBtn {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #475569 !important;
+}
+:global(.light-theme) .actBtn:hover {
+  background: rgba(245, 158, 11, 0.1) !important;
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+}
+:global(.light-theme) .cta {
+  color: #475569 !important;
+}

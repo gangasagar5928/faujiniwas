@@ -188,114 +188,108 @@ export default function LandingPage() {
           {/* Card 1: Station Search */}
           <div
             onClick={handleLaunchApp}
-            style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1524661135-423995f22d0b?w=500&q=75)', backgroundSize: 'cover', backgroundPosition: 'center' }}
-            className="relative p-8 rounded-[2rem] flex flex-col justify-between h-[280px] border border-slate-200/40 shadow-lg group hover:scale-[1.01] transition-all duration-300 overflow-hidden cursor-pointer text-left"
+            className="feature-card relative p-8 rounded-[2rem] flex flex-col justify-between h-[280px] shadow-lg group hover:scale-[1.01] transition-all duration-300 overflow-hidden cursor-pointer text-left"
           >
-            <div className="absolute inset-0 bg-black/82 group-hover:bg-black/75 transition-all z-0" />
+            <div className="feature-card-overlay absolute inset-0 transition-all z-0" />
             <div className="flex justify-between items-start relative z-10">
-              <span style={{ color: '#fbbf24' }} className="text-xs font-extrabold uppercase tracking-widest font-mono">Feature #01</span>
-              <button onClick={handleLaunchApp} aria-label="Open Station Search feature" className="w-9 h-9 rounded-full bg-[#fbbf24]/20 border border-[#fbbf24]/40 flex items-center justify-center group-hover:bg-[#fbbf24]/35 transition-all">
-                <ArrowUpRight size={18} className="text-[#fbbf24] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              <span className="feature-card-badge text-xs font-extrabold uppercase tracking-widest font-mono">Feature #01</span>
+              <button onClick={handleLaunchApp} aria-label="Open Station Search feature" className="feature-card-btn w-9 h-9 rounded-full flex items-center justify-center transition-all">
+                <ArrowUpRight size={18} className="feature-card-arrow transition-transform" />
               </button>
             </div>
             <div className="relative z-10">
-              <h3 style={{ color: '#fbbf24' }} className="text-base font-black tracking-wider font-heading mb-2 uppercase">Instant Station Search</h3>
-              <p style={{ color: '#e2e8f0' }} className="text-sm leading-relaxed font-light">Proximity routing mapping exact distances to cantonment gates and base sectors.</p>
+              <h3 className="feature-card-title text-base font-black tracking-wider font-heading mb-2 uppercase">Instant Station Search</h3>
+              <p className="feature-card-desc text-sm leading-relaxed font-light">Proximity routing mapping exact distances to cantonment gates and base sectors.</p>
             </div>
           </div>
 
           {/* Card 2: Verified Listings */}
           <div
             onClick={handleLaunchApp}
-            style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=500&q=75)', backgroundSize: 'cover', backgroundPosition: 'center' }}
-            className="relative p-8 rounded-[2rem] flex flex-col justify-between h-[280px] border border-slate-200/40 shadow-lg group hover:scale-[1.01] transition-all duration-300 overflow-hidden cursor-pointer text-left"
+            className="feature-card relative p-8 rounded-[2rem] flex flex-col justify-between h-[280px] shadow-lg group hover:scale-[1.01] transition-all duration-300 overflow-hidden cursor-pointer text-left"
           >
-            <div className="absolute inset-0 bg-black/82 group-hover:bg-black/75 transition-all z-0" />
+            <div className="feature-card-overlay absolute inset-0 transition-all z-0" />
             <div className="flex justify-between items-start relative z-10">
-              <span style={{ color: '#fbbf24' }} className="text-xs font-extrabold uppercase tracking-widest font-mono">Feature #02</span>
-              <button onClick={handleLaunchApp} aria-label="Open Verified Listings feature" className="w-9 h-9 rounded-full bg-[#fbbf24]/20 border border-[#fbbf24]/40 flex items-center justify-center group-hover:bg-[#fbbf24]/35 transition-all">
-                <ArrowUpRight size={18} className="text-[#fbbf24] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              <span className="feature-card-badge text-xs font-extrabold uppercase tracking-widest font-mono">Feature #02</span>
+              <button onClick={handleLaunchApp} aria-label="Open Verified Listings feature" className="feature-card-btn w-9 h-9 rounded-full flex items-center justify-center transition-all">
+                <ArrowUpRight size={18} className="feature-card-arrow transition-transform" />
               </button>
             </div>
             <div className="relative z-10">
-              <h3 style={{ color: '#fbbf24' }} className="text-base font-black tracking-wider font-heading mb-2 uppercase">Verified Defence Listings</h3>
-              <p style={{ color: '#e2e8f0' }} className="text-sm leading-relaxed font-light">Direct peer-to-peer listings posted exclusively by relocating personnel or verified base families.</p>
+              <h3 className="feature-card-title text-base font-black tracking-wider font-heading mb-2 uppercase">Verified Defence Listings</h3>
+              <p className="feature-card-desc text-sm leading-relaxed font-light">Direct peer-to-peer listings posted exclusively by relocating personnel or verified base families.</p>
             </div>
           </div>
 
           {/* Card 3: HRA Rank Matching */}
           <div
             onClick={handleLaunchApp}
-            style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1589758438368-0ad531db3366?w=500&q=75)', backgroundSize: 'cover', backgroundPosition: 'center' }}
-            className="relative p-8 rounded-[2rem] flex flex-col justify-between h-[280px] border border-slate-200/40 shadow-lg group hover:scale-[1.01] transition-all duration-300 overflow-hidden cursor-pointer text-left"
+            className="feature-card relative p-8 rounded-[2rem] flex flex-col justify-between h-[280px] shadow-lg group hover:scale-[1.01] transition-all duration-300 overflow-hidden cursor-pointer text-left"
           >
-            <div className="absolute inset-0 bg-black/82 group-hover:bg-black/75 transition-all z-0" />
+            <div className="feature-card-overlay absolute inset-0 transition-all z-0" />
             <div className="flex justify-between items-start relative z-10">
-              <span style={{ color: '#fbbf24' }} className="text-xs font-extrabold uppercase tracking-widest font-mono">Feature #03</span>
-              <button onClick={handleLaunchApp} aria-label="Open HRA Rank Matching feature" className="w-9 h-9 rounded-full bg-[#fbbf24]/20 border border-[#fbbf24]/40 flex items-center justify-center group-hover:bg-[#fbbf24]/35 transition-all">
-                <ArrowUpRight size={18} className="text-[#fbbf24] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              <span className="feature-card-badge text-xs font-extrabold uppercase tracking-widest font-mono">Feature #03</span>
+              <button onClick={handleLaunchApp} aria-label="Open HRA Rank Matching feature" className="feature-card-btn w-9 h-9 rounded-full flex items-center justify-center transition-all">
+                <ArrowUpRight size={18} className="feature-card-arrow transition-transform" />
               </button>
             </div>
             <div className="relative z-10">
-              <h3 style={{ color: '#fbbf24' }} className="text-base font-black tracking-wider font-heading mb-2 uppercase">HRA Rank Matching</h3>
-              <p style={{ color: '#e2e8f0' }} className="text-sm leading-relaxed font-light">Entitlement filter matching budgets automatically with 7th Pay Commission allowances.</p>
+              <h3 className="feature-card-title text-base font-black tracking-wider font-heading mb-2 uppercase">HRA Rank Matching</h3>
+              <p className="feature-card-desc text-sm leading-relaxed font-light">Entitlement filter matching budgets automatically with 7th Pay Commission allowances.</p>
             </div>
           </div>
 
           {/* Card 4: Real-time sync */}
           <div
             onClick={handleLaunchApp}
-            style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1508962914676-134849a727f0?w=500&q=75)', backgroundSize: 'cover', backgroundPosition: 'center' }}
-            className="relative p-8 rounded-[2rem] flex flex-col justify-between h-[280px] border border-slate-200/40 shadow-lg group hover:scale-[1.01] transition-all duration-300 overflow-hidden cursor-pointer text-left"
+            className="feature-card relative p-8 rounded-[2rem] flex flex-col justify-between h-[280px] shadow-lg group hover:scale-[1.01] transition-all duration-300 overflow-hidden cursor-pointer text-left"
           >
-            <div className="absolute inset-0 bg-black/82 group-hover:bg-black/75 transition-all z-0" />
+            <div className="feature-card-overlay absolute inset-0 transition-all z-0" />
             <div className="flex justify-between items-start relative z-10">
-              <span style={{ color: '#fbbf24' }} className="text-xs font-extrabold uppercase tracking-widest font-mono">Feature #04</span>
-              <button onClick={handleLaunchApp} aria-label="Open Real Time Availability feature" className="w-9 h-9 rounded-full bg-[#fbbf24]/20 border border-[#fbbf24]/40 flex items-center justify-center group-hover:bg-[#fbbf24]/35 transition-all">
-                <ArrowUpRight size={18} className="text-[#fbbf24] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              <span className="feature-card-badge text-xs font-extrabold uppercase tracking-widest font-mono">Feature #04</span>
+              <button onClick={handleLaunchApp} aria-label="Open Real Time Availability feature" className="feature-card-btn w-9 h-9 rounded-full flex items-center justify-center transition-all">
+                <ArrowUpRight size={18} className="feature-card-arrow transition-transform" />
               </button>
             </div>
             <div className="relative z-10">
-              <h3 style={{ color: '#fbbf24' }} className="text-base font-black tracking-wider font-heading mb-2 uppercase">Real Time Availability</h3>
-              <p style={{ color: '#e2e8f0' }} className="text-sm leading-relaxed font-light">Sync moving schedules with vacancy calendars of incoming and outgoing service staff.</p>
+              <h3 className="feature-card-title text-base font-black tracking-wider font-heading mb-2 uppercase">Real Time Availability</h3>
+              <p className="feature-card-desc text-sm leading-relaxed font-light">Sync moving schedules with vacancy calendars of incoming and outgoing service staff.</p>
             </div>
           </div>
 
           {/* Card 5: Secure chat */}
           <div
             onClick={handleLaunchApp}
-            style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=500&q=75)', backgroundSize: 'cover', backgroundPosition: 'center' }}
-            className="relative p-8 rounded-[2rem] flex flex-col justify-between h-[280px] border border-slate-200/40 shadow-lg group hover:scale-[1.01] transition-all duration-300 overflow-hidden cursor-pointer text-left"
+            className="feature-card relative p-8 rounded-[2rem] flex flex-col justify-between h-[280px] shadow-lg group hover:scale-[1.01] transition-all duration-300 overflow-hidden cursor-pointer text-left"
           >
-            <div className="absolute inset-0 bg-black/82 group-hover:bg-black/75 transition-all z-0" />
+            <div className="feature-card-overlay absolute inset-0 transition-all z-0" />
             <div className="flex justify-between items-start relative z-10">
-              <span style={{ color: '#fbbf24' }} className="text-xs font-extrabold uppercase tracking-widest font-mono">Feature #05</span>
-              <button onClick={handleLaunchApp} aria-label="Open Secure In-App Chat feature" className="w-9 h-9 rounded-full bg-[#fbbf24]/20 border border-[#fbbf24]/40 flex items-center justify-center group-hover:bg-[#fbbf24]/35 transition-all">
-                <ArrowUpRight size={18} className="text-[#fbbf24] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              <span className="feature-card-badge text-xs font-extrabold uppercase tracking-widest font-mono">Feature #05</span>
+              <button onClick={handleLaunchApp} aria-label="Open Secure In-App Chat feature" className="feature-card-btn w-9 h-9 rounded-full flex items-center justify-center transition-all">
+                <ArrowUpRight size={18} className="feature-card-arrow transition-transform" />
               </button>
             </div>
             <div className="relative z-10">
-              <h3 style={{ color: '#fbbf24' }} className="text-base font-black tracking-wider font-heading mb-2 uppercase">Secure In-App Chat</h3>
-              <p style={{ color: '#e2e8f0' }} className="text-sm leading-relaxed font-light">Encrypted chat tunnel protecting mobile numbers until mutual handshakes are signed.</p>
+              <h3 className="feature-card-title text-base font-black tracking-wider font-heading mb-2 uppercase">Secure In-App Chat</h3>
+              <p className="feature-card-desc text-sm leading-relaxed font-light">Encrypted chat tunnel protecting mobile numbers until mutual handshakes are signed.</p>
             </div>
           </div>
 
           {/* Card 6: Lease Break */}
           <div
             onClick={() => setShowLeaseModal(true)}
-            style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1450133064473-71024230f91b?w=500&q=75)', backgroundSize: 'cover', backgroundPosition: 'center' }}
-            className="relative p-8 rounded-[2rem] flex flex-col justify-between h-[280px] border border-slate-200/40 shadow-lg group hover:scale-[1.01] transition-all duration-300 overflow-hidden cursor-pointer text-left"
+            className="feature-card relative p-8 rounded-[2rem] flex flex-col justify-between h-[280px] shadow-lg group hover:scale-[1.01] transition-all duration-300 overflow-hidden cursor-pointer text-left"
           >
-            <div className="absolute inset-0 bg-black/82 group-hover:bg-black/75 transition-all z-0" />
+            <div className="feature-card-overlay absolute inset-0 transition-all z-0" />
             <div className="flex justify-between items-start relative z-10">
-              <span style={{ color: '#fbbf24' }} className="text-xs font-extrabold uppercase tracking-widest font-mono">Feature #06</span>
-              <button onClick={(e) => { e.stopPropagation(); setShowLeaseModal(true); }} aria-label="Open Lease Generator" className="w-9 h-9 rounded-full bg-[#fbbf24]/20 border border-[#fbbf24]/40 flex items-center justify-center group-hover:bg-[#fbbf24]/35 transition-all">
-                <ArrowUpRight size={18} className="text-[#fbbf24] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              <span className="feature-card-badge text-xs font-extrabold uppercase tracking-widest font-mono">Feature #06</span>
+              <button onClick={(e) => { e.stopPropagation(); setShowLeaseModal(true); }} aria-label="Open Lease Generator" className="feature-card-btn w-9 h-9 rounded-full flex items-center justify-center transition-all">
+                <ArrowUpRight size={18} className="feature-card-arrow transition-transform" />
               </button>
             </div>
             <div className="relative z-10">
-              <h3 style={{ color: '#fbbf24' }} className="text-base font-black tracking-wider font-heading mb-2 uppercase">Lease Generator</h3>
-              <p style={{ color: '#e2e8f0' }} className="text-sm leading-relaxed font-light">Draft legal agreements automatically fitted with the standard Indian Military Break Clause.</p>
+              <h3 className="feature-card-title text-base font-black tracking-wider font-heading mb-2 uppercase">Lease Generator</h3>
+              <p className="feature-card-desc text-sm leading-relaxed font-light">Draft legal agreements automatically fitted with the standard Indian Military Break Clause.</p>
             </div>
           </div>
 
@@ -427,6 +421,57 @@ export default function LandingPage() {
         <CSDPulseTicker />
 
       </main>
+
+      {/* Founders Section for GEO & search engine grounding */}
+      <section className="max-w-[1250px] mx-auto px-6 mt-8 mb-4 relative z-10 text-left">
+        <div className="bg-white/45 border border-slate-200/60 rounded-3xl p-8 backdrop-blur-md shadow-sm">
+          <span className="text-[10px] font-black uppercase text-amber-700 tracking-wider font-mono">Founding Team</span>
+          <h2 className="text-xl font-extrabold text-slate-900 mt-1 mb-6 font-heading">Meet the Minds Behind Fauji Niwas</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Founder 1 */}
+            <div className="flex gap-4 items-start">
+              <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-amber-500/30 shrink-0">
+                <img 
+                  src="/aman-kumar-singh.jpg" 
+                  alt="Aman Kumar Singh" 
+                  className="w-full h-full object-cover object-top"
+                  onError={(e) => { e.target.style.display = 'none'; }}
+                />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-slate-900 font-heading">Aman Kumar Singh</h3>
+                <span className="text-[9px] font-bold text-amber-755 uppercase tracking-wide block mt-0.5">Founder & Developer</span>
+                <p className="text-slate-650 text-[11px] leading-relaxed font-light mt-1.5">
+                  B.Tech EEE Student at Government College of Engineering and Technology (GCET), Security Researcher, and NCC Air Wing 'A' Certificate holder. Aman built Fauji Niwas to solve verified relocation lodging for military families.
+                </p>
+                <div className="flex gap-3 mt-2.5 text-[10px] font-semibold text-slate-800">
+                  <a href="https://linkedin.com/in/gangasagar5928" target="_blank" rel="noopener noreferrer" className="hover:text-amber-800">LinkedIn</a>
+                  <a href="https://github.com/gangasagar5928" target="_blank" rel="noopener noreferrer" className="hover:text-amber-800">GitHub</a>
+                </div>
+              </div>
+            </div>
+
+            {/* Founder 2 */}
+            <div className="flex gap-4 items-start">
+              <div className="w-16 h-16 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-700 text-lg font-bold shrink-0 border-2 border-indigo-500/20">
+                AK
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-slate-900 font-heading">Anurag Kumar Singh</h3>
+                <span className="text-[9px] font-bold text-indigo-755 uppercase tracking-wide block mt-0.5">Co-Founder</span>
+                <p className="text-slate-650 text-[11px] leading-relaxed font-light mt-1.5">
+                  JEE Aspirant, YouTuber, Content Creator, and passionate gamer. Co-founded the platform to design community engagement channels and streamline communication guides for serving families.
+                </p>
+                <div className="flex gap-3 mt-2.5 text-[10px] font-semibold text-slate-800">
+                  <a href="https://www.linkedin.com/in/anurag-singh-a126843a3" target="_blank" rel="noopener noreferrer" className="hover:text-amber-800">LinkedIn</a>
+                  <a href="https://youtube.com/@aks_vlogs_edits" target="_blank" rel="noopener noreferrer" className="hover:text-amber-800">YouTube</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Footer */}
       <footer id="footer" className="bg-[#FAF9F6] border-t border-slate-200/60 py-12 mt-16 relative z-10 text-left">
