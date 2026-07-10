@@ -48,7 +48,7 @@ export default function DormCard({ dorm: d, onFoodClick }) {
         {/* Key stat row: Price, Food action button */}
         <div className="flex justify-between items-center border-t border-[#1f2b42] pt-2 mt-2">
           <div className="flex items-baseline gap-1">
-            <span className="text-sm font-extrabold text-[#f59e0b] font-heading">₹{d.price.toLocaleString()}</span>
+            <span className="text-sm font-extrabold text-[#f59e0b] font-heading">₹{(Number(d.price) || 0).toLocaleString()}</span>
             <span className="text-[8px] text-slate-500 font-mono">/night</span>
           </div>
 

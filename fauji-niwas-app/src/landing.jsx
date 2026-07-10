@@ -13,3 +13,18 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 
 // Signal to the inline loader that the app has mounted
 window.dispatchEvent(new Event('app-ready'));
+
+// Conditionally manage Service Worker for Native App vs Web
+const isNativeApp = navigator.userAgent.includes('FaujiNiwas/1.0') || window.faujiApp;
+
+if (isNativeApp && 'serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
+    for (let registration of registrations) {
+      registration.unregister();
+    }
+  }).catch(() => {});
+} else if (!isNativeApp && 'serviceWorker' in navigator && import.meta.env.PROD) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}

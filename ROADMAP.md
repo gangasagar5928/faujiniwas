@@ -1044,6 +1044,37 @@ The platform development lifecycle is officially complete. Focus now shifts enti
 
 ---
 
-**Document Version**: v4.5.0 (Production — Accessibility Hardened)
-**Last Updated**: 2026-07-08T14:34:01+05:30
+### v4.6.0 — 2026-07-09 (Unified Full-Screen Map UI & 60 FPS Transitions)
+
+#### 🗺️ Unified Full-Screen Experience
+- **Sidebar Total Removal**: Scrapped the traditional left sidebar view (`UnifiedBentoDashboard.jsx`) to give 100% of the screen real-estate to the core interactive map.
+- **CSS Grid Cleanup**: Transitioned from a 3-column structural layout to a clean 2-column tactical layout (`64px` nav-bar + fluid map area).
+
+#### ♿ Accessibility Polish
+- **Widget Refactoring**: Resized the accessibility widget triggers and buttons (`text-sm`, `py-2.5`) specifically optimized for senior citizens (40-60 year range) interacting on touch screens.
+- **Google Translate Direct Integration**: Replaced dummy translation toggles with a full live embedded Google Translate JS Element.
+- **Contrast Theme Inversion**: Implemented a CSS `filter: invert(1)` sequence to auto-generate high contrast reading modes across the landing pages instantly without re-rendering components.
+
+#### 🎬 60 FPS Landing Page Transitions
+- **Premium Headers**: Refined brand accent gradients and custom dropshadows for the core Landing Page headers ("Relocate Safely, Trust Implicitly", "Live Station Link").
+- **Seamless Fade-Out Routing**: Intercepted the traditional HTML/React jump. Injected a `.4s cubic-bezier` CSS transform overlay to smoothly fade out the entire landing page and scale it up elegantly before mounting the application shell.
+
+### v4.7.0 — 2026-07-10 (Native Standalone Flutter Mobile App & NaN Precision Fixes)
+
+#### 📱 Native Standalone Mobile App
+- **Native Flutter Shift**: Upgraded the mobile app from a PWA WebView wrapper into a fully separate standalone native Flutter application in the `fauji-niwas_app` directory.
+- **Offline Data Sync**: Loaded and structured the listings, SSB candidate dorms, and marketplace classifieds locally using offline Dart models.
+- **Relocation Dashboards**: Implemented rank-specific tasks checklists and a slider-driven government TA/DA allowance matrix calculator natively in Flutter.
+- **Post Accommodation Forms**: Built a native submission form interface allowing hosts to draft listings offline.
+
+#### 🔧 NaN Precision & Formatting Refactoring
+- **Secure Price Parsing**: Rewrote price cleaners to extract numbers and protect against non-numeric entries (symbols/commas) producing NaN text.
+- **Average Calculations Protection**: Cast arrays sum functions (`reduce`) to convert types safely to `Number()` before mathematical operations.
+- **Card Rendering Segregation**: Integrated conditional mappings in the sidebar navigation matching rentals, dorms, and marketplace items to their designated cards respectively.
+- **Bing SEO Hardening**: Updated sitemaps and index filters to match Bing Webmaster Guidelines.
+
+---
+
+**Document Version**: v4.7.0 (Production — Standalone Native Flutter App)
+**Last Updated**: 2026-07-10T17:10:00+05:30
 **Disclaimer**: Feature statuses reflect the author's honest self-assessment. Simulated or prototype features are clearly marked. This document is not a marketing prospectus.

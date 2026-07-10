@@ -83,6 +83,27 @@ export default function ProfileModal({ onClose }) {
   const [activeTab, setActiveTab] = useState('listings'); // listings, wishlisted, seen, contacted, verification, rewards, messages
 
   const [language, setLanguage] = useState(() => localStorage.getItem('fn_lang') || 'en');
+  const [userName, setUserName] = useState('');
+
+  useEffect(() => {
+    if (dbUser?.name) {
+      setUserName(dbUser.name);
+    }
+  }, [dbUser?.name]);
+
+  const handleSaveName = async () => {
+    if (!userName.trim()) return;
+    setLoading(true);
+    try {
+      const { db, doc, updateDoc } = await import('../../firebase');
+      await updateDoc(doc(db, 'users', user.uid), { name: userName.trim() });
+      ctx.showToast('Profile name updated! 👤', 'ok');
+    } catch (e) {
+      console.error(e);
+      ctx.showToast('Failed to save name', 'err');
+    }
+    setLoading(false);
+  };
   const [elderlyMode, setElderlyMode] = useState(() => document.documentElement.classList.contains('is-elderly-mode'));
 
   const toggleElderlyMode = (val) => {
@@ -276,7 +297,46 @@ export default function ProfileModal({ onClose }) {
           <div className={styles.userCard}>
             <div className={styles.avatar}>{user.phoneNumber ? '📱' : '✉️'}</div>
             <div style={{flexGrow: 1}}>
-              <div className={styles.userId}>{identity}</div>
+              <div className={styles.userId} style={{fontWeight:800, fontSize:15}}>{identity}</div>
+              <div style={{display:'flex', gap:6, alignItems:'center', marginTop:6, marginBottom:6}}>
+                <input 
+                  type="text" 
+                  placeholder="Enter Name (e.g. Major Sharma)" 
+                  value={userName} 
+                  onChange={e => setUserName(e.target.value)} 
+                  className="fi"
+                  style={{
+                    background: 'var(--bg)',
+                    border: '1px solid var(--border2)',
+                    color: 'var(--text)',
+                    borderRadius: 8,
+                    padding: '6px 12px',
+                    fontSize: '11px',
+                    width: '180px',
+                    fontWeight: 600,
+                    margin: 0
+                  }}
+                />
+                <button 
+                  onClick={handleSaveName}
+                  disabled={loading}
+                  className="bp"
+                  style={{
+                    background: 'var(--accent)',
+                    color: '#000',
+                    border: 'none',
+                    borderRadius: 8,
+                    padding: '6px 12px',
+                    fontSize: '10px',
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    width: 'auto',
+                    margin: 0
+                  }}
+                >
+                  Save
+                </button>
+              </div>
               <div style={{display:'flex', gap:6, alignItems:'center', marginTop:4}}>
                 <div style={{background:levelColor, color:'white', fontSize:9, fontWeight:800, padding:'2px 6px', borderRadius:4, textTransform:'uppercase'}}>{level}</div>
                 <div style={{fontSize:11, fontWeight:700, color:'var(--gold)'}}>⭐ {points} {TRANSLATIONS[language].pointsLabel}</div>

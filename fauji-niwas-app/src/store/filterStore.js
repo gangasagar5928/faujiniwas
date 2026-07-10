@@ -38,7 +38,7 @@ export const useFilterStore = create(
       showHospitals: true,
       showSchools: true,
       showCanteens: true,
-      sidebarOpen: true,
+      sidebarOpen: false,
 
       setTypeFilter: (v) => set({ typeFilter: v }),
       setSmartSearchQ: (v) => set({ smartSearchQ: v.toLowerCase().trim() }),

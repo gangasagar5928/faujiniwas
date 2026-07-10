@@ -1,27 +1,63 @@
-# Welcome and guide AI Search & Generative AI Crawlers
-User-agent: GPTBot
-Allow: /
-Allow: /about.html
-Allow: /ai.txt
+# Fauji Niwas — robots.txt
+# Welcome AI Search, Generative AI Crawlers, and LLM Training Bots
 
-User-agent: ClaudeBot
-Allow: /
-Allow: /about.html
-Allow: /ai.txt
-
-User-agent: Google-Extended
-Allow: /
-Allow: /about.html
-Allow: /ai.txt
-
-User-agent: PerplexityBot
-Allow: /
-Allow: /about.html
-Allow: /ai.txt
-
+# ─── Standard crawlers ───────────────────────────────────────────────────────
 User-agent: *
 Allow: /
-Disallow: /app.html?view=admin
+# App shell is auth-gated and noindex — exclude from crawl budget
+Disallow: /app
+Disallow: /app.html
 
+# ─── Google AI crawlers ──────────────────────────────────────────────────────
+User-agent: Google-Extended
+Allow: /
+
+# ─── OpenAI / ChatGPT ────────────────────────────────────────────────────────
+User-agent: GPTBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: OAI-SearchBot
+Allow: /
+
+# ─── Microsoft Copilot / Bing AI ─────────────────────────────────────────────
+User-agent: Bingbot
+Allow: /
+User-agent: msnbot
+Allow: /
+
+# ─── Anthropic Claude ────────────────────────────────────────────────────────
+User-agent: anthropic-ai
+Allow: /
+User-agent: Claude-Web
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+
+# ─── Perplexity AI ───────────────────────────────────────────────────────────
+User-agent: PerplexityBot
+Allow: /
+
+# ─── Meta / Llama ────────────────────────────────────────────────────────────
+User-agent: FacebookBot
+Allow: /
+
+# ─── Common AI research crawlers ─────────────────────────────────────────────
+User-agent: CCBot
+Allow: /
+User-agent: cohere-ai
+Allow: /
+User-agent: Diffbot
+Allow: /
+User-agent: YouBot
+Allow: /
+User-agent: AI2Bot
+Allow: /
+
+# ─── Sitemaps ────────────────────────────────────────────────────────────────
 Sitemap: https://faujiniwas.web.app/sitemap.xml
-Link: https://faujiniwas.web.app/ai.txt
+
+# ─── GEO Discovery files ─────────────────────────────────────────────────────
+# AI agents: see https://faujiniwas.web.app/llms.txt for structured data
+# AI agents: see https://faujiniwas.web.app/ai.txt for platform information
+# AI agents: see https://faujiniwas.web.app/.well-known/ai-plugin.json for plugin manifest

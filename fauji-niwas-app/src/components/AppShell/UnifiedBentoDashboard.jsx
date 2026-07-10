@@ -5,9 +5,29 @@ import { useFilterStore } from '../../store/filterStore';
 import MapView from '../Map/MapView';
 import Sidebar from '../Sidebar/Sidebar';
 
+const IndianArmyEmblem = () => (
+  <svg width="24" height="24" viewBox="0 0 100 100" fill="none" className="shrink-0 select-none ml-2">
+    <circle cx="50" cy="50" r="46" fill="#0b1325" stroke="#fbbf24" strokeWidth="2.5" />
+    <circle cx="50" cy="50" r="41" stroke="#fbbf24" strokeDasharray="3 3" strokeWidth="1" />
+    {/* Crossed Swords */}
+    <path d="M30 70 L70 30" stroke="#fbbf24" strokeWidth="4.5" strokeLinecap="round" />
+    <path d="M70 70 L30 30" stroke="#fbbf24" strokeWidth="4.5" strokeLinecap="round" />
+    <path d="M26 66 L34 74" stroke="#fbbf24" strokeWidth="4" strokeLinecap="round" />
+    <path d="M74 66 L66 74" stroke="#fbbf24" strokeWidth="4" strokeLinecap="round" />
+    {/* State Emblem */}
+    <path d="M44 55 C44 48 46 44 50 44 C54 44 56 48 56 55 Z" fill="#fbbf24" />
+    <path d="M42 35 C42 22 45 18 50 18 C55 18 58 22 58 35 Z" fill="#fbbf24" />
+    <path d="M45 44 C45 35 47 32 50 32 C53 32 55 35 55 44 Z" fill="#0b1325" />
+    <circle cx="50" cy="38" r="4.5" fill="#fbbf24" />
+    {/* Pedestal */}
+    <rect x="42" y="56" width="16" height="4" rx="1.5" fill="#fbbf24" />
+    <path d="M38 60 L62 60 L58 65 L42 65 Z" fill="#fbbf24" />
+  </svg>
+);
+
 export default function UnifiedBentoDashboard() {
   const ctx = useContext(ModalContext);
-  const { user, isAdmin } = useAuth();
+  const { user, dbUser, isAdmin } = useAuth();
   
   // Zustand store bindings
   const { 
@@ -21,18 +41,10 @@ export default function UnifiedBentoDashboard() {
   // Mobile layout active tab state
   const [activeMobileTab, setActiveMobileTab] = useState('listings');
 
-  const handleHraChange = (e) => {
-    const val = e.target.value;
-    if (val === 'OR') {
-      setMaxPrice(15000);
-    } else if (val === 'JCO') {
-      setMaxPrice(30000);
-    } else if (val === 'Officer') {
-      setMaxPrice(100000);
-    } else {
-      setMaxPrice(100000);
-    }
-  };
+  // Rank/HRA filter dropdown state
+  const [rankDropdownOpen, setRankDropdownOpen] = useState(false);
+  const [bhkDropdownOpen, setBhkDropdownOpen] = useState(false);
+  const [budgetDropdownOpen, setBudgetDropdownOpen] = useState(false);
 
   const getHraValue = () => {
     if (maxPrice <= 15000) return 'OR';
@@ -40,188 +52,310 @@ export default function UnifiedBentoDashboard() {
     return 'Officer';
   };
 
+  const getHraLabel = () => {
+    if (maxPrice <= 15000) return 'OR (Jawan)';
+    if (maxPrice <= 30000) return 'JCO';
+    return 'All Ranks';
+  };
+
+  const getBhkLabel = () => {
+    if (bhkFilter === 'all') return 'Any BHK';
+    return `${bhkFilter} BHK`;
+  };
+
+  const getBudgetLabel = () => {
+    if (maxPrice >= 100000) return 'Any Budget';
+    if (maxPrice <= 10000) return 'Under ₹10K';
+    if (maxPrice <= 20000) return 'Under ₹20K';
+    if (maxPrice <= 30000) return 'Under ₹30K';
+    return `Under ₹${(maxPrice/1000).toFixed(0)}K`;
+  };
+
   const showAdminButton = user && (isAdmin || user.email === 'admin@faujiniwas.com' || user.isAdmin);
 
+  const closeAllDropdowns = () => {
+    setRankDropdownOpen(false);
+    setBhkDropdownOpen(false);
+    setBudgetDropdownOpen(false);
+  };
+
   return (
-    <div className={`app-container select-none ${sidebarOpen ? '' : 'sidebar-closed'}`}>
+    <div className={`app-container select-none ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`} onClick={(e) => {
+      // Close dropdowns on outside click
+      if (!e.target.closest('.filter-dropdown-wrapper')) closeAllDropdowns();
+    }}>
       
       {/* 1. TOP HEADER */}
-      <header className="header justify-between">
+      <header className="header justify-between" style={{ height: '64px' }}>
         
         {/* Left: Brand logo */}
         <div className="flex items-center gap-3 shrink-0">
           <span className="flex items-center gap-2 text-slate-100 uppercase tracking-widest font-heading font-black">
-            <span className="text-amber-500 text-lg">🪖</span> 
             <span className="flex flex-col text-left">
               <span className="text-sm font-black tracking-tight text-white leading-none">FAUJINIWAS</span>
-              <span className="text-[7px] text-[#22c55e] font-bold tracking-wider mt-0.5">SECURE. VERIFIED. FOR OURS.</span>
+              <span className="text-[7px] text-[#22c55e] font-bold tracking-wider mt-0.5 font-sans">SECURE. VERIFIED. FOR OURS.</span>
             </span>
           </span>
+          <IndianArmyEmblem />
         </div>
 
-        {/* Center: Search & Capsule Tab Swappers */}
-        <div className="hidden md:flex items-center gap-4 flex-1 justify-center max-w-4xl px-4">
+        {/* Center: Underline Tab Swappers */}
+        <div className="hidden md:flex items-center gap-8 flex-1 justify-center h-full">
+          <div className="flex gap-8 h-full items-center">
+            {[
+              { id: 'rentals', label: 'ACCOMMODATION' },
+              { id: 'market', label: 'MARKETPLACE' },
+              { id: 'dorms', label: 'SSR DORMS' },
+              { id: 'saved', label: 'SHORTLIST' }
+            ].map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveView(tab.id)}
+                className={`h-full px-1 flex items-center justify-center text-[10px] font-extrabold tracking-wider transition-all duration-200 border-b-2 cursor-pointer ${
+                  activeView === tab.id 
+                    ? 'border-[#22c55e] text-white font-black' 
+                    : 'border-transparent text-slate-400 hover:text-slate-200'
+                }`}
+                style={{ height: '64px' }}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Right: Notification and Dropdown Profile badge */}
+        <div className="flex items-center gap-4 shrink-0">
           
-          {/* Header Search input */}
-          <div className="flex items-center bg-[#090d16] border border-[#1e293b] px-3.5 py-1.5 rounded-full w-[280px] hover:border-amber-500/30 transition-colors">
-            <span className="text-slate-500 mr-2 text-[10px]">🔍</span>
+          {/* Notification Bell */}
+          <button className="relative w-8 h-8 flex items-center justify-center rounded-full bg-[#10192e]/40 border border-[#1e293b] text-slate-300 hover:text-white transition-all cursor-pointer">
+            🔔
+            <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-emerald-500/20 text-[#22c55e] border border-emerald-500/40 flex items-center justify-center text-[8px] font-black font-mono">3</span>
+          </button>
+
+          {/* Help button */}
+          <button className="relative w-8 h-8 flex items-center justify-center rounded-full bg-[#10192e]/40 border border-[#1e293b] text-slate-300 hover:text-white transition-all cursor-pointer text-xs font-bold" title="Help">
+            ?
+          </button>
+
+          {/* User Profile dropdown Badge */}
+          {user ? (
+            <div 
+              onClick={() => ctx.openProfile && ctx.openProfile()}
+              className="flex items-center gap-2.5 bg-[#10192e]/40 border border-[#1e293b] pl-2 pr-3.5 py-1.5 rounded-full cursor-pointer hover:border-amber-500/50 transition-all text-left"
+              title="Profile Locker"
+            >
+              <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-emerald-500/20 to-emerald-600/30 text-[#22c55e] border border-[#22c55e]/25 flex items-center justify-center shrink-0">
+                <span className="text-xs font-black select-none">🪖</span>
+              </div>
+              <div className="flex items-center gap-1.5 leading-none">
+                <span className="text-[10px] font-extrabold text-white">
+                  {dbUser?.name || user.displayName || user.phoneNumber || "Soldier"}
+                </span>
+                {dbUser?.verified === true && (
+                  <span className="text-[10px] text-[#22c55e] select-none" title="Verified Military Status">✓</span>
+                )}
+              </div>
+              <span className="text-slate-500 text-[8px] font-bold ml-1">▼</span>
+            </div>
+          ) : (
+            <button 
+              onClick={() => ctx.openProfile && ctx.openProfile()}
+              className="flex items-center gap-1.5 bg-amber-500 text-[#000000] px-4 py-1.5 rounded-full cursor-pointer hover:scale-105 transition-all text-[10px] font-black uppercase tracking-wider"
+            >
+              <span>👤</span>
+              <span>SIGN IN</span>
+            </button>
+          )}
+
+        </div>
+      </header>
+
+      {/* 2. SUB-HEADER STATS BAR */}
+      <div className="bento-row px-4 py-2 border-b border-[#1e293b] bg-[#0b1222]">
+        <div className="max-w-[1920px] mx-auto flex items-center justify-between gap-3 flex-wrap">
+          
+          {/* Stats Beacons */}
+          <div className="flex items-center gap-4 text-[10px] font-black tracking-wider uppercase text-slate-400 font-mono shrink-0">
+            <div className="flex items-center gap-1.5">
+              <span className="text-slate-500 text-xs">📋</span>
+              <span>Total: <strong className="text-white">1,395</strong></span>
+            </div>
+            <div className="h-3 w-px bg-slate-800"></div>
+            <div className="flex items-center gap-1.5">
+              <span className="text-emerald-500 text-xs">🔄</span>
+              <span>New: <strong className="text-emerald-400">48</strong></span>
+            </div>
+            <div className="h-3 w-px bg-slate-800"></div>
+            <div className="flex items-center gap-1.5">
+              <span className="text-amber-500 text-xs">💸</span>
+              <span>Avg: <strong className="text-amber-400">₹12,452</strong></span>
+            </div>
+          </div>
+
+          {/* Center: Search bar */}
+          <div className="flex items-center bg-[#070b13] border border-[#1e293b] px-3 py-1.5 rounded-lg flex-1 max-w-xs hover:border-[#22c55e]/40 transition-colors">
+            <span className="text-slate-500 mr-2 text-xs select-none">🔍</span>
             <input 
               type="text" 
               placeholder="Search cantonment, area or city..." 
               value={smartSearchQ}
               onChange={(e) => setSmartSearchQ(e.target.value)}
-              className="bg-transparent text-[10px] text-white outline-none w-full placeholder-slate-500 font-medium"
+              className="bg-transparent text-[11px] text-white outline-none w-full placeholder-slate-500 font-medium"
             />
-            <span className="text-slate-600 text-[8px] font-mono ml-2 border border-slate-800 px-1.5 py-0.25 rounded">⌘K</span>
           </div>
 
-          {/* Capsule Tab Switcher */}
-          <div className="flex gap-1 bg-[#090d16] border border-[#1e293b] p-1 rounded-full whitespace-nowrap">
-            {[
-              { id: 'rentals', label: 'Rentals', icon: '🏠' },
-              { id: 'market', label: 'Marketplace', icon: '🛍️' },
-              { id: 'dorms', label: 'SSR Dorms', icon: '🏨' },
-              { id: 'saved', label: 'Shortlist', icon: '⭐' }
-            ].map(tab => (
+          {/* Right: Filter Pills */}
+          <div className="flex items-center gap-2 shrink-0">
+
+            {/* Filter by Rank */}
+            <div className="relative filter-dropdown-wrapper">
               <button
-                key={tab.id}
-                onClick={() => setActiveView(tab.id)}
-                className={`px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-wider transition-all duration-200 cursor-pointer flex items-center gap-1 ${
-                  activeView === tab.id 
-                    ? 'bg-[#18233c] text-white border border-[#1e293b] shadow-md' 
-                    : 'text-slate-500 border border-transparent hover:text-slate-300'
+                onClick={() => { setRankDropdownOpen(!rankDropdownOpen); setBhkDropdownOpen(false); setBudgetDropdownOpen(false); }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer ${
+                  maxPrice < 100000
+                    ? 'border-[#22c55e] text-[#22c55e] bg-[#22c55e]/10'
+                    : 'border-[#22c55e]/50 text-[#22c55e] hover:border-[#22c55e] hover:bg-[#22c55e]/10'
                 }`}
               >
-                <span>{tab.icon}</span>
-                <span>{tab.label}</span>
+                🎖️ Filter by Rank
+                {maxPrice < 100000 && <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] shrink-0"></span>}
+                <span className="text-[8px]">▾</span>
               </button>
-            ))}
+              {rankDropdownOpen && (
+                <div className="absolute top-full mt-1.5 right-0 bg-[#0d1628] border border-[#1e293b] rounded-xl shadow-2xl z-50 min-w-[160px] overflow-hidden animate-in">
+                  {[
+                    { label: 'All Ranks', val: 100000, sub: 'No budget cap' },
+                    { label: 'Officer', val: 60000, sub: 'Up to ₹60,000' },
+                    { label: 'JCO', val: 30000, sub: 'Up to ₹30,000' },
+                    { label: 'OR / Jawan', val: 15000, sub: 'Up to ₹15,000' },
+                  ].map(opt => (
+                    <button
+                      key={opt.val}
+                      onClick={() => { setMaxPrice(opt.val); setRankDropdownOpen(false); }}
+                      className={`w-full flex flex-col items-start px-4 py-2.5 text-left transition-colors cursor-pointer ${
+                        maxPrice === opt.val ? 'bg-[#22c55e]/15 text-[#22c55e]' : 'text-slate-300 hover:bg-[#1e293b]'
+                      }`}
+                    >
+                      <span className="text-[11px] font-bold">{opt.label}</span>
+                      <span className="text-[9px] text-slate-500">{opt.sub}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Filter by BHK */}
+            <div className="relative filter-dropdown-wrapper">
+              <button
+                onClick={() => { setBhkDropdownOpen(!bhkDropdownOpen); setRankDropdownOpen(false); setBudgetDropdownOpen(false); }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer ${
+                  bhkFilter !== 'all'
+                    ? 'border-amber-500 text-amber-400 bg-amber-500/10'
+                    : 'border-amber-500/50 text-amber-400 hover:border-amber-500 hover:bg-amber-500/10'
+                }`}
+              >
+                🏠 Filter by BHK
+                {bhkFilter !== 'all' && <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0"></span>}
+                <span className="text-[8px]">▾</span>
+              </button>
+              {bhkDropdownOpen && (
+                <div className="absolute top-full mt-1.5 right-0 bg-[#0d1628] border border-[#1e293b] rounded-xl shadow-2xl z-50 min-w-[140px] overflow-hidden animate-in">
+                  {[
+                    { label: 'Any BHK', val: 'all' },
+                    { label: '1 BHK', val: '1' },
+                    { label: '2 BHK', val: '2' },
+                    { label: '3+ BHK', val: '3+' },
+                  ].map(opt => (
+                    <button
+                      key={opt.val}
+                      onClick={() => { setBhkFilter(opt.val); setBhkDropdownOpen(false); }}
+                      className={`w-full flex items-start px-4 py-2.5 text-left text-[11px] font-bold transition-colors cursor-pointer ${
+                        bhkFilter === opt.val ? 'bg-amber-500/15 text-amber-400' : 'text-slate-300 hover:bg-[#1e293b]'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Filter by Budget */}
+            <div className="relative filter-dropdown-wrapper">
+              <button
+                onClick={() => { setBudgetDropdownOpen(!budgetDropdownOpen); setRankDropdownOpen(false); setBhkDropdownOpen(false); }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer ${
+                  maxPrice < 100000
+                    ? 'border-[#a78bfa] text-[#a78bfa] bg-[#a78bfa]/10'
+                    : 'border-[#a78bfa]/50 text-[#a78bfa] hover:border-[#a78bfa] hover:bg-[#a78bfa]/10'
+                }`}
+              >
+                💰 Filter by Budget
+                {maxPrice < 100000 && <span className="w-1.5 h-1.5 rounded-full bg-[#a78bfa] shrink-0"></span>}
+                <span className="text-[8px]">▾</span>
+              </button>
+              {budgetDropdownOpen && (
+                <div className="absolute top-full mt-1.5 right-0 bg-[#0d1628] border border-[#1e293b] rounded-xl shadow-2xl z-50 min-w-[160px] overflow-hidden animate-in">
+                  {[
+                    { label: 'Any Budget', val: 100000 },
+                    { label: 'Under ₹10,000', val: 10000 },
+                    { label: 'Under ₹20,000', val: 20000 },
+                    { label: 'Under ₹30,000', val: 30000 },
+                    { label: 'Under ₹50,000', val: 50000 },
+                  ].map(opt => (
+                    <button
+                      key={opt.val}
+                      onClick={() => { setMaxPrice(opt.val); setBudgetDropdownOpen(false); }}
+                      className={`w-full flex items-start px-4 py-2.5 text-left text-[11px] font-bold transition-colors cursor-pointer ${
+                        maxPrice === opt.val ? 'bg-[#a78bfa]/15 text-[#a78bfa]' : 'text-slate-300 hover:bg-[#1e293b]'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
           </div>
-
-        </div>
-
-        {/* Right: Notification and Dropdown Profile badge */}
-        <div className="flex items-center gap-3 shrink-0">
-          
-          {/* Notification Bell */}
-          <button className="relative w-8 h-8 flex items-center justify-center rounded-full bg-[#10192e] border border-[#1e293b] text-slate-300 hover:text-white transition-all cursor-pointer">
-            🔔
-            <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-emerald-500/20 text-[#22c55e] border border-emerald-500/40 flex items-center justify-center text-[8px] font-black font-mono">3</span>
-          </button>
-
-          {/* User Profile dropdown Badge */}
-          <div 
-            onClick={() => ctx.openProfile && ctx.openProfile()}
-            className="flex items-center gap-2.5 bg-[#10192e] border border-[#1e293b] pl-2 pr-3.5 py-1 rounded-full cursor-pointer hover:border-amber-500/50 transition-all text-left"
-            title="Profile Locker"
-          >
-            <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-emerald-500/20 to-emerald-600/30 text-[#22c55e] border border-[#22c55e]/25 flex items-center justify-center text-[10px] font-bold font-mono">AS</div>
-            <div className="flex flex-col leading-tight">
-              <span className="text-[9px] font-extrabold text-white">Major Sharma</span>
-              <span className="text-[7px] font-bold text-[#22c55e] uppercase tracking-wider">JCO COMMAND</span>
-            </div>
-            <span className="text-slate-500 text-[8px] font-bold ml-1">▼</span>
-          </div>
-
-        </div>
-      </header>
-
-      {/* 2. BENTO METRICS BAR */}
-      <div className="bento-row px-6 py-3 border-b border-[#1e293b] bg-[#0b1120]">
-        <div className="max-w-[1920px] mx-auto grid grid-cols-6 gap-4">
-          
-          {/* Card 1: Verified Listings */}
-          <div className="bg-[#10192e] border border-[#1e293b] p-3 rounded-2xl flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-[#22c55e]/15 border border-[#22c55e]/30 flex items-center justify-center text-emerald-400">
-              ⚡
-            </div>
-            <div className="flex flex-col text-left leading-tight">
-              <span className="text-[8px] font-black uppercase text-slate-400 tracking-wider">Verified Listings</span>
-              <span className="text-lg font-black text-white mt-0.5">1,395</span>
-              <span className="text-[7px] font-bold uppercase text-[#22c55e] tracking-widest mt-0.5">Active Beacons</span>
-            </div>
-          </div>
-
-          {/* Card 2: Today's New */}
-          <div className="bg-[#10192e] border border-[#1e293b] p-3 rounded-2xl flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-pink-500/10 border border-pink-500/20 flex items-center justify-center text-pink-400">
-              🌸
-            </div>
-            <div className="flex flex-col text-left leading-tight">
-              <span className="text-[8px] font-black uppercase text-slate-400 tracking-wider">Today's New</span>
-              <span className="text-lg font-black text-white mt-0.5">48</span>
-              <span className="text-[7px] font-bold uppercase text-slate-500 tracking-widest mt-0.5 font-mono">New Additions</span>
-            </div>
-          </div>
-
-          {/* Card 3: Average Rent */}
-          <div className="bg-[#10192e] border border-[#1e293b] p-3 rounded-2xl flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500">
-              🪙
-            </div>
-            <div className="flex flex-col text-left leading-tight">
-              <span className="text-[8px] font-black uppercase text-slate-400 tracking-wider">Average Rent</span>
-              <span className="text-lg font-black text-white mt-0.5">₹12,452</span>
-              <span className="text-[7px] font-bold uppercase text-slate-500 tracking-widest mt-0.5 font-mono">Per Month</span>
-            </div>
-          </div>
-
-          {/* Card 4: Occupancy Rate */}
-          <div className="bg-[#10192e] border border-[#1e293b] p-3 rounded-2xl flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
-                📊
-              </div>
-              <div className="flex flex-col text-left leading-tight">
-                <span className="text-[8px] font-black uppercase text-slate-400 tracking-wider">Occupancy Rate</span>
-                <span className="text-lg font-black text-white mt-0.5">86%</span>
-                <span className="text-[7px] font-bold uppercase text-slate-500 tracking-widest mt-0.5 font-mono">Across India</span>
-              </div>
-            </div>
-            <span className="text-slate-500 text-xs font-mono pr-1 select-none">&gt;</span>
-          </div>
-
-          {/* Card 5: AppSec Status */}
-          <div className="bg-[#10192e] border border-[#1e293b] p-3 rounded-2xl flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-[#22c55e]/15 border border-[#22c55e]/30 flex items-center justify-center text-emerald-400">
-              🛡️
-            </div>
-            <div className="flex flex-col text-left leading-tight">
-              <span className="text-[8px] font-black uppercase text-slate-400 tracking-wider">AppSec Status</span>
-              <span className="text-lg font-black text-[#22c55e] mt-0.5">ACTIVE</span>
-              <span className="text-[7px] font-bold uppercase text-[#22c55e] tracking-widest mt-0.5 font-mono">AES-256 Encrypted</span>
-            </div>
-          </div>
-
-          {/* Card 6: Family Accommodation */}
-          <div className="bg-[#10192e] border border-[#1e293b] p-3 rounded-2xl flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
-              👥
-            </div>
-            <div className="flex flex-col text-left leading-tight">
-              <span className="text-[8px] font-black uppercase text-slate-400 tracking-wider">Family Accommodation</span>
-              <span className="text-[10px] font-black text-white mt-1 uppercase tracking-wider">Family Quarters</span>
-              <span className="text-[7px] font-bold uppercase text-[#22c55e] tracking-widest mt-0.5">View Options</span>
-            </div>
-          </div>
-
         </div>
       </div>
 
       {/* 3. LEFT-MOST NAVIGATION SIDEBAR */}
       <aside className="nav-sidebar">
         
+        {/* Sidebar Toggle at very top */}
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 cursor-pointer mb-1 ${
+            sidebarOpen
+              ? 'bg-[#22c55e]/15 border border-[#22c55e]/30 text-emerald-400'
+              : 'bg-transparent border border-[#1e293b] text-slate-400 hover:text-slate-200 hover:bg-white/5'
+          }`}
+          title={sidebarOpen ? 'Close Listings Panel' : 'Open Listings Panel'}
+        >
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className={`transition-transform duration-300 ${sidebarOpen ? 'rotate-180' : ''}`}>
+            <rect x="1" y="2" width="12" height="1.5" rx="0.75" fill="currentColor"/>
+            <rect x="1" y="6.25" width="7" height="1.5" rx="0.75" fill="currentColor"/>
+            <rect x="1" y="10.5" width="10" height="1.5" rx="0.75" fill="currentColor"/>
+          </svg>
+        </button>
+
+        <div className="w-8 h-px bg-[#1e293b] my-1"></div>
+
         {/* Navigation list */}
         <div className="flex flex-col items-center gap-3">
           {[
-            { id: 'rentals', label: '🏠', active: activeView === 'rentals' },
-            { id: 'market', label: '🛍️', active: activeView === 'market' },
-            { id: 'dorms', label: '👥', active: activeView === 'dorms' },
-            { id: 'saved', label: '⭐', active: activeView === 'saved' }
+            { id: 'rentals', label: '🏠', title: 'Accommodation', active: activeView === 'rentals' },
+            { id: 'market', label: '🛍️', title: 'Marketplace', active: activeView === 'market' },
+            { id: 'dorms', label: '👥', title: 'SSR Dorms', active: activeView === 'dorms' },
+            { id: 'saved', label: '⭐', title: 'Shortlist', active: activeView === 'saved' }
           ].map(btn => (
             <button
               key={btn.id}
               onClick={() => setActiveView(btn.id)}
+              title={btn.title}
               className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 cursor-pointer ${
                 btn.active 
                   ? 'bg-[#22c55e]/15 border border-[#22c55e]/30 text-emerald-400 shadow-[0_0_12px_rgba(34,197,94,0.15)]' 
@@ -249,7 +383,7 @@ export default function UnifiedBentoDashboard() {
               setSmartSearchQ('');
             }}
             className="w-9 h-9 rounded-xl flex items-center justify-center bg-transparent border border-transparent text-slate-500 hover:text-slate-300 hover:bg-white/5 cursor-pointer"
-            title="Reset Controls"
+            title="Reset Filters"
           >
             <span className="text-sm">⚙️</span>
           </button>
@@ -266,110 +400,49 @@ export default function UnifiedBentoDashboard() {
 
       </aside>
 
-      {/* 4. LEFT SIDEBAR PANEL */}
-      <Sidebar activeMobileView={activeMobileTab === 'listings'} />
+      {/* 4. COLLAPSIBLE LISTINGS SIDEBAR */}
+      {sidebarOpen && (
+        <Sidebar activeMobileView={activeMobileTab === 'listings'} />
+      )}
 
       {/* 5. MAP COLUMN */}
-      <div id="map" className={`relative ${activeMobileTab === 'map' ? 'active-mobile-view' : ''}`}>
+      <div id="map" className={`relative ${activeMobileTab === 'map' ? 'active-mobile-view' : ''} ${sidebarOpen ? 'map-with-sidebar' : ''}`}>
         
         {/* Leaflet map renderer */}
         <MapView />
 
-        {/* Sidebar pop-out toggle button for desktop/tablet */}
-        <button 
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-[1000] w-6 h-16 bg-[#10192e]/90 hover:bg-[#18233c] text-slate-300 hover:text-white border-y border-r border-[#1e293b] rounded-r-xl items-center justify-center cursor-pointer shadow-2xl transition-all hover:w-7"
-          title={sidebarOpen ? "Collapse Sidebar" : "Expand Sidebar"}
-        >
-          <span className="text-[10px]">{sidebarOpen ? '◀' : '▶'}</span>
-        </button>
-
-        {/* Map filter facilities toolbar (Schools, Hospitals, Canteens, ATMs, More) */}
-        <div className="absolute bottom-5 right-5 z-[500] bg-[#10192e]/95 border border-[#1e293b] rounded-2xl p-2.5 shadow-xl flex items-center gap-4 text-[9px] font-black uppercase tracking-wider text-slate-300 backdrop-blur-md">
-          <button 
-            onClick={() => alert("Filtering local schools near cantonment...")}
-            className="flex items-center gap-1 hover:text-white transition-colors cursor-pointer select-none font-bold"
-          >
-            <span>🏫</span> Schools
-          </button>
-          <div className="w-px h-3.5 bg-[#1e293b]"></div>
-          <button 
-            onClick={() => alert("Filtering local Military and ECHS Hospitals...")}
-            className="flex items-center gap-1 hover:text-white transition-colors cursor-pointer select-none font-bold"
-          >
-            <span>🏥</span> Hospitals
-          </button>
-          <div className="w-px h-3.5 bg-[#1e293b]"></div>
-          <button 
-            onClick={() => alert("Filtering local CSD Canteens...")}
-            className="flex items-center gap-1 hover:text-white transition-colors cursor-pointer select-none font-bold"
-          >
-            <span>🛍️</span> Canteens
-          </button>
-          <div className="w-px h-3.5 bg-[#1e293b]"></div>
-          <button 
-            onClick={() => alert("Filtering local ATMs near base corridor...")}
-            className="flex items-center gap-1 hover:text-white transition-colors cursor-pointer select-none font-bold"
-          >
-            <span>🏧</span> ATMs
-          </button>
-          <div className="w-px h-3.5 bg-[#1e293b]"></div>
-          <button 
-            onClick={() => alert("Expanding extra local amenities...")}
-            className="flex items-center gap-1 hover:text-white transition-colors cursor-pointer select-none font-bold"
-          >
-            <span>•••</span> More
-          </button>
-        </div>
-
       </div>
 
       {/* 6. BOTTOM STATUS FOOTER */}
-      <footer className="status-footer px-6 py-1.5 bg-[#090d16] border-t border-[#1e293b] flex items-center justify-between text-[8px] font-mono tracking-widest text-slate-500 select-none shrink-0 h-9">
+      <footer className="status-footer px-6 py-1.5 bg-[#090d16] border-t border-[#1e293b] flex items-center justify-between text-[8px] font-mono tracking-widest text-slate-500 select-none shrink-0 h-8">
         
         {/* Left: Encryption shield */}
-        <div className="flex items-center gap-1.5 text-[#22c55e]">
-          <span className="text-xs">🛡️</span>
-          <span className="font-extrabold uppercase">SECURE LINK</span>
-          <span className="text-slate-500 font-medium">· AES-256 ENCRYPTED</span>
-        </div>
-
-        {/* Center: Controls */}
-        <div className="flex items-center gap-4 text-[8px] font-bold">
-          
-          <div className="flex items-center gap-1">
-            <span>🌐</span>
-            <span className="text-slate-400 uppercase">INDIA</span>
-          </div>
-
-          <div className="h-3 w-px bg-[#1e293b]"></div>
-
-          <button 
-            onClick={() => alert("Pinpointing base coordinates via secure network...")}
-            className="flex items-center gap-1 text-slate-400 hover:text-white transition-colors cursor-pointer uppercase"
-          >
-            <span>🎯</span> LOCATE ME
-          </button>
-
-          <div className="h-3 w-px bg-[#1e293b]"></div>
-
-          <div className="flex items-center gap-1.5">
-            <span className="uppercase text-slate-400">OFFLINE</span>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" className="sr-only peer" />
-              <div className="w-6 h-3 bg-[#10192e] rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:bg-[#22c55e] after:rounded-full after:h-2.5 after:w-2.5 after:transition-all peer-checked:bg-[#22c55e]/20 border border-[#1e293b]"></div>
-            </label>
-          </div>
-
-        </div>
-
-        {/* Right: Help options */}
         <div className="flex items-center gap-3">
-          <span className="uppercase text-slate-500 font-extrabold">HELP DESK:</span>
-          <button onClick={() => alert("Initiating admin messaging gateway...")} className="text-slate-400 hover:text-white transition-colors cursor-pointer">💬 CHAT</button>
+          <div className="flex items-center gap-1 text-[#22c55e]">
+            <span className="text-xs">🟢</span>
+            <span className="font-extrabold uppercase">SECURE CONNECTION</span>
+          </div>
           <span className="text-slate-700">|</span>
-          <button onClick={() => alert("Dialing military support operator...")} className="text-slate-400 hover:text-white transition-colors cursor-pointer">📞 CALL</button>
+          <div className="flex items-center gap-1 text-slate-400">
+            <span>🇮🇳</span>
+            <span className="font-extrabold uppercase">INDIA</span>
+          </div>
+          <span className="text-slate-700">|</span>
+          <div className="flex items-center gap-1.5">
+            <span className="text-slate-500 font-extrabold uppercase">HELP DESK:</span>
+            <button onClick={() => alert("Initiating admin messaging gateway...")} className="text-slate-400 hover:text-white transition-colors cursor-pointer font-bold">💬 CHAT</button>
+            <span className="text-slate-700">|</span>
+            <button onClick={() => alert("Dialing military support operator...")} className="text-slate-400 hover:text-white transition-colors cursor-pointer font-bold">📞 CALL</button>
+          </div>
         </div>
+
+        {/* Right: Support */}
+        <button
+          onClick={() => alert("Support ticket system launching...")}
+          className="flex items-center gap-1.5 px-3 py-1 bg-[#22c55e]/15 border border-[#22c55e]/30 text-[#22c55e] rounded-full font-black uppercase text-[7px] tracking-widest hover:bg-[#22c55e]/25 transition-all cursor-pointer"
+        >
+          📡 SUPPORT
+        </button>
 
       </footer>
 

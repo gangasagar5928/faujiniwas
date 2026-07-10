@@ -7,6 +7,10 @@ export default function DormMarker({ dorm: d }) {
   const map = useMap();
   const ctx = useContext(ModalContext);
 
+  if (!d || !d.lat || !d.lng || Number.isNaN(parseFloat(d.lat)) || Number.isNaN(parseFloat(d.lng))) {
+    return null; // Safety check
+  }
+
   const icon = L.divIcon({
     className: '',
     html: `<div class="pm" style="border-color:#f4c542;color:#f4c542;background:#1a1a1a;font-size:17px;padding:6px 10px;">🏨</div>`,

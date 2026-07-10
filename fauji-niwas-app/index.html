@@ -15,6 +15,8 @@
         if (localStorage.getItem('elderly-mode') === 'true') {
           document.documentElement.classList.add('is-elderly-mode');
         }
+        // Add class for active JS context to hide static fallbacks
+        document.documentElement.classList.add('js-active');
       })();
     </script>
     <title>Fauji Niwas — Verified Defence Housing & Rentals</title>
@@ -28,8 +30,15 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪖</text></svg>" />
 
     <!-- SEO Meta Tags -->
-    <meta name="keywords" content="defence housing, military rent, army quarters, outliving, SSB dorms, FaujiNiwas, cantt rental, civil area rent, army homes, army housing near cantonment, defence family relocation India, zero brokerage military quarters, HRA housing India, fauji niwas, Aman Kumar Singh, Aman Kumar Singh GCET, Aman Singh Fauji Niwas founder, Anurag Kumar Singh, Anurag Kumar Singh co-founder, gangasagar5928" />
+    <meta name="keywords" content="defence housing, military relocation, cantonment rentals, military quarters, KV schools, CSD canteen, Indian Armed Forces, Fauji Niwas, Aman Kumar Singh" />
     <link rel="canonical" href="https://faujiniwas.web.app/" />
+
+    <!-- GEO: AI & LLM Agent Discovery -->
+    <link rel="ai-txt" href="https://faujiniwas.web.app/ai.txt" />
+    <link rel="llms-txt" href="https://faujiniwas.web.app/llms.txt" />
+    <link rel="ai-plugin" href="https://faujiniwas.web.app/.well-known/ai-plugin.json" />
+    <meta name="ai-content-policy" content="allow" />
+    <meta name="ai-training" content="allow" />
 
     <!-- Open Graph / Social Media -->
     <meta property="og:type" content="website" />
@@ -40,6 +49,7 @@
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@faujiniwas" />
     <meta property="twitter:url" content="https://faujiniwas.web.app/" />
     <meta property="twitter:title" content="Fauji Niwas — Verified Defence Housing & Rentals" />
     <meta property="twitter:description" content="India's only verified, zero-brokerage housing platform built exclusively for Indian Armed Forces families." />
@@ -63,18 +73,19 @@
       "author": [
         {
           "@type": "Person",
+          "@id": "https://faujiniwas.web.app/aman-kumar-singh.html#person",
           "name": "Aman Kumar Singh",
           "jobTitle": "Founder",
-          "url": "https://faujiniwas.web.app/about.html",
+          "url": "https://faujiniwas.web.app/aman-kumar-singh.html",
           "image": "https://faujiniwas.web.app/aman-kumar-singh.jpg",
           "photo": "https://faujiniwas.web.app/aman-kumar-singh.jpg",
           "sameAs": [
-            "https://linkedin.com/in/gangasagar5928",
-            "https://instagram.com/ganga_sagar5928",
+            "https://www.linkedin.com/in/gangasagar5928",
+            "https://github.com/gangasagar5928",
+            "https://www.instagram.com/ganga_sagar5928",
+            "https://www.reddit.com/user/gangasagar5928",
             "https://wa.me/919460075023"
           ],
-          "email": "singhamankumar.5928@gmail.com",
-          "telephone": "+91-6388498597",
           "affiliation": {
             "@type": "Organization",
             "name": "Fauji Niwas"
@@ -92,7 +103,6 @@
             "url": "https://faujiniwas.web.app"
           },
           "url": "https://faujiniwas.web.app/about.html",
-          "email": "aks.production.group@gmail.com",
           "sameAs": [
             "https://www.linkedin.com/in/anurag-singh-a126843a3",
             "https://www.instagram.com/aks_anurag_singh",
@@ -120,23 +130,23 @@
       "founder": [
         {
           "@type": "Person",
+          "@id": "https://faujiniwas.web.app/aman-kumar-singh.html#person",
           "name": "Aman Kumar Singh",
           "alternateName": "gangasagar5928",
           "jobTitle": "Founder",
-          "url": "https://faujiniwas.web.app/about.html",
+          "url": "https://faujiniwas.web.app/aman-kumar-singh.html",
           "image": "https://faujiniwas.web.app/aman-kumar-singh.jpg",
           "photo": "https://faujiniwas.web.app/aman-kumar-singh.jpg",
-          "email": "singhamankumar.5928@gmail.com",
-          "telephone": "+91-6388498597",
           "sameAs": [
-            "https://linkedin.com/in/gangasagar5928",
-            "https://instagram.com/ganga_sagar5928",
+            "https://www.linkedin.com/in/gangasagar5928",
             "https://github.com/gangasagar5928",
+            "https://www.instagram.com/ganga_sagar5928",
+            "https://www.reddit.com/user/gangasagar5928",
             "https://wa.me/919460075023"
           ],
           "alumniOf": {
             "@type": "CollegeOrUniversity",
-            "name": "Government College of Engineering and Technology (GCET)"
+            "name": "Galgotias College of Engineering and Technology (GCET, AKTU)"
           },
           "knowsAbout": ["React", "Firebase", "Security Research", "Web Development", "Defence Housing", "Full-Stack Development", "NCC"],
           "description": "B.Tech EEE Student at GCET, Security Researcher, Full-Stack Developer, and NCC Air Wing 'A' Certificate holder. Founder of Fauji Niwas — India's only verified, zero-brokerage housing platform for Indian Armed Forces families.",
@@ -161,13 +171,19 @@
       ],
       "contactPoint": {
         "@type": "ContactPoint",
-        "email": "singhamankumar.5928@gmail.com",
         "contactType": "Customer Support",
-        "areaServed": "IN"
+        "url": "https://faujiniwas.web.app/contact.html",
+        "areaServed": "IN",
+        "availableLanguage": [
+          "Hindi",
+          "English"
+        ]
       },
       "sameAs": [
-        "https://linkedin.com/in/gangasagar5928",
-        "https://instagram.com/ganga_sagar5928"
+        "https://www.linkedin.com/in/gangasagar5928",
+        "https://github.com/gangasagar5928",
+        "https://www.instagram.com/ganga_sagar5928",
+        "https://www.reddit.com/user/gangasagar5928"
       ]
     }
     </script>
@@ -175,18 +191,36 @@
     <!-- Preconnect for Performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preconnect" href="https://basemaps.cartocdn.com" />
-    <link rel="preconnect" href="https://firestore.googleapis.com" />
     
+    <!-- Google Fonts (blocking, with size-adjust fallback overrides) -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;700;800&family=Playfair+Display:wght@700&family=Syne:wght@700;800&display=swap" />
     <link rel="manifest" href="manifest.json" />
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   </head>
   <body class="bg-[#FAF9F6] text-slate-900 font-sans antialiased">
     <noscript>
-      <strong>Fauji Niwas requires JavaScript.</strong>
-      Please enable JavaScript or use the
-      <a href="/" class="text-amber-500">landing page</a>.
+      <div style="padding: 24px; text-align: center; font-family: sans-serif;">
+        <strong>Fauji Niwas requires JavaScript.</strong>
+        Please enable JavaScript to use the app, or
+        <a href="/home.html" style="color: #f59e0b; font-weight: bold; text-decoration: underline;">view our static landing page</a>.
+      </div>
+      
+      <!-- Static indexing fallback for search engines and JS-disabled users -->
+      <section id="about-founders" style="max-width: 800px; margin: 40px auto; padding: 24px; border: 1px solid rgba(245, 158, 11, 0.15); border-radius: 16px; font-family: sans-serif; text-align: left;">
+        <h2 style="color: #b45309; font-size: 24px; font-weight: bold; margin-bottom: 16px;">About Fauji Niwas</h2>
+        <p style="font-size: 15px; color: #334155; line-height: 1.6; margin-bottom: 16px;">
+          Fauji Niwas is a defence housing and rental discovery platform built for
+          Indian Armed Forces families, veterans, and defence personnel. The platform
+          maps verified rental listings near cantonments, SSB selection centres, and
+          military stations across India — with proximity indicators for KV schools,
+          military hospitals, and CSD canteens.
+        </p>
+        <p style="font-size: 15px; color: #334155; line-height: 1.6;">
+          Fauji Niwas was founded by <strong>Aman Kumar Singh</strong>, an EEE
+          student at Galgotias College of Engineering and Technology (GCET, AKTU)
+          with an NCC Air Wing Cadet background, alongside co-founder
+          <strong>Anurag Kumar Singh</strong>.
+        </p>
+      </section>
     </noscript>
 
     <!-- ═══════════════════════════════════════
@@ -242,13 +276,87 @@
       <div class="absolute bottom-5 font-mono text-[10px] text-slate-500/55 tracking-wider">v4.3.1 · SECURE SESSION · PRODUCTION</div>
     </div>
 
-    <div id="root"></div>
+    <div id="root" style="min-height: 100vh;">
+      <!-- SEO Pre-render Grounding for AI Search Crawlers (ChatGPT/Claude/Gemini) -->
+      <section style="max-width: 800px; margin: 40px auto; padding: 24px; font-family: sans-serif; text-align: left; display: block;">
+        <h1 style="color: #3b5323; font-size: 28px; font-weight: 800; margin-bottom: 12px;">Fauji Niwas — Verified Defence Housing & Rentals</h1>
+        <p style="font-size: 15px; color: #334155; line-height: 1.6;">
+          Fauji Niwas is India's premier verified, zero-brokerage housing and relocation platform built exclusively for Indian Armed Forces families, veterans, and defence personnel. It maps rentals near cantonments and military stations, KV schools, Military Hospitals, and CSD canteens.
+        </p>
+        <p style="font-size: 15px; color: #334155; line-height: 1.6;">
+          Fauji Niwas was founded by <strong><a href="/aman-kumar-singh.html" style="color: #3b5323; font-weight: bold; text-decoration: underline;">Aman Kumar Singh</a></strong>, a B.Tech EEE student at Galgotias College of Engineering and Technology (GCET, AKTU), NCC Air Wing 'A' Certificate holder, and Security Researcher, along with co-founder <strong>Anurag Kumar Singh</strong>.
+        </p>
+        <h3 style="font-size: 18px; margin-top: 20px;">About the Founders:</h3>
+        <ul style="list-style-type: disc; padding-left: 20px; font-size: 14px; color: #475569;">
+          <li><strong><a href="/aman-kumar-singh.html" style="color: #3b5323; text-decoration: underline;">Aman Kumar Singh</a> (Founder & Lead Developer)</strong>: B.Tech EEE Student at GCET, Security Researcher, NCC Cadet. <a href="https://www.linkedin.com/in/gangasagar5928" style="color: #0055a5; text-decoration: underline;">LinkedIn</a> · <a href="https://github.com/gangasagar5928" style="color: #24292f; text-decoration: underline;">GitHub</a></li>
+          <li><strong>Anurag Kumar Singh (Co-Founder)</strong>: JEE Aspirant and Content Creator.</li>
+        </ul>
+        <p style="font-size: 14px; color: #64748b; margin-top: 16px;">Explore cantonments: Pune, Delhi, Ambala, Secunderabad, Bhopal, Kapurthala, Prayagraj, Coimbatore, Bangalore.</p>
+        <a href="/about.html" style="color: #f59e0b; text-decoration: underline;">About Fauji Niwas Founders</a> | <a href="/contact.html" style="color: #f59e0b; text-decoration: underline;">Contact Founders</a>
+      </section>
+    </div>
 
-    <style type="text/tailwindcss">
-      @theme {
+    <style>
+      :root {
         --color-olive: #3b5323;
         --color-amber-500: #f59e0b;
         --color-amber-400: #fbbf24;
+      }
+      
+      /* CLS size adjustments to match font metrics when they swap */
+      @font-face {
+        font-family: 'Inter';
+        src: local('Helvetica Neue'), local('Helvetica'), local('Arial');
+        size-adjust: 100%;
+        ascent-override: 90%;
+        descent-override: 22%;
+      }
+      @font-face {
+        font-family: 'Outfit';
+        src: local('Arial');
+        size-adjust: 104%;
+        ascent-override: 95%;
+        descent-override: 25%;
+      }
+
+      /* Native Dark Mode Styles to replace expensive global filter: invert() */
+      .dark-theme {
+        --bg-dark: #0b1325;
+        --card-dark: #111827;
+      }
+      .dark-theme body {
+        background-color: #0b1325 !important;
+        color: #f3f4f6 !important;
+      }
+      .dark-theme #tactical-loader {
+        background-color: #0b1325 !important;
+      }
+      .dark-theme #loader-card {
+        background-color: #111827 !important;
+        color: #f3f4f6 !important;
+        border-color: rgba(245, 158, 11, 0.3) !important;
+      }
+      .dark-theme #loader-card .text-slate-800 {
+        color: #f3f4f6 !important;
+      }
+      .dark-theme #loader-card .text-slate-600 {
+        color: #9ca3af !important;
+      }
+      .dark-theme #about-founders {
+        border-color: rgba(245, 158, 11, 0.3) !important;
+        background-color: #111827 !important;
+      }
+      .dark-theme #about-founders h2 {
+        color: #fbbf24 !important;
+      }
+      .dark-theme #about-founders p,
+      .dark-theme #about-founders li {
+        color: #d1d5db !important;
+      }
+      .dark-theme .static-footer {
+        background-color: #0f172a !important;
+        color: #9ca3af !important;
+        border-top-color: rgba(255, 255, 255, 0.1) !important;
       }
       
       @keyframes orbPulse {
@@ -340,7 +448,11 @@
         ctx.globalAlpha = 1;
         animFrame = requestAnimationFrame(drawParticles);
       }
-      drawParticles();
+      if (window.innerWidth >= 768) {
+        drawParticles();
+      } else {
+        if (canvas) canvas.style.display = 'none';
+      }
 
       /* ── Loading stages ── */
       var statusEl   = document.getElementById('loader-status');
@@ -411,50 +523,58 @@
     <script src="/chatbot.js" defer></script>
 
     <!-- ♿ ACCESSIBILITY WIDGET FOR OLD AGE PEOPLE -->
-    <div id="accessibility-widget" class="fixed bottom-24 right-5 z-[200000] flex flex-col items-end gap-2">
+    <div id="accessibility-widget" class="fixed bottom-24 left-5 md:left-auto md:right-6 md:bottom-28 z-[200000] flex flex-col items-start md:items-end gap-2">
       <!-- Toggle trigger button -->
-      <button id="acc-trigger" class="w-12 h-12 rounded-full bg-amber-500 hover:bg-amber-600 text-black flex items-center justify-center shadow-lg font-bold text-lg border-2 border-white select-none transition-all hover:scale-105 active:scale-95 cursor-pointer" title="Accessibility Panel / सुगम्यता सेटिंग्स">
+      <button id="acc-trigger" class="w-16 h-16 rounded-full bg-amber-500 hover:bg-amber-600 text-black flex items-center justify-center shadow-2xl font-bold text-2xl border-2 border-white select-none transition-all hover:scale-105 active:scale-95 cursor-pointer" title="Accessibility Panel / सुगम्यता सेटिंग्स" aria-label="Open Accessibility Panel">
         ♿
       </button>
       
       <!-- Panel popup menu -->
-      <div id="acc-menu" class="hidden flex-col bg-[#0f172a] border border-[#334155] rounded-2xl p-4 shadow-2xl min-w-[210px] text-left gap-3 text-white border-2">
-        <div class="text-xs font-extrabold text-amber-500 border-b border-[#334155] pb-2 uppercase tracking-wider flex items-center justify-between font-mono">
+      <div id="acc-menu" class="hidden flex-col bg-[#0f172a] border border-[#334155] rounded-2xl p-5 shadow-2xl min-w-[280px] text-left gap-4 text-white border-2">
+        <div class="text-sm font-extrabold text-amber-500 border-b border-[#334155] pb-3 uppercase tracking-wider flex items-center justify-between font-mono">
           <span>Accessibility 🎖️</span>
-          <button id="acc-close" class="text-slate-400 hover:text-white text-base cursor-pointer font-bold">&times;</button>
+          <button id="acc-close" class="text-slate-400 hover:text-white text-xl cursor-pointer font-bold">&times;</button>
         </div>
         
         <!-- Text Size -->
-        <div class="flex flex-col gap-1.5">
-          <span class="text-[9px] font-extrabold uppercase text-slate-400 font-mono tracking-wider">Text Size / आकार</span>
-          <div class="flex gap-1">
-            <button id="fs-small" class="flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">A-</button>
-            <button id="fs-normal" class="flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">A</button>
-            <button id="fs-large" class="flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">A+</button>
-            <button id="fs-elderly" class="flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">Senior</button>
+        <div class="flex flex-col gap-2">
+          <span class="text-[11px] font-extrabold uppercase text-slate-400 font-mono tracking-wider">Text Size / आकार</span>
+          <div class="flex gap-1.5">
+            <button id="fs-small" class="flex-1 py-2.5 text-sm font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">A-</button>
+            <button id="fs-normal" class="flex-1 py-2.5 text-sm font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">A</button>
+            <button id="fs-large" class="flex-1 py-2.5 text-sm font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">A+</button>
+            <button id="fs-elderly" class="flex-1 py-2.5 text-sm font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">Senior</button>
           </div>
         </div>
         
-        <!-- Language Option -->
-        <div class="flex flex-col gap-1.5">
-          <span class="text-[9px] font-extrabold uppercase text-slate-400 font-mono tracking-wider">Language / भाषा</span>
-          <div class="flex gap-1">
-            <button id="lang-en" class="flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">EN</button>
-            <button id="lang-hi" class="flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">हिन्दी</button>
-            <button id="lang-pa" class="flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">ਪੰਜਾਬੀ</button>
-          </div>
+        <!-- Language Option (Google Translate) -->
+        <div class="flex flex-col gap-2">
+          <span class="text-[11px] font-extrabold uppercase text-slate-400 font-mono tracking-wider">Language / भाषा</span>
+          <div id="google_translate_element" class="mt-1 w-full overflow-hidden rounded-lg"></div>
         </div>
         
         <!-- Dark/Light Theme -->
-        <div class="flex flex-col gap-1.5">
-          <span class="text-[9px] font-extrabold uppercase text-slate-400 font-mono tracking-wider">Contrast Theme / थीम</span>
-          <div class="flex gap-1">
-            <button id="theme-dark" class="flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">Dark</button>
-            <button id="theme-light" class="flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">Light</button>
+        <div class="flex flex-col gap-2">
+          <span class="text-[11px] font-extrabold uppercase text-slate-400 font-mono tracking-wider">Contrast Theme / थीम</span>
+          <div class="flex gap-1.5">
+            <button id="theme-dark" class="flex-1 py-2.5 text-sm font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">Dark</button>
+            <button id="theme-light" class="flex-1 py-2.5 text-sm font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">Light</button>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Google Translate Script -->
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+          pageLanguage: 'en',
+          includedLanguages: 'en,hi,pa,te,ta,kn,mr,bn',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        }, 'google_translate_element');
+      }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
     <script>
     (function() {
@@ -496,28 +616,40 @@
         
         function updateThemeButtons(theme) {
           if (theme === 'dark') {
-            themeDark.className = 'flex-1 py-1.5 text-xs font-black bg-amber-500 text-black rounded-lg transition-all cursor-pointer';
-            themeLight.className = 'flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer';
+            themeDark.className = 'flex-1 py-2.5 text-sm font-black bg-amber-500 text-black rounded-lg transition-all cursor-pointer';
+            themeLight.className = 'flex-1 py-2.5 text-sm font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer';
           } else {
-            themeLight.className = 'flex-1 py-1.5 text-xs font-black bg-amber-500 text-black rounded-lg transition-all cursor-pointer';
-            themeDark.className = 'flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer';
+            themeLight.className = 'flex-1 py-2.5 text-sm font-black bg-amber-500 text-black rounded-lg transition-all cursor-pointer';
+            themeDark.className = 'flex-1 py-2.5 text-sm font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer';
+          }
+        }
+
+        // Tactical High Contrast Filter for Dark Theme
+        function applyDarkTheme(enable) {
+          if (enable) {
+            document.documentElement.classList.add('dark-theme');
+            document.body.classList.add('dark-theme');
+          } else {
+            document.documentElement.classList.remove('dark-theme');
+            document.body.classList.remove('dark-theme');
           }
         }
 
         themeDark.addEventListener('click', function() {
-          document.documentElement.classList.add('dark-theme');
-          document.body.classList.add('dark-theme');
+          applyDarkTheme(true);
           localStorage.setItem('fn_theme', 'dark');
           updateThemeButtons('dark');
         });
 
         themeLight.addEventListener('click', function() {
-          document.documentElement.classList.remove('dark-theme');
-          document.body.classList.remove('dark-theme');
+          applyDarkTheme(false);
           localStorage.setItem('fn_theme', 'light');
           updateThemeButtons('light');
         });
 
+        if (savedTheme === 'dark') {
+           applyDarkTheme(true);
+        }
         updateThemeButtons(savedTheme);
 
         // Font Size Toggles
@@ -533,9 +665,9 @@
             var btn = sizes[size];
             if (!btn) return;
             if (size === currentSize) {
-              btn.className = 'flex-1 py-1.5 text-xs font-black bg-amber-500 text-black rounded-lg transition-all cursor-pointer';
+              btn.className = 'flex-1 py-2.5 text-sm font-black bg-amber-500 text-black rounded-lg transition-all cursor-pointer';
             } else {
-              btn.className = 'flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer';
+              btn.className = 'flex-1 py-2.5 text-sm font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer';
             }
           });
         }
@@ -551,40 +683,20 @@
         });
 
         updateSizeButtons(savedSize);
-
-        // Language Toggles
-        var savedLang = localStorage.getItem('fn_lang') || 'en';
-        var langs = {
-          'en': document.getElementById('lang-en'),
-          'hi': document.getElementById('lang-hi'),
-          'pa': document.getElementById('lang-pa')
-        };
-
-        function updateLangButtons(currentLang) {
-          Object.keys(langs).forEach(function(lang) {
-            var btn = langs[lang];
-            if (!btn) return;
-            if (lang === currentLang) {
-              btn.className = 'flex-1 py-1.5 text-xs font-black bg-amber-500 text-black rounded-lg transition-all cursor-pointer';
-            } else {
-              btn.className = 'flex-1 py-1.5 text-xs font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer';
-            }
-          });
-        }
-
-        Object.keys(langs).forEach(function(lang) {
-          var btn = langs[lang];
-          if (!btn) return;
-          btn.addEventListener('click', function() {
-            localStorage.setItem('fn_lang', lang);
-            updateLangButtons(lang);
-            location.reload();
-          });
-        });
-
-        updateLangButtons(savedLang);
       });
     })();
     </script>
+    <!-- Semantic Footer for Search Engines & AI Bots -->
+    <footer class="static-footer" style="padding: 24px; text-align: center; font-family: sans-serif; font-size: 13px; color: #475569; border-top: 1px solid #e2e8f0; background: #faf9f6; line-height: 1.6;">
+      <p style="margin: 0 0 8px 0; font-weight: bold; color: #3b5323;">🪖 Fauji Niwas — Verified Defence Housing Platform</p>
+      <p style="margin: 0 0 8px 0;">
+        Fauji Niwas is India's verified, zero-brokerage housing and relocation portal built for the Indian Armed Forces.
+        Founded by <strong><a href="/aman-kumar-singh.html" style="color: #3b5323; text-decoration: underline;">Aman Kumar Singh</a></strong> (B.Tech EEE, Galgotias College of Engineering and Technology, GCET AKTU)
+        and co-founded by <strong>Anurag Kumar Singh</strong>.
+      </p>
+      <p style="margin: 0;">
+        © 2025 Fauji Niwas · <a href="/about.html" style="color: #f59e0b; text-decoration: underline;">About the Founders</a> · <a href="/contact.html" style="color: #f59e0b; text-decoration: underline;">Contact Support</a>
+      </p>
+    </footer>
   </body>
 </html>

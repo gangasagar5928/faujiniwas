@@ -21,7 +21,7 @@ export default function StationModal({ stationId, onClose }) {
     if (!station) return null;
     const cityListings = listings.filter(l => l.city?.toLowerCase() === station.city.toLowerCase());
     const avgRent = cityListings.length > 0 
-      ? Math.round(cityListings.reduce((acc, l) => acc + (l.price || 0), 0) / cityListings.length) 
+      ? Math.round(cityListings.reduce((acc, l) => acc + (Number(l.price) || 0), 0) / cityListings.length) 
       : 0;
     
     return {
@@ -53,7 +53,7 @@ export default function StationModal({ stationId, onClose }) {
               <div className={styles.statLab}>Live Listings</div>
             </div>
             <div className={styles.statCard}>
-              <div className={styles.statVal}>₹{(stats.avgRent/1000).toFixed(1)}k</div>
+              <div className={styles.statVal}>₹{((Number(stats.avgRent) || 0)/1000).toFixed(1)}k</div>
               <div className={styles.statLab}>Avg. Monthly Rent</div>
             </div>
           </div>

@@ -92,7 +92,7 @@ export default function DetailModal({ id, onClose }) {
   const displayName = r.name || r.title || 'Untitled Listing';
 
   const images = r.mediaUrls?.length >= 1 ? r.mediaUrls : getFallbackPhotos(r.createdAt);
-  const price = r.price || 0;
+  const price = Number(String(r.price).replace(/[^0-9.]/g, '')) || 0;
   const hraColor = getHraColor(price);
   const hraText  = getHraText(price);
 
@@ -102,19 +102,20 @@ export default function DetailModal({ id, onClose }) {
   // Similar listings
   const similar = listings.filter(l =>
     l.id !== id && l.city?.toLowerCase() === r.city?.toLowerCase() &&
-    l.price >= price * 0.7 && l.price <= price * 1.3
+    (Number(l.price) || 0) >= price * 0.7 && (Number(l.price) || 0) <= price * 1.3
   ).slice(0, 3);
 
   // HRA Arbitrage Logic
   const hraRates = { OR: 12000, JCO: 22000, Officer: 35000 };
   const userHra = hraRates[rank] || 15000;
   const arbRatio = price / userHra;
-  const arbResult = arbRatio < 0.85 ? { label: '💎 Great Deal', color: '#22c55e', text: `This property is priced well below the average HRA for an ${rank}. Choosing this could net you significant monthly savings.` } :
+  const arbResult = Number.isNaN(arbRatio) ? { label: '⚖️ Fair Value', color: '#f4c542', text: 'Pricing details unavailable.' } :
+                    arbRatio < 0.85 ? { label: '💎 Great Deal', color: '#22c55e', text: `This property is priced well below the average HRA for an ${rank}. Choosing this could net you significant monthly savings.` } :
                     arbRatio <= 1.1 ? { label: '⚖️ Fair Value', color: '#f4c542', text: `Price is in line with the standard HRA for your rank. This represents a safe, market-rate choice.` } :
                     { label: '✨ Premium', color: '#8a2be2', text: `This property exceeds the standard ${rank} HRA. It may offer superior amenities or location, but will require out-of-pocket spending.` };
 
-  const cityListings = listings.filter(l => l.city === r.city && l.price > 0 && l._collection === r._collection);
-  const cityAvg = cityListings.length ? cityListings.reduce((sum, l) => sum + l.price, 0) / cityListings.length : 0;
+  const cityListings = listings.filter(l => l.city === r.city && (Number(l.price) || 0) > 0 && l._collection === r._collection);
+  const cityAvg = cityListings.length ? cityListings.reduce((sum, l) => sum + (Number(l.price) || 0), 0) / cityListings.length : 0;
   const isPriceOutlier = cityAvg && cityListings.length >= 3 && (price > cityAvg * 1.45 || price < cityAvg * 0.55);
 
   // Trust Graph 2.0 Reputation Score Calculation
@@ -444,7 +445,7 @@ export default function DetailModal({ id, onClose }) {
             <div style={{marginTop:30, borderTop:'1px solid var(--border2)', paddingTop:20}}>
               <div style={{display:'flex', justifyContent:'space-between', alignItems:'baseline', marginBottom:16}}>
                 <h3 style={{fontSize:18, fontWeight:700}}>User Reviews ({reviews.length})</h3>
-                <div style={{fontSize:20, fontWeight:700, color:'var(--gold)'}}>⭐ {reviews.length > 0 ? (reviews.reduce((acc,rv)=>acc+rv.rating,0)/reviews.length).toFixed(1) : '—'}</div>
+                <div style={{fontSize:20, fontWeight:700, color:'var(--gold)'}}>⭐ {reviews.length > 0 ? (reviews.reduce((acc,rv)=>acc+(Number(rv.rating) || 0),0)/reviews.length).toFixed(1) : '—'}</div>
               </div>
 
               {/* Review Form */}

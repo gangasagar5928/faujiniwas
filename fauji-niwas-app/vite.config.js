@@ -9,11 +9,11 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      injectRegister: 'auto',
+      injectRegister: null,
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff2}'],
         maximumFileSizeToCacheInBytes: 4000000,
-        navigateFallbackDenylist: [/^\/.*\.html$/]
+        navigateFallbackDenylist: [/^\/.*\.html$/, /^\/app/]
       },
       manifest: false, // We already have a manifest in public/manifest.json
     }),
@@ -32,6 +32,14 @@ export default defineConfig({
   ],
   build: {
     outDir: 'dist',
+    modulePreload: {
+      resolveDependencies(filename, deps, { hostId }) {
+        if (hostId && (hostId.includes('index.html') || hostId.includes('landing.jsx'))) {
+          return deps.filter(dep => !dep.includes('leaflet') && !dep.includes('firebase') && !dep.includes('framer-motion'));
+        }
+        return deps;
+      }
+    },
     rollupOptions: {
       input: {
         main: './index.html',
@@ -45,8 +53,17 @@ export default defineConfig({
           if (id.includes('node_modules/firebase')) {
             return 'firebase';
           }
-          if (id.includes('node_modules/react') || id.includes('node_modules/zustand') || id.includes('node_modules/framer-motion') || id.includes('node_modules/react-router-dom')) {
-            return 'vendor';
+          if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) {
+            return 'react-core';
+          }
+          if (id.includes('node_modules/framer-motion')) {
+            return 'framer-motion';
+          }
+          if (id.includes('node_modules/zustand')) {
+            return 'zustand';
+          }
+          if (id.includes('node_modules/react-router-dom') || id.includes('node_modules/@remix-run') || id.includes('node_modules/react-router')) {
+            return 'router';
           }
         },
       },

@@ -103,11 +103,11 @@ function createChatbotUI() {
         50%      { box-shadow: 0 8px 32px rgba(255,153,51,0.45), 0 0 0 12px rgba(255,153,51,0); }
     }
     #cb-badge {
-    position: absolute; top: -4px; right: -4px;
-    background: #f43f5e; color: #fff; font-size: 10px;
-    font-weight: 700; width: 18px; height: 18px;
+    position: absolute; top: -6px; right: -6px;
+    background: #e11d48; color: #fff; font-size: 11px;
+    font-weight: 800; width: 22px; height: 22px;
     border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    border: 2px solid #0B0F1A;
+    border: 2px solid #fff;
     }
     #cb-window {
     position: absolute; bottom: 74px; right: 0;

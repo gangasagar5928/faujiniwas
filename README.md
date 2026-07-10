@@ -32,30 +32,65 @@ We ensure high-trust networks by vetting defence personnel and enabling direct P
 * **Hosting:** Firebase Hosting
 * **Mapping:** Leaflet & React-Leaflet
 
+---
+
+## 📱 Native Mobile Application (Flutter)
+
+Fauji Niwas includes a standalone native mobile app built in Flutter under the `fauji-niwas_app` directory. It operates fully offline using native Dart models and lists (seed synchronized with our database).
+
+### Features:
+- **Rentals & Station Search**: Native searches and filter bars (BHK, Max Rent, Owner type).
+- **SSB Candidate Dorms**: Fast guest house browsing with gate distance metrics and nearby food finders.
+- **CSD Canteens & Hospital Proximity**: Auto-calculation of nearest ECHS hubs, canteens, and schools.
+- **TA/DA Relocation Matrix**: Slider-driven official luggage allowance reimbursement calculator.
+- **Relocation Checklist**: Offline checklists tailored to OR, JCO, and Officer rank postings.
+
+---
+
 ## 📦 Local Development Setup
 
-To run Fauji Niwas locally, you will need [Node.js](https://nodejs.org/) installed on your machine.
+### React Web Application:
+To run the web app, you will need [Node.js](https://nodejs.org/) installed:
 
-1. **Clone the repository:**
+1. **Navigate to the app directory:**
    ```bash
-   git clone https://github.com/your-username/fauji-niwas.git
-   cd fauji-niwas/fauji-niwas-app
+   cd fauji-niwas-app
    ```
-
 2. **Install dependencies:**
    ```bash
    npm install
    ```
-
 3. **Start the development server:**
    ```bash
    npm run dev
    ```
-
-4. **Build for production:**
+4. **Build for production (generates city SEO templates):**
    ```bash
    npm run build
    ```
+
+### Native Flutter Mobile Application:
+To run or build the Android APK, you will need [Flutter SDK](https://flutter.dev/docs/get-started/install) installed:
+
+1. **Navigate to the mobile app directory:**
+   ```bash
+   cd fauji-niwas_app
+   ```
+2. **Get Flutter packages:**
+   ```bash
+   flutter pub get
+   ```
+3. **Run on connected emulator or device:**
+   ```bash
+   flutter run
+   ```
+4. **Build the production release APK:**
+   ```bash
+   flutter build apk --release
+   ```
+   *Compiled APK output will be generated at:* `fauji-niwas_app/build/app/outputs/flutter-apk/app-release.apk`
+
+---
 
 ## 🔐 Firebase Configuration
 

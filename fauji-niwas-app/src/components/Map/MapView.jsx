@@ -33,13 +33,18 @@ function SizeInvalidator() {
 // Tactical Map FlyTo Micro-animation
 function MapAnimator({ activeCantt, draftCoords }) {
   const map = useMap();
+  const activeLat = activeCantt?.lat;
+  const activeLng = activeCantt?.lng;
+  const draftLat = draftCoords?.lat;
+  const draftLng = draftCoords?.lng;
+
   useEffect(() => {
-    if (activeCantt && activeCantt.lat && activeCantt.lng) {
-      map.flyTo([activeCantt.lat, activeCantt.lng], 13, { duration: 1.4 });
-    } else if (draftCoords && draftCoords.lat && draftCoords.lng) {
-      map.flyTo([draftCoords.lat, draftCoords.lng], map.getZoom(), { duration: 1.4 });
+    if (activeLat && activeLng && !Number.isNaN(parseFloat(activeLat)) && !Number.isNaN(parseFloat(activeLng))) {
+      map.flyTo([activeLat, activeLng], 13, { duration: 1.4 });
+    } else if (draftLat && draftLng && !Number.isNaN(parseFloat(draftLat)) && !Number.isNaN(parseFloat(draftLng))) {
+      map.flyTo([draftLat, draftLng], map.getZoom(), { duration: 1.4 });
     }
-  }, [map, activeCantt, draftCoords]);
+  }, [map, activeLat, activeLng, draftLat, draftLng]);
   return null;
 }
 
@@ -105,11 +110,11 @@ function AutoPoiLayers({ activeCity, showCommuteZones, showHospitals, showSchool
     return () => map.off('zoomend', onZoom);
   }, [map]);
 
-  const showPoi = zoom > 11; // Automatically highlight POIs when zoomed in
+  const showPoi = zoom > 9; // Automatically highlight POIs when zoomed in
 
   return (
     <>
-      {activeCantt && showCommuteZones && (
+      {activeCantt && activeCantt.lat && activeCantt.lng && !Number.isNaN(parseFloat(activeCantt.lat)) && !Number.isNaN(parseFloat(activeCantt.lng)) && showCommuteZones && (
           <Circle
             center={[activeCantt.lat, activeCantt.lng]}
             radius={5000}
@@ -131,19 +136,19 @@ function AutoPoiLayers({ activeCity, showCommuteZones, showHospitals, showSchool
 
       {showPoi && activeCity && (
         <>
-          {showHospitals && MILITARY_HOSPITALS[activeCity]?.map((h, i) => (
+          {showHospitals && MILITARY_HOSPITALS[activeCity]?.filter(h => h.lat && h.lng && !Number.isNaN(parseFloat(h.lat)) && !Number.isNaN(parseFloat(h.lng))).map((h, i) => (
             <Marker key={`mh-${i}`} position={[h.lat, h.lng]} icon={MH_ICON}>
               <Popup><div className={styles.popup}>🏥 {h.name}</div></Popup>
             </Marker>
           ))}
 
-          {showSchools && ARMY_SCHOOLS[activeCity]?.map((s, i) => (
+          {showSchools && ARMY_SCHOOLS[activeCity]?.filter(s => s.lat && s.lng && !Number.isNaN(parseFloat(s.lat)) && !Number.isNaN(parseFloat(s.lng))).map((s, i) => (
             <Marker key={`sch-${i}`} position={[s.lat, s.lng]} icon={SCHOOL_ICON}>
               <Popup><div className={styles.popup}>🏫 {s.name}</div></Popup>
             </Marker>
           ))}
 
-          {showCanteens && CANTEENS[activeCity]?.map((c, i) => (
+          {showCanteens && CANTEENS[activeCity]?.filter(c => c.lat && c.lng && !Number.isNaN(parseFloat(c.lat)) && !Number.isNaN(parseFloat(c.lng))).map((c, i) => (
             <Marker key={`cnt-${i}`} position={[c.lat, c.lng]} icon={CANTEEN_ICON}>
               <Popup><div className={styles.popup}>🛒 {c.name}</div></Popup>
             </Marker>
@@ -188,14 +193,14 @@ export default function MapView() {
     
     // 3. Check SSB_DORMS
     const dormMatch = SSB_DORMS.find(d => d.city?.toLowerCase() === lowerCity || d.city?.toLowerCase() === formattedCity.toLowerCase());
-    if (dormMatch) {
+    if (dormMatch && dormMatch.lat && dormMatch.lng && !Number.isNaN(parseFloat(dormMatch.lat)) && !Number.isNaN(parseFloat(dormMatch.lng))) {
       activeCantt = { lat: dormMatch.lat, lng: dormMatch.lng, city: dormMatch.city };
       break;
     }
     
     // 4. Check dynamic listings fallback
     const listingMatch = filtered.find(l => l.city?.toLowerCase() === lowerCity);
-    if (listingMatch && listingMatch.lat && listingMatch.lng) {
+    if (listingMatch && listingMatch.lat && listingMatch.lng && !Number.isNaN(parseFloat(listingMatch.lat)) && !Number.isNaN(parseFloat(listingMatch.lng))) {
       activeCantt = { lat: listingMatch.lat, lng: listingMatch.lng, city: listingMatch.city };
       break;
     }
@@ -239,8 +244,8 @@ export default function MapView() {
           iconCreateFunction={createClusterCustomIcon}
         >
           {activeView === 'dorms'
-            ? SSB_DORMS.map(d => <DormMarker key={d.id} dorm={d} />)
-            : displayListings.map(r => <RentalMarker key={r.id} listing={r} />)
+            ? SSB_DORMS.filter(d => d && d.lat && d.lng && !Number.isNaN(parseFloat(d.lat)) && !Number.isNaN(parseFloat(d.lng))).map(d => <DormMarker key={d.id} dorm={d} />)
+            : displayListings.filter(r => r && r.lat && r.lng && !Number.isNaN(parseFloat(r.lat)) && !Number.isNaN(parseFloat(r.lng))).map(r => <RentalMarker key={r.id} listing={r} />)
           }
         </MarkerClusterGroup>
 
