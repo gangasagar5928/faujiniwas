@@ -168,7 +168,7 @@ select.fb option { background: var(--card); color: var(--text); }
 .modal-backdrop {
   position: fixed; inset: 0; z-index: var(--z-modal);
   background: rgba(6, 10, 20, 0.65); 
-  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
   display: flex; align-items: center; justify-content: center;
   animation: mfade .22s ease;
 }
@@ -180,7 +180,7 @@ select.fb option { background: var(--card); color: var(--text); }
 /* Modal card */
 .mc {
   background: rgba(19, 31, 53, 0.85);
-  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--border2);
   border-radius: var(--radius-lg); width: 92%; max-width: 560px;
   max-height: 90vh; position: relative; box-shadow: var(--shadow-lg);
@@ -326,8 +326,8 @@ select.fb option { background: var(--card); color: var(--text); }
 
 .glass-tactical {
   background: rgba(15, 23, 42, 0.65);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  backdrop-filter: blur(8px) saturate(180%);
+  -webkit-backdrop-filter: blur(8px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
 }
@@ -410,13 +410,15 @@ select.fb option { background: var(--card); color: var(--text); }
 }
 
 /* ==========================================================================
-   STRICT DASHBOARD LAYOUT & STYLING OVERRIDES (V4.2.1)
+   STRICT DASHBOARD LAYOUT & STYLING OVERRIDES (V4.3.0)
    ========================================================================== */
 
 .app-container { 
   display: grid;
-  grid-template-rows: 64px auto minmax(0, 1fr) auto;
-  grid-template-columns: 64px 420px minmax(0, 1fr);
+  /* Rows: header | stats-bar | main-content | footer */
+  grid-template-rows: 64px auto minmax(0, 1fr) 32px;
+  /* Default (sidebar OPEN): icon-nav | listings-sidebar | map */
+  grid-template-columns: 64px 380px minmax(0, 1fr);
   height: 100%;
   height: 100dvh;
   width: 100%;
@@ -425,20 +427,12 @@ select.fb option { background: var(--card); color: var(--text); }
   color: var(--text);
   overflow: hidden;
   min-height: 0;
-  transition: grid-template-columns 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: grid-template-columns 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* When sidebar is closed: icon-nav | map (no listings column) */
 .app-container.sidebar-closed {
-  grid-template-columns: 64px 0px minmax(0, 1fr) !important;
-}
-
-.app-container.sidebar-closed aside.sidebar {
-  transform: translateX(-420px);
-  opacity: 0;
-  pointer-events: none;
-  width: 0 !important;
-  min-width: 0 !important;
-  border: none !important;
+  grid-template-columns: 64px minmax(0, 1fr);
 }
 
 @media (max-width: 768px) {
@@ -457,9 +451,9 @@ select.fb option { background: var(--card); color: var(--text); }
   background: #0b1120;
   border-bottom: 1px solid #1e293b;
   min-width: 0;
-  overflow: hidden;
+  overflow: visible;
   height: 64px;
-  z-index: 100;
+  z-index: 200;
 }
 
 @media (max-width: 768px) {
@@ -479,8 +473,9 @@ select.fb option { background: var(--card); color: var(--text); }
   grid-column: 1 / -1;
   background: #0b1120;
   border-bottom: 1px solid #1e293b;
-  z-index: 90;
+  z-index: 190;
   display: block;
+  overflow: visible;
 }
 
 @media (max-width: 768px) {
@@ -498,7 +493,7 @@ select.fb option { background: var(--card); color: var(--text); }
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 24px 0;
+  padding: 16px 0;
   z-index: 15;
 }
 
@@ -514,14 +509,21 @@ select.fb option { background: var(--card); color: var(--text); }
   min-height: 0;
   overflow: hidden;
   padding: 0;
-  background: rgba(11, 17, 32, 0.72) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
+  background: rgba(11, 17, 32, 0.95) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
   border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 4px 0 24px rgba(0,0,0,0.3);
   display: flex;
   flex-direction: column;
-  width: 420px;
+  width: 380px;
   z-index: 10;
+  animation: sidebarSlideIn 0.28s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes sidebarSlideIn {
+  from { opacity: 0; transform: translateX(-16px); }
+  to   { opacity: 1; transform: translateX(0); }
 }
 
 @media (max-width: 768px) {
@@ -530,34 +532,54 @@ select.fb option { background: var(--card); color: var(--text); }
     grid-column: 1;
     width: 100%;
     border-right: none;
-    display: none; /* Controlled by active mobile tab */
+    display: none;
   }
   .sidebar.active-mobile-view {
     display: flex;
   }
 }
 
+/* Map — when sidebar is open, map is in column 3; when closed, column 2 */
 #map {
   grid-row: 3;
-  grid-column: 2 / -1; /* Spans behind the details sidebar */
+  grid-column: 3;
   width: 100%;
   height: 100%;
   z-index: 1;
   position: relative;
 }
 
+.app-container.sidebar-closed #map {
+  grid-column: 2;
+}
+
 @media (max-width: 768px) {
   #map {
     grid-column: 1;
-    display: none; /* Controlled by active mobile tab */
+    display: none;
   }
   #map.active-mobile-view {
     display: block;
   }
 }
 
+/* Status footer spans full width */
+.status-footer {
+  grid-row: 4;
+  grid-column: 1 / -1;
+}
+
 .listings-panel {
-  display: none; /* No longer used on desktop, listings scroll in sidebar */
+  display: none;
+}
+
+/* Filter dropdown animation */
+@keyframes dropdownIn {
+  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animate-in {
+  animation: dropdownIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 /* Bottom Navigation Bar for Mobile */
@@ -648,7 +670,7 @@ select.fb option { background: var(--card); color: var(--text); }
   padding: 12px;
   min-width: 220px;
   max-width: calc(100vw - 40px);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(8px);
   pointer-events: auto;
 }
 
@@ -931,4 +953,31 @@ html.dark-theme, body.dark-theme {
   color: #ffffff !important;
 }
 
+/* Hide Google Translate Banner and prevent body shift */
+body {
+    top: 0px !important;
+}
+.skiptranslate iframe,
+.skiptranslate > iframe.skiptranslate,
+#goog-gt-tt,
+.goog-te-balloon-frame {
+    display: none !important;
+    visibility: hidden !important;
+}
+.goog-text-highlight {
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+
+
+/* Mobile 120Hz Performance Overrides */
+html.is-native {  overscroll-behavior-y: none; }
+.is-native body { -webkit-overflow-scrolling: touch; }
+.is-native .nav, .is-native .glass, .is-native .sidebar, .is-native .pm { transform: translateZ(0); will-change: transform; backface-visibility: hidden; }
+* { -webkit-tap-highlight-color: transparent; }
+
+
+.card, .listing-card, .sidebar, .modal, .glass, .nav { transform: translateZ(0); backface-visibility: hidden; perspective: 1000; -webkit-perspective: 1000; -webkit-backface-visibility: hidden; -webkit-transform: translate3d(0,0,0); transform: translate3d(0,0,0); }
+body { scroll-behavior: auto !important; -webkit-overflow-scrolling: touch !important; }
 

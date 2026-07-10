@@ -49,8 +49,17 @@ requestAnimationFrame(() => {
   window.dispatchEvent(new Event('app-ready'));
 });
 
-// Register Service Worker for PWA caching
-if ('serviceWorker' in navigator && import.meta.env.PROD) {
+// Conditionally manage Service Worker for Native App vs Web
+const isNativeApp = navigator.userAgent.includes('FaujiNiwas/1.0') || window.faujiApp;
+
+if (isNativeApp && 'serviceWorker' in navigator) {
+  // Force unregister Service Workers on Native App to load fresh assets from Firebase
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
+    for (let registration of registrations) {
+      registration.unregister();
+    }
+  }).catch(() => {});
+} else if (!isNativeApp && 'serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js').catch(() => {});
   });

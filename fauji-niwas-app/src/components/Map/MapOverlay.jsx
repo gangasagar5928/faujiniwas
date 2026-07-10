@@ -207,93 +207,84 @@ export default function MapOverlay() {
         </div>
       )}
 
-      {/* Floating Tactical POI toggles (Phase 9) */}
-      <div className="glass-tactical" style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '6px',
-        padding: '10px',
-        borderRadius: '12px',
-        border: '1px solid var(--border2)',
-        background: 'rgba(15, 23, 42, 0.75)',
-        boxShadow: 'var(--shadow-lg)',
-        pointerEvents: 'all'
-      }}>
-        <div style={{fontSize: '9px', fontWeight: 800, color: 'var(--accent)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '4px'}}>
-          📍 Nearby Facilities
+      {/* 📍 NEARBY FACILITIES Widget (Gold border, vertical list) */}
+      <div className="absolute bottom-20 right-5 z-[500] bg-[#0c1222]/95 border border-amber-500/20 rounded-2xl p-4 shadow-2xl flex flex-col gap-3 min-w-[240px] text-left backdrop-blur-md pointer-events-auto">
+        <div className="text-[10px] font-black uppercase tracking-wider text-[#fbbf24] flex items-center gap-1.5 font-mono select-none">
+          <span>📍</span> NEARBY FACILITIES
         </div>
         
-        <button
-          className={`${styles.tBtn} ${showCommuteZones ? styles.btnActive : ''}`}
-          onClick={() => setShowCommuteZones(!showCommuteZones)}
-          title="Toggle 5km Cantonment Commute Boundary Zone"
-        >
-          🔵 Station Commute Zone
-        </button>
-
-        <button
-          className={`${styles.tBtn} ${showSchools ? styles.btnActive : ''}`}
-          onClick={() => setShowSchools(!showSchools)}
-          title="Toggle Army Public Schools & Kendriya Vidyalayas"
-        >
-          🏫 Army Schools (APS & KV)
-        </button>
-
-        <button
-          className={`${styles.tBtn} ${showHospitals ? styles.btnActive : ''}`}
-          onClick={() => setShowHospitals(!showHospitals)}
-          title="Toggle Military & Command Hospitals"
-        >
-          🏥 Military Hospitals
-        </button>
-
-        <button
-          className={`${styles.tBtn} ${showCanteens ? styles.btnActive : ''}`}
-          onClick={() => setShowCanteens(!showCanteens)}
-          title="Toggle CSD Canteens & URCs"
-        >
-          🛒 Canteen (CSD & URC)
-        </button>
+        <div className="flex flex-col gap-2">
+          {[
+            { id: 'commute', label: 'Station Commute Zone', active: showCommuteZones, setter: setShowCommuteZones, icon: '🔵', activeClass: 'bg-blue-500/10 border-blue-500 text-white' },
+            { id: 'schools', label: 'Army Schools (APS & KV)', active: showSchools, setter: setShowSchools, icon: '🟢', activeClass: 'bg-emerald-500/10 border-emerald-500 text-white' },
+            { id: 'hospitals', label: 'Military Hospitals', active: showHospitals, setter: setShowHospitals, icon: '🟣', activeClass: 'bg-purple-500/10 border-purple-500 text-white' },
+            { id: 'canteens', label: 'Canteen (CSD & URC)', active: showCanteens, setter: setShowCanteens, icon: '🟤', activeClass: 'bg-[#854d0e]/10 border-[#854d0e] text-white' }
+          ].map(facility => (
+            <button 
+              key={facility.id}
+              onClick={() => facility.setter(!facility.active)}
+              className={`w-full text-left border px-3 py-2.5 rounded-xl flex items-center gap-2.5 cursor-pointer transition-colors shadow-sm select-none text-[10px] font-bold ${
+                facility.active 
+                  ? facility.activeClass 
+                  : 'bg-[#10192e] border-[#1e293b] text-slate-300 hover:text-white hover:border-slate-500'
+              }`}
+            >
+              <span className="text-xs">{facility.icon}</span>
+              <span>{facility.label}</span>
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div style={{ display: 'flex', gap: '8px', marginTop: '4px', pointerEvents: 'all' }}>
-        <button
-          className={styles.btn}
-          onClick={() => map.flyTo([22.5, 82.0], 5, { duration: 0.8 })}
-          title="Reset view to India"
-        >🗺️ India</button>
+      {/* Floating Utility Controller */}
+      <div className="absolute bottom-5 right-5 z-[500] flex items-center gap-2 select-none pointer-events-auto">
+        {/* Leaflet Custom zoom buttons */}
+        <div className="flex bg-[#0c1222]/95 border border-[#1e293b] rounded-lg p-0.5 shadow-lg">
+          <button onClick={() => map.zoomIn()} className="w-6 h-6 flex items-center justify-center text-slate-400 hover:text-white text-[10px] font-bold cursor-pointer">➕</button>
+          <button onClick={() => map.zoomOut()} className="w-6 h-6 flex items-center justify-center text-slate-400 hover:text-white text-[10px] font-bold cursor-pointer">➖</button>
+        </div>
         
-        <button
-          className={styles.btn}
-          onClick={() => {
-            if (!navigator.geolocation) {
-               ctx?.showToast('Geolocation not supported', 'error');
-               return;
-            }
-            ctx?.showToast('Scanning local area...', 'ok');
-            navigator.geolocation.getCurrentPosition(
-              ({ coords }) => {
-                map.flyTo([coords.latitude, coords.longitude], 13, { duration: 1.0 });
-              },
-              (err) => {
-                console.error("Locate error", err);
-                ctx?.showToast('Enable location permissions', 'error');
-              },
-              { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-            );
-          }}
-          title="Locate current position"
-        >📍 Locate Me</button>
-
-        {/* Phase 22: Blackout Mode toggle button */}
-        <button
-          className={`${styles.btn} ${blackoutMode ? styles.btnActive : ''}`}
-          onClick={() => setBlackoutMode(!blackoutMode)}
-          style={blackoutMode ? { color: 'var(--accent)', borderColor: 'var(--accent)' } : {}}
-          title="Toggle Offline Compass Navigation Mode"
-        >
-          🧭 {blackoutMode ? 'Offline Compass' : 'Offline Mode'}
-        </button>
+        {/* Action controller pills */}
+        <div className="flex items-center bg-[#0c1222]/95 border border-[#1e293b] rounded-xl p-0.5 shadow-lg gap-1.5 text-[9px] font-black uppercase tracking-wider text-slate-300">
+          <button 
+            onClick={() => map.flyTo([22.5, 82.0], 5, { duration: 0.8 })}
+            className="px-2.5 py-1.5 bg-[#10192e] border border-[#1e293b] hover:border-amber-500/30 text-white rounded-lg flex items-center gap-1 cursor-pointer transition-colors"
+          >
+            <span>🌐</span> India
+          </button>
+          <button 
+            onClick={() => {
+              if (!navigator.geolocation) {
+                 ctx?.showToast('Geolocation not supported', 'error');
+                 return;
+              }
+              ctx?.showToast('Scanning local area...', 'ok');
+              navigator.geolocation.getCurrentPosition(
+                ({ coords }) => {
+                  map.flyTo([coords.latitude, coords.longitude], 13, { duration: 1.0 });
+                },
+                (err) => {
+                  console.error("Locate error", err);
+                  ctx?.showToast('Enable location permissions', 'error');
+                },
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+              );
+            }}
+            className="px-2.5 py-1.5 bg-[#10192e] border border-[#1e293b] hover:border-amber-500/30 text-white rounded-lg flex items-center gap-1 cursor-pointer transition-colors"
+          >
+            <span>📍</span> Locate Me
+          </button>
+          <button 
+            onClick={() => setBlackoutMode(!blackoutMode)}
+            className={`px-2.5 py-1.5 border rounded-lg flex items-center gap-1 cursor-pointer transition-colors ${
+              blackoutMode 
+                ? 'bg-amber-500/20 border-amber-500 text-[#fbbf24]' 
+                : 'bg-[#10192e] border-[#1e293b] text-white hover:border-amber-500/30'
+            }`}
+          >
+            <span>📶</span> {blackoutMode ? 'Compass' : 'Offline Mode'}
+          </button>
+        </div>
       </div>
     </div>
   );

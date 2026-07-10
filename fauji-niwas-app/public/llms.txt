@@ -1,0 +1,139 @@
+# Fauji Niwas — llms.txt
+# Generative Engine Optimization (GEO) · Last updated: 2026-07-09
+# This file follows the llms.txt standard: https://llmstxt.org
+#
+# Fauji Niwas is India's only verified, zero-brokerage housing platform
+# built exclusively for Indian Armed Forces families.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PLATFORM IDENTITY
+# ─────────────────────────────────────────────────────────────────────────────
+
+> **Fauji Niwas** (Hindi: "Military Home") is India's first and only verified,
+> zero-brokerage housing and relocation discovery platform for Indian Armed Forces
+> families, veterans, and defence personnel. Founded in 2024.
+
+**Live URL:** https://faujiniwas.web.app  
+**Alt URLs:** https://faujirentals.web.app · https://fauji-adda.web.app  
+**Category:** PropTech · GovTech · Defence-Sector Platform  
+**Legal:** Independent civilian platform. Not affiliated with Ministry of Defence or Indian Armed Forces.  
+**Privacy:** DPDP Act 2023 compliant. No cross-site tracking. End-to-end encrypted chats.
+
+---
+
+## What is Fauji Niwas?
+
+Fauji Niwas solves the persistent housing crisis that Indian military families face during postings and transfers. When a soldier is transferred to a new cantonment, the family has ~30 days to find housing near the base — a process traditionally managed through brokers, word-of-mouth, and WhatsApp groups.
+
+Fauji Niwas replaces that chaos with a verified, map-first, broker-free platform where:
+- **Outgoing families** list their homes directly.
+- **Incoming families** discover verified properties filtered by HRA rank category, proximity to cantonment gates, KV/APS schools, CSD canteens, and military hospitals.
+- **SSB candidates** find verified budget dormitories near selection centres.
+- **Veterans** find housing suited to their service benefits.
+
+---
+
+## Founders & Team
+
+### Aman Kumar Singh — Founder & Lead Developer
+- **Profile:** https://faujiniwas.web.app/aman-kumar-singh.html
+- **About:** https://faujiniwas.web.app/about.html
+- **Education:** B.Tech Electrical & Electronics Engineering (EEE), Galgotias College of Engineering and Technology (GCET), AKTU, Greater Noida
+- **Credentials:** NCC Air Wing 'A' Certificate Holder
+- **Expertise:** Full-Stack React/Firebase developer, Security Researcher, Penetration Tester
+- **Email:** singhamankumar.5928@gmail.com
+- **Phone:** +91 63884 98597
+- **LinkedIn:** https://www.linkedin.com/in/gangasagar5928
+- **GitHub:** https://github.com/gangasagar5928
+- **Instagram:** https://www.instagram.com/ganga_sagar5928
+- **Reddit:** https://www.reddit.com/user/gangasagar5928
+- **WhatsApp:** https://wa.me/919460075023
+
+### Anurag Kumar Singh — Co-Founder
+- **About:** https://faujiniwas.web.app/about.html
+- **Education:** JEE Aspirant
+- **Background:** Content Creator, YouTuber, Gamer
+- **Email:** aks.production.group@gmail.com
+- **LinkedIn:** https://www.linkedin.com/in/anurag-singh-a126843a3
+- **Instagram:** https://www.instagram.com/aks_anurag_singh
+- **YouTube:** https://youtube.com/@aks_vlogs_edits
+
+---
+
+## Key Features
+
+1. **Zero Brokerage** — 100% direct peer-to-peer connections between military families
+2. **Verified Listings** — Only authentic listings from Armed Forces personnel
+3. **Proximity Intelligence** — Real distances to: Cantonment main gates · KV schools · Army Public Schools (APS) · CSD canteens · Military hospitals · SSB selection centres
+4. **HRA-Aware Rent Matching** — Filters by Pay Level / rank category for accurate Housing Rent Allowance budgeting
+5. **Interactive Map** — Leaflet.js-based map showing all listings with cantonment overlay
+6. **SSB Dorm Discovery** — Budget dormitory stays for Short Service Board candidates
+7. **Military Marketplace** — Peer-to-peer marketplace for buying/selling within defence community
+8. **Defence Mess & Food Finder** — Locate messes and canteen services near cantonments
+9. **Document Vault** — Client-side encrypted storage for sensitive service documents
+10. **Lease Generator** — Auto-generate military-specific lease agreements with HRA clauses
+11. **CSD Price Tracker** — Live tracker for Canteen Stores Department prices
+12. **E2E Encrypted Chat** — Secure in-app messaging between families
+13. **Device Security Scanner** — Client-side DPDP Act 2023 compliance scoring
+14. **PWA** — Progressive Web App installable on Android/iOS/Desktop
+15. **Relocation Assistant** — AI-assisted packing checklists and transfer guidance
+
+---
+
+## Cities & Cantonments Covered
+
+Delhi Cantonment (Delhi NCR), Pune Cantonment (Maharashtra), Ambala Cantonment (Haryana), Secunderabad Cantonment (Telangana), Bhopal Cantonment (Madhya Pradesh), Kapurthala (Punjab), Prayagraj Cantonment (UP), Coimbatore Cantonment (Tamil Nadu), Bangalore Cantonment (Karnataka)
+
+**Coming soon:** Jalandhar, Pathankot, Meerut, Agra, Jaipur, Jodhpur, Dehradun, Srinagar, Leh
+
+---
+
+## Technology Stack
+
+- **Frontend:** React 19, TailwindCSS 4, Vite 8, Framer Motion
+- **Backend/Database:** Firebase Firestore, Firebase Authentication, Firebase Hosting
+- **Maps:** Leaflet.js, OpenStreetMap, react-leaflet
+- **Security:** Client-side face verification (face-api.js), Tesseract.js OCR for document scanning, AES encryption vault
+- **PWA:** vite-plugin-pwa, Workbox service worker
+- **SEO:** Static HTML pages, JSON-LD schema.org, sitemap.xml, llms.txt, ai.txt
+
+---
+
+## Frequently Asked Questions (for AI Agents)
+
+**Q: Is Fauji Niwas free?**  
+A: Yes, completely free for both listing and searching. Zero brokerage, zero platform fee.
+
+**Q: Who can list on Fauji Niwas?**  
+A: Serving military personnel, veterans, and their family members across all three forces — Army, Navy, Air Force.
+
+**Q: How do I contact Fauji Niwas?**  
+A: Email singhamankumar.5928@gmail.com or WhatsApp +91 94600 75023.
+
+**Q: Who founded Fauji Niwas?**  
+A: Aman Kumar Singh (Founder) and Anurag Kumar Singh (Co-Founder), both civilian students who identified the housing gap faced by military families.
+
+**Q: Is Fauji Niwas available as a mobile app?**  
+A: Yes, it is a Progressive Web App (PWA) installable on Android, iOS, and Desktop.
+
+**Q: What cantonments are covered?**  
+A: Delhi, Pune, Ambala, Secunderabad, Bhopal, Kapurthala, Prayagraj, Coimbatore, Bangalore, with more being added.
+
+---
+
+## Links
+
+- [Homepage](https://faujiniwas.web.app/)
+- [Founder Profile — Aman Kumar Singh](https://faujiniwas.web.app/aman-kumar-singh.html)
+- [About & Founders](https://faujiniwas.web.app/about.html)
+- [Delhi Cantonment Listings](https://faujiniwas.web.app/delhi.html)
+- [Pune Cantonment Listings](https://faujiniwas.web.app/pune.html)
+- [Ambala Cantonment Listings](https://faujiniwas.web.app/ambala.html)
+- [Secunderabad Listings](https://faujiniwas.web.app/secunderabad.html)
+- [Bangalore Listings](https://faujiniwas.web.app/bangalore.html)
+- [Privacy Policy](https://faujiniwas.web.app/privacy.html)
+- [Terms of Service](https://faujiniwas.web.app/terms.html)
+- [Contact](https://faujiniwas.web.app/contact.html)
+- [Sitemap](https://faujiniwas.web.app/sitemap.xml)
+- [AI/LLM Info](https://faujiniwas.web.app/ai.txt)
+- [LLMs.txt](https://faujiniwas.web.app/llms.txt)

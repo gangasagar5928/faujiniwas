@@ -30,7 +30,7 @@ export default function PostModal({ onClose }) {
   }, [form]);
 
   const sameCity = listings.filter(l => l.city?.toLowerCase() === form.city?.toLowerCase() && l.type === form.type);
-  const avgPrice = sameCity.length > 0 ? Math.round(sameCity.reduce((acc,l)=>acc+(l.price||0), 0) / sameCity.length) : null;
+  const avgPrice = sameCity.length > 0 ? Math.round(sameCity.reduce((acc,l)=>acc+(Number(l.price)||0), 0) / sameCity.length) : null;
   const [images, setImages] = useState([]);
   const [visionStatus, setVisionStatus] = useState('');
   const [visionVerifying, setVisionVerifying] = useState(false);

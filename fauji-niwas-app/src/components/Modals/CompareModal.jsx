@@ -57,9 +57,9 @@ export default function CompareModal({ onClose }) {
           </div>
 
           <Row label="PRICE" 
-            v1={`₹${l1.price.toLocaleString()}`} 
-            v2={`₹${l2.price.toLocaleString()}`} 
-            better={l1.price < l2.price ? 1 : l2.price < l1.price ? 2 : null} 
+            v1={`₹${(Number(l1.price) || 0).toLocaleString()}`} 
+            v2={`₹${(Number(l2.price) || 0).toLocaleString()}`} 
+            better={(Number(l1.price) || 0) < (Number(l2.price) || 0) ? 1 : (Number(l2.price) || 0) < (Number(l1.price) || 0) ? 2 : null} 
           />
           <Row label="BHK" v1={l1.bhk || '1'} v2={l2.bhk || '1'} />
           <Row label="AREA" v1={l1.sqft || '—'} v2={l2.sqft || '—'} better={parseInt(l1.sqft) > parseInt(l2.sqft) ? 1 : 2} />

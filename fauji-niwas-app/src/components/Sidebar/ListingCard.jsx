@@ -11,26 +11,26 @@ const PHOTO_POOL = [
 
 export default function ListingCard({ listing, r: propR, index, onClick }) {
   const r = listing || propR || {};
-  const price = r.price || 0;
-  const thumb = r.mediaUrls?.[0] || PHOTO_POOL[Math.abs((r.createdAt || 0)) % PHOTO_POOL.length];
+  const price = Number(String(r.price).replace(/[^0-9.]/g, '')) || 0;
+  const createdAtVal = Number(r.createdAt);
+  const thumbIndex = Number.isNaN(createdAtVal) ? 0 : Math.abs(createdAtVal);
+  const thumb = r.mediaUrls?.[0] || PHOTO_POOL[thumbIndex % PHOTO_POOL.length];
   
   const wishlist = useUserStore(s => s.wishlist) || [];
   const toggleWishlist = useUserStore(s => s.toggleWishlist);
   const isSaved = wishlist.includes(r.id);
 
-  // Time text placeholder
-  const timeText = r.time || (index === 0 ? '2h ago' : index === 1 ? '28m ago' : index === 2 ? '1h ago' : '18h ago');
-
   return (
     <div 
-      className="group bg-[#10192e] border border-[#1e293b] hover:border-[#fbbf24]/50 hover:bg-[#18233c] p-3 rounded-2xl flex gap-3.5 transition-all duration-300 cursor-pointer shadow-md select-none relative overflow-hidden active:scale-[0.98] hover:shadow-[0_8px_30px_rgba(0,0,0,0.35)]"
+      className="group bg-[#131b2e] border border-[#1e293b] hover:border-[#fbbf24]/50 hover:bg-[#1b253b] rounded-2xl flex gap-3 transition-all duration-300 cursor-pointer shadow-md select-none relative overflow-hidden active:scale-[0.98] hover:shadow-[0_8px_30px_rgba(0,0,0,0.35)]"
       onClick={onClick}
       role="button"
       tabIndex={0}
       onKeyDown={e => e.key === 'Enter' && onClick()}
+      style={{ padding: '12px' }}
     >
       {/* Card Thumbnail */}
-      <div className="w-[100px] h-[78px] rounded-xl overflow-hidden relative bg-[#090d16] border border-[#1e293b]/60 shrink-0">
+      <div className="w-[130px] h-[110px] rounded-xl overflow-hidden relative bg-[#090d16] border border-[#1e293b]/60 shrink-0">
         <img
           src={thumb}
           loading="lazy"
@@ -40,7 +40,7 @@ export default function ListingCard({ listing, r: propR, index, onClick }) {
           onError={e => { e.target.src = PHOTO_POOL[0]; }}
         />
         {r.verified && (
-          <span className="absolute bottom-1.5 left-1.5 bg-[#121c17]/90 border border-emerald-500/30 text-emerald-400 text-[6.5px] font-black uppercase px-1 py-0.5 rounded tracking-wider font-mono">
+          <span className="absolute bottom-1.5 left-1.5 bg-[#059669] text-white text-[9px] font-black uppercase px-2 py-0.5 rounded tracking-wider font-sans shadow-md">
             VERIFIED
           </span>
         )}
@@ -50,45 +50,36 @@ export default function ListingCard({ listing, r: propR, index, onClick }) {
       <div className="flex-1 flex flex-col justify-between min-w-0 text-left">
         <div className="flex flex-col gap-1">
           
-          {/* Header Row */}
-          <div className="flex justify-between items-start gap-1">
-            <div className="flex items-center gap-1.5 min-w-0">
-              <span className="shrink-0 text-[8px] font-black uppercase text-[#fbbf24] px-1.5 py-0.5 bg-[#fbbf24]/10 border border-[#fbbf24]/20 rounded font-mono">
-                {r.bhk || 3} BHK
-              </span>
-              <h4 className="text-[11px] font-bold text-white leading-snug truncate max-w-[130px] font-heading group-hover:text-[#fbbf24] transition-colors">
-                {r.name}
-              </h4>
-            </div>
-            <span className="shrink-0 text-[8px] font-medium text-slate-500 font-mono">
-              {timeText}
-            </span>
+          {/* Title */}
+          <h4 className="text-[15px] font-black text-white leading-snug truncate font-heading group-hover:text-[#fbbf24] transition-colors">
+            {r.name}
+          </h4>
+
+          {/* Distance / sqft */}
+          <div className="text-[13px] font-semibold text-slate-400 flex items-center gap-1.5 mt-0.5">
+            <span className="text-amber-500 text-sm">📍</span>
+            <span>{r.distance || '2.9'} km</span>
           </div>
 
-          {/* Location / Cantonment Distance */}
-          <div className="text-[9px] text-slate-400 flex items-center gap-1 font-mono">
-            <span>🚶 {r.distance || 0.9} km from Cantt</span>
-            <span>·</span>
-            <span className="truncate max-w-[90px]">{r.area || 'Cantt Area'}</span>
+          {/* Area sqft */}
+          <div className="text-[13px] font-semibold text-slate-400 flex items-center gap-1.5">
+            <span className="text-sm">📐</span>
+            <span>{r.sqft || '669'} sq ft</span>
           </div>
 
-          {/* Specs metrics row */}
-          <div className="text-[8px] text-slate-500 flex items-center gap-1.5 font-mono mt-0.5">
-            <span>📐 {r.sqft || 1850} sq.ft</span>
-            <span>·</span>
-            <span>🛋️ {r.furnishing || 'Semi'}</span>
-            <span>·</span>
-            <span>🚗 {r.parking || 2} Parking</span>
+          {/* Parking */}
+          <div className="text-[13px] font-semibold text-slate-400 flex items-center gap-1.5">
+            <span className="text-sm">🚗</span>
+            <span>{r.parking || '2'} Parking</span>
           </div>
 
         </div>
 
-        {/* Key stat row: Price, Verification, HRA */}
-        <div className="flex justify-between items-center border-t border-[#1e293b] pt-2 mt-1.5">
+        {/* Price Row */}
+        <div className="flex justify-between items-center pt-2 border-t border-[#1e293b]/50 mt-2">
           <div className="flex items-baseline gap-0.5">
-            <span className="text-[10px] text-slate-500 font-mono">₹</span>
-            <span className="text-sm font-extrabold text-[#fbbf24] font-heading">{price.toLocaleString()}</span>
-            <span className="text-[8px] text-slate-500 font-mono">/mo</span>
+            <span className="text-[18px] font-black text-[#fbbf24] font-heading">₹{price.toLocaleString()}</span>
+            <span className="text-[11px] text-slate-500 font-mono">/mo</span>
           </div>
 
           <button 
@@ -96,13 +87,13 @@ export default function ListingCard({ listing, r: propR, index, onClick }) {
               e.stopPropagation();
               toggleWishlist(r.id);
             }}
-            className={`w-6 h-6 flex items-center justify-center rounded-full border transition-all cursor-pointer text-xs ${
+            className={`w-8 h-8 flex items-center justify-center rounded-full transition-all cursor-pointer text-xl ${
               isSaved 
-                ? 'bg-amber-500/20 border-amber-500 text-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.3)]' 
-                : 'bg-[#10192e] border-[#1e293b] text-slate-500 hover:text-white hover:border-slate-400'
+                ? 'text-red-500 scale-110' 
+                : 'text-slate-500 hover:text-white'
             }`}
           >
-            {isSaved ? '★' : '♡'}
+            {isSaved ? '♥' : '♡'}
           </button>
         </div>
 

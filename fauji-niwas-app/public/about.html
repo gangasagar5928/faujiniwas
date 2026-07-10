@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us — Aman Kumar Singh & Anurag Kumar Singh | Fauji Niwas Founders</title>
     <meta name="description" content="Meet the founders of Fauji Niwas — Aman Kumar Singh (Founder, B.Tech EEE, GCET, Security Researcher) and Anurag Kumar Singh (Co-Founder). India's only verified, zero-brokerage housing platform for the Armed Forces." />
-    <meta name="keywords" content="Aman Kumar Singh, Aman Kumar Singh GCET, Fauji Niwas founder, Aman Singh defence housing, Anurag Kumar Singh, Anurag Kumar Singh co-founder, gangasagar5928, Fauji Niwas about, Indian defence housing founders, zero brokerage army housing India" />
+    <meta name="keywords" content="Fauji Niwas, defence housing, military relocation, cantonment rentals, Aman Kumar Singh, Anurag Kumar Singh, founders" />
     <link rel="canonical" href="https://faujiniwas.web.app/about.html" />
     <meta name="robots" content="index, follow" />
     <meta name="author" content="Aman Kumar Singh, Anurag Kumar Singh" />
@@ -29,6 +29,7 @@
     {
       "@context": "https://schema.org",
       "@type": "Person",
+      "@id": "https://faujiniwas.web.app/aman-kumar-singh.html#person",
       "name": "Aman Kumar Singh",
       "alternateName": "gangasagar5928",
       "jobTitle": "Founder",
@@ -37,20 +38,19 @@
         "name": "Fauji Niwas",
         "url": "https://faujiniwas.web.app"
       },
-      "url": "https://faujiniwas.web.app/about.html",
+      "url": "https://faujiniwas.web.app/aman-kumar-singh.html",
       "image": "https://faujiniwas.web.app/aman-kumar-singh.jpg",
       "photo": "https://faujiniwas.web.app/aman-kumar-singh.jpg",
-      "email": "singhamankumar.5928@gmail.com",
-      "telephone": "+91-6388498597",
       "sameAs": [
-        "https://linkedin.com/in/gangasagar5928",
-        "https://instagram.com/ganga_sagar5928",
-        "https://wa.me/919460075023",
-        "https://github.com/gangasagar5928"
+        "https://www.linkedin.com/in/gangasagar5928",
+        "https://github.com/gangasagar5928",
+        "https://www.instagram.com/ganga_sagar5928",
+        "https://www.reddit.com/user/gangasagar5928",
+        "https://wa.me/919460075023"
       ],
       "alumniOf": {
         "@type": "CollegeOrUniversity",
-        "name": "Government College of Engineering and Technology (GCET)"
+        "name": "Galgotias College of Engineering and Technology (GCET, AKTU)"
       },
       "knowsAbout": ["React", "Firebase", "Security Research", "Web Development", "Defence Housing", "Full-Stack Development", "NCC"],
       "description": "B.Tech EEE Student at GCET, Security Researcher, Full-Stack Developer, NCC Air Wing 'A' Certificate holder. Founder of Fauji Niwas — India's only verified, zero-brokerage housing platform built exclusively for Indian Armed Forces families.",
@@ -72,7 +72,6 @@
         "url": "https://faujiniwas.web.app"
       },
       "url": "https://faujiniwas.web.app/about.html",
-      "email": "aks.production.group@gmail.com",
       "sameAs": [
         "https://www.linkedin.com/in/anurag-singh-a126843a3",
         "https://www.instagram.com/aks_anurag_singh",
@@ -99,21 +98,18 @@
         {
           "@type": "Person",
           "name": "Aman Kumar Singh",
-          "jobTitle": "Founder",
-          "email": "singhamankumar.5928@gmail.com"
+          "jobTitle": "Founder"
         },
         {
           "@type": "Person",
           "name": "Anurag Kumar Singh",
-          "jobTitle": "Co-Founder",
-          "email": "aks.production.group@gmail.com"
+          "jobTitle": "Co-Founder"
         }
       ],
       "contactPoint": {
         "@type": "ContactPoint",
-        "email": "singhamankumar.5928@gmail.com",
-        "telephone": "+91-6388498597",
         "contactType": "Customer Support",
+        "url": "https://faujiniwas.web.app/contact.html",
         "areaServed": "IN",
         "availableLanguage": ["Hindi", "English"]
       },
@@ -122,8 +118,10 @@
         "name": "India"
       },
       "sameAs": [
-        "https://linkedin.com/in/gangasagar5928",
-        "https://instagram.com/ganga_sagar5928"
+        "https://www.linkedin.com/in/gangasagar5928",
+        "https://github.com/gangasagar5928",
+        "https://www.instagram.com/ganga_sagar5928",
+        "https://www.reddit.com/user/gangasagar5928"
       ]
     }
     </script>
@@ -162,6 +160,22 @@
       })();
     </script>
     <style>
+      /* CLS size-adjust overrides */
+      @font-face {
+        font-family: 'Inter';
+        src: local('Helvetica Neue'), local('Helvetica'), local('Arial');
+        size-adjust: 100%;
+        ascent-override: 90%;
+        descent-override: 22%;
+      }
+      @font-face {
+        font-family: 'Outfit';
+        src: local('Arial');
+        size-adjust: 104%;
+        ascent-override: 95%;
+        descent-override: 25%;
+      }
+
       *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
       
       :root {
@@ -578,7 +592,7 @@
         <div class="hero-badge">🎖️ About Fauji Niwas</div>
         <h1>Meet the Founders</h1>
         <p>
-            Built by <strong>Aman Kumar Singh</strong> and <strong>Anurag Kumar Singh</strong> to solve a real problem
+            Built by <strong><a href="/aman-kumar-singh.html" style="color: inherit; text-decoration: underline;">Aman Kumar Singh</a></strong> and <strong>Anurag Kumar Singh</strong> to solve a real problem
             faced by every defence family during postings — finding safe, verified, brokerage-free housing near their new station.
         </p>
     </header>
@@ -657,7 +671,7 @@
                     />
                 </div>
                 <div>
-                    <div class="founder-name" itemprop="name">Aman Kumar Singh</div>
+                    <div class="founder-name" itemprop="name"><a href="/aman-kumar-singh.html" style="color: inherit; text-decoration: underline; text-underline-offset: 4px;">Aman Kumar Singh</a></div>
                     <div class="founder-role" itemprop="jobTitle">Founder, Fauji Niwas</div>
                 </div>
             </div>

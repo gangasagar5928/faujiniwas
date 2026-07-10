@@ -10,11 +10,16 @@ function getHraColor(price) {
 export default function RentalMarker({ listing: r }) {
   const map = useMap();
   const ctx = useContext(ModalContext);
-  const price = r.price || 0;
+
+  if (!r || !r.lat || !r.lng || Number.isNaN(parseFloat(r.lat)) || Number.isNaN(parseFloat(r.lng))) {
+    return null; // Prevent Map crash from invalid coordinates
+  }
+
+  const price = Number(String(r.price).replace(/[^0-9.]/g, '')) || 0;
   const isMarket = r._collection === 'market' || r._collection === 'marketplace';
   const color = isMarket ? '#14b8a6' : getHraColor(price);
   const label = isMarket
-    ? `🏷️ ₹${(price / 1000).toFixed(0)}K`
+    ? `🪙 ₹${(price / 1000).toFixed(0)}K`
     : `₹${(price / 1000).toFixed(0)}K`;
 
   const icon = L.divIcon({

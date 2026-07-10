@@ -4,6 +4,7 @@ import { ModalContext } from '../../App';
 export default function MarketCard({ item, index, onClick }) {
   const ctx = useContext(ModalContext);
   const { name, area, city, price, category, condition, mediaUrls, negotiable } = item;
+  const cleanPrice = Number(price) || 0;
   const thumb = mediaUrls?.[0] || 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&q=80&w=400';
 
   const getIcon = (cat) => {
@@ -65,7 +66,7 @@ export default function MarketCard({ item, index, onClick }) {
         {/* Key stat row: Price, Chat action, Negotiable */}
         <div className="flex justify-between items-center border-t border-[#1f2b42] pt-2 mt-2">
           <div className="flex items-baseline gap-1">
-            <span className="text-sm font-extrabold text-[#f59e0b] font-heading">₹{price.toLocaleString()}</span>
+            <span className="text-sm font-extrabold text-[#f59e0b] font-heading">₹{cleanPrice.toLocaleString()}</span>
             {negotiable && <span className="text-[8px] text-[#fbbf24] font-bold font-mono ml-1">NEG</span>}
           </div>
 
