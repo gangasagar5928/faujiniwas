@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Policy & Responsible Disclosure — Fauji Niwas</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0B0F1A;
+            --white: #F1F1EE;
+            --muted: #8892A4;
+            --accent: #FF9933;
+            --border: rgba(255, 255, 255, 0.08);
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-blur: blur(12px);
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--white);
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .logo {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+        .logo span {
+            color: var(--accent);
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            color: var(--muted);
+            font-size: 14px;
+        }
+        .card {
+            background: var(--glass);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+        h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        p {
+            font-size: 14px;
+            color: #d1d5db;
+            margin-bottom: 16px;
+        }
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            color: #d1d5db;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        .contact-box {
+            background: rgba(255, 153, 51, 0.05);
+            border: 1px solid rgba(255, 153, 51, 0.15);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            margin-top: 24px;
+        }
+        .email {
+            font-family: monospace;
+            font-size: 16px;
+            color: var(--accent);
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .back-btn:hover {
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">🛡️ <span>Fauji</span>Niwas</div>
+            <h1>Security Policy & Responsible Disclosure</h1>
+            <p class="subtitle">Last Updated: June 3, 2026</p>
+        </header>
+
+        <main>
+            <section class="card">
+                <h2>🌐 Our Security Commitment</h2>
+                <p>
+                    Fauji Niwas is dedicated to protecting the locational and personal privacy of India's military families. 
+                    We completely exclude advertising trackers, enforce end-to-end encryption (E2EE) for peer chats, 
+                    isolate personal identifiers (PII), and encrypt sensitive documents locally on user devices before transit.
+                </p>
+                <p>
+                    We appreciate the role of security researchers and community members in keeping our platform safe. 
+                    If you identify a security vulnerability, we invite you to report it to us responsibly.
+                </p>
+            </section>
+
+            <section class="card">
+                <h2>🛡️ Responsible Disclosure Guidelines</h2>
+                <p>To encourage responsible reporting, we ask that you adhere to the following principles:</p>
+                <ul>
+                    <li>Provide a detailed description of the vulnerability, including step-by-step instructions or proof-of-concept code to reproduce the issue.</li>
+                    <li>Avoid violating privacy rights, destroying or degrading data, or interrupting our production systems (e.g., avoid denial-of-service testing).</li>
+                    <li>Allow us a reasonable period of time to review, remediate, and patch the vulnerability before disclosing it publicly.</li>
+                    <li>Do not perform social engineering, phishing, or physical security attacks against Fauji Niwas staff or users.</li>
+                </ul>
+            </section>
+
+            <section class="card">
+                <h2>🔎 In-Scope Systems</h2>
+                <p>The following systems are currently in-scope for security reviews:</p>
+                <ul>
+                    <li>The live Web Application: <strong>https://faujiniwas.web.app</strong></li>
+                    <li>The React/Vite front-end source files.</li>
+                    <li>The Firestore Security Rules layer.</li>
+                    <li>The E2EE Web Crypto client library implementation.</li>
+                </ul>
+                <p>Out-of-scope issues include simple spam, third-party library vulnerabilities that have no direct exploit path, and standard browser warnings that do not present a security risk.</p>
+            </section>
+
+            <section class="card">
+                <h2>📧 How to Report a Vulnerability</h2>
+                <p>If you have discovered a security issue, please contact our security team directly via email. We will investigate all reports promptly.</p>
+                
+                <div class="contact-box">
+                    <p>Submit your report to:</p>
+                    <a href="mailto:security@faujiniwas.web.app" class="email">security@faujiniwas.web.app</a>
+                </div>
+            </section>
+        </main>
+
+        <footer style="text-align: center; margin-top: 20px;">
+            <a href="/" class="back-btn">← Back to Homepage</a>
+        </footer>
+    </div>
+</body>
+</html>

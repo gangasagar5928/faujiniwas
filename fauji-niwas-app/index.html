@@ -1,0 +1,760 @@
+<!doctype html>
+<html lang="en-IN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      (function() {
+        // Detect native app via User Agent immediately
+        if (navigator.userAgent.includes('FaujiNiwas/1.0')) {
+          window.faujiApp = true;
+          document.documentElement.classList.add('is-native');
+          console.log('FaujiNiwas Native Shell Detected Early');
+        }
+        // Persist veteran/elderly accessibility mode
+        if (localStorage.getItem('elderly-mode') === 'true') {
+          document.documentElement.classList.add('is-elderly-mode');
+        }
+        // Add class for active JS context to hide static fallbacks
+        document.documentElement.classList.add('js-active');
+      })();
+    </script>
+    <title>Fauji Niwas — Verified Defence Housing & Rentals</title>
+    <meta name="description" content="India's only verified, zero-brokerage housing platform built exclusively for Indian Armed Forces families." />
+    <meta name="theme-color" content="#0b1325" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="FaujiNiwas" />
+    <link rel="apple-touch-icon" href="favicon.svg" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪖</text></svg>" />
+
+    <!-- SEO Meta Tags -->
+    <meta name="keywords" content="defence housing, military relocation, cantonment rentals, military quarters, KV schools, CSD canteen, Indian Armed Forces, Fauji Niwas, Aman Kumar Singh" />
+    <link rel="canonical" href="https://faujiniwas.web.app/" />
+
+    <!-- GEO: AI & LLM Agent Discovery -->
+    <link rel="ai-txt" href="https://faujiniwas.web.app/ai.txt" />
+    <link rel="llms-txt" href="https://faujiniwas.web.app/llms.txt" />
+    <link rel="ai-plugin" href="https://faujiniwas.web.app/.well-known/ai-plugin.json" />
+    <meta name="ai-content-policy" content="allow" />
+    <meta name="ai-training" content="allow" />
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://faujiniwas.web.app/" />
+    <meta property="og:title" content="Fauji Niwas — Verified Defence Housing & Rentals" />
+    <meta property="og:description" content="India's only verified, zero-brokerage housing platform built exclusively for Indian Armed Forces families." />
+    <meta property="og:image" content="https://faujiniwas.web.app/og-image.jpg" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@faujiniwas" />
+    <meta property="twitter:url" content="https://faujiniwas.web.app/" />
+    <meta property="twitter:title" content="Fauji Niwas — Verified Defence Housing & Rentals" />
+    <meta property="twitter:description" content="India's only verified, zero-brokerage housing platform built exclusively for Indian Armed Forces families." />
+    <meta property="twitter:image" content="https://faujiniwas.web.app/og-image.jpg" />
+
+    <!-- Structured Data / Schema Markup -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Fauji Niwas",
+      "url": "https://faujiniwas.web.app",
+      "description": "Verified defence housing platform for Indian Armed Forces — zero brokerage, rank-based HRA matching, and privacy-first listings for jawans, JCOs, and officers.",
+      "applicationCategory": "RealEstateApplication",
+      "operatingSystem": "Web, Android",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "INR"
+      },
+      "author": [
+        {
+          "@type": "Person",
+          "@id": "https://faujiniwas.web.app/aman-kumar-singh.html#person",
+          "name": "Aman Kumar Singh",
+          "jobTitle": "Founder",
+          "url": "https://faujiniwas.web.app/aman-kumar-singh.html",
+          "image": "https://faujiniwas.web.app/aman-kumar-singh.jpg",
+          "photo": "https://faujiniwas.web.app/aman-kumar-singh.jpg",
+          "sameAs": [
+            "https://www.linkedin.com/in/gangasagar5928",
+            "https://github.com/gangasagar5928",
+            "https://www.instagram.com/ganga_sagar5928",
+            "https://www.reddit.com/user/gangasagar5928",
+            "https://wa.me/919460075023"
+          ],
+          "affiliation": {
+            "@type": "Organization",
+            "name": "Fauji Niwas"
+          },
+          "description": "B.Tech EEE Student at GCET, Security Researcher, Full-Stack Developer, and NCC Air Wing 'A' Certificate holder. Founder of Fauji Niwas — India's only verified, zero-brokerage housing platform for Indian Armed Forces families."
+        },
+        {
+          "@type": "Person",
+          "name": "Anurag Kumar Singh",
+          "alternateName": "aks_anurag_singh",
+          "jobTitle": "Co-Founder",
+          "worksFor": {
+            "@type": "Organization",
+            "name": "Fauji Niwas",
+            "url": "https://faujiniwas.web.app"
+          },
+          "url": "https://faujiniwas.web.app/about.html",
+          "sameAs": [
+            "https://www.linkedin.com/in/anurag-singh-a126843a3",
+            "https://www.instagram.com/aks_anurag_singh",
+            "https://youtube.com/@aks_vlogs_edits"
+          ],
+          "knowsAbout": ["Content Creation", "Gaming", "JEE Preparation", "YouTube", "Defence Housing"],
+          "description": "JEE Aspirant, Content Creator, YouTuber, and passionate gamer. Co-Founder of Fauji Niwas — India's verified zero-brokerage defence housing platform.",
+          "nationality": "Indian"
+        }
+      ]
+    }
+    </script>
+
+    <!-- Organization Schema for AI overviews -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Fauji Niwas",
+      "url": "https://faujiniwas.web.app",
+      "logo": "https://faujiniwas.web.app/favicon.svg",
+      "image": "https://faujiniwas.web.app/og-image.jpg",
+      "description": "India's only verified, zero-brokerage housing platform built exclusively for Indian Armed Forces families. Founded by Aman Kumar Singh and Anurag Kumar Singh.",
+      "foundingDate": "2024",
+      "founder": [
+        {
+          "@type": "Person",
+          "@id": "https://faujiniwas.web.app/aman-kumar-singh.html#person",
+          "name": "Aman Kumar Singh",
+          "alternateName": "gangasagar5928",
+          "jobTitle": "Founder",
+          "url": "https://faujiniwas.web.app/aman-kumar-singh.html",
+          "image": "https://faujiniwas.web.app/aman-kumar-singh.jpg",
+          "photo": "https://faujiniwas.web.app/aman-kumar-singh.jpg",
+          "sameAs": [
+            "https://www.linkedin.com/in/gangasagar5928",
+            "https://github.com/gangasagar5928",
+            "https://www.instagram.com/ganga_sagar5928",
+            "https://www.reddit.com/user/gangasagar5928",
+            "https://wa.me/919460075023"
+          ],
+          "alumniOf": {
+            "@type": "CollegeOrUniversity",
+            "name": "Galgotias College of Engineering and Technology (GCET, AKTU)"
+          },
+          "knowsAbout": ["React", "Firebase", "Security Research", "Web Development", "Defence Housing", "Full-Stack Development", "NCC"],
+          "description": "B.Tech EEE Student at GCET, Security Researcher, Full-Stack Developer, and NCC Air Wing 'A' Certificate holder. Founder of Fauji Niwas — India's only verified, zero-brokerage housing platform for Indian Armed Forces families.",
+          "nationality": "Indian"
+        },
+        {
+          "@type": "Person",
+          "name": "Anurag Kumar Singh",
+          "alternateName": "aks_anurag_singh",
+          "jobTitle": "Co-Founder",
+          "url": "https://faujiniwas.web.app/about.html",
+          "email": "aks.production.group@gmail.com",
+          "sameAs": [
+            "https://www.linkedin.com/in/anurag-singh-a126843a3",
+            "https://www.instagram.com/aks_anurag_singh",
+            "https://youtube.com/@aks_vlogs_edits"
+          ],
+          "knowsAbout": ["Content Creation", "Gaming", "JEE Preparation", "YouTube", "Defence Housing"],
+          "description": "JEE Aspirant, Content Creator, YouTuber, and passionate gamer. Co-Founder of Fauji Niwas — India's verified zero-brokerage defence housing platform.",
+          "nationality": "Indian"
+        }
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "Customer Support",
+        "url": "https://faujiniwas.web.app/contact.html",
+        "areaServed": "IN",
+        "availableLanguage": [
+          "Hindi",
+          "English"
+        ]
+      },
+      "sameAs": [
+        "https://www.linkedin.com/in/gangasagar5928",
+        "https://github.com/gangasagar5928",
+        "https://www.instagram.com/ganga_sagar5928",
+      ]
+    }
+    </script>
+
+    <!-- GEO: WebSite, SearchAction, BreadcrumbList, and RealEstateListing JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://faujiniwas.web.app/#website",
+          "url": "https://faujiniwas.web.app/",
+          "name": "Fauji Niwas",
+          "description": "India's verified zero-brokerage housing portal designed specifically for defence families.",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://faujiniwas.web.app/app?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://faujiniwas.web.app/#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://faujiniwas.web.app/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "FAQ",
+              "item": "https://faujiniwas.web.app/faq.html"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "About",
+              "item": "https://faujiniwas.web.app/about.html"
+            }
+          ]
+        },
+        {
+          "@type": "RealEstateListing",
+          "@id": "https://faujiniwas.web.app/#listing",
+          "name": "Verified Cantonment Accommodations",
+          "description": "Rentals near major Indian military bases, including Pune Cantt, Delhi Cantt, and Secunderabad Cantt.",
+          "url": "https://faujiniwas.web.app/app",
+          "offers": {
+            "@type": "AggregateOffer",
+            "priceCurrency": "INR",
+            "lowPrice": "4000",
+            "highPrice": "60000",
+            "offerCount": "1500"
+          }
+        }
+      ]
+    }
+    </script>
+
+    <!-- Preconnect for Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Google Fonts (blocking, with size-adjust fallback overrides) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;700;800&family=Playfair+Display:wght@700&family=Syne:wght@700;800&display=swap" />
+    <link rel="manifest" href="manifest.json" />
+  </head>
+  <body class="bg-[#FAF9F6] text-slate-900 font-sans antialiased">
+    <noscript>
+      <div style="padding: 24px; text-align: center; font-family: sans-serif;">
+        <strong>Fauji Niwas requires JavaScript.</strong>
+        Please enable JavaScript to use the app, or
+        <a href="/home.html" style="color: #f59e0b; font-weight: bold; text-decoration: underline;">view our static landing page</a>.
+      </div>
+      
+      <!-- Static indexing fallback for search engines and JS-disabled users -->
+      <section id="about-founders" style="max-width: 800px; margin: 40px auto; padding: 24px; border: 1px solid rgba(245, 158, 11, 0.15); border-radius: 16px; font-family: sans-serif; text-align: left;">
+        <h2 style="color: #b45309; font-size: 24px; font-weight: bold; margin-bottom: 16px;">About Fauji Niwas</h2>
+        <p style="font-size: 15px; color: #334155; line-height: 1.6; margin-bottom: 16px;">
+          Fauji Niwas is a defence housing and rental discovery platform built for
+          Indian Armed Forces families, veterans, and defence personnel. The platform
+          maps verified rental listings near cantonments, SSB selection centres, and
+          military stations across India — with proximity indicators for KV schools,
+          military hospitals, and CSD canteens.
+        </p>
+        <p style="font-size: 15px; color: #334155; line-height: 1.6;">
+          Fauji Niwas was founded by <strong>Aman Kumar Singh</strong>, an EEE
+          student at Galgotias College of Engineering and Technology (GCET, AKTU)
+          with an NCC Air Wing Cadet background, alongside co-founder
+          <strong>Anurag Kumar Singh</strong>.
+        </p>
+      </section>
+    </noscript>
+
+    <!-- ═══════════════════════════════════════
+         TACTICAL LOADER — lives OUTSIDE #root
+         so React mount doesn't destroy it
+         Modified for clean Light Theme
+    ═══════════════════════════════════════ -->
+    <div id="tactical-loader" class="fixed inset-0 z-[100000] flex flex-col items-center justify-center overflow-hidden bg-[#FAF9F6] transition-opacity duration-700 ease-out" role="status" aria-live="polite" aria-label="Loading Fauji Niwas">
+
+      <!-- Animated particle grid canvas -->
+      <canvas id="loader-canvas" class="absolute inset-0 w-full h-full opacity-10" aria-hidden="true"></canvas>
+
+      <!-- Ambient glow orbs -->
+      <div class="absolute rounded-full w-[480px] h-[480px] -top-[15%] -left-[15%] pointer-events-none animate-orbPulse" style="background: radial-gradient(circle, rgba(245,158,11,0.08) 0%, transparent 70%);" aria-hidden="true"></div>
+      <div class="absolute rounded-full w-[360px] h-[360px] -bottom-[10%] -right-[10%] pointer-events-none animate-orbPulse" style="background: radial-gradient(circle, rgba(59,83,35,0.08) 0%, transparent 70%); animation-delay: 2s;" aria-hidden="true"></div>
+
+      <!-- Grid overlay -->
+      <div class="absolute inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(15,23,42,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(15,23,42,0.015) 1px, transparent 1px); background-size: 52px 52px; mask-image: radial-gradient(ellipse 65% 55% at 50% 50%, black 30%, transparent 100%); -webkit-mask-image: radial-gradient(ellipse 65% 55% at 50% 50%, black 30%, transparent 100%);" aria-hidden="true"></div>
+
+      <!-- Scan line -->
+      <div class="absolute inset-0 pointer-events-none opacity-20 z-5" style="background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.03) 3px, rgba(0,0,0,0.03) 4px);" aria-hidden="true"></div>
+
+      <!-- Main glass card -->
+      <div class="relative z-10 flex flex-col items-center p-10 bg-white/90 backdrop-blur-3xl border border-amber-500/20 rounded-3xl shadow-[0_24px_64px_rgba(15,23,42,0.08)] min-w-[300px] max-w-[360px] text-center animate-cardFloat" id="loader-card">
+        <!-- Brand -->
+        <div class="text-2xl font-extrabold tracking-wide text-slate-800 uppercase mb-8">🪖 Fauji <span class="italic text-amber-600 bg-gradient-to-r from-amber-600 to-amber-700 bg-clip-text text-transparent">Niwas</span></div>
+
+        <!-- Concentric rings -->
+        <div class="relative w-20 h-20 mb-8 shrink-0" aria-hidden="true">
+          <div class="absolute inset-0 rounded-full border-2 border-transparent border-t-amber-500 border-r-amber-500/25 animate-[spin_1.4s_linear_infinite]"></div>
+          <div class="absolute inset-[10px] rounded-full border-2 border-transparent border-t-lime-600 border-l-lime-600/20 animate-[spin_1s_linear_infinite_reverse]"></div>
+          <div class="absolute inset-[20px] rounded-full border-2 border-transparent border-t-amber-500/50 border-b-amber-500/15 animate-[spin_0.7s_linear_infinite]"></div>
+          <div class="absolute inset-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_12px_4px_rgba(245,158,11,0.3)] animate-dotPulse"></div>
+        </div>
+
+        <!-- Status text -->
+        <div class="text-xs text-slate-600 tracking-wide font-mono min-h-[1.1em] mb-6" id="loader-status">Initializing secure session…</div>
+
+        <!-- Progress bar -->
+        <div class="w-full h-[3px] bg-slate-200/80 rounded-full overflow-hidden mb-5">
+          <div class="h-full rounded-full bg-gradient-to-r from-lime-600 to-amber-500 transition-[width] duration-[1.6s] ease-[cubic-bezier(0.16,1,0.3,1)]" id="loader-progress" style="width: 0%;"></div>
+        </div>
+
+        <!-- Step indicators -->
+        <div class="flex gap-2 items-center" aria-hidden="true">
+          <div class="h-1 rounded-full transition-all duration-500 w-9 bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.3)]" id="lstep-1"></div>
+          <div class="h-1 rounded-full bg-slate-200 transition-all duration-500 w-5" id="lstep-2"></div>
+          <div class="h-1 rounded-full bg-slate-200 transition-all duration-500 w-5" id="lstep-3"></div>
+          <div class="h-1 rounded-full bg-slate-200 transition-all duration-500 w-5" id="lstep-4"></div>
+        </div>
+      </div>
+
+      <div class="absolute bottom-5 font-mono text-[10px] text-slate-500/55 tracking-wider">v4.3.1 · SECURE SESSION · PRODUCTION</div>
+    </div>
+
+    <div id="root" style="min-height: 100vh;">
+      <!-- SEO Pre-render Grounding for AI Search Crawlers (ChatGPT/Claude/Gemini) -->
+      <section style="max-width: 800px; margin: 40px auto; padding: 24px; font-family: sans-serif; text-align: left; display: block;">
+        <h1 style="color: #3b5323; font-size: 28px; font-weight: 800; margin-bottom: 12px;">Fauji Niwas — Verified Defence Housing & Rentals</h1>
+        <p style="font-size: 15px; color: #334155; line-height: 1.6;">
+          Fauji Niwas is India's premier verified, zero-brokerage housing and relocation platform built exclusively for Indian Armed Forces families, veterans, and defence personnel. It maps rentals near cantonments and military stations, KV schools, Military Hospitals, and CSD canteens.
+        </p>
+        <p style="font-size: 15px; color: #334155; line-height: 1.6;">
+          Fauji Niwas was founded by <strong><a href="/aman-kumar-singh.html" style="color: #3b5323; font-weight: bold; text-decoration: underline;">Aman Kumar Singh</a></strong>, a B.Tech EEE student at Galgotias College of Engineering and Technology (GCET, AKTU), NCC Air Wing 'A' Certificate holder, and Security Researcher, along with co-founder <strong>Anurag Kumar Singh</strong>.
+        </p>
+        <h3 style="font-size: 18px; margin-top: 20px;">About the Founders:</h3>
+        <ul style="list-style-type: disc; padding-left: 20px; font-size: 14px; color: #475569;">
+          <li><strong><a href="/aman-kumar-singh.html" style="color: #3b5323; text-decoration: underline;">Aman Kumar Singh</a> (Founder & Lead Developer)</strong>: B.Tech EEE Student at GCET, Security Researcher, NCC Cadet. <a href="https://www.linkedin.com/in/gangasagar5928" style="color: #0055a5; text-decoration: underline;">LinkedIn</a> · <a href="https://github.com/gangasagar5928" style="color: #24292f; text-decoration: underline;">GitHub</a></li>
+          <li><strong>Anurag Kumar Singh (Co-Founder)</strong>: JEE Aspirant and Content Creator.</li>
+        </ul>
+        <p style="font-size: 14px; color: #64748b; margin-top: 16px;">Explore cantonments: Pune, Delhi, Ambala, Secunderabad, Bhopal, Kapurthala, Prayagraj, Coimbatore, Bangalore.</p>
+        <a href="/about.html" style="color: #f59e0b; text-decoration: underline;">About Fauji Niwas Founders</a> | <a href="/faq.html" style="color: #f59e0b; text-decoration: underline;">Frequently Asked Questions (FAQ)</a> | <a href="/contact.html" style="color: #f59e0b; text-decoration: underline;">Contact Founders</a>
+      </section>
+    </div>
+
+    <style>
+      :root {
+        --color-olive: #3b5323;
+        --color-amber-500: #f59e0b;
+        --color-amber-400: #fbbf24;
+      }
+      
+      /* CLS size adjustments to match font metrics when they swap */
+      @font-face {
+        font-family: 'Inter';
+        src: local('Helvetica Neue'), local('Helvetica'), local('Arial');
+        size-adjust: 100%;
+        ascent-override: 90%;
+        descent-override: 22%;
+      }
+      @font-face {
+        font-family: 'Outfit';
+        src: local('Arial');
+        size-adjust: 104%;
+        ascent-override: 95%;
+        descent-override: 25%;
+      }
+
+      /* Native Dark Mode Styles to replace expensive global filter: invert() */
+      .dark-theme {
+        --bg-dark: #0b1325;
+        --card-dark: #111827;
+      }
+      .dark-theme body {
+        background-color: #0b1325 !important;
+        color: #f3f4f6 !important;
+      }
+      .dark-theme #tactical-loader {
+        background-color: #0b1325 !important;
+      }
+      .dark-theme #loader-card {
+        background-color: #111827 !important;
+        color: #f3f4f6 !important;
+        border-color: rgba(245, 158, 11, 0.3) !important;
+      }
+      .dark-theme #loader-card .text-slate-800 {
+        color: #f3f4f6 !important;
+      }
+      .dark-theme #loader-card .text-slate-600 {
+        color: #9ca3af !important;
+      }
+      .dark-theme #about-founders {
+        border-color: rgba(245, 158, 11, 0.3) !important;
+        background-color: #111827 !important;
+      }
+      .dark-theme #about-founders h2 {
+        color: #fbbf24 !important;
+      }
+      .dark-theme #about-founders p,
+      .dark-theme #about-founders li {
+        color: #d1d5db !important;
+      }
+      .dark-theme .static-footer {
+        background-color: #0f172a !important;
+        color: #9ca3af !important;
+        border-top-color: rgba(255, 255, 255, 0.1) !important;
+      }
+      
+      @keyframes orbPulse {
+        0%   { transform: translate(0, 0) scale(1); }
+        100% { transform: translate(4%, 6%) scale(1.12); }
+      }
+      @keyframes dotPulse {
+        0%, 100% { box-shadow: 0 0 8px 2px rgba(245,158,11,0.5); transform: translate(-50%, -50%) scale(1); }
+        50%       { box-shadow: 0 0 20px 8px rgba(245,158,11,0.3); transform: translate(-50%, -50%) scale(1.3); }
+      }
+      @keyframes cardFloat {
+        from { opacity: 0; transform: translateY(24px) scale(0.96); }
+        to   { opacity: 1; transform: translateY(0) scale(1); }
+      }
+      
+      .animate-orbPulse {
+        animation: orbPulse 6s ease-in-out infinite alternate;
+      }
+      .animate-dotPulse {
+        animation: dotPulse 1.4s ease-in-out infinite;
+      }
+      .animate-cardFloat {
+        animation: cardFloat 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+    </style>
+
+    <script>
+    (function () {
+      /* ── Particle canvas ── */
+      var canvas = document.getElementById('loader-canvas');
+      var ctx = canvas && canvas.getContext('2d');
+      var particles = [];
+      var animFrame;
+
+      function resizeCanvas() {
+        if (!canvas) return;
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      // Spawn particles
+      for (var i = 0; i < 60; i++) {
+        particles.push({
+          x:  Math.random() * window.innerWidth,
+          y:  Math.random() * window.innerHeight,
+          vx: (Math.random() - 0.5) * 0.35,
+          vy: (Math.random() - 0.5) * 0.35,
+          r:  Math.random() * 1.4 + 0.4,
+          a:  Math.random() * 0.55 + 0.1,
+          c:  Math.random() > 0.55 ? '#f59e0b' : '#a3e635',
+        });
+      }
+
+      function drawParticles() {
+        if (!ctx) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (var i = 0; i < particles.length; i++) {
+          var p = particles[i];
+          p.x += p.vx; p.y += p.vy;
+          if (p.x < 0) p.x = canvas.width;
+          if (p.x > canvas.width) p.x = 0;
+          if (p.y < 0) p.y = canvas.height;
+          if (p.y > canvas.height) p.y = 0;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = p.c;
+          ctx.globalAlpha = p.a;
+          ctx.fill();
+        }
+        // Draw faint connecting lines between close particles
+        ctx.globalAlpha = 0.06;
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 0.6;
+        for (var i = 0; i < particles.length; i++) {
+          for (var j = i + 1; j < particles.length; j++) {
+            var dx = particles[i].x - particles[j].x;
+            var dy = particles[i].y - particles[j].y;
+            var dist = Math.sqrt(dx*dx + dy*dy);
+            if (dist < 100) {
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.stroke();
+            }
+          }
+        }
+        ctx.globalAlpha = 1;
+        animFrame = requestAnimationFrame(drawParticles);
+      }
+      if (window.innerWidth >= 768) {
+        drawParticles();
+      } else {
+        if (canvas) canvas.style.display = 'none';
+      }
+
+      /* ── Loading stages ── */
+      var statusEl   = document.getElementById('loader-status');
+      var progressEl = document.getElementById('loader-progress');
+      var steps = [
+        document.getElementById('lstep-1'),
+        document.getElementById('lstep-2'),
+        document.getElementById('lstep-3'),
+        document.getElementById('lstep-4'),
+      ];
+
+      var stages = [
+        { msg: 'Initializing secure session…',    pct: 15 },
+        { msg: 'Loading cantonment map data…',     pct: 45 },
+        { msg: 'Preparing housing intelligence…',  pct: 75 },
+        { msg: 'Almost ready…',                    pct: 95 },
+      ];
+      var stageIdx = 0;
+
+      function applyStage(idx) {
+        if (!stages[idx]) return;
+        if (statusEl) statusEl.textContent = stages[idx].msg;
+        if (progressEl) progressEl.style.width = stages[idx].pct + '%';
+        steps.forEach(function(el, i) {
+          if (!el) return;
+          el.className = 'h-1 rounded-full transition-all duration-500 ' + (i < idx ? 'w-5 bg-lime-600/50' : i === idx ? 'w-9 bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.4)]' : 'w-5 bg-slate-200');
+        });
+      }
+      applyStage(0);
+
+      var tick = setInterval(function () {
+        stageIdx = Math.min(stageIdx + 1, stages.length - 1);
+        applyStage(stageIdx);
+        if (stageIdx >= stages.length - 1) clearInterval(tick);
+      }, 1700);
+
+      /* ── Hide on app-ready ── */
+      function hideLoader() {
+        var l = document.getElementById('tactical-loader');
+        if (l) l.classList.add('opacity-0');
+        setTimeout(function() {
+          if (l) l.style.display = 'none';
+        }, 700);
+        clearInterval(tick);
+        cancelAnimationFrame(animFrame);
+      }
+      window.addEventListener('app-ready', hideLoader);
+
+      /* ── Retry on timeout ── */
+      setTimeout(function () {
+        var l = document.getElementById('tactical-loader');
+        var card = document.getElementById('loader-card');
+        if (l && !l.classList.contains('opacity-0') && card) {
+          clearInterval(tick);
+          cancelAnimationFrame(animFrame);
+          card.innerHTML =
+            '<div class="flex flex-col items-center gap-4 text-[#f0f6ff]">' +
+            '<div class="text-[2.2rem]">📡</div>' +
+            '<div class="text-[0.85rem] text-gray-400/90 leading-relaxed">Slow connection detected.<br/>Map data is still loading…</div>' +
+            '<button class="bg-gradient-to-r from-amber-400 to-amber-500 hover:scale-105 active:scale-95 text-[#030712] font-bold text-xs px-7 py-2.5 rounded-full shadow-[0_4px_20px_rgba(245,158,11,0.4)] transition-all" onclick="location.reload()">Retry Connection</button>' +
+            '</div>';
+        }
+      }, 14000);
+    })();
+    </script>
+
+    <script type="module" src="/src/landing.jsx"></script>
+    <script src="/chatbot.js" defer></script>
+
+    <!-- ♿ ACCESSIBILITY WIDGET FOR OLD AGE PEOPLE -->
+    <div id="accessibility-widget" class="fixed bottom-24 left-5 md:left-auto md:right-6 md:bottom-28 z-[200000] flex flex-col items-start md:items-end gap-2">
+      <!-- Toggle trigger button -->
+      <button id="acc-trigger" class="w-16 h-16 rounded-full bg-amber-500 hover:bg-amber-600 text-black flex items-center justify-center shadow-2xl font-bold text-2xl border-2 border-white select-none transition-all hover:scale-105 active:scale-95 cursor-pointer" title="Accessibility Panel / सुगम्यता सेटिंग्स" aria-label="Open Accessibility Panel">
+        ♿
+      </button>
+      
+      <!-- Panel popup menu -->
+      <div id="acc-menu" class="hidden flex-col bg-[#0f172a] border border-[#334155] rounded-2xl p-5 shadow-2xl min-w-[280px] text-left gap-4 text-white border-2">
+        <div class="text-sm font-extrabold text-amber-500 border-b border-[#334155] pb-3 uppercase tracking-wider flex items-center justify-between font-mono">
+          <span>Accessibility 🎖️</span>
+          <button id="acc-close" class="text-slate-400 hover:text-white text-xl cursor-pointer font-bold">&times;</button>
+        </div>
+        
+        <!-- Text Size -->
+        <div class="flex flex-col gap-2">
+          <span class="text-[11px] font-extrabold uppercase text-slate-400 font-mono tracking-wider">Text Size / आकार</span>
+          <div class="flex gap-1.5">
+            <button id="fs-small" class="flex-1 py-2.5 text-sm font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">A-</button>
+            <button id="fs-normal" class="flex-1 py-2.5 text-sm font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">A</button>
+            <button id="fs-large" class="flex-1 py-2.5 text-sm font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">A+</button>
+            <button id="fs-elderly" class="flex-1 py-2.5 text-sm font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">Senior</button>
+          </div>
+        </div>
+        
+        <!-- Language Option (Google Translate) -->
+        <div class="flex flex-col gap-2">
+          <span class="text-[11px] font-extrabold uppercase text-slate-400 font-mono tracking-wider">Language / भाषा</span>
+          <div id="google_translate_element" class="mt-1 w-full overflow-hidden rounded-lg"></div>
+        </div>
+        
+        <!-- Dark/Light Theme -->
+        <div class="flex flex-col gap-2">
+          <span class="text-[11px] font-extrabold uppercase text-slate-400 font-mono tracking-wider">Contrast Theme / थीम</span>
+          <div class="flex gap-1.5">
+            <button id="theme-dark" class="flex-1 py-2.5 text-sm font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">Dark</button>
+            <button id="theme-light" class="flex-1 py-2.5 text-sm font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer">Light</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Google Translate Script -->
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+          pageLanguage: 'en',
+          includedLanguages: 'en,hi,pa,te,ta,kn,mr,bn',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        }, 'google_translate_element');
+      }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <script>
+    (function() {
+      // Apply saved values immediately to prevent FOUC
+      var savedSize = localStorage.getItem('fn_fontsize') || '16px';
+      document.documentElement.style.fontSize = savedSize;
+
+      var savedTheme = localStorage.getItem('fn_theme') || 'light';
+      if (savedTheme === 'dark') {
+        document.documentElement.classList.add('dark-theme');
+        document.body.classList.add('dark-theme');
+      } else {
+        document.documentElement.classList.remove('dark-theme');
+        document.body.classList.remove('dark-theme');
+      }
+
+      // Setup Accessibility Widget event handlers
+      window.addEventListener('DOMContentLoaded', function() {
+        var widget = document.getElementById('accessibility-widget');
+        var trigger = document.getElementById('acc-trigger');
+        var menu = document.getElementById('acc-menu');
+        var closeBtn = document.getElementById('acc-close');
+
+        if (!trigger || !menu) return;
+
+        trigger.addEventListener('click', function() {
+          menu.classList.toggle('hidden');
+          menu.classList.toggle('flex');
+        });
+
+        closeBtn.addEventListener('click', function() {
+          menu.classList.add('hidden');
+          menu.classList.remove('flex');
+        });
+
+        // Theme toggles
+        var themeDark = document.getElementById('theme-dark');
+        var themeLight = document.getElementById('theme-light');
+        
+        function updateThemeButtons(theme) {
+          if (theme === 'dark') {
+            themeDark.className = 'flex-1 py-2.5 text-sm font-black bg-amber-500 text-black rounded-lg transition-all cursor-pointer';
+            themeLight.className = 'flex-1 py-2.5 text-sm font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer';
+          } else {
+            themeLight.className = 'flex-1 py-2.5 text-sm font-black bg-amber-500 text-black rounded-lg transition-all cursor-pointer';
+            themeDark.className = 'flex-1 py-2.5 text-sm font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer';
+          }
+        }
+
+        // Tactical High Contrast Filter for Dark Theme
+        function applyDarkTheme(enable) {
+          if (enable) {
+            document.documentElement.classList.add('dark-theme');
+            document.body.classList.add('dark-theme');
+          } else {
+            document.documentElement.classList.remove('dark-theme');
+            document.body.classList.remove('dark-theme');
+          }
+        }
+
+        themeDark.addEventListener('click', function() {
+          applyDarkTheme(true);
+          localStorage.setItem('fn_theme', 'dark');
+          updateThemeButtons('dark');
+        });
+
+        themeLight.addEventListener('click', function() {
+          applyDarkTheme(false);
+          localStorage.setItem('fn_theme', 'light');
+          updateThemeButtons('light');
+        });
+
+        if (savedTheme === 'dark') {
+           applyDarkTheme(true);
+        }
+        updateThemeButtons(savedTheme);
+
+        // Font Size Toggles
+        var sizes = {
+          '14px': document.getElementById('fs-small'),
+          '16px': document.getElementById('fs-normal'),
+          '18px': document.getElementById('fs-large'),
+          '20px': document.getElementById('fs-elderly')
+        };
+
+        function updateSizeButtons(currentSize) {
+          Object.keys(sizes).forEach(function(size) {
+            var btn = sizes[size];
+            if (!btn) return;
+            if (size === currentSize) {
+              btn.className = 'flex-1 py-2.5 text-sm font-black bg-amber-500 text-black rounded-lg transition-all cursor-pointer';
+            } else {
+              btn.className = 'flex-1 py-2.5 text-sm font-bold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition-all cursor-pointer';
+            }
+          });
+        }
+
+        Object.keys(sizes).forEach(function(size) {
+          var btn = sizes[size];
+          if (!btn) return;
+          btn.addEventListener('click', function() {
+            document.documentElement.style.fontSize = size;
+            localStorage.setItem('fn_fontsize', size);
+            updateSizeButtons(size);
+          });
+        });
+
+        updateSizeButtons(savedSize);
+      });
+    })();
+    </script>
+    <!-- Semantic Footer for Search Engines & AI Bots -->
+    <footer class="static-footer" style="padding: 24px; text-align: center; font-family: sans-serif; font-size: 13px; color: #475569; border-top: 1px solid #e2e8f0; background: #faf9f6; line-height: 1.6;">
+      <p style="margin: 0 0 8px 0; font-weight: bold; color: #3b5323;">🪖 Fauji Niwas — Verified Defence Housing Platform</p>
+      <p style="margin: 0 0 8px 0;">
+        Fauji Niwas is India's verified, zero-brokerage housing and relocation portal built for the Indian Armed Forces.
+        Founded by <strong><a href="/aman-kumar-singh.html" style="color: #3b5323; text-decoration: underline;">Aman Kumar Singh</a></strong> (B.Tech EEE, Galgotias College of Engineering and Technology, GCET AKTU)
+        and co-founded by <strong>Anurag Kumar Singh</strong>.
+      </p>
+      <p style="margin: 0;">
+        © 2025 Fauji Niwas · <a href="/about.html" style="color: #f59e0b; text-decoration: underline;">About the Founders</a> · <a href="/contact.html" style="color: #f59e0b; text-decoration: underline;">Contact Support</a>
+      </p>
+    </footer>
+  </body>
+</html>

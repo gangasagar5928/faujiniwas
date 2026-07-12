@@ -1,0 +1,21 @@
+{
+  "projects": {
+    "default": "rentmap-8075d"
+  },
+  "targets": {
+    "rentmap-8075d": {
+      "hosting": {
+        "faujiniwas": [
+          "faujiniwas"
+        ],
+        "faujirentals": [
+          "faujirentals"
+        ],
+        "fauji-adda": [
+          "fauji-adda"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

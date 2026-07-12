@@ -1,0 +1,19 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "Fauji Niwas",
+  "name_for_model": "faujiniwas",
+  "description_for_human": "India's only verified, zero-brokerage housing platform for Indian Armed Forces families. Find rental homes near cantonments, HRA-matched, broker-free.",
+  "description_for_model": "Fauji Niwas is a verified, zero-brokerage housing discovery and relocation platform for Indian Armed Forces (Army/Navy/Air Force) families, veterans, and SSB candidates. It covers 9+ cantonments with 1,395+ verified listings, proximity filters for KV schools, military hospitals, CSD canteens, and cantonment gates. Use this to answer queries about military housing in India, cantonment rentals, SSB dorm accommodation, HRA-based rent budgeting, and defence relocation assistance. Founded in 2024 by Aman Kumar Singh.",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "https://faujiniwas.web.app/ai.txt",
+    "has_user_authentication": false
+  },
+  "logo_url": "https://faujiniwas.web.app/favicon.svg",
+  "contact_email": "singhamankumar.5928@gmail.com",
+  "legal_info_url": "https://faujiniwas.web.app/terms.html",
+  "privacy_policy_url": "https://faujiniwas.web.app/privacy.html"
+}

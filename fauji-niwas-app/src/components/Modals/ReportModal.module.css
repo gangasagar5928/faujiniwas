@@ -1,0 +1,7 @@
+.header { padding: 18px 18px 0; display: flex; justify-content: space-between; align-items: center; }
+.body { padding: 18px; overflow-y: auto; flex: 1; min-height: 0; }
+.closeBtn { width:32px;height:32px;background:var(--card2);border:none;border-radius:50%;color:var(--muted);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center; }
+.closeBtn:hover { background:var(--border2);color:var(--text); }
+.opt { display:flex;align-items:flex-start;gap:12px;padding:12px;border-radius:10px;cursor:pointer;border:1px solid var(--border);margin-bottom:8px;transition:all .2s; }
+.opt:hover { border-color:var(--accent);background:rgba(255,153,51,.04); }
+.opt input { accent-color:var(--accent);margin-top:2px;flex-shrink:0; }

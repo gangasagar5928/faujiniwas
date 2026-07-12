@@ -1,0 +1,124 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 12, 22, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 20000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.4s ease;
+}
+
+.card {
+  background: #131f35;
+  border: 1px solid var(--border2);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 400px;
+  padding: 24px;
+  box-shadow: 0 32px 64px rgba(0,0,0,0.6), 0 0 20px rgba(212, 175, 55, 0.1);
+  display: flex;
+  flex-direction: column;
+  transform-style: preserve-3d;
+  animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), gentleFloat3D 6s ease-in-out infinite alternate;
+}
+
+@keyframes gentleFloat3D {
+  0% { transform: perspective(1000px) rotateX(2deg) rotateY(-1deg) translateY(0); }
+  100% { transform: perspective(1000px) rotateX(-2deg) rotateY(1deg) translateY(-8px); }
+}
+
+.card:hover {
+  animation-play-state: paused;
+  transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1.02);
+  transition: transform 0.3s;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.stepCount {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--accent);
+  letter-spacing: 1px;
+}
+
+.skip {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.body {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.icon {
+  font-size: 56px;
+  margin-bottom: 16px;
+  display: block;
+  animation: bounce 2s infinite;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 12px;
+  font-family: 'Outfit', sans-serif;
+}
+
+.desc {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.footer {
+  display: flex;
+}
+
+.nextBtn {
+  width: 100%;
+  background: var(--accent);
+  color: #000;
+  border: none;
+  padding: 16px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 15px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.3);
+}
+
+.nextBtn:active {
+  transform: scale(0.96);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}

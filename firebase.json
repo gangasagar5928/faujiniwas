@@ -1,0 +1,93 @@
+{
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "hosting": [
+    {
+      "target": "faujiniwas",
+      "public": "fauji-niwas-app/dist",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "cleanUrls": true,
+      "headers": [
+        {
+          "source": "**/*.@(js|css|woff2|png|jpg|webp|svg)",
+          "headers": [{ "key": "Cache-Control", "value": "public,max-age=31536000,immutable" }]
+        },
+        {
+          "source": "**/*.html",
+          "headers": [{ "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }]
+        },
+
+        {
+          "source": "**",
+          "headers": [
+            { "key": "X-Content-Type-Options", "value": "nosniff" },
+            { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+            { "key": "X-XSS-Protection", "value": "1; mode=block" },
+            { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+            { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(self), payment=()" },
+            { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" }
+          ]
+        }
+      ],
+      "redirects": [
+        {
+          "source": "/app.html",
+          "destination": "/app",
+          "type": 301
+        }
+      ],
+      "rewrites": [
+        {
+          "source": "/app",
+          "destination": "/app.html"
+        },
+        {
+          "source": "/app/**",
+          "destination": "/app.html"
+        }
+      ]
+    },
+    {
+      "target": "faujirentals",
+      "public": "fauji-niwas-app/dist",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "headers": [
+        {
+          "source": "**/*.@(js|css|woff2|png|jpg|webp|svg)",
+          "headers": [{ "key": "Cache-Control", "value": "public,max-age=31536000,immutable" }]
+        }
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    },
+    {
+      "target": "fauji-adda",
+      "public": "fauji-niwas-app/dist",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "redirects": [
+        {
+          "source": "**",
+          "destination": "https://faujiniwas.web.app",
+          "type": 301
+        }
+      ]
+    }
+  ]
+}

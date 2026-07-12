@@ -1,0 +1,47 @@
+.wrap { display: flex; flex-direction: column; gap: 8px; }
+.row {
+  display: flex; gap: 8px; overflow-x: auto;
+  padding-bottom: 2px; scrollbar-width: none;
+}
+.row::-webkit-scrollbar { display: none; }
+
+.adv { border: none; }
+.advToggle {
+  font-size: 12px; font-weight: 700; color: var(--muted);
+  cursor: pointer; padding: 4px 0; list-style: none;
+  display: flex; align-items: center; gap: 5px;
+  transition: color .2s;
+}
+.advToggle:hover { color: var(--accent); }
+.advToggle::marker, .advToggle::-webkit-details-marker { display: none; }
+
+.advGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 8px; margin-top: 8px;
+}
+.advLabel {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--muted); margin-bottom: 4px;
+}
+.advSel {
+  width: 100%; padding: 8px 22px 8px 10px;
+  background: var(--card); border: 1px solid var(--border2);
+  color: var(--text); border-radius: 8px; font-size: 12px;
+  font-family: 'Outfit', sans-serif; outline: none;
+  -webkit-appearance: none; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a8fa8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 8px center;
+  cursor: pointer; transition: border-color .2s;
+}
+.advSel:focus { border-color: var(--accent); }
+.advSel option { background: var(--card); color: var(--text); }
+
+.slider { width: 100%; accent-color: var(--accent); cursor: pointer; }
+.resetBtn {
+  background: rgba(244,63,94,.08); border: 1px solid rgba(244,63,94,.3);
+  color: var(--red); border-radius: 8px; padding: 8px;
+  font-size: 12px; font-weight: 700; cursor: pointer;
+  font-family: 'Outfit', sans-serif; transition: all .2s;
+}
+.resetBtn:hover { background: rgba(244,63,94,.16); }

@@ -1,0 +1,19 @@
+{
+  "name": "Fauji Niwas — Defence Housing Live Map",
+  "short_name": "Fauji Niwas",
+  "description": "Find verified defence housing, SSB dorms & food near cantonment stations across India.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b1325",
+  "theme_color": "#FF9933",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["utilities", "real estate", "navigation"]
+}

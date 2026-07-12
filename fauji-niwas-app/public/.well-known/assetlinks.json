@@ -1,0 +1,10 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.faujiadda.faujiadda_app",
+    "sha256_cert_fingerprints": [
+      "72:84:9A:EF:88:3C:32:D6:6F:F9:80:82:0E:2D:4A:66:84:65:7F:CE:93:40:55:B3:53:B7:A4:01:DF:2B:DE:8C"
+    ]
+  }
+}]
