@@ -1,0 +1,4 @@
+This is a Brave Creators publisher verification file.
+
+Domain: faujiniwas.web.app
+Token: bd01ab4fc9cf433f0decccf405459a97b7e57f584cd6eedd2be300d43d7450c3

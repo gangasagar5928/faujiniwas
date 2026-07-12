@@ -1,0 +1,95 @@
+.overlay {
+  position: absolute;
+  bottom: 28px;
+  right: 20px;
+  left: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 500;
+  pointer-events: all;
+  animation: overlayRise .45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes overlayRise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .overlay {
+    top: 70px;
+    right: 12px;
+    bottom: auto;
+    left: auto;
+    max-width: 220px;
+  }
+  .btn,
+  .tBtn {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+}
+.btn,
+.tBtn {
+  background: var(--card2);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 8px 13px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  transition: transform .2s, border-color .2s, color .2s, background .2s, box-shadow .2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.4);
+  backdrop-filter: blur(8px);
+  position: relative;
+  overflow: hidden;
+}
+.btn::after,
+.tBtn::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 -140%;
+  width: 70%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.14), transparent);
+  transform: skewX(-18deg);
+  transition: left .55s ease;
+}
+.activeM { background: #ef4444; color: white; border-color: #ef4444; }
+.activeS { background: #3b82f6; color: white; border-color: #3b82f6; }
+.activeC { background: #a855f7; color: white; border-color: #a855f7; }
+.btn:hover,
+.tBtn:hover {
+  background: var(--border2);
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(0,0,0,.34);
+}
+.btnActive {
+  background: rgba(255, 153, 51, 0.15) !important;
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+}
+.btn:hover::after,
+.tBtn:hover::after {
+  left: 160%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay {
+    animation: none;
+  }
+
+  .btn,
+  .tBtn,
+  .btn::after,
+  .tBtn::after {
+    transition: none;
+  }
+}

@@ -1,0 +1,49 @@
+.header { padding: 18px 18px 0; display: flex; justify-content: space-between; align-items: center; }
+.body { padding: 18px; overflow-y: auto; flex: 1; min-height: 0; }
+.closeBtn { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--muted); }
+
+.viewToggle {
+  display: flex;
+  background: var(--card2);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+}
+
+.viewToggle button {
+  flex: 1;
+  border: none;
+  background: none;
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.viewToggle button.activeTab {
+  background: var(--card);
+  color: var(--accent);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.uploadArea { margin-bottom: 20px; position: relative; }
+.uploadBox {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  border: 1px dashed var(--border2); border-radius: 12px;
+  padding: 32px 20px; background: rgba(0,0,0,0.12);
+  cursor: pointer; transition: all 0.2s;
+}
+.uploadBox:hover { border-color: var(--accent); background: rgba(255,153,51,0.04); }
+.uploadIco { font-size: 32px; margin-bottom: 12px; }
+.uploadLabel { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.uploadSub { font-size: 11px; color: var(--muted); }
+.clearPhotos {
+  position: absolute; top: 10px; right: 10px;
+  background: rgba(244,63,94,0.15); color: #f43f5e;
+  border: 1px solid rgba(244,63,94,0.3); padding: 4px 10px;
+  border-radius: 100px; font-size: 10px; font-weight: 700; cursor: pointer;
+}

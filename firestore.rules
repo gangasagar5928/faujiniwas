@@ -1,0 +1,149 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Authentication Helpers ──────────────────────────────────────────────
+    function isAuthed() {
+      return request.auth != null;
+    }
+
+    function hasRole(role) {
+      return isAuthed() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == role;
+    }
+
+    function isAdmin() {
+      return hasRole('admin');
+    }
+
+    function isModerator() {
+      return hasRole('moderator') || isAdmin();
+    }
+
+    // ── Rentals collection ──────────────────────────────────────────────────
+    match /rentals/{rental} {
+      allow read: if true;
+
+      allow create: if isAuthed()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.reportCount == 0
+        && request.resource.data.price is number
+        && request.resource.data.price >= 500
+        && request.resource.data.price <= 300000
+        && request.resource.data.name is string
+        && request.resource.data.name.size() >= 5
+        && request.resource.data.name.size() <= 120
+        && request.resource.data.type in ['Flat', 'Room', 'Villa', 'PG', 'House']
+        && request.resource.data.city is string
+        && request.resource.data.area is string;
+
+      allow update: if 
+        isAdmin() ||
+        (isAuthed()
+         && resource.data.uid == request.auth.uid
+         && request.resource.data.uid == resource.data.uid
+         && request.resource.data.verified == resource.data.verified
+         && request.resource.data.reportCount == resource.data.reportCount)
+        ||
+        (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reportCount'])
+         && request.resource.data.reportCount == resource.data.reportCount + 1);
+
+      allow delete: if isAdmin() || (isAuthed() && resource.data.uid == request.auth.uid);
+    }
+
+    // ── Marketplace collection ──────────────────────────────────────────────
+    match /marketplace/{item} {
+      allow read: if true;
+      allow create: if isAuthed()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.price is number
+        && request.resource.data.price > 0
+        && request.resource.data.price <= 1000000
+        && request.resource.data.name is string
+        && request.resource.data.name.size() >= 3
+        && request.resource.data.name.size() <= 100
+        && request.resource.data.category in ['Furniture', 'Electronics', 'Vehicles', 'Household', 'Kit/Gear', 'Other']
+        && request.resource.data.city is string;
+      allow update, delete: if isAdmin() || (isAuthed() && resource.data.uid == request.auth.uid);
+    }
+
+    // ── Reporting System ────────────────────────────────────────────────────
+    match /reports/{reportId} {
+      allow read: if isModerator();
+      allow create: if isAuthed()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.targetId is string
+        && request.resource.data.type in ['scam', 'spam', 'explicit', 'incorrect', 'other'];
+      allow update, delete: if isAdmin();
+    }
+
+    // ── Home Requests (contact/inquiry form) ────────────────────────────────
+    match /home_requests/{req} {
+      allow create: if isAuthed();
+      allow read, update, delete: if isModerator(); 
+    }
+
+    // ── Secure Real-Time Chat (E2EE Blobs) ──────────────────────────────────
+    match /chats/{chatId} {
+      allow read, update: if isAuthed() && (request.auth.uid in resource.data.participants || isModerator());
+      allow create: if isAuthed() && request.auth.uid in request.resource.data.participants;
+      
+      match /messages/{messageId} {
+        allow read: if isAuthed() && (request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants || isModerator());
+        allow create: if isAuthed() 
+          && request.auth.uid == request.resource.data.senderId
+          && request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
+      }
+    }
+
+    // ── User Profiles & Roles ───────────────────────────────────────────────
+    match /users/{userId} {
+      allow read: if isAuthed();
+      // Users can edit their own profile but NOT their own role or verified status
+      allow update: if isAuthed() && request.auth.uid == userId
+        && request.resource.data.role == resource.data.role
+        && request.resource.data.verified == resource.data.verified;
+      allow create: if isAuthed() && request.auth.uid == userId
+        && request.resource.data.role == 'user'
+        && (!('verified' in request.resource.data) || request.resource.data.verified == false || request.resource.data.verified == 'pending');
+      allow write: if isAdmin();
+    }
+
+    // ── User Sessions & Security ───────────────────────────────────────────
+    match /sessions/{sessionId} {
+      allow read, update, delete: if isAuthed() && resource.data.uid == request.auth.uid;
+      allow create: if isAuthed() && request.resource.data.uid == request.auth.uid;
+    }
+
+    // ── Verifications (Encrypted ID Pipeline) ───────────────────────────────
+    match /verifications/{userId} {
+      // Access is restricted through IAM and operational policy (Moderators/Admins only)
+      allow read, update: if isModerator();
+      allow create: if isAuthed() && request.auth.uid == userId;
+    }
+
+    // ── E2EE Public Keys ────────────────────────────────────────────────────
+    match /public_keys/{userId} {
+      allow read: if isAuthed();
+      allow write: if isAuthed() && (request.auth.uid == userId || isAdmin());
+    }
+
+    // ── Audit Logs ──────────────────────────────────────────────────────────
+    match /audit_logs/{logId} {
+      allow read: if isModerator();
+      allow create: if isAuthed() && request.resource.data.uid == request.auth.uid;
+    }
+
+    // ── Food Reviews ────────────────────────────────────────────────────────
+    match /food_reviews/{reviewId} {
+      allow read: if true;
+      allow create: if isAuthed();
+      allow delete: if isModerator();
+    }
+
+    match /csd_pulse/{pulseId} {
+      allow read: if true;
+      allow write: if isAuthed();
+    }
+  }
+}
+
