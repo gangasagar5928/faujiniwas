@@ -381,6 +381,7 @@ export default function DetailModal({ id, onClose }) {
                           if (typeof window.showRoutePath === 'function' && r.lat && r.lng) {
                             window.showRoutePath([r.lat, r.lng], [raw.lat, raw.lng]);
                           }
+                          onClose();
                           ctx.showToast(`Showing route to ${name}! 🧭`, 'ok');
                         }
                       }}

@@ -323,8 +323,16 @@ function MyLocationButton() {
         },
         (error) => {
           console.error("Geolocation failed", error);
+          alert(`Location services error: ${error.message || "Please ensure GPS is enabled and browser has permission."}`);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
         }
       );
+    } else {
+      alert("Geolocation is not supported by your browser.");
     }
   };
 
