@@ -1,7 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import App from './App';
+import LandingPage from './pages/LandingPage';
 import './index.css';
+import './landing.css'; 
 
 document.documentElement.classList.add('app-shell');
 document.body.classList.add('app-shell');
@@ -38,18 +41,19 @@ class ErrorBoundary extends React.Component {
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <ErrorBoundary>
-    <App />
-  </ErrorBoundary>
+  <React.StrictMode>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/app" element={<App />} />
+          <Route path="*" element={<LandingPage />} />
+        </Routes>
+      </BrowserRouter>
+    </ErrorBoundary>
+  </React.StrictMode>
 );
 
-// Signal to the inline loader that the app has mounted — use rAF so loader
-// hides only after React's first real paint (prevents white-flash on slow devices)
-requestAnimationFrame(() => {
-  window.dispatchEvent(new Event('app-ready'));
-});
-
-// Always register Service Worker in production for the PWA experience
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js').catch((err) => {
@@ -57,4 +61,3 @@ if ('serviceWorker' in navigator && import.meta.env.PROD) {
     });
   });
 }
-

@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@variant dark (&:where(.dark-theme, .dark-theme *));
 
 html {
   overflow-y: auto !important;
@@ -12,9 +13,14 @@ body {
   height: auto !important;
   min-height: 100vh !important;
   overflow: visible !important;
-  background: #FAF9F6 !important;
-  color: #1e293b !important;
+  background: #FAF9F6;
+  color: #1e293b;
   font-family: "Inter", sans-serif;
+}
+html.dark-theme body,
+body.dark-theme {
+  background: #0b1325 !important;
+  color: #f3f4f6 !important;
 }
 
 #root {
@@ -404,53 +410,133 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Dark Theme overrides */
+.dark-theme.landing-page .feature-card,
 .dark-theme .feature-card {
   background-color: #111827 !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
 }
+.dark-theme.landing-page .feature-card:hover,
 .dark-theme .feature-card:hover {
   border-color: var(--accent-amber) !important;
   box-shadow: 0 16px 36px rgba(245, 158, 11, 0.25) !important;
 }
+.dark-theme.landing-page .feature-card-overlay,
 .dark-theme .feature-card-overlay {
   background: rgba(17, 24, 39, 0.85) !important;
 }
+.dark-theme.landing-page .feature-card-badge,
 .dark-theme .feature-card-badge {
   color: #fbbf24 !important;
 }
+.dark-theme.landing-page .feature-card-btn,
 .dark-theme .feature-card-btn {
   background: rgba(251, 191, 36, 0.15) !important;
   border-color: rgba(251, 191, 36, 0.3) !important;
 }
+.dark-theme.landing-page .feature-card-arrow,
 .dark-theme .feature-card-arrow {
   color: #fbbf24 !important;
 }
+.dark-theme.landing-page .feature-card-title,
 .dark-theme .feature-card-title {
   color: #fbbf24 !important;
 }
+.dark-theme.landing-page .feature-card-desc,
 .dark-theme .feature-card-desc {
   color: #e2e8f0 !important;
 }
 
+/* Hardcoded bg-white sections (Why us, Comparison, HRA calculator wrapper) */
+.dark-theme .landing-page section.bg-white,
+.dark-theme .landing-page #why-us,
+.dark-theme .landing-page #comparison,
+.dark-theme .landing-page .bg-white,
+.dark-theme section.bg-white,
+.dark-theme #why-us,
+.dark-theme #comparison,
+.dark-theme .bg-white {
+  background-color: #111827 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: #f3f4f6 !important;
+}
+.dark-theme .landing-page section.bg-white h2,
+.dark-theme .landing-page section.bg-white h3,
+.dark-theme .landing-page section.bg-white th,
+.dark-theme .landing-page section.bg-white td,
+.dark-theme .landing-page #why-us h2,
+.dark-theme .landing-page #why-us h3,
+.dark-theme .landing-page #comparison h2,
+.dark-theme .landing-page #comparison h3,
+.dark-theme .landing-page #comparison th,
+.dark-theme .landing-page #comparison td,
+.dark-theme .landing-page select option,
+.dark-theme section.bg-white h2,
+.dark-theme section.bg-white h3,
+.dark-theme section.bg-white th,
+.dark-theme section.bg-white td,
+.dark-theme #why-us h2,
+.dark-theme #why-us h3,
+.dark-theme #comparison h2,
+.dark-theme #comparison h3,
+.dark-theme #comparison th,
+.dark-theme #comparison td,
+.dark-theme select option {
+  color: #ffffff !important;
+}
+.dark-theme .landing-page section.bg-white p,
+.dark-theme .landing-page #why-us p,
+.dark-theme .landing-page #comparison p,
+.dark-theme .landing-page select,
+.dark-theme .landing-page select option,
+.dark-theme section.bg-white p,
+.dark-theme #why-us p,
+.dark-theme #comparison p,
+.dark-theme select,
+.dark-theme select option {
+  color: #cbd5e1 !important;
+}
+.dark-theme .landing-page select,
+.dark-theme select {
+  background-color: #1f2937 !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+.dark-theme .landing-page #comparison tr,
+.dark-theme #comparison tr {
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+.dark-theme .landing-page #comparison td.text-emerald-800,
+.dark-theme .landing-page #comparison td.text-rose-700,
+.dark-theme #comparison td.text-emerald-800,
+.dark-theme #comparison td.text-rose-700 {
+  color: inherit !important;
+}
+
 /* Founders Section Dark Theme overrides */
-.dark-theme .landing-page section div.bg-white\/45 {
+.dark-theme .landing-page section div.bg-white\/45,
+.dark-theme section div.bg-white\/45 {
   background-color: rgba(19, 27, 44, 0.65) !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
 }
 .dark-theme .landing-page section h2,
-.dark-theme .landing-page section h3 {
+.dark-theme .landing-page section h3,
+.dark-theme section h2,
+.dark-theme section h3 {
   color: #ffffff !important;
 }
-.dark-theme .landing-page section p {
+.dark-theme .landing-page section p,
+.dark-theme section p {
   color: #cbd5e1 !important;
 }
-.dark-theme .landing-page section a {
+.dark-theme .landing-page section a,
+.dark-theme section a {
   color: #fbbf24 !important;
 }
-.dark-theme .landing-page section a:hover {
+.dark-theme .landing-page section a:hover,
+.dark-theme section a:hover {
   color: #f59e0b !important;
 }
-.dark-theme .landing-page section span.text-amber-700 {
+.dark-theme .landing-page section span.text-amber-700,
+.dark-theme section span.text-amber-700 {
   color: #fbbf24 !important;
 }
 
@@ -467,7 +553,38 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
-/* Hide Google Translate Banner and prevent body shift */
-body { top: 0px !important; }
-.skiptranslate iframe, .skiptranslate > iframe.skiptranslate, #goog-gt-tt, .goog-te-balloon-frame { display: none !important; visibility: hidden !important; }
-.goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
+/* Hide Google Translate Top Bar/Banner */
+.goog-te-banner-frame,
+iframe.goog-te-banner-frame,
+#goog-gt-tt,
+.goog-te-balloon-frame,
+iframe.VIpgJd-yD0t-ASE-ydu-YBswnd {
+  display: none !important;
+  visibility: hidden !important;
+}
+body {
+  top: 0px !important;
+  position: static !important;
+}
+body > .skiptranslate {
+  display: none !important;
+}
+.goog-text-highlight {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Force slate text to be visible/white in dark theme on index.html */
+.dark-theme .text-black,
+.dark-theme .text-slate-950,
+.dark-theme .text-slate-900,
+.dark-theme .text-slate-800,
+.dark-theme .text-slate-700,
+.dark-theme .text-slate-650,
+.dark-theme .text-slate-600 {
+  color: #f1f5f9 !important;
+}
+.dark-theme .text-slate-500,
+.dark-theme .text-slate-400 {
+  color: #94a3b8 !important;
+}

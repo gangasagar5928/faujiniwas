@@ -60,15 +60,15 @@
 
 /* AI Insight Card */
 .aiCard {
-  background: linear-gradient(145deg, rgba(30,30,40,0.8), rgba(20,20,25,0.9));
-  border: 1px solid rgba(138, 43, 226, 0.4);
+  background: linear-gradient(145deg, rgba(138, 43, 226, 0.04), rgba(138, 43, 226, 0.08));
+  border: 1.5px solid rgba(138, 43, 226, 0.25);
   border-radius: 12px;
   padding: 14px;
   margin-bottom: 16px;
   display: flex;
   gap: 12px;
   align-items: flex-start;
-  box-shadow: 0 4px 15px rgba(138, 43, 226, 0.1);
+  box-shadow: 0 4px 15px rgba(138, 43, 226, 0.05);
   position: relative;
   overflow: hidden;
 }
@@ -85,18 +85,18 @@
 }
 .aiIcon {
   font-size: 24px;
-  background: rgba(138, 43, 226, 0.2);
+  background: rgba(138, 43, 226, 0.15);
   padding: 8px;
   border-radius: 50%;
   flex-shrink: 0;
 }
 .aiText {
   font-size: 13px;
-  color: var(--text2);
+  color: #1e293b;
   line-height: 1.5;
 }
 .aiText strong {
-  color: #c988ff;
+  color: #6d28d9;
   display: block;
   margin-bottom: 4px;
   font-size: 14px;

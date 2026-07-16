@@ -4,11 +4,16 @@ import { motion } from 'framer-motion';
 const LeaseGeneratorModal = React.lazy(() => import('../components/Modals/LeaseGeneratorModal'));
 const WasmMaskingModal = React.lazy(() => import('../components/Modals/WasmMaskingModal'));
 const CSDPulseTicker = React.lazy(() => import('../components/CSD/CSDPulseTicker'));
+import HRACalculator from '../components/New/HRACalculator';
 
 export default function LandingPage() {
   const [showLeaseModal, setShowLeaseModal] = useState(false);
   const [showWasmModal, setShowWasmModal] = useState(false);
   const [mobMenuOpen, setMobMenuOpen] = useState(false);
+  
+  // HRA calculator states
+  const [calcRank, setCalcRank] = useState('Major');
+  const [calcBasicPay, setCalcBasicPay] = useState(69400);
   
   // High-tech secure redirection sequence states
   const [isRedirecting, setIsRedirecting] = useState(false);
@@ -78,7 +83,7 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF9F6] text-slate-900 font-sans antialiased selection:bg-amber-500/20 relative">
+    <div className="min-h-screen bg-[#FAF9F6] dark:bg-[#0b1325] text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-amber-500/20 relative">
       
 
       {/* Grid Background Overlay */}
@@ -372,7 +377,7 @@ export default function LandingPage() {
             <h2 className="text-2xl sm:text-4xl font-black text-slate-900 leading-tight font-heading">
               WHY FAUJI NIWAS?
             </h2>
-            <p className="text-slate-650 text-xs sm:text-sm leading-relaxed mt-2">
+            <p className="text-slate-600 text-xs sm:text-sm leading-relaxed mt-2">
               Designed entirely to remove the friction of sudden military posting cycles. Built securely for jawans, JCOs, and officers to share postings and rent homes without civilian classified noise.
             </p>
           </div>
@@ -500,6 +505,25 @@ export default function LandingPage() {
 
         </div>
 
+        {/* 7th CPC HRA Calculator Section */}
+        <div className="flex flex-col gap-4 text-left mb-6">
+          <div>
+            <span className="text-[10px] font-black uppercase text-amber-700 tracking-wider font-mono">Allowance Optimization</span>
+            <h2 className="text-xl font-extrabold text-slate-900 mt-1 mb-2 font-heading">7th CPC HRA Coverage Calculator</h2>
+            <p className="text-slate-650 text-xs leading-relaxed font-light">
+              Check your exact house rent allowance entitlements based on rank and basic pay under the 7th Pay Commission for Y-class cities.
+            </p>
+          </div>
+          <div className="max-w-xl">
+            <HRACalculator
+              selectedRank={calcRank}
+              onRankSelect={setCalcRank}
+              basicPay={calcBasicPay}
+              onBasicPayChange={setCalcBasicPay}
+            />
+          </div>
+        </div>
+
         {/* Live CSD Pulse Section */}
         <div ref={tickerRef} className="min-h-[170px]">
           {showTicker && (
@@ -556,8 +580,16 @@ export default function LandingPage() {
 
             {/* Founder 2 */}
             <div className="flex gap-4 items-start">
-              <div className="w-16 h-16 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-700 text-lg font-bold shrink-0 border-2 border-indigo-500/20">
-                AK
+              <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-indigo-500/30 shrink-0">
+                <img 
+                  src="/anurag.jpg" 
+                  alt="Anurag Kumar Singh" 
+                  className="w-full h-full object-cover object-top"
+                  width="64"
+                  height="64"
+                  loading="lazy"
+                  onError={(e) => { e.target.style.display = 'none'; }}
+                />
               </div>
               <div>
                 <h3 className="text-sm font-bold text-slate-900 font-heading">Anurag Kumar Singh</h3>
@@ -592,6 +624,32 @@ export default function LandingPage() {
           
           <div className="text-[9px] text-slate-700 font-medium">
             Made with ❤️ for the Armed Forces
+          </div>
+        </div>
+
+        {/* Popular Cities SEO Links */}
+        <div className="max-w-[1250px] mx-auto px-6 mt-8 pt-6 border-t border-slate-200/40 text-left">
+          <span className="text-[9px] font-black uppercase tracking-wider text-slate-400 block mb-2">
+            🎖️ Popular Relocation Cities / लोकप्रिय सैन्य स्टेशन:
+          </span>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] font-bold text-slate-750">
+            <a href="/pune.html" className="hover:text-amber-800 transition-colors">Pune Cantt</a>
+            <span className="text-slate-300">•</span>
+            <a href="/delhi.html" className="hover:text-amber-800 transition-colors">Delhi Cantt</a>
+            <span className="text-slate-300">•</span>
+            <a href="/ambala.html" className="hover:text-amber-800 transition-colors">Ambala Cantt</a>
+            <span className="text-slate-300">•</span>
+            <a href="/secunderabad.html" className="hover:text-amber-800 transition-colors">Secunderabad Cantt</a>
+            <span className="text-slate-300">•</span>
+            <a href="/bhopal.html" className="hover:text-amber-800 transition-colors">Bhopal Cantt</a>
+            <span className="text-slate-300">•</span>
+            <a href="/kapurthala.html" className="hover:text-amber-800 transition-colors">Kapurthala SSB</a>
+            <span className="text-slate-300">•</span>
+            <a href="/prayagraj.html" className="hover:text-amber-800 transition-colors">Prayagraj SSB</a>
+            <span className="text-slate-300">•</span>
+            <a href="/coimbatore.html" className="hover:text-amber-800 transition-colors">Coimbatore Cantt</a>
+            <span className="text-slate-300">•</span>
+            <a href="/bangalore.html" className="hover:text-amber-800 transition-colors">Bangalore Cantt</a>
           </div>
         </div>
       </footer>

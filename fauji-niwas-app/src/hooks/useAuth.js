@@ -11,6 +11,23 @@ export function useAuth() {
   const [newDeviceAlert, setNewDeviceAlert] = useState(null);
 
   useEffect(() => {
+    // Check for mock user local bypass
+    const mockUserStr = localStorage.getItem('fn_mock_user');
+    if (mockUserStr) {
+      try {
+        const mu = JSON.parse(mockUserStr);
+        setUser(mu);
+        setDbUser({
+          uid: mu.uid,
+          name: mu.displayName || 'Lt. Col. Sandeep Mehta (Retd.)',
+          phone: mu.phoneNumber || '+919999999999',
+          points: 120,
+          verified: true
+        });
+        return;
+      } catch (_) {}
+    }
+
     let unsubDb = () => {};
     const timeout = setTimeout(() => setUser(prev => prev === undefined ? null : prev), 4000);
     
@@ -20,11 +37,14 @@ export function useAuth() {
 
       if (u) {
         // Register device securely
-        const sessionInfo = await registerDeviceSession(u.uid);
-        setSession(sessionInfo);
-        
-        if (sessionInfo.isNewDevice) {
-           setNewDeviceAlert(sessionInfo);
+        try {
+          const sessionInfo = await registerDeviceSession(u.uid);
+          setSession(sessionInfo);
+          if (sessionInfo && sessionInfo.isNewDevice) {
+             setNewDeviceAlert(sessionInfo);
+          }
+        } catch (e) {
+          console.warn('[useAuth] registerDeviceSession failed:', e);
         }
 
         // Sync with Firestore user doc

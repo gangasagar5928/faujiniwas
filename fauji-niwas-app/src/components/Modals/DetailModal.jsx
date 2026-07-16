@@ -7,6 +7,7 @@ import { ModalContext } from '../../App';
 import { auth, db, collection, addDoc, doc, updateDoc, increment, onSnapshot, query, orderBy } from '../../firebase';
 import styles from './DetailModal.module.css';
 import { FOOD_BY_CITY, ARMY_SCHOOLS, MILITARY_HOSPITALS, CANTEENS } from '../../data';
+import { PROPERTIES } from '../../dataNew';
 import { generateNeighborhoodInsight } from '../../aiInsights';
 
 const PHOTO_POOL = [
@@ -44,7 +45,7 @@ export default function DetailModal({ id, onClose }) {
   const comparison = useUserStore(s => s.comparison) || [];
   const toggleComparison = useUserStore(s => s.toggleComparison);
   const isComparing = comparison.includes(id);
-  const currentListing = listings.find((listing) => listing.id === id);
+  const currentListing = listings.find((listing) => listing.id === id) || PROPERTIES.find((p) => p.id === id);
   const isMarketItem = currentListing?._collection === 'market' || currentListing?._collection === 'marketplace';
   const reviewRoot = isMarketItem ? 'marketplace' : 'rentals';
 
@@ -367,14 +368,28 @@ export default function DetailModal({ id, onClose }) {
                 </div>
                 <div style={{display:'flex', gap:10, overflowX:'auto', paddingBottom:6, WebkitOverflowScrolling:'touch', scrollbarWidth:'none'}}>
                   {[
-                    { icon:'🏪', label:'URC/CSD', dist: nearestCanteen ? nearestCanteen.dist : '—', name: nearestCanteen?.name },
-                    { icon:'🏥', label:'MH/Hosp', dist: nearestHosp ? nearestHosp.dist : '—', name: nearestHosp?.name },
-                    { icon:'🏫', label:'APS/KV', dist: nearestSchool ? nearestSchool.dist : '—', name: nearestSchool?.name },
-                  ].map(({ icon, label, dist, name }) => (
-                    <div key={label} className="hover-scan" style={{
-                      flex:'0 0 auto', textAlign:'left',
-                      background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.08)',
-                      borderRadius:10, padding:'10px 14px', minWidth:110
+                    { icon:'🏪', label:'URC/CSD', dist: nearestCanteen ? nearestCanteen.dist : '—', name: nearestCanteen?.name, raw: nearestCanteen },
+                    { icon:'🏥', label:'MH/Hosp', dist: nearestHosp ? nearestHosp.dist : '—', name: nearestHosp?.name, raw: nearestHosp },
+                    { icon:'🏫', label:'APS/KV', dist: nearestSchool ? nearestSchool.dist : '—', name: nearestSchool?.name, raw: nearestSchool },
+                  ].map(({ icon, label, dist, name, raw }) => (
+                    <div key={label} className="hover-scan" 
+                      onClick={() => {
+                        if (raw && raw.lat && raw.lng) {
+                          if (window.flyToCoordinate) {
+                            window.flyToCoordinate(raw.lat, raw.lng);
+                          }
+                          if (typeof window.showRoutePath === 'function' && r.lat && r.lng) {
+                            window.showRoutePath([r.lat, r.lng], [raw.lat, raw.lng]);
+                          }
+                          ctx.showToast(`Showing route to ${name}! 🧭`, 'ok');
+                        }
+                      }}
+                      style={{
+                        flex:'0 0 auto', textAlign:'left',
+                        background:'var(--card2)', border:'1px solid var(--border)',
+                        borderRadius:10, padding:'10px 14px', minWidth:110,
+                        cursor: raw ? 'pointer' : 'default',
+                        transition: 'transform 0.2s'
                     }}>
                       <div style={{fontSize:22}}>{icon}</div>
                       <div style={{fontSize:11, fontWeight:700, marginTop:4, color: 'var(--text)'}}>{label}</div>

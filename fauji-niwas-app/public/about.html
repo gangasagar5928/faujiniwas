@@ -10,6 +10,12 @@
     <meta name="robots" content="index, follow" />
     <meta name="author" content="Aman Kumar Singh, Anurag Kumar Singh" />
 
+    <!-- Geographic Location Meta Tags (GEO) -->
+    <meta name="geo.region" content="IN" />
+    <meta name="geo.placename" content="India" />
+    <meta name="geo.position" content="20.593684;78.96288" />
+    <meta name="ICBM" content="20.593684, 78.96288" />
+
     <!-- Open Graph -->
     <meta property="og:type" content="profile" />
     <meta property="og:url" content="https://faujiniwas.web.app/about.html" />
@@ -734,7 +740,16 @@
             itemtype="https://schema.org/Person"
         >
             <div class="founder-header">
-                <div class="founder-avatar" aria-hidden="true">AK</div>
+                <div class="founder-avatar" aria-hidden="true" style="background: none; box-shadow: none; animation: none; width: 80px; height: 80px; border-radius: 50%; overflow: hidden; border: 3px solid rgba(99,102,241,0.4); flex-shrink: 0;">
+                    <img
+                        src="/anurag.jpg"
+                        alt="Anurag Kumar Singh — Co-Founder, Fauji Niwas"
+                        itemprop="image"
+                        width="80" height="80"
+                        style="width:100%; height:100%; object-fit:cover; object-position:top;"
+                        onerror="this.parentElement.innerHTML='AK'; this.parentElement.style.background='linear-gradient(135deg,#6366f1,#4f46e5)'; this.parentElement.style.display='flex'; this.parentElement.style.alignItems='center'; this.parentElement.style.justifyContent='center'; this.parentElement.style.fontSize='1.3rem'; this.parentElement.style.fontWeight='900'; this.parentElement.style.color='#ffffff';"
+                    />
+                </div>
                 <div>
                     <div class="founder-name" itemprop="name">Anurag Kumar Singh</div>
                     <div class="founder-role" itemprop="jobTitle">Co-Founder, Fauji Niwas</div>
@@ -799,8 +814,25 @@
     </main>
 
     <!-- Footer -->
-    <footer class="about-footer" role="contentinfo">
+    <footer class="about-footer" role="contentinfo" style="display: flex; flex-direction: column; gap: 16px; align-items: center; justify-content: center; padding: 32px 16px; border-top: 1px solid var(--border);">
         <a href="/">← Return to Homepage</a>
+        
+        <!-- Popular Cities SEO Links -->
+        <div style="max-width: 800px; text-align: center; font-size: 11px; color: var(--muted); border-top: 1px solid var(--border); padding-top: 16px; width: 100%;">
+          <span style="font-weight: 800; text-transform: uppercase; font-size: 9px; display: block; margin-bottom: 8px;">🎖️ Popular Relocation Cities / लोकप्रिय सैन्य स्टेशन</span>
+          <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; font-weight: 600;">
+            <a href="/pune.html" style="border: none; padding: 0; background: none; text-decoration: underline; display: inline; margin: 0; font-size: 11px; color: inherit;">Pune Cantt</a> •
+            <a href="/delhi.html" style="border: none; padding: 0; background: none; text-decoration: underline; display: inline; margin: 0; font-size: 11px; color: inherit;">Delhi Cantt</a> •
+            <a href="/ambala.html" style="border: none; padding: 0; background: none; text-decoration: underline; display: inline; margin: 0; font-size: 11px; color: inherit;">Ambala Cantt</a> •
+            <a href="/secunderabad.html" style="border: none; padding: 0; background: none; text-decoration: underline; display: inline; margin: 0; font-size: 11px; color: inherit;">Secunderabad Cantt</a> •
+            <a href="/bhopal.html" style="border: none; padding: 0; background: none; text-decoration: underline; display: inline; margin: 0; font-size: 11px; color: inherit;">Bhopal Cantt</a> •
+            <a href="/kapurthala.html" style="border: none; padding: 0; background: none; text-decoration: underline; display: inline; margin: 0; font-size: 11px; color: inherit;">Kapurthala SSB</a> •
+            <a href="/prayagraj.html" style="border: none; padding: 0; background: none; text-decoration: underline; display: inline; margin: 0; font-size: 11px; color: inherit;">Prayagraj SSB</a> •
+            <a href="/coimbatore.html" style="border: none; padding: 0; background: none; text-decoration: underline; display: inline; margin: 0; font-size: 11px; color: inherit;">Coimbatore Cantt</a> •
+            <a href="/bangalore.html" style="border: none; padding: 0; background: none; text-decoration: underline; display: inline; margin: 0; font-size: 11px; color: inherit;">Bangalore Cantt</a>
+          </div>
+        </div>
+
         <p>© 2026 Fauji Niwas · Built with ❤️ for the Armed Forces · Made in India 🇮🇳</p>
     </footer>
 
