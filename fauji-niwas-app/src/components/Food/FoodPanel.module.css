@@ -13,7 +13,7 @@
   backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
   border-top: 2px solid var(--accent);
   border-radius: 20px 20px 0 0;
-  z-index: var(--z-panel); transform: translateY(100%); opacity: 0;
+  z-index: 10600; transform: translateY(100%); opacity: 0;
   transition: transform .38s cubic-bezier(0.32,0.72,0,1), opacity .25s ease;
   padding: 0 16px calc(env(safe-area-inset-bottom, 20px) + 28px);
   overflow-y: auto; overflow-x: hidden;
