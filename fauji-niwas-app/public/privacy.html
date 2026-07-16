@@ -1,20 +1,56 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-IN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Privacy Policy — Fauji Niwas</title>
+    <meta name="description" content="Privacy Policy for Fauji Niwas. Built secure, direct, and zero-brokerage for Indian Armed Forces families." />
+    <meta name="author" content="Aman Kumar Singh (Founder), Anurag Kumar Singh (Co-Founder)" />
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔒</text></svg>">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Geographic Location Meta Tags (GEO) -->
+    <meta name="geo.region" content="IN" />
+    <meta name="geo.placename" content="India" />
+    <meta name="geo.position" content="20.593684;78.96288" />
+    <meta name="ICBM" content="20.593684, 78.96288" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+      (function () {
+        var savedTheme = localStorage.getItem('fn_theme') || 'light';
+        if (savedTheme === 'dark') {
+          document.documentElement.classList.add('dark-theme');
+          document.documentElement.classList.remove('light-theme');
+        } else {
+          document.documentElement.classList.add('light-theme');
+          document.documentElement.classList.remove('dark-theme');
+        }
+      })();
+    </script>
     <style>
-        :root {
+        :root, html.light-theme, body.light-theme {
+            --bg: #FAF9F6;
+            --card-bg: #ffffff;
+            --border: rgba(15, 23, 42, 0.08);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --accent: #b45309;
+            --accent-bg: rgba(245, 158, 11, 0.08);
+            --shadow-md: 0 4px 20px rgba(15, 23, 42, 0.08);
+            --radius-lg: 1.25rem;
+        }
+        html.dark-theme, body.dark-theme {
             --bg: #0B0F1A;
-            --white: #F1F1EE;
-            --muted: #8892A4;
-            --accent: #FF9933;
+            --card-bg: rgba(255, 255, 255, 0.03);
             --border: rgba(255, 255, 255, 0.08);
-            --glass: rgba(255, 255, 255, 0.03);
-            --glass-blur: blur(12px);
+            --text-primary: #ffffff;
+            --text-secondary: #cbd5e1;
+            --text-muted: #8892A4;
+            --accent: #fbbf24;
+            --accent-bg: rgba(251, 191, 36, 0.1);
+            --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
+            --radius-lg: 1.25rem;
         }
         * {
             box-sizing: border-box;
@@ -22,51 +58,95 @@
             padding: 0;
         }
         body {
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Inter', sans-serif;
             background-color: var(--bg);
-            color: var(--white);
+            color: var(--text-primary);
             line-height: 1.6;
-            padding: 40px 20px;
+            transition: background-color 0.22s, color 0.22s;
+        }
+        nav.topnav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background-color: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 1.5rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 2px 0 rgba(0,0,0,0.02);
+        }
+        .nav-logo {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 900;
+            font-size: 1rem;
+            letter-spacing: -0.03em;
+            text-decoration: none;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .nav-logo .brand-fauji { color: #b45309; }
+        .dark-theme .nav-logo .brand-fauji { color: #fbbf24; }
+        .nav-back {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+        .nav-back:hover { 
+            color: var(--text-primary); 
+            border-color: var(--accent); 
+            background: var(--accent-bg); 
         }
         .container {
             max-width: 800px;
             margin: 0 auto;
+            padding: 40px 20px;
         }
         header {
             text-align: center;
             margin-bottom: 40px;
         }
-        .logo {
-            font-size: 28px;
-            font-weight: 900;
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
-        }
-        .logo span {
-            color: var(--accent);
-        }
         h1 {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--white);
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--text-primary);
             margin-bottom: 8px;
+            letter-spacing: -0.02em;
         }
         .subtitle {
-            color: var(--muted);
-            font-size: 14px;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
         .card {
-            background: var(--glass);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
+            background: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: 16px;
+            border-radius: var(--radius-lg);
             padding: 32px;
             margin-bottom: 24px;
+            box-shadow: var(--shadow-md);
         }
         h2 {
-            font-size: 18px;
-            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
             color: var(--accent);
             margin-bottom: 16px;
             display: flex;
@@ -75,35 +155,75 @@
         }
         p {
             font-size: 14px;
-            color: #d1d5db;
+            color: var(--text-secondary);
             margin-bottom: 16px;
         }
         ul {
             margin-left: 20px;
             margin-bottom: 16px;
             font-size: 14px;
-            color: #d1d5db;
+            color: var(--text-secondary);
         }
         li {
             margin-bottom: 8px;
         }
-        .back-btn {
-            display: inline-block;
-            margin-top: 20px;
-            font-size: 14px;
-            color: var(--muted);
-            text-decoration: none;
-            transition: color 0.2s;
+        footer {
+            margin-top: 48px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            padding-top: 32px;
         }
-        .back-btn:hover {
+        .footer-logo {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 900;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        .footer-legal-bar {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 10px;
+            font-weight: 750;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 16px;
+        }
+        .footer-legal-bar a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+        .footer-legal-bar a:hover {
             color: var(--accent);
+        }
+        .seo-links {
+            max-width: 700px;
+            margin: 16px auto;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .seo-links a {
+            color: inherit;
+            text-decoration: underline;
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
+
+    <!-- Header Navigation -->
+    <nav class="topnav" role="navigation">
+        <a href="/" class="nav-logo" aria-label="Fauji Niwas Home">
+            <span class="brand-fauji">🪖 FAUJI</span> <span class="brand-niwas">NIWAS</span>
+        </a>
+        <a href="/" class="nav-back">← Back to Home</a>
+    </nav>
+
     <div class="container">
         <header>
-            <div class="logo">🔒 <span>Fauji</span>Niwas</div>
             <h1>Privacy Policy</h1>
             <p class="subtitle">Last Updated: June 9, 2026</p>
         </header>
@@ -146,9 +266,56 @@
             </section>
         </main>
 
-        <footer style="text-align: center; margin-top: 20px;">
-            <a href="/" class="back-btn">← Back to Homepage</a>
+        <footer>
+            <div class="footer-logo">🪖 FAUJI NIWAS</div>
+            <div class="footer-legal-bar">
+                <a href="/about.html">About Founders</a>
+                <a href="/privacy.html">Privacy Policy</a>
+                <a href="/terms.html">Terms of Service</a>
+                <a href="mailto:support@faujiniwas.web.app">Contact support</a>
+            </div>
+
+            <!-- Popular Cities SEO Links -->
+            <div class="seo-links">
+                <span style="font-weight: 800; text-transform: uppercase; font-size: 9px; display: block; margin-bottom: 8px;">🎖️ Popular Relocation Cities / लोकप्रिय सैन्य स्टेशन</span>
+                <a href="/pune.html">Pune Cantt</a> •
+                <a href="/delhi.html">Delhi Cantt</a> •
+                <a href="/ambala.html">Ambala Cantt</a> •
+                <a href="/secunderabad.html">Secunderabad Cantt</a> •
+                <a href="/bhopal.html">Bhopal Cantt</a> •
+                <a href="/kapurthala.html">Kapurthala SSB</a> •
+                <a href="/prayagraj.html">Prayagraj SSB</a> •
+                <a href="/coimbatore.html">Coimbatore Cantt</a> •
+                <a href="/bangalore.html">Bangalore Cantt</a>
+            </div>
+            <p style="font-size: 11px; color: var(--text-muted); margin-top: 16px;">© 2026 Fauji Niwas · Built secure and direct for defence personnel families · Made in India 🇮🇳</p>
         </footer>
     </div>
+
+    <!-- Theme Sync Hook -->
+    <script>
+      (function () {
+        function applySavedTheme() {
+          var val = localStorage.getItem('fn_theme') || 'light';
+          if (val === 'dark') {
+            document.documentElement.classList.add('dark-theme');
+            document.documentElement.classList.remove('light-theme');
+            document.body.classList.add('dark-theme');
+            document.body.classList.remove('light-theme');
+          } else {
+            document.documentElement.classList.add('light-theme');
+            document.documentElement.classList.remove('dark-theme');
+            document.body.classList.add('light-theme');
+            document.body.classList.remove('dark-theme');
+          }
+        }
+        applySavedTheme();
+        window.addEventListener('storage', function(e) {
+          if (e.key === 'fn_theme') {
+            applySavedTheme();
+          }
+        });
+      })();
+    </script>
 </body>
 </html>

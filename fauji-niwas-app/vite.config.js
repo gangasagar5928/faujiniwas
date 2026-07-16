@@ -22,6 +22,7 @@ export default defineConfig({
       name: 'dev-server-app-rewrite',
       configureServer(server) {
         server.middlewares.use((req, res, next) => {
+          // SPA fallback for dev server (React Router will handle /app)
           const url = new URL(req.url, 'http://localhost');
           if (url.pathname === '/app' || url.pathname.startsWith('/app/')) {
             req.url = '/app.html' + url.search;
@@ -46,6 +47,7 @@ export default defineConfig({
         main: './index.html',
         app: './app.html'
       },
+
       output: {
         manualChunks(id) {
           if (id.includes('node_modules/leaflet') || id.includes('node_modules/react-leaflet') || id.includes('react-leaflet-cluster')) {

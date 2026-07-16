@@ -1,0 +1,368 @@
+@import "./index.css";
+
+@variant dark (&:where(.dark-theme, .dark-theme *));
+
+/* Custom transitions and animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-down {
+  animation: slideDown 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Custom scrollbar utility */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+  border-left: 1.5px solid rgba(255, 255, 255, 0.2);
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 99px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 1);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Define default text2 variable for high contrast in dark theme */
+:root {
+  --text2: #cbd5e1;
+}
+
+/* ── Mobile PWA & Scroll Optimizations ── */
+html, body {
+  -webkit-tap-highlight-color: transparent;
+  scroll-behavior: smooth;
+}
+
+/* Momentum scrolling on iOS for all scrollable containers */
+.overflow-y-auto,
+.overflow-y-scroll,
+[style*="overflow-y: auto"],
+[style*="overflow-y: scroll"] {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* App map container: prevent pull-to-refresh ruining map pan */
+.w-full.h-screen {
+  overscroll-behavior: none;
+  touch-action: pan-x pan-y;
+}
+
+/* Safe area padding for PWA notch phones */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .pwa-safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  .pwa-safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Light theme values */
+html.light-theme {
+  --text2: #334155;
+}
+
+/* ── Light Theme Overrides for AppNew ── */
+/* Root app container must be transparent so the leaflet map shows through */
+html.light-theme #root > div.bg-slate-900,
+html.light-theme .app-root-bg-fix {
+  background-color: transparent !important;
+}
+/* Panels and cards inside the app can be white */
+html.light-theme .bg-slate-900.panel-card {
+  background-color: #f1f5f9 !important;
+}
+html.light-theme .bg-slate-950\/85 {
+  background-color: rgba(255, 255, 255, 0.98) !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06) !important;
+}
+html.light-theme .bg-slate-950\/75 {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05) !important;
+}
+html.light-theme .bg-slate-950\/90 {
+  background-color: rgba(255, 255, 255, 0.98) !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+}
+html.light-theme .bg-slate-950\/70 {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  color: #334155 !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+}
+/* Ensure option text and icons inside dropdowns are dark slate in light theme */
+html.light-theme .bg-slate-950\/90 button {
+  color: #334155 !important;
+}
+html.light-theme .bg-slate-950\/90 button:hover {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+/* Active option button in light theme dropdown should keep white text */
+html.light-theme .bg-slate-950\/90 button.bg-emerald-600 {
+  color: #ffffff !important;
+}
+html.light-theme .bg-slate-950\/70:hover {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  color: #0f172a !important;
+}
+html.light-theme .bg-slate-950\/70:hover * {
+  color: #0f172a !important;
+}
+html.light-theme .bg-slate-950\/70 svg {
+  color: #475569 !important;
+}
+html.light-theme .bg-slate-950\/70:hover svg {
+  color: #0f172a !important;
+}
+
+/* Specific elements inside light-themed header & panels should turn dark slate */
+html.light-theme .bg-slate-950\/75 .text-white,
+html.light-theme .bg-slate-950\/75 span,
+html.light-theme .bg-slate-950\/75 a,
+html.light-theme .bg-slate-950\/75 label {
+  color: #1e293b !important;
+}
+html.light-theme .bg-slate-950\/75 button:not(.bg-amber-500) {
+  color: #1e293b !important;
+}
+html.light-theme .bg-slate-950\/85 .text-white,
+html.light-theme .bg-slate-950\/85 span,
+html.light-theme .bg-slate-950\/85 p,
+html.light-theme .bg-slate-950\/85 h2,
+html.light-theme .bg-slate-950\/85 h3 {
+  color: #0f172a !important;
+}
+
+html.light-theme .text-slate-400 {
+  color: #64748b !important;
+}
+html.light-theme .text-slate-200 {
+  color: #475569 !important;
+}
+html.light-theme .bg-\[\#2d3a3a\]\/90 {
+  background-color: #ffffff !important;
+  color: #1e293b !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05) !important;
+}
+html.light-theme .bg-\[\#2d3a3a\]\/90 h3,
+html.light-theme .bg-\[\#2d3a3a\]\/90 span,
+html.light-theme .bg-\[\#2d3a3a\]\/90 p {
+  color: #1e293b !important;
+}
+html.light-theme .bg-\[\#2d3a3a\]\/90 .text-emerald-400 {
+  color: #059669 !important;
+}
+
+html.light-theme .bg-\[\#202c2c\] {
+  background-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+html.light-theme .bg-\[\#202c2c\] h3,
+html.light-theme .bg-\[\#202c2c\] span,
+html.light-theme .bg-\[\#202c2c\] p {
+  color: #0f172a !important;
+}
+html.light-theme .bg-\[\#202c2c\] .text-emerald-400 {
+  color: #047857 !important;
+}
+
+html.light-theme .border-white\/10 {
+  border-color: #cbd5e1 !important;
+}
+html.light-theme input.bg-slate-900 {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Modal styling in light theme */
+html.light-theme .mc {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12) !important;
+}
+html.light-theme .mc h2,
+html.light-theme .mc h3,
+html.light-theme .mc p,
+html.light-theme .mc label,
+html.light-theme .mc .mh2 {
+  color: #0f172a !important;
+}
+html.light-theme .mc button:not(.bp) {
+  color: #334155 !important;
+}
+html.light-theme .mc .fi {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+html.light-theme .mc .fi::placeholder {
+  color: #94a3b8 !important;
+}
+/* Modal styling in dark theme */
+html.dark-theme .mc {
+  background-color: #0d1321 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4) !important;
+}
+html.dark-theme .mc h2,
+html.dark-theme .mc h3,
+html.dark-theme .mc p,
+html.dark-theme .mc label,
+html.dark-theme .mc .mh2 {
+  color: #f1f5f9 !important;
+}
+html.dark-theme .mc button:not(.bp):not(.logout) {
+  color: #e2e8f0 !important;
+}
+html.dark-theme .mc .fi {
+  background-color: #080c14 !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+html.dark-theme .mc .fi::placeholder {
+  color: #64748b !important;
+}
+html.dark-theme .mc select,
+html.dark-theme .mc select option {
+  background-color: #131b2e !important;
+  color: #ffffff !important;
+}
+
+/* Dark theme specific solidification/darkening of topbar */
+html.dark-theme .bg-slate-950\/75 {
+  background-color: #080c14 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ── Custom Google Translate Dropdown Styling ── */
+#google_translate_element select.goog-te-combo {
+  width: 100% !important;
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+  border-radius: 12px !important;
+  padding: 10px 14px !important;
+  font-size: 13px !important;
+  font-family: 'Outfit', sans-serif !important;
+  font-weight: 600 !important;
+  outline: none !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+#google_translate_element select.goog-te-combo:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+}
+#google_translate_element select.goog-te-combo option {
+  background-color: #0f172a !important;
+  color: #ffffff !important;
+  padding: 8px !important;
+}
+
+html.light-theme #google_translate_element select.goog-te-combo {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+html.light-theme #google_translate_element select.goog-te-combo option {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+/* Hide Google Translate branding text & helper markup */
+#google_translate_element .goog-te-gadget {
+  color: transparent !important;
+  font-size: 0px !important;
+}
+#google_translate_element .goog-te-gadget a,
+#google_translate_element .goog-te-gadget span {
+  display: none !important;
+}
+
+/* ── Hide Google Translate Top Bar/Banner ── */
+.goog-te-banner-frame,
+iframe.goog-te-banner-frame,
+#goog-gt-tt,
+.goog-te-balloon-frame,
+iframe.VIpgJd-yD0t-ASE-ydu-YBswnd {
+  display: none !important;
+  visibility: hidden !important;
+}
+body {
+  top: 0px !important;
+  position: static !important;
+}
+body > .skiptranslate {
+  display: none !important;
+}
+
+/* Fix checkboxes getting background/border override cutoffs in light theme */
+html.light-theme input[type="checkbox"],
+html.dark-theme input[type="checkbox"] {
+  background-color: revert !important;
+  border-color: revert !important;
+  color: revert !important;
+  accent-color: #10b981 !important; /* Nice emerald green checkmark */
+  width: 16px !important;
+  height: 16px !important;
+  margin-left: 2px !important;
+  appearance: auto !important;
+  -webkit-appearance: auto !important;
+}
+
+/* Ensure facility list labels have a safe left offset on mobile/desktop */
+#accessibility-widget label,
+.legend-item,
+.legend label {
+  padding-left: 2px !important;
+}
+

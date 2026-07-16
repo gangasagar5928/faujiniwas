@@ -11,8 +11,8 @@ import MapOverlay from './MapOverlay';
 import 'leaflet/dist/leaflet.css';
 import styles from './MapView.module.css';
 
-// Fix: invalidate Leaflet size when container dimensions change
-function SizeInvalidator() {
+// Fix: invalidate Leaflet size and handle external zoom/recenter events
+function MapController({ activeCantt }) {
   const map = useMap();
   useEffect(() => {
     const ids = [100, 300, 700, 1500, 3000].map(t =>
@@ -23,11 +23,30 @@ function SizeInvalidator() {
       window._fj_mapResizeTimer = setTimeout(() => map.invalidateSize(), 200);
     };
     window.addEventListener('resize', onResize);
+    
+    // Zoom & Recenter handlers
+    const zoomIn = () => map.zoomIn();
+    const zoomOut = () => map.zoomOut();
+    const recenter = () => {
+      if (activeCantt && activeCantt.lat && activeCantt.lng) {
+        map.panTo([activeCantt.lat, activeCantt.lng]);
+      } else {
+        map.panTo([22.5, 82.0]);
+      }
+    };
+    
+    window.addEventListener('map-zoom-in', zoomIn);
+    window.addEventListener('map-zoom-out', zoomOut);
+    window.addEventListener('map-recenter', recenter);
+    
     return () => {
       ids.forEach(clearTimeout);
       window.removeEventListener('resize', onResize);
+      window.removeEventListener('map-zoom-in', zoomIn);
+      window.removeEventListener('map-zoom-out', zoomOut);
+      window.removeEventListener('map-recenter', recenter);
     };
-  }, [map]);
+  }, [map, activeCantt]);
   return null;
 }
 
@@ -161,14 +180,50 @@ function AutoPoiLayers({ activeCity, showCommuteZones, showHospitals, showSchool
   );
 }
 
-export default function MapView() {
+function BoundsHandler({ properties, onBoundsChange }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!onBoundsChange) return;
+
+    const updateBounds = () => {
+      const bounds = map.getBounds();
+      const visibleIds = properties
+        .filter(p => {
+          const lat = parseFloat(p.lat);
+          const lng = parseFloat(p.lng);
+          if (isNaN(lat) || isNaN(lng)) return false;
+          return bounds.contains([lat, lng]);
+        })
+        .map(p => p.id);
+      onBoundsChange(visibleIds);
+    };
+
+    updateBounds();
+
+    map.on('moveend', updateBounds);
+    map.on('zoomend', updateBounds);
+    return () => {
+      map.off('moveend', updateBounds);
+      map.off('zoomend', updateBounds);
+    };
+  }, [map, properties, onBoundsChange]);
+
+  return null;
+}
+
+export default function MapView({
+  properties = null,
+  onBoundsChange = null,
+  selectedProperty = null,
+  onSelectProperty = null
+}) {
   const activeView = useFilterStore((s) => s.activeView);
   const { listings, showCommuteZones, showHospitals, showSchools, showCanteens, isPending } = useFilterStore();
   const allState = useFilterStore((s) => s);
-  const filtered = getFilteredListings(allState);
-
-  // Safety: If no listings yet, show the pitch data if we are in rentals view
-  const displayListings = filtered.length > 0 ? filtered : [];
+  
+  // Use passed properties if available, fallback to getFilteredListings(allState)
+  const displayListings = (properties && properties.length > 0) ? properties : getFilteredListings(allState);
 
   // Logic to find active Cantt centroid
   let activeCantt = null;
@@ -234,9 +289,10 @@ export default function MapView() {
           noWrap={true}
           attribution='&copy; Google Maps'
         />
-        <SizeInvalidator />
+        <MapController activeCantt={activeCantt} />
         <MapAnimator activeCantt={activeCantt} draftCoords={allState.draftCoords} />
         <ScanningGrid />
+        <BoundsHandler properties={displayListings} onBoundsChange={onBoundsChange} />
 
         <MarkerClusterGroup
           key={clusterKey}
@@ -260,7 +316,7 @@ export default function MapView() {
           activeCantt={activeCantt}
         />
 
-        <MapOverlay />
+        {/* MapOverlay removed in favor of UnifiedBentoDashboard UI */}
       </MapContainer>
     </div>
   );

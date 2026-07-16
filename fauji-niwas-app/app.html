@@ -1,36 +1,948 @@
-<!doctype html>
-<html lang="en-IN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Fauji Niwas</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preconnect" href="https://basemaps.cartocdn.com" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;700;800&display=swap" />
-    
-    <!-- Tailwind CSS (Vite handles the build, but keeping standard links if any) -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    
-    <style>
-      body, html {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
-        background-color: #030712;
-        overflow: hidden;
-        font-family: 'Outfit', sans-serif;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+<title>FaujiNiwas – Defence Housing</title>
+<meta name="author" content="Aman Kumar Singh (Founder), Anurag Kumar Singh (Co-Founder)" />
+<meta name="keywords" content="defence housing, military relocation, cantonment rentals, military quarters, KV schools, CSD canteen, Indian Armed Forces, Fauji Niwas, Aman Kumar Singh, Anurag Kumar Singh" />
+<!-- Geographic Location Meta Tags (GEO) -->
+<meta name="geo.region" content="IN" />
+<meta name="geo.placename" content="India" />
+<meta name="geo.position" content="20.593684;78.96288" />
+<meta name="ICBM" content="20.593684, 78.96288" />
+<link rel="preconnect" href="https://mt1.google.com" crossorigin />
+<link rel="preconnect" href="https://firebaseapp.com" crossorigin />
+<link rel="dns-prefetch" href="https://translate.google.com" />
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- Leaflet Google Maps plugin -->
+<script src="https://unpkg.com/leaflet.gridlayer.googlemutant@0.14.0/dist/Leaflet.GoogleMutant.js"></script>
+<!-- Google Maps API -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY&libraries=places"></script>
+<style>
+/* Hide static mockup placeholders immediately to prevent flash of old UI */
+.navbar, .stats-bar, .panel, .right-col, #map {
+  display: none !important;
+}
+
+/* Google Translate widget customization */
+.goog-te-gadget-simple {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  padding: 6px 10px !important;
+  border-radius: 8px !important;
+  font-family: inherit !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+.goog-te-gadget-simple .goog-te-menu-value {
+  color: #f1f1ee !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  font-family: inherit !important;
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+  justify-content: space-between !important;
+}
+.goog-te-gadget-simple .goog-te-menu-value span {
+  color: #f1f1ee !important;
+}
+.goog-te-gadget-icon {
+  display: none !important;
+}
+.goog-te-gadget-simple .goog-te-menu-value img {
+  display: none !important;
+}
+.goog-te-gadget-simple .goog-te-menu-value span:nth-child(3) {
+  display: none !important;
+}
+.goog-te-gadget-simple .goog-te-menu-value span:nth-child(5) {
+  display: none !important;
+}
+.goog-te-banner-frame {
+  display: none !important;
+}
+
+:root {
+  --glass:       rgba(255,255,255,0.62);
+  --glass-light: rgba(255,255,255,0.45);
+  --glass-ultra: rgba(255,255,255,0.80);
+  --glass-nav:   rgba(255,255,255,0.75);
+  --border:      rgba(255,255,255,0.70);
+  --border-soft: rgba(200,210,200,0.45);
+  --blur-sm: blur(12px);
+  --blur:    blur(22px);
+  --blur-xl: blur(36px);
+  --green:       #16a34a;
+  --green-mid:   #22c55e;
+  --green-light: #4ade80;
+  --green-pale:  rgba(34,197,94,0.12);
+  --green-glow:  rgba(34,197,94,0.28);
+  --shadow-card: 0 8px 32px rgba(60,90,60,0.13), 0 1.5px 6px rgba(0,0,0,0.07);
+  --shadow-pop:  0 16px 48px rgba(40,80,40,0.18), 0 2px 8px rgba(0,0,0,0.10);
+  --text:        #111a13;
+  --text-mid:    #3d5240;
+  --text-soft:   #7a9480;
+  --radius-xl:   22px;
+  --radius-lg:   16px;
+  --radius-md:   12px;
+  --radius-pill: 50px;
+}
+
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  height: 100vh;
+  overflow: hidden;
+  background: #e8f0e9;
+}
+
+/* ── MAP ── */
+#map { position:fixed; inset:0; z-index:0; }
+.leaflet-control-attribution,
+.leaflet-control-zoom { display:none !important; }
+
+/* ── NAVBAR ── */
+.navbar {
+  position: fixed;
+  top:0; left:0; right:0;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  gap: 10px;
+  z-index: 1000;
+  background: var(--glass-nav);
+  backdrop-filter: var(--blur-xl);
+  -webkit-backdrop-filter: var(--blur-xl);
+  border-bottom: 1.5px solid var(--border);
+  box-shadow: 0 2px 24px rgba(0,0,0,0.08), 0 1px 0 rgba(255,255,255,0.9) inset;
+}
+
+.logo {
+  display: flex; align-items: center; gap:9px;
+  font-weight: 800; font-size:18px;
+  color: var(--text);
+  text-decoration: none;
+  white-space: nowrap;
+  letter-spacing: -0.4px;
+}
+.logo-icon {
+  width:36px; height:36px;
+  background: linear-gradient(135deg, #15803d, #22c55e);
+  border-radius: 10px;
+  display:grid; place-items:center;
+  font-size:17px;
+  box-shadow: 0 3px 12px var(--green-glow), 0 1px 3px rgba(0,0,0,0.12);
+}
+
+/* search */
+.search-wrap { flex:1; max-width:390px; position:relative; }
+.search-wrap input {
+  width:100%;
+  padding: 10px 42px 10px 18px;
+  background: rgba(255,255,255,0.55);
+  border: 1.5px solid rgba(200,220,200,0.6);
+  border-radius: var(--radius-pill);
+  font-size: 13.5px;
+  font-family: inherit;
+  color: var(--text);
+  outline: none;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: background .2s, border-color .2s, box-shadow .2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 1px 0 rgba(255,255,255,0.9) inset;
+}
+.search-wrap input::placeholder { color: var(--text-soft); }
+.search-wrap input:focus {
+  background: rgba(255,255,255,0.82);
+  border-color: var(--green-mid);
+  box-shadow: 0 0 0 3px var(--green-pale), 0 1px 4px rgba(0,0,0,0.06);
+}
+.s-icon {
+  position:absolute; right:14px; top:50%; transform:translateY(-50%);
+  color: var(--text-soft); pointer-events:none;
+}
+
+/* filters */
+.filter-btn {
+  display:flex; align-items:center; gap:5px;
+  padding: 8px 14px;
+  background: rgba(255,255,255,0.55);
+  border: 1.5px solid rgba(200,220,200,0.6);
+  border-radius: var(--radius-pill);
+  font-size: 12.5px;
+  font-family: inherit;
+  font-weight: 600;
+  color: var(--text-mid);
+  cursor: pointer;
+  white-space: nowrap;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05), 0 1px 0 rgba(255,255,255,0.9) inset;
+  transition: background .18s, border-color .18s, box-shadow .18s, color .18s;
+}
+.filter-btn:hover {
+  background: rgba(255,255,255,0.88);
+  border-color: var(--green-mid);
+  color: var(--green);
+  box-shadow: 0 0 0 3px var(--green-pale), 0 1px 4px rgba(0,0,0,0.06);
+}
+.filter-btn.active {
+  background: var(--green-pale);
+  border-color: var(--green-mid);
+  color: var(--green);
+}
+
+.nav-gap { flex:1; }
+
+.sign-btn {
+  padding: 9px 22px;
+  background: linear-gradient(135deg, #15803d, #22c55e);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: -0.1px;
+  box-shadow: 0 3px 14px var(--green-glow), 0 1px 4px rgba(0,0,0,0.1);
+  transition: transform .15s, box-shadow .18s;
+  white-space: nowrap;
+}
+.sign-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 22px rgba(34,197,94,0.42);
+}
+
+/* ── STATS ── */
+.stats-bar {
+  position:fixed; top:70px; left:378px;
+  display:flex; gap:8px; z-index:999;
+  animation: dropIn .5s ease both;
+}
+@keyframes dropIn { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+
+.stat-pill {
+  display:flex; align-items:center; gap:7px;
+  background: var(--glass);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 6px 15px;
+  font-size: 12.5px; font-weight:600;
+  color: var(--text);
+  box-shadow: var(--shadow-card);
+}
+.live-dot {
+  width:7px; height:7px; border-radius:50%;
+  background: var(--green-mid);
+  box-shadow: 0 0 8px var(--green-mid);
+  animation: blink 2s infinite;
+}
+@keyframes blink {
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:.5;transform:scale(.75)}
+}
+
+/* ── PANEL ── */
+.panel {
+  position:fixed; top:62px; left:0; bottom:0;
+  width:362px; z-index:900;
+  padding:12px 10px 28px;
+  overflow-y:auto;
+  background: rgba(240,247,241,0.55);
+  backdrop-filter: var(--blur-xl);
+  -webkit-backdrop-filter: var(--blur-xl);
+  border-right: 1.5px solid var(--border);
+  box-shadow: 2px 0 24px rgba(60,100,60,0.08);
+  scrollbar-width:thin; scrollbar-color:rgba(100,160,100,.25) transparent;
+  animation: slideIn .4s ease both;
+}
+@keyframes slideIn { from{opacity:0;transform:translateX(-16px)} to{opacity:1;transform:translateX(0)} }
+
+/* ── CARDS ── */
+.card {
+  background: var(--glass-ultra);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow:hidden;
+  margin-bottom:10px;
+  cursor:pointer;
+  box-shadow: var(--shadow-card);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s;
+  animation: cardUp .4s ease both;
+  position:relative;
+}
+.card:nth-child(1){animation-delay:.04s}
+.card:nth-child(2){animation-delay:.10s}
+.card:nth-child(3){animation-delay:.16s}
+.card:nth-child(4){animation-delay:.22s}
+.card:nth-child(5){animation-delay:.28s}
+@keyframes cardUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-pop), 0 0 0 1.5px var(--green-light);
+  border-color: rgba(74,222,128,0.55);
+}
+.card.active {
+  border-color: var(--green-mid);
+  box-shadow: var(--shadow-pop), 0 0 0 2px var(--green-pale);
+}
+
+/* image */
+.card-img {
+  position:relative; height:154px; overflow:hidden;
+}
+.card-img img {
+  width:100%; height:100%; object-fit:cover; display:block;
+  transition: transform .4s ease;
+  filter: brightness(.94) saturate(1.05);
+}
+.card:hover .card-img img { transform:scale(1.06); }
+.card-img::after {
+  content:'';
+  position:absolute; inset:0;
+  background: linear-gradient(to bottom, transparent 45%, rgba(0,0,0,0.28) 100%);
+  pointer-events:none;
+}
+
+/* badge */
+.badge {
+  position:absolute; bottom:10px; left:10px; z-index:2;
+  background: rgba(255,255,255,0.80);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.9);
+  border-radius: 7px;
+  padding: 3px 9px;
+  font-size:11px; font-weight:700;
+  color: var(--green);
+  letter-spacing:.2px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+
+/* fav */
+.fav-btn {
+  position:absolute; top:10px; right:10px; z-index:2;
+  width:32px; height:32px;
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: blur(10px);
+  border: 1.5px solid rgba(255,255,255,0.85);
+  border-radius:50%;
+  display:grid; place-items:center;
+  cursor:pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  transition: background .2s, transform .15s;
+}
+.fav-btn:hover { background:rgba(255,220,220,0.85); transform:scale(1.12); }
+
+/* body */
+.card-body { padding:12px 14px 14px; }
+.card-row {
+  display:flex; align-items:flex-start; justify-content:space-between;
+  margin-bottom:9px; gap:8px;
+}
+.card-title { font-size:14.5px; font-weight:700; color:var(--text); line-height:1.2; }
+.card-price { font-size:14.5px; font-weight:800; color:var(--green); white-space:nowrap; letter-spacing:-.3px; }
+.card-meta { display:flex; gap:11px; }
+.meta-chip {
+  display:flex; align-items:center; gap:4px;
+  font-size:11.5px; font-weight:500; color:var(--text-soft);
+}
+
+/* ── PRICE BUBBLES ── */
+.pb {
+  background: rgba(255,255,255,0.76);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1.5px solid rgba(255,255,255,0.90);
+  border-radius: 22px;
+  padding: 5px 13px;
+  font-size: 12px; font-weight:700;
+  color: var(--green);
+  font-family: 'Inter', sans-serif;
+  white-space: nowrap;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.14), 0 1px 3px rgba(0,0,0,0.06);
+  cursor: pointer;
+  transition: transform .15s, background .15s, box-shadow .15s, color .15s;
+  letter-spacing: -.2px;
+}
+.pb:hover {
+  background: rgba(255,255,255,0.96);
+  color: var(--green);
+  transform: scale(1.12) translateY(-2px);
+  box-shadow: 0 8px 28px rgba(34,197,94,0.25), 0 2px 8px rgba(0,0,0,0.10);
+}
+.pb.active {
+  background: var(--green-mid);
+  color: #fff;
+  box-shadow: 0 0 0 3px var(--green-pale), 0 6px 20px rgba(34,197,94,0.3);
+}
+
+/* ── POI MARKERS ── */
+.poi-pin {
+  width:34px; height:34px;
+  border-radius:50% 50% 50% 0;
+  transform:rotate(-45deg);
+  display:flex; align-items:center; justify-content:center;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.22);
+  border: 2px solid rgba(255,255,255,0.7);
+}
+.poi-pin span { transform:rotate(45deg); font-size:15px; }
+
+/* ── LEGEND (inside right-col, no fixed positioning) ── */
+.legend {
+  background: var(--glass);
+  backdrop-filter: var(--blur-xl);
+  -webkit-backdrop-filter: var(--blur-xl);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 16px 20px;
+  box-shadow: var(--shadow-pop);
+  min-width: 210px;
+  animation: riseIn .5s .3s ease both;
+  flex-shrink: 0;
+}
+@keyframes riseIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+.legend-title {
+  font-size:13px; font-weight:700; color:var(--text);
+  margin-bottom:12px; letter-spacing:-.1px;
+}
+.legend-item {
+  display:flex; align-items:center; gap:10px;
+  margin-bottom:8px; font-size:12.5px;
+  color:var(--text-mid); font-weight:500;
+}
+.legend-item:last-child{margin-bottom:0;}
+.l-icon {
+  width:28px; height:28px; border-radius:50%;
+  display:grid; place-items:center; font-size:13px; flex-shrink:0;
+  background:rgba(255,255,255,0.75);
+  border:1px solid rgba(200,220,200,.55);
+  box-shadow:0 1px 4px rgba(0,0,0,.07);
+}
+
+/* ── RIGHT COLUMN — single anchor, no overlaps ── */
+.right-col {
+  position: fixed;
+  right: 16px;
+  bottom: 24px;
+  z-index: 800;
+  display: flex;
+  flex-direction: column-reverse;  /* legend at bottom, controls above, FAB at top */
+  align-items: flex-end;
+  gap: 10px;
+}
+
+/* ── MAP CONTROLS (inside right-col) ── */
+.map-ctrl {
+  display:flex; flex-direction:column; gap:6px;
+}
+.ctrl-btn {
+  width:40px; height:40px;
+  background: var(--glass);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size:17px; color:var(--text-mid);
+  cursor:pointer; display:grid; place-items:center;
+  box-shadow: var(--shadow-card);
+  transition: background .15s, border-color .15s, transform .15s;
+  font-family:inherit;
+}
+.ctrl-btn:hover {
+  background:rgba(255,255,255,0.95);
+  border-color:var(--green-mid);
+  color:var(--green);
+  transform:scale(1.05);
+}
+
+/* ── CHAT FAB (inside right-col) ── */
+.chat-fab {
+  width:48px; height:48px;
+  background: linear-gradient(135deg,#15803d,#22c55e);
+  border-radius:50%;
+  display:grid; place-items:center;
+  box-shadow: 0 4px 20px rgba(34,197,94,.45);
+  cursor:pointer; border:none;
+  transition: transform .2s, box-shadow .2s;
+  animation: popIn .5s .5s ease both;
+  flex-shrink: 0;
+}
+@keyframes popIn { from{opacity:0;transform:scale(.6)} to{opacity:1;transform:scale(1)} }
+.chat-fab:hover { transform:scale(1.1); box-shadow:0 6px 28px rgba(34,197,94,.55); }
+
+/* popup override */
+.leaflet-popup-content-wrapper {
+  background: rgba(255,255,255,0.85) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1.5px solid rgba(255,255,255,.9) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 8px 32px rgba(60,100,60,0.15) !important;
+  color: var(--text) !important;
+  font-family: 'Inter',sans-serif !important;
+  font-size:13px !important; font-weight:600 !important;
+}
+.leaflet-popup-tip { background: rgba(255,255,255,0.85) !important; }
+.leaflet-popup-close-button { color: var(--text-soft) !important; }
+</style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a class="logo" href="#">
+    <span class="logo-icon">🏠</span>
+    FaujiNiwas
+  </a>
+  <div class="search-wrap">
+    <input type="text" placeholder="Search cantonment, area or city…"/>
+    <svg class="s-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+    </svg>
+  </div>
+  <button class="filter-btn">
+    Filter by Rank
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+  </button>
+  <button class="filter-btn">
+    Filter by BHK
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+  </button>
+  <button class="filter-btn">
+    Filter by Budget
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+  </button>
+  <div class="nav-gap"></div>
+  <button class="sign-btn">Sign in / Sign Up</button>
+</nav>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-pill">
+    <span class="live-dot"></span>
+    Total listings <strong style="margin-left:3px">1,706</strong>
+  </div>
+  <div class="stat-pill">
+    <span class="live-dot" style="background:#f59e0b;box-shadow:0 0 8px #f59e0b;"></span>
+    Average rent <strong style="margin-left:3px">₹2K</strong>
+  </div>
+</div>
+
+<!-- PANEL -->
+<div class="panel" id="panel"></div>
+
+<!-- RIGHT COLUMN: legend + zoom + chat stacked, no overlaps -->
+<div class="right-col">
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="legend-title">Nearby Facilities</div>
+    <div class="legend-item"><div class="l-icon">🚉</div> Station Commute Zone</div>
+    <div class="legend-item"><div class="l-icon">🎓</div> Army School</div>
+    <div class="legend-item"><div class="l-icon">🏥</div> Military Hospital</div>
+  </div>
+
+  <!-- MAP CONTROLS -->
+  <div class="map-ctrl">
+    <button class="ctrl-btn" id="zIn">+</button>
+    <button class="ctrl-btn" id="zOut">−</button>
+    <button class="ctrl-btn" id="myLocBtn" title="My location" onclick="(function(){
+      if(!navigator.geolocation){alert('Geolocation not supported');return;}
+      navigator.geolocation.getCurrentPosition(function(pos){
+        window.geolocated=true;
+        if(window.flyToCoordinate) window.flyToCoordinate(pos.coords.latitude,pos.coords.longitude);
+      },function(){alert('Location access denied');});
+    })()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <circle cx="12" cy="12" r="3" fill="currentColor"/><circle cx="12" cy="12" r="8"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
+      </svg>
+    </button>
+    <button class="ctrl-btn">♿</button>
+  </div>
+
+  <!-- CHAT FAB -->
+  <button class="chat-fab">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+  </button>
+
+</div>
+
+<!-- React Mount Target -->
+<div id="root"></div>
+<script type="module" src="/src/mainNew.tsx"></script>
+<script src="/chatbot.js"></script>
+
+<script>
+// Dismiss loader after 1.5s max - don't wait for React
+setTimeout(function() {
+  var loader = document.getElementById('react-loading');
+  if (loader) { loader.style.display = 'none'; }
+}, 1500);
+// Also dismiss immediately if React mounts faster
+var loaderPoll = setInterval(function() {
+  var root = document.getElementById('root');
+  var loader = document.getElementById('react-loading');
+  if (root && root.children.length > 0 && loader) {
+    loader.style.display = 'none';
+    clearInterval(loaderPoll);
+  }
+}, 100);
+
+// ── DATA ────────────────────────────────────────────────
+const listings = [
+  { id:1, title:'2 BHK Patna Cantt',   price:'₹18,749/mo', dist:'21 m', area:'36 m²', tag:'Parking', badge:'Verified',
+    img:'https://images.unsplash.com/photo-1560185127-6ed189bf02f4?w=600&q=80', lat:25.615, lng:85.134 },
+  { id:2, title:'1 BHK Patna Cantt',   price:'₹14,500/mo', dist:'12 m', area:'36 m²', tag:'Parking', badge:'New',
+    img:'https://images.unsplash.com/photo-1502672260266-1c1de2d9d00c?w=600&q=80', lat:25.608, lng:85.140 },
+  { id:3, title:'PG/Room Patna Cantt', price:'₹18,749/mo', dist:'21 m', area:'60 m²', tag:'Parking', badge:'Popular',
+    img:'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80', lat:25.600, lng:85.147 },
+  { id:4, title:'3 BHK Danapur Cantt', price:'₹23,000/mo', dist:'5 m',  area:'72 m²', tag:'Garden',  badge:'Premium',
+    img:'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600&q=80', lat:25.622, lng:85.042 },
+  { id:5, title:'2 BHK Danapur Cantt', price:'₹17,000/mo', dist:'8 m',  area:'48 m²', tag:'Balcony', badge:'Verified',
+    img:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=80', lat:25.598, lng:85.152 },
+];
+
+const bubbles = [
+  {lat:25.640,lng:85.085,p:'₹17K'}, {lat:25.622,lng:85.042,p:'₹23K'},
+  {lat:25.608,lng:85.095,p:'₹17K'}, {lat:25.596,lng:85.092,p:'₹23K'},
+  {lat:25.615,lng:85.134,p:'₹18.7K'},{lat:25.598,lng:85.152,p:'₹16K'},
+  {lat:25.584,lng:85.142,p:'₹17K'}, {lat:25.602,lng:85.165,p:'₹17K'},
+];
+
+const pois = [
+  {lat:25.660,lng:85.103,color:'#1e40af',emoji:'🎓',label:'APS Patna'},
+  {lat:25.648,lng:85.165,color:'#1e40af',emoji:'🎓',label:'KV Cantt'},
+  {lat:25.596,lng:85.175,color:'#1e40af',emoji:'🎓',label:'AFS School'},
+  {lat:25.638,lng:85.059,color:'#1e40af',emoji:'🎓',label:'Army School'},
+  {lat:25.672,lng:85.088,color:'#b91c1c',emoji:'🏥',label:'MH Patna'},
+  {lat:25.659,lng:85.172,color:'#b91c1c',emoji:'🏥',label:'MI Room'},
+  {lat:25.603,lng:85.155,color:'#b91c1c',emoji:'🏥',label:'CH AF'},
+];
+
+// ── RENDER CARDS ────────────────────────────────────────
+const panel = document.getElementById('panel');
+listings.forEach(l => {
+  panel.innerHTML += `
+  <div class="card" data-id="${l.id}" onclick="flyTo(${l.lat},${l.lng},${l.id})">
+    <div class="card-img">
+      <img src="${l.img}" alt="${l.title}" loading="lazy"/>
+      <button class="fav-btn" onclick="event.stopPropagation();toggleFav(this)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#e11d48" stroke-width="2.2">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+      </button>
+      <span class="badge">${l.badge}</span>
+    </div>
+    <div class="card-body">
+      <div class="card-row">
+        <span class="card-title">${l.title}</span>
+        <span class="card-price">${l.price}</span>
+      </div>
+      <div class="card-meta">
+        <span class="meta-chip">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          ${l.dist}
+        </span>
+        <span class="meta-chip">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          ${l.area}
+        </span>
+        <span class="meta-chip">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h5l3 3v5h-8V8z"/></svg>
+          ${l.tag}
+        </span>
+      </div>
+    </div>
+  </div>`;
+});
+
+// ── INIT MAP ────────────────────────────────────────────
+const map = L.map('map',{ center:[25.607,85.110], zoom:13, zoomControl:false });
+
+// Google Maps satellite hybrid layer via mutant plugin
+try {
+  L.gridLayer.googleMutant({ type:'roadmap' }).addTo(map);
+} catch(e) {
+  // Fallback to OSM if Google fails
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{ maxZoom:19 }).addTo(map);
+}
+
+// ── PRICE BUBBLES ───────────────────────────────────────
+bubbles.forEach(b => {
+  const icon = L.divIcon({
+    html: `<div class="pb">${b.p}</div>`,
+    className:'', iconAnchor:[30,14]
+  });
+  L.marker([b.lat, b.lng],{icon}).addTo(map);
+});
+
+// ── POI MARKERS ─────────────────────────────────────────
+pois.forEach(p => {
+  const icon = L.divIcon({
+    html:`<div class="poi-pin" style="background:${p.color}"><span>${p.emoji}</span></div>`,
+    className:'', iconAnchor:[17,34]
+  });
+  L.marker([p.lat,p.lng],{icon}).addTo(map).bindPopup(`<strong>${p.label}</strong>`);
+});
+
+// ── FLY TO ──────────────────────────────────────────────
+function flyTo(lat,lng,id) {
+  map.flyTo([lat,lng],15,{duration:.75,easeLinearity:.4});
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+  const card = document.querySelector(`[data-id="${id}"]`);
+  if(card){ card.classList.add('active'); card.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+}
+
+// ── FAV ─────────────────────────────────────────────────
+function toggleFav(btn){
+  const svg = btn.querySelector('svg');
+  const on = btn.dataset.fav==='1';
+  btn.dataset.fav = on?'0':'1';
+  svg.setAttribute('fill', on?'none':'#e11d48');
+}
+
+// ── ZOOM ────────────────────────────────────────────────
+document.getElementById('zIn').onclick = ()=>map.zoomIn();
+document.getElementById('zOut').onclick = ()=>map.zoomOut();
+</script>
+
+<!-- ♿ ACCESSIBILITY WIDGET FOR OLD AGE PEOPLE -->
+<div id="accessibility-widget" style="position:fixed;bottom:24px;right:24px;z-index:200000;display:flex;flex-direction:column-reverse;align-items:flex-end;gap:8px;">
+  <!-- Toggle trigger button -->
+  <button id="acc-trigger" style="width:56px;height:56px;border-radius:50%;background:#1e40af;color:#fff;border:2px solid #fff;font-size:22px;font-weight:700;cursor:pointer;box-shadow:0 10px 30px rgba(30,64,175,0.3);transition:transform .15s;display:flex;align-items:center;justify-content:center;" title="Accessibility Panel" aria-label="Open Accessibility Panel">♿</button>
+
+  <!-- Google Translate invisible container -->
+  <div id="google_translate_element" style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;"></div>
+
+  <!-- Panel — always white, opened via JS setting display:flex -->
+  <div id="acc-menu" style="display:none;flex-direction:column;background:#ffffff;border:2px solid #e2e8f0;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,0.18);width:300px;margin-bottom:6px;overflow:hidden;font-family:Inter,system-ui,sans-serif;">
+
+    <!-- Header -->
+    <div style="padding:14px 18px 10px;border-bottom:1.5px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;">
+      <span style="font-size:11px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#0f172a;font-family:monospace;">ACCESSIBILITY 🎖️</span>
+      <button id="acc-close" style="font-size:20px;color:#94a3b8;cursor:pointer;background:none;border:none;font-weight:700;padding:0 4px;line-height:1;" aria-label="Close">&times;</button>
+    </div>
+
+    <div style="padding:16px 18px;display:flex;flex-direction:column;gap:16px;">
+
+      <!-- Text Size -->
+      <div style="display:flex;flex-direction:column;gap:7px;">
+        <span style="font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#94a3b8;font-family:monospace;">TEXT SIZE / आकार</span>
+        <div style="display:flex;gap:6px;">
+          <button id="fs-small"   style="flex:1;padding:10px 2px;font-size:13px;font-weight:700;border-radius:10px;border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;cursor:pointer;">A-</button>
+          <button id="fs-normal"  style="flex:1;padding:10px 2px;font-size:13px;font-weight:700;border-radius:10px;border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;cursor:pointer;">A</button>
+          <button id="fs-large"   style="flex:1;padding:10px 2px;font-size:13px;font-weight:700;border-radius:10px;border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;cursor:pointer;">A+</button>
+          <button id="fs-elderly" style="flex:1;padding:10px 2px;font-size:11px;font-weight:700;border-radius:10px;border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;cursor:pointer;">Senior</button>
+        </div>
+      </div>
+
+      <!-- Language -->
+      <div style="display:flex;flex-direction:column;gap:7px;">
+        <span style="font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#94a3b8;font-family:monospace;">LANGUAGE / भाषा</span>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+          <button onclick="setLang('en')" style="padding:7px 10px;font-size:12px;font-weight:700;border-radius:8px;border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;cursor:pointer;">EN</button>
+          <button onclick="setLang('hi')" style="padding:7px 10px;font-size:12px;font-weight:700;border-radius:8px;border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;cursor:pointer;">हिंदी</button>
+          <button onclick="setLang('pa')" style="padding:7px 10px;font-size:12px;font-weight:700;border-radius:8px;border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;cursor:pointer;">ਪੰਜਾਬੀ</button>
+          <button onclick="setLang('ta')" style="padding:7px 10px;font-size:12px;font-weight:700;border-radius:8px;border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;cursor:pointer;">தமிழ்</button>
+          <button onclick="setLang('te')" style="padding:7px 10px;font-size:12px;font-weight:700;border-radius:8px;border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;cursor:pointer;">తెలుగు</button>
+          <button onclick="setLang('mr')" style="padding:7px 10px;font-size:12px;font-weight:700;border-radius:8px;border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;cursor:pointer;">मराठी</button>
+          <button onclick="setLang('kn')" style="padding:7px 10px;font-size:12px;font-weight:700;border-radius:8px;border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;cursor:pointer;">ಕನ್ನಡ</button>
+          <button onclick="setLang('bn')" style="padding:7px 10px;font-size:12px;font-weight:700;border-radius:8px;border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;cursor:pointer;">বাংলা</button>
+        </div>
+      </div>
+
+      <!-- Contrast Theme -->
+      <div style="display:flex;flex-direction:column;gap:7px;">
+        <span style="font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#94a3b8;font-family:monospace;">CONTRAST THEME / थीम</span>
+        <div style="display:flex;gap:6px;">
+          <button id="theme-dark"  style="flex:1;padding:11px 2px;font-size:13px;font-weight:700;border-radius:10px;border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;cursor:pointer;">Dark</button>
+          <button id="theme-light" style="flex:1;padding:11px 2px;font-size:13px;font-weight:700;border-radius:10px;border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;cursor:pointer;">Light</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  // Apply saved values immediately to prevent FOUC
+  var savedSize = localStorage.getItem('fn_fontsize') || '16px';
+  document.documentElement.style.fontSize = savedSize;
+
+  var savedTheme = localStorage.getItem('fn_theme') || 'light';
+  if (savedTheme === 'dark') {
+    document.documentElement.classList.add('dark-theme');
+    document.body.classList.add('dark-theme');
+    document.documentElement.classList.remove('light-theme');
+    document.body.classList.remove('light-theme');
+  } else {
+    document.documentElement.classList.remove('dark-theme');
+    document.body.classList.remove('dark-theme');
+    document.documentElement.classList.add('light-theme');
+    document.body.classList.add('light-theme');
+  }
+
+  // Setup Accessibility Widget event handlers
+  window.addEventListener('DOMContentLoaded', function() {
+    var widget = document.getElementById('accessibility-widget');
+    var trigger = document.getElementById('acc-trigger');
+    var menu = document.getElementById('acc-menu');
+    var closeBtn = document.getElementById('acc-close');
+
+    if (!trigger || !menu) return;
+
+    // Initialize Google Translate eagerly so it's ready when panel opens
+    window.googleTranslateElementInit = function() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,hi,pa,te,ta,kn,mr,bn',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      }, 'google_translate_element');
+    };
+    if (!document.getElementById('google-translate-script')) {
+      var gtScript = document.createElement('script');
+      gtScript.id = 'google-translate-script';
+      gtScript.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+      document.body.appendChild(gtScript);
+    }
+
+    // setLang: called by custom language buttons in the accessibility panel
+    window.setLang = function(langCode) {
+      // Try Google Translate combo select approach
+      var combo = document.querySelector('.goog-te-combo');
+      if (combo) {
+        combo.value = langCode;
+        combo.dispatchEvent(new Event('change'));
+        return;
       }
-      #root {
-        width: 100%;
-        height: 100%;
+      // Fallback: set cookie and reload
+      if (langCode === 'en') {
+        document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=' + location.hostname + '; path=/;';
+        window.location.reload();
+      } else {
+        document.cookie = 'googtrans=/en/' + langCode + '; path=/;';
+        document.cookie = 'googtrans=/en/' + langCode + '; domain=' + location.hostname + '; path=/;';
+        window.location.reload();
       }
-    </style>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+    };
+
+    trigger.addEventListener('click', function() {
+      var isOpen = menu.style.display === 'flex';
+      menu.style.display = isOpen ? 'none' : 'flex';
+    });
+
+    closeBtn.addEventListener('click', function() {
+      menu.style.display = 'none';
+    });
+
+    // Theme toggles
+    var themeDark = document.getElementById('theme-dark');
+    var themeLight = document.getElementById('theme-light');
+    
+    var ACTIVE_STYLE = 'flex:1;padding:11px 2px;font-size:13px;font-weight:800;border-radius:10px;border:1.5px solid #f59e0b;background:#f59e0b;color:#000;cursor:pointer;';
+    var INACTIVE_STYLE = 'flex:1;padding:11px 2px;font-size:13px;font-weight:700;border-radius:10px;border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;cursor:pointer;';
+
+    function updateThemeButtons(theme) {
+      if (theme === 'dark') {
+        themeDark.style.cssText = ACTIVE_STYLE;
+        themeLight.style.cssText = INACTIVE_STYLE;
+      } else {
+        themeLight.style.cssText = ACTIVE_STYLE;
+        themeDark.style.cssText = INACTIVE_STYLE;
+      }
+    }
+
+    // Tactical High Contrast Filter for Dark Theme
+    function applyDarkTheme(enable) {
+      if (enable) {
+        document.documentElement.classList.add('dark-theme');
+        document.body.classList.add('dark-theme');
+        document.documentElement.classList.remove('light-theme');
+        document.body.classList.remove('light-theme');
+      } else {
+        document.documentElement.classList.remove('dark-theme');
+        document.body.classList.remove('dark-theme');
+        document.documentElement.classList.add('light-theme');
+        document.body.classList.add('light-theme');
+      }
+    }
+
+    themeDark.addEventListener('click', function() {
+      applyDarkTheme(true);
+      localStorage.setItem('fn_theme', 'dark');
+      updateThemeButtons('dark');
+    });
+
+    themeLight.addEventListener('click', function() {
+      applyDarkTheme(false);
+      localStorage.setItem('fn_theme', 'light');
+      updateThemeButtons('light');
+    });
+
+    if (savedTheme === 'dark') {
+       applyDarkTheme(true);
+    }
+    updateThemeButtons(savedTheme);
+
+    // Font Size Toggles
+    var sizes = {
+      '14px': document.getElementById('fs-small'),
+      '16px': document.getElementById('fs-normal'),
+      '18px': document.getElementById('fs-large'),
+      '20px': document.getElementById('fs-elderly')
+    };
+
+    var SIZE_ACTIVE   = 'flex:1;padding:10px 2px;font-size:13px;font-weight:800;border-radius:10px;border:1.5px solid #f59e0b;background:#f59e0b;color:#000;cursor:pointer;';
+    var SIZE_INACTIVE = 'flex:1;padding:10px 2px;font-size:13px;font-weight:700;border-radius:10px;border:1.5px solid #e2e8f0;background:#f8fafc;color:#374151;cursor:pointer;';
+
+    function updateSizeButtons(currentSize) {
+      Object.keys(sizes).forEach(function(size) {
+        var btn = sizes[size];
+        if (!btn) return;
+        btn.style.cssText = (size === currentSize) ? SIZE_ACTIVE : SIZE_INACTIVE;
+      });
+    }
+
+    Object.keys(sizes).forEach(function(size) {
+      var btn = sizes[size];
+      if (!btn) return;
+      btn.addEventListener('click', function() {
+        document.documentElement.style.fontSize = size;
+        localStorage.setItem('fn_fontsize', size);
+        updateSizeButtons(size);
+      });
+    });
+
+    updateSizeButtons(savedSize);
+  });
+})();
+</script>
+  <!-- Global Recaptcha Containers for Phone Auth -->
+  <div id="recaptcha-container" style="display: none;"></div>
+  <div id="recaptcha-profile" style="display: none;"></div>
+</body>
 </html>
+

@@ -79,7 +79,7 @@ function createChatbotUI() {
     #fauji-chatbot {
     position: fixed;
     bottom: 24px;
-    right: 24px;
+    right: 96px;
     z-index: 999;
     font-family: 'Outfit', sans-serif;
     }
@@ -230,6 +230,60 @@ function createChatbotUI() {
     #cb-restart:hover { border-color: rgba(255,153,51,0.3); color: #FF9933; }
     @media (max-width: 400px) {
         #cb-window { width: 310px; }
+    }
+
+    /* Light Theme Styling for Chatbot */
+    .light-theme #cb-window {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 24px 64px rgba(15,23,42,0.15), 0 0 0 1px rgba(15,23,42,0.04);
+    }
+    .light-theme #cb-header-text b {
+        color: #0f172a;
+    }
+    .light-theme #cb-close {
+        color: #64748b;
+    }
+    .light-theme #cb-close:hover {
+        color: #0f172a;
+    }
+    .light-theme .cb-msg.bot {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        color: #1e293b;
+    }
+    .light-theme .cb-opt {
+        background: #f1f5f9;
+        border: 1px solid #cbd5e1;
+        color: #1e293b;
+    }
+    .light-theme .cb-opt:hover {
+        background: rgba(255,153,51,0.1);
+        border-color: rgba(255,153,51,0.4);
+    }
+    .light-theme #cb-input-row {
+        background: #f8fafc;
+        border-top: 1px solid #e2e8f0;
+    }
+    .light-theme #cb-input {
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        color: #1e293b;
+    }
+    .light-theme .cb-listing-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+    }
+    .light-theme .cb-listing-card b {
+        color: #0f172a;
+    }
+    .light-theme #cb-restart {
+        border: 1px solid #cbd5e1;
+        color: #64748b;
+    }
+    .light-theme #cb-restart:hover {
+        border-color: rgba(255,153,51,0.4);
+        color: #FF9933;
     }
     </style>
 
