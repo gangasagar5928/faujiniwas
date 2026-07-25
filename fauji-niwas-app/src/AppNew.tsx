@@ -376,7 +376,7 @@ export default function App() {
 
   return (
     <ModalContext.Provider value={ctxValue as any}>
-      <div className="w-full h-screen relative overflow-hidden bg-slate-100 text-slate-800 font-sans antialiased text-sm select-none">
+      <div className="w-full h-screen relative overflow-hidden bg-slate-900 text-slate-800 font-sans antialiased text-sm select-none">
         
         {/* =========================================================================
             DESKTOP LAYOUT (>= 768px)
