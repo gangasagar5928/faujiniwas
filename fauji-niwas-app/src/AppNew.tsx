@@ -946,7 +946,7 @@ export default function App() {
                         <div
                           key={prop.id}
                           onClick={() => setSelectedProperty(prop)}
-                          className="bg-white rounded-3xl border border-slate-200/90 p-3 flex items-center gap-3.5 shadow-sm active:scale-[0.99] transition-all cursor-pointer"
+                          className="bg-white rounded-3xl border border-slate-200/90 p-3 flex items-center gap-3.5 shadow-sm active:scale-[0.99] transition-all cursor-pointer overflow-hidden relative"
                         >
                           {/* Image */}
                           <div className="relative w-28 h-24 shrink-0 rounded-2xl overflow-hidden bg-slate-100">
@@ -964,11 +964,15 @@ export default function App() {
                           </div>
 
                           {/* Details */}
-                          <div className="flex-1 flex flex-col justify-between min-w-0 py-0.5">
-                            <div className="flex items-start justify-between gap-1">
+                          <div className="flex-1 flex flex-col justify-between min-w-0 py-0.5 pr-1">
+                            <div className="flex items-start justify-between gap-2 pr-1">
                               <h3 className="font-extrabold text-sm text-slate-900 truncate leading-snug">{prop.title}</h3>
-                              <button onClick={(e) => handleToggleFavorite(prop.id, e)} className="shrink-0">
-                                <Heart size={15} className={prop.isFavorite ? "fill-red-500 text-red-500" : "text-slate-300"} />
+                              <button 
+                                onClick={(e) => handleToggleFavorite(prop.id, e)} 
+                                className="shrink-0 w-7 h-7 rounded-full bg-slate-100/90 hover:bg-slate-200 flex items-center justify-center transition-colors -mt-0.5 shadow-2xs"
+                                title="Favorite"
+                              >
+                                <Heart size={14} className={prop.isFavorite ? "fill-red-500 text-red-500" : "text-slate-400"} />
                               </button>
                             </div>
 
