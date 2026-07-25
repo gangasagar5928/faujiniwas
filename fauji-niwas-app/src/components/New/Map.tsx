@@ -41,6 +41,13 @@ const CITY_COORDS: { [key: string]: [number, number] } = {
   belgaum: [15.8497, 74.4977]
 };
 
+const isValidCoord = (lat: any, lng: any): boolean => {
+  if (lat == null || lng == null) return false;
+  const nLat = Number(lat);
+  const nLng = Number(lng);
+  return !isNaN(nLat) && !isNaN(nLng) && isFinite(nLat) && isFinite(nLng) && nLat !== 0 && nLng !== 0;
+};
+
 // Map controller to handle invalidating size and centering/flying to selected property
 function MapController({
   selectedProperty,
@@ -64,7 +71,9 @@ function MapController({
   // Expose global flyTo handler on window
   useEffect(() => {
     (window as any).flyToCoordinate = (lat: number, lng: number) => {
-      map.flyTo([lat, lng], 15, { duration: 1.2 });
+      if (isValidCoord(lat, lng)) {
+        map.flyTo([Number(lat), Number(lng)], 15, { duration: 1.2 });
+      }
     };
     return () => {
       delete (window as any).flyToCoordinate;
@@ -81,9 +90,13 @@ function MapController({
   // Expose routing controls on window
   useEffect(() => {
     (window as any).showRoutePath = (from: [number, number], to: [number, number]) => {
-      setRouteCoords([from, to]);
-      const bounds = L.latLngBounds([from, to]);
-      map.fitBounds(bounds, { padding: [80, 80], maxZoom: 15 });
+      if (isValidCoord(from[0], from[1]) && isValidCoord(to[0], to[1])) {
+        const cleanFrom: [number, number] = [Number(from[0]), Number(from[1])];
+        const cleanTo: [number, number] = [Number(to[0]), Number(to[1])];
+        setRouteCoords([cleanFrom, cleanTo]);
+        const bounds = L.latLngBounds([cleanFrom, cleanTo]);
+        map.fitBounds(bounds, { padding: [80, 80], maxZoom: 15 });
+      }
     };
     (window as any).clearRoutePath = () => {
       setRouteCoords(null);
@@ -96,8 +109,8 @@ function MapController({
 
   // Effect 1: Fly to selected property (only when selectedProperty is set)
   useEffect(() => {
-    if (selectedProperty && selectedProperty.lat && selectedProperty.lng) {
-      map.flyTo([selectedProperty.lat, selectedProperty.lng], 15, { duration: 1.2 });
+    if (selectedProperty && isValidCoord(selectedProperty.lat, selectedProperty.lng)) {
+      map.flyTo([Number(selectedProperty.lat), Number(selectedProperty.lng)], 15, { duration: 1.2 });
     }
   }, [selectedProperty, map]);
 
@@ -121,18 +134,18 @@ function MapController({
     }
 
     if (properties.length > 0) {
-      const validProps = properties.filter((p) => p.lat && p.lng);
+      const validProps = properties.filter((p) => isValidCoord(p.lat, p.lng));
       if (validProps.length > 0) {
-        const lats = validProps.map((p) => p.lat!);
-        const lngs = validProps.map((p) => p.lng!);
+        const lats = validProps.map((p) => Number(p.lat));
+        const lngs = validProps.map((p) => Number(p.lng));
         const minLat = Math.min(...lats);
         const maxLat = Math.max(...lats);
         const minLng = Math.min(...lngs);
         const maxLng = Math.max(...lngs);
         
         if (validProps.length === 1) {
-          map.flyTo([validProps[0].lat!, validProps[0].lng!], 14, { duration: 1.2 });
-        } else {
+          map.flyTo([Number(validProps[0].lat), Number(validProps[0].lng)], 14, { duration: 1.2 });
+        } else if (isValidCoord(minLat, minLng) && isValidCoord(maxLat, maxLng)) {
           map.fitBounds([
             [minLat, minLng],
             [maxLat, maxLng],
@@ -149,8 +162,10 @@ function MapController({
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          (window as any).geolocated = true;
-          map.setView([latitude, longitude], 13, { animate: false });
+          if (isValidCoord(latitude, longitude)) {
+            (window as any).geolocated = true;
+            map.setView([latitude, longitude], 13, { animate: false });
+          }
         },
         () => { /* silent — already centred on fallback */ }
       );
@@ -159,7 +174,7 @@ function MapController({
 
   return (
     <>
-      {routeCoords && (
+      {routeCoords && isValidCoord(routeCoords[0]?.[0], routeCoords[0]?.[1]) && isValidCoord(routeCoords[1]?.[0], routeCoords[1]?.[1]) && (
         <>
           <Polyline
             positions={routeCoords}
@@ -187,27 +202,28 @@ const createPropertyIcon = (price: string, isSelected: boolean) =>
   L.divIcon({
     html: `
       <div style="
-        background-color: ${isSelected ? "#f59e0b" : "#10b981"};
+        background-color: ${isSelected ? "#f59e0b" : "#047857"};
         color: white;
         border: 2px solid white;
         border-radius: 9999px;
-        padding: 4px 8px;
-        font-weight: bold;
+        padding: 5px 10px;
+        font-weight: 800;
         font-size: 11px;
-        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
         text-align: center;
         white-space: nowrap;
         display: flex;
         align-items: center;
         gap: 4px;
-        transform: translate(-50%, -100%);
+        pointer-events: auto;
+        cursor: pointer;
       ">
         📍 ${price}
       </div>
     `,
-    className: "",
+    className: "custom-property-marker-pill",
     iconSize: [70, 30],
-    iconAnchor: [0, 0],
+    iconAnchor: [35, 30],
   });
 
 const createFacilityIcon = (type: "school" | "hospital" | "station") => {
@@ -507,7 +523,7 @@ export default function Map({
           maxClusterRadius={60}
         >
           {properties
-            .filter((p) => p.lat && p.lng)
+            .filter((p) => isValidCoord(p.lat, p.lng))
             .map((prop) => {
               const isSelected = selectedProperty?.id === prop.id;
               const priceText = `₹${Math.round(prop.rent / 1000)}K`;
@@ -515,10 +531,13 @@ export default function Map({
               return (
                 <Marker
                   key={prop.id}
-                  position={[prop.lat!, prop.lng!]}
+                  position={[Number(prop.lat), Number(prop.lng)]}
                   icon={createPropertyIcon(priceText, isSelected)}
                   eventHandlers={{
-                    click: () => onSelectProperty(prop),
+                    click: (e) => {
+                      e.originalEvent?.stopPropagation();
+                      onSelectProperty(prop);
+                    },
                   }}
                 />
               );

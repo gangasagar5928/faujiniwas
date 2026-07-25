@@ -351,9 +351,11 @@ export default function App() {
       setToast({ msg, type });
     },
     openDetail: (id: string) => {
-      const prop = properties.find((p) => p.id === id);
+      const prop = propertiesToUse.find((p: any) => p.id === id) || PROPERTIES.find((p: any) => p.id === id);
       if (prop) {
         setSelectedProperty(prop);
+      } else {
+        setSelectedProperty({ id, title: 'Listing Details', rent: 15000, type: '2BHK', area: 'Defence Area', city: 'Delhi', rating: 4.8 } as any);
       }
     },
     openPost: () => setOpenModal('post'),
@@ -886,6 +888,9 @@ export default function App() {
                               <img
                                 src={prop.image}
                                 alt={prop.title}
+                                onError={(e) => {
+                                  e.currentTarget.src = "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80";
+                                }}
                                 className="w-full h-full object-cover"
                               />
                               {/* Badges */}
@@ -941,13 +946,16 @@ export default function App() {
                         <div
                           key={prop.id}
                           onClick={() => setSelectedProperty(prop)}
-                          className="bg-white rounded-3xl border border-slate-200/90 p-3 flex items-center gap-3.5 shadow-sm active:scale-[0.99] transition-all"
+                          className="bg-white rounded-3xl border border-slate-200/90 p-3 flex items-center gap-3.5 shadow-sm active:scale-[0.99] transition-all cursor-pointer"
                         >
                           {/* Image */}
                           <div className="relative w-28 h-24 shrink-0 rounded-2xl overflow-hidden bg-slate-100">
                             <img
                               src={prop.image}
                               alt={prop.title}
+                              onError={(e) => {
+                                e.currentTarget.src = "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80";
+                              }}
                               className="w-full h-full object-cover"
                             />
                             <span className="absolute top-1.5 left-1.5 bg-[#047857] text-white text-[9px] font-extrabold px-2 py-0.5 rounded-md shadow">
@@ -964,19 +972,20 @@ export default function App() {
                               </button>
                             </div>
 
-                            <div className="flex items-center gap-1 text-[11px] font-bold text-slate-500 my-0.5">
-                              <Star size={11} className="fill-amber-400 text-amber-400" />
+                            <div className="flex items-center gap-1 text-xs font-bold text-slate-500 my-0.5">
+                              <Star size={12} className="fill-amber-400 text-amber-400" />
                               <span className="text-slate-800">{prop.rating}</span>
                               <span className="text-slate-400">(128)</span>
                             </div>
 
                             <div className="flex items-baseline gap-1">
                               <span className="text-base font-extrabold text-[#047857]">₹{prop.rent.toLocaleString()}</span>
-                              <span className="text-[10px] text-slate-400 font-medium">/month</span>
+                              <span className="text-xs text-slate-400 font-medium">/month</span>
                             </div>
 
-                            <div className="flex items-center gap-2 text-[10px] text-slate-400 font-medium truncate">
+                            <div className="flex items-center gap-2 text-xs text-slate-600 font-semibold truncate">
                               <span>🛏️ {prop.type}</span>
+                              <span>•</span>
                               <span>📍 {prop.commute}</span>
                             </div>
                           </div>

@@ -66,8 +66,8 @@ body {
   --z-fab:      1000;
   --z-sidebar:  1500;
   --z-panel:    2000;
-  --z-modal:    10000;
-  --z-toast:    20000;
+  --z-modal:    999999;
+  --z-toast:    1000000;
 }
 
 /* Premium Hybrid App Theme Overrides */
@@ -1434,3 +1434,14 @@ html.app-shell, body.app-shell {
 .leaflet-popup-tip { background: rgba(255,255,255,0.85) !important; }
 .leaflet-popup-close-button { color: var(--text-soft) !important; }
 
+/* Mobile Accessibility & Chatbot Floating Widget Repositioning */
+@media (max-width: 768px) {
+  #accessibility-widget {
+    bottom: 82px !important;
+    right: 14px !important;
+    z-index: 99990 !important;
+  }
+  #fauji-chatbot {
+    display: none !important;
+  }
+}
