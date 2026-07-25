@@ -313,23 +313,46 @@ function ViewportListener({
 function MyLocationButton() {
   const handleLocate = () => {
     if (navigator.geolocation) {
+      const success = (position: GeolocationPosition) => {
+        const { latitude, longitude } = position.coords;
+        (window as any).geolocated = true;
+        if (typeof (window as any).flyToCoordinate === "function") {
+          (window as any).flyToCoordinate(latitude, longitude);
+        }
+      };
+
+      const optionsHigh = {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
+      };
+
+      const optionsFallback = {
+        enableHighAccuracy: false,
+        timeout: 8000,
+        maximumAge: 60000
+      };
+
       navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          (window as any).geolocated = true;
-          if (typeof (window as any).flyToCoordinate === "function") {
-            (window as any).flyToCoordinate(latitude, longitude);
+        success,
+        (error) => {
+          // If error is not permission denied (code 1), try fallback with lower accuracy
+          if (error.code !== 1) {
+            console.warn("High-accuracy location query timed out or failed. Trying standard accuracy fallback...", error);
+            navigator.geolocation.getCurrentPosition(
+              success,
+              (fallbackError) => {
+                console.error("Fallback geolocation failed", fallbackError);
+                alert(`Location services error: ${fallbackError.message || "Please check your device's location services."}`);
+              },
+              optionsFallback
+            );
+          } else {
+            console.error("Geolocation permission denied", error);
+            alert("Location services error: Permission denied. Please enable location access in your browser settings.");
           }
         },
-        (error) => {
-          console.error("Geolocation failed", error);
-          alert(`Location services error: ${error.message || "Please ensure GPS is enabled and browser has permission."}`);
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0
-        }
+        optionsHigh
       );
     } else {
       alert("Geolocation is not supported by your browser.");

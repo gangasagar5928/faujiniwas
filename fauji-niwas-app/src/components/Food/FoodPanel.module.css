@@ -9,7 +9,7 @@
 }
 .panel {
   position: fixed; bottom: 0; left: 0; right: 0;
-  max-height: 85vh; min-height: 40vh; background: rgba(19, 31, 53, 0.82);
+  max-height: 85vh; min-height: 40vh; background: rgba(19, 31, 53, 0.88);
   backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
   border-top: 2px solid var(--accent);
   border-radius: 20px 20px 0 0;
@@ -18,9 +18,15 @@
   padding: 0 16px calc(env(safe-area-inset-bottom, 20px) + 28px);
   overflow-y: auto; overflow-x: hidden;
   scrollbar-width: thin;
+  color: var(--text);
   -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
 }
 .panel.open { transform: translateY(0); opacity: 1; box-shadow: 0 -12px 60px rgba(0,0,0,.65); }
+
+:global(.light-theme) .panel {
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 -12px 60px rgba(15, 23, 42, 0.12);
+}
 .handle {
   width: 40px; height: 4px; background: var(--border2);
   border-radius: 2px; margin: 12px auto 4px;

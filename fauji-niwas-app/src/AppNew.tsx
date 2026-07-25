@@ -26,7 +26,11 @@ import Toast from "./components/UI/Toast";
 import { useFilterStore } from "./store/filterStore";
 // @ts-ignore
 import { useListings } from "./hooks/useListings";
-import { Home, TrendingUp, ChevronDown, ChevronUp, Star, HelpCircle, School, Cross, Train, Building2, ShoppingBag, ChevronLeft, ChevronRight } from "lucide-react";
+import { 
+  Home, TrendingUp, ChevronDown, ChevronUp, Star, HelpCircle, School, Cross, Train, Building2, 
+  ShoppingBag, ChevronLeft, ChevronRight, Search, MapPin, Target, Heart, User, Bot, Bell, 
+  Menu, ArrowUpDown, X, SlidersHorizontal, Sliders, LogOut, PlusCircle, CheckCircle, Bed 
+} from "lucide-react";
 
 export default function App() {
   const { user, dbUser } = useAuth();
@@ -35,6 +39,13 @@ export default function App() {
   useListings();
   const listings = useFilterStore((s: any) => s.listings) || [];
   const propertiesToUse = listings.length > 0 ? listings : PROPERTIES;
+
+  // Mobile navigation state
+  const [mobileActiveTab, setMobileActiveTab] = useState<'home' | 'map' | 'saved' | 'ai_helper' | 'profile'>('home');
+  const [mobileViewMode, setMobileViewMode] = useState<'feed' | 'homes_list' | 'homes_map'>('feed');
+  const [selectedCategory, setSelectedCategory] = useState<'all' | 'family' | 'boys' | 'girls' | 'pg' | 'ssb' | 'market'>('all');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileSort, setMobileSort] = useState<'relevance' | 'price_low' | 'price_high' | 'rating'>('relevance');
 
   // Expose global variables and API for external chatbot.js
   useEffect(() => {
@@ -241,15 +252,32 @@ export default function App() {
     };
   }, [isDragging]);
 
-  // Filter properties based on active controls
+  // Filter properties based on active controls and category selection
   const filteredProperties = properties.filter((prop) => {
+    // Saved tab filter
+    if (mobileActiveTab === 'saved' && !prop.isFavorite) {
+      return false;
+    }
+
+    // Category filter
+    let matchesCategory = true;
+    if (selectedCategory === 'family') {
+      matchesCategory = prop.type?.includes('2BHK') || prop.type?.includes('3BHK') || prop.title?.toLowerCase().includes('family');
+    } else if (selectedCategory === 'boys') {
+      matchesCategory = prop.title?.toLowerCase().includes('boys') || prop.title?.toLowerCase().includes('bachelor') || prop.description?.toLowerCase().includes('bachelor');
+    } else if (selectedCategory === 'girls') {
+      matchesCategory = prop.title?.toLowerCase().includes('girls') || prop.description?.toLowerCase().includes('girls');
+    } else if (selectedCategory === 'pg') {
+      matchesCategory = prop.type?.includes('PG') || prop.title?.toLowerCase().includes('pg') || prop.description?.toLowerCase().includes('pg');
+    } else if (selectedCategory === 'ssb') {
+      matchesCategory = prop.title?.toLowerCase().includes('ssb') || prop.description?.toLowerCase().includes('ssb');
+    }
+
     // Search filter
     const matchesSearch =
       prop.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       prop.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
       prop.cantonment.toLowerCase().includes(searchQuery.toLowerCase());
-
-    // BHK filter (normalized below with rank check)
 
     // Budget range filter
     let matchesBudget = true;
@@ -271,18 +299,24 @@ export default function App() {
       } else if (rankLower === "jco") {
         const jcoRanks = ["naib subedar", "subedar", "subedar major"];
         matchesRank = prop.suitableRanks.some(r => jcoRanks.includes(r.toLowerCase()));
-      } else if (rankLower === "officers" || rankLower === "officer" || rankLower === "officers" || rankLower === "officers" || rankLower === "officers") {
+      } else if (rankLower === "officers" || rankLower === "officer") {
         const officerRanks = ["lieutenant", "captain", "major", "lieutenant colonel", "colonel", "brigadier", "major general", "lieutenant general", "general (coas)"];
         matchesRank = prop.suitableRanks.some(r => officerRanks.includes(r.toLowerCase()));
       } else {
         matchesRank = prop.suitableRanks.some(r => r.toLowerCase() === rankLower);
       }
     }
-    // BHK match: handle both "2BHK" and "2 BHK" formats
+
+    // BHK match
     const normType = prop.type?.replace(' ', '').toLowerCase();
     const normBhk = selectedBhk?.replace(' ', '').toLowerCase();
     const matchesBhk = selectedBhk === "All" || normType === normBhk || prop.type === selectedBhk;
-    return matchesSearch && matchesBhk && matchesBudget && matchesRank;
+    return matchesCategory && matchesSearch && matchesBhk && matchesBudget && matchesRank;
+  }).sort((a, b) => {
+    if (mobileSort === 'price_low') return a.rent - b.rent;
+    if (mobileSort === 'price_high') return b.rent - a.rent;
+    if (mobileSort === 'rating') return b.rating - a.rating;
+    return 0;
   });
 
   const visibleProperties = filteredProperties.filter((p) => visiblePropertyIds.includes(p.id));
@@ -294,13 +328,12 @@ export default function App() {
 
   // Toggle favorite bookmark on card
   const handleToggleFavorite = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent card selection click trigger
+    e.stopPropagation();
     setProperties((prev) =>
       prev.map((p) => (p.id === id ? { ...p, isFavorite: !p.isFavorite } : p))
     );
   };
 
-  // Synchronize rank filter when user profile or HRA calculator shifts
   const handleRankFilterChange = (rank: string) => {
     setSelectedRank(rank);
   };
@@ -343,304 +376,730 @@ export default function App() {
 
   return (
     <ModalContext.Provider value={ctxValue as any}>
-      <div className="w-full h-screen relative overflow-hidden bg-slate-900 text-slate-800 font-sans antialiased text-sm">
-        {/* 1. Map is the full-screen absolute background! */}
-        <div className="absolute inset-0 w-full h-full z-0">
-          <Suspense fallback={
-            <div className="w-full h-full flex flex-col items-center justify-center bg-slate-900 text-white gap-3">
-              <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
-              <span className="text-xs font-semibold tracking-wider text-slate-300">Loading Map Engine…</span>
+      <div className="w-full h-screen relative overflow-hidden bg-slate-100 text-slate-800 font-sans antialiased text-sm select-none">
+        
+        {/* =========================================================================
+            DESKTOP LAYOUT (>= 768px)
+           ========================================================================= */}
+        <div className="hidden md:block w-full h-full relative overflow-hidden">
+          {/* Map Engine Background */}
+          <div className="absolute inset-0 w-full h-full z-0">
+            <Suspense fallback={
+              <div className="w-full h-full flex flex-col items-center justify-center bg-slate-900 text-white gap-3">
+                <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+                <span className="text-xs font-semibold tracking-wider text-slate-300">Loading Map Engine…</span>
+              </div>
+            }>
+              <Map
+                properties={filteredProperties}
+                selectedProperty={selectedProperty}
+                onSelectProperty={setSelectedProperty}
+                facilities={FACILITIES}
+                activeFacilityTypes={facilityLayers}
+                onBoundsChange={setVisiblePropertyIds}
+                activeCity={activeCity}
+              />
+            </Suspense>
+          </div>
+
+          {/* Floating Header */}
+          <Header
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            selectedRank={selectedRank}
+            onRankChange={handleRankFilterChange}
+            selectedBhk={selectedBhk}
+            onBhkChange={setSelectedBhk}
+            selectedBudgetRange={selectedBudgetRange}
+            onBudgetChange={setSelectedBudgetRange}
+            userProfile={userProfile}
+            onOpenAuthModal={() => setIsProfileModalOpen(true)}
+            onLogout={handleLogout}
+          />
+
+          {/* Desktop Left Sidebar Panel */}
+          <div className="absolute top-[82px] left-4 bottom-4 w-[395px] max-w-[calc(100vw-2rem)] max-h-[calc(100vh-7.5rem)] z-40 flex flex-col gap-3 pointer-events-none transition-transform duration-300">
+            <div className="flex gap-1.5 pointer-events-auto shrink-0">
+              {(['properties', 'ssb', 'marketplace'] as const).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setSidebarTab(tab)}
+                  className={`flex-1 flex items-center justify-center gap-2 py-3.5 px-3 text-[12px] font-extrabold uppercase tracking-wider rounded-xl transition-all ${
+                    sidebarTab === tab
+                      ? 'bg-emerald-600 text-white shadow-md'
+                      : 'bg-slate-950/70 text-slate-300 hover:bg-slate-950/85 hover:text-white'
+                  } backdrop-blur-md border border-white/10`}
+                >
+                  {tab === 'properties' && <Home size={13} />}
+                  {tab === 'ssb' && <Building2 size={13} />}
+                  {tab === 'marketplace' && <ShoppingBag size={13} />}
+                  {tab === 'properties' ? 'Listings' : tab === 'ssb' ? 'SSB Dorm' : 'Market'}
+                </button>
+              ))}
             </div>
-          }>
-            <Map
-              properties={filteredProperties}
-              selectedProperty={selectedProperty}
-              onSelectProperty={setSelectedProperty}
-              facilities={FACILITIES}
-              activeFacilityTypes={facilityLayers}
-              onBoundsChange={setVisiblePropertyIds}
-              activeCity={activeCity}
-            />
-          </Suspense>
+
+            {sidebarTab === 'properties' && (
+              <div className="grid grid-cols-2 gap-2 w-full pointer-events-auto shrink-0 select-none">
+                <div className="backdrop-blur-md bg-slate-950/75 text-white rounded-2xl p-3 flex items-center justify-center gap-2.5 border border-white/10 shadow-lg">
+                  <div className="p-1.5 rounded bg-emerald-800/60 text-emerald-300">
+                    <Home size={14} />
+                  </div>
+                  <div className="flex flex-col text-left">
+                    <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider leading-none">Total Listings</span>
+                    <span className="font-bold text-sm text-slate-100 leading-tight mt-1">{displayPropertiesCount.toLocaleString()} units</span>
+                  </div>
+                </div>
+                <div className="backdrop-blur-md bg-slate-950/75 text-white rounded-2xl p-3 flex items-center justify-center gap-2.5 border border-white/10 shadow-lg">
+                  <div className="p-1.5 rounded bg-emerald-800/60 text-emerald-300">
+                    <TrendingUp size={14} />
+                  </div>
+                  <div className="flex flex-col text-left">
+                    <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider leading-none">Average Rent</span>
+                    <span className="font-bold text-sm text-slate-100 leading-tight mt-1">₹{Math.round(displayAverageRent / 1000)} K / mo</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Properties Scroll List */}
+            {sidebarTab === 'properties' && (
+              <div className="flex-1 overflow-y-auto pr-2 flex flex-col gap-2 pointer-events-auto scrollbar-none">
+                {filteredProperties.length > 0 ? (
+                  filteredProperties.map((prop) => (
+                    <PropertyCard
+                      key={prop.id}
+                      property={prop}
+                      isSelected={selectedProperty?.id === prop.id}
+                      onSelect={() => setSelectedProperty(prop)}
+                      onToggleFavorite={handleToggleFavorite}
+                      userRank={userProfile?.rank}
+                      userBasicPay={userProfile?.basicPay}
+                    />
+                  ))
+                ) : (
+                  <div className="py-8 px-4 rounded-2xl bg-slate-950/85 backdrop-blur-md border border-white/10 text-center flex flex-col items-center justify-center gap-2 text-white">
+                    <HelpCircle size={24} className="text-slate-400" />
+                    <p className="text-xs font-bold">No properties matched</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Desktop Right Nearby Facilities Overlay */}
+          <div 
+            className="absolute z-40 w-64 pointer-events-auto select-none"
+            style={{
+              top: '96px',
+              right: '16px',
+              transform: `translate(${facPosition.x}px, ${facPosition.y}px)`,
+            }}
+          >
+            <div className="bg-slate-950/85 backdrop-blur-md text-white rounded-2xl border border-white/10 shadow-2xl overflow-hidden">
+              <div
+                onMouseDown={handleMouseDown}
+                onTouchStart={handleTouchStart}
+                onClick={handleHeaderClick}
+                className="w-full flex items-center justify-between pl-6 pr-4 py-3.5 hover:bg-white/5 transition-colors"
+                style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+              >
+                <h3 className="font-bold text-xs uppercase tracking-wider text-slate-400 flex items-center gap-2 pointer-events-none">
+                  <Star size={13} className="text-amber-400 fill-amber-400" />
+                  <span>Nearby Facilities</span>
+                </h3>
+                {facilitiesOpen ? <ChevronUp size={13} className="text-slate-400 pointer-events-none" /> : <ChevronDown size={13} className="text-slate-400 pointer-events-none" />}
+              </div>
+
+              {facilitiesOpen && (
+                <div className="pl-6 pr-4 pb-4 flex flex-col gap-3 text-xs font-medium text-slate-200 border-t border-white/5">
+                  <label className="flex items-center gap-3 cursor-pointer group hover:text-white select-none mt-2">
+                    <input
+                      type="checkbox"
+                      checked={facilityLayers.station}
+                      onChange={(e) => setFacilityLayers((prev) => ({ ...prev, station: e.target.checked }))}
+                      className="w-4 h-4 rounded cursor-pointer"
+                    />
+                    <div className="flex items-center gap-2">
+                      <div className="p-1 rounded bg-indigo-600 text-white shadow-md"><Train size={12} /></div>
+                      <span className="text-[11px]">Station Commute Zone</span>
+                    </div>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer group hover:text-white select-none">
+                    <input
+                      type="checkbox"
+                      checked={facilityLayers.school}
+                      onChange={(e) => setFacilityLayers((prev) => ({ ...prev, school: e.target.checked }))}
+                      className="w-4 h-4 rounded cursor-pointer"
+                    />
+                    <div className="flex items-center gap-2">
+                      <div className="p-1 rounded bg-blue-600 text-white shadow-md"><School size={12} /></div>
+                      <span className="text-[11px]">Army School</span>
+                    </div>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer group hover:text-white select-none">
+                    <input
+                      type="checkbox"
+                      checked={facilityLayers.hospital}
+                      onChange={(e) => setFacilityLayers((prev) => ({ ...prev, hospital: e.target.checked }))}
+                      className="w-4 h-4 rounded cursor-pointer"
+                    />
+                    <div className="flex items-center gap-2">
+                      <div className="p-1 rounded bg-red-500 text-white shadow-md"><Cross size={11} className="text-white" fill="white" /></div>
+                      <span className="text-[11px]">Military Hospital</span>
+                    </div>
+                  </label>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
-        {/* 2. Floating Header Navigation Bar */}
-        <Header
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          selectedRank={selectedRank}
-          onRankChange={handleRankFilterChange}
-          selectedBhk={selectedBhk}
-          onBhkChange={setSelectedBhk}
-          selectedBudgetRange={selectedBudgetRange}
-          onBudgetChange={setSelectedBudgetRange}
-          userProfile={userProfile}
-          onOpenAuthModal={() => setIsProfileModalOpen(true)}
-          onLogout={handleLogout}
-        />
 
-        {/* 3. Left Floating Sidebar Panel — hidden on mobile unless toggled */}
-        {/* Mobile toggle button */}
-        <button
-          onClick={() => setSidebarOpen(o => !o)}
-          className="md:hidden absolute top-[82px] left-3 z-50 w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-lg pointer-events-auto border-2 border-white/20"
-          aria-label="Toggle sidebar"
-        >
-          {sidebarOpen ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
-        </button>
-        <div className={`absolute top-[82px] left-4 bottom-4 w-[395px] max-w-[calc(100vw-2rem)] max-h-[calc(100vh-7.5rem)] z-40 flex flex-col gap-3 pointer-events-none transition-transform duration-300 ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-[calc(100%+2rem)]'
-        }`}>
-          {/* Tab bar */}
-          <div className="flex gap-1.5 pointer-events-auto shrink-0">
-            {(['properties', 'ssb', 'marketplace'] as const).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setSidebarTab(tab)}
-                className={`flex-1 flex items-center justify-center gap-2 py-3.5 px-3 text-[12px] font-extrabold uppercase tracking-wider rounded-xl transition-all ${
-                  sidebarTab === tab
-                    ? 'bg-emerald-600 text-white shadow-md'
-                    : 'bg-slate-950/70 text-slate-300 hover:bg-slate-950/85 hover:text-white'
-                } backdrop-blur-md border border-white/10`}
-              >
-                {tab === 'properties' && <Home size={13} />}
-                {tab === 'ssb' && <Building2 size={13} />}
-                {tab === 'marketplace' && <ShoppingBag size={13} />}
-                {tab === 'properties' ? 'Listings' : tab === 'ssb' ? 'SSB Dorm' : 'Market'}
-              </button>
-            ))}
-          </div>
+        {/* =========================================================================
+            MOBILE APK LAYOUT (< 768px) - MATCHING MOCKUP IMAGE 1 & IMAGE 2
+           ========================================================================= */}
+        <div className="md:hidden flex flex-col w-full h-full bg-[#f8fafc] text-slate-800 relative overflow-hidden">
 
-          {/* Mockup Stats Panel */}
-          {sidebarTab === 'properties' && (
-          <div className="grid grid-cols-2 gap-2 w-full pointer-events-auto shrink-0 select-none">
-            <div className="backdrop-blur-md bg-slate-950/75 text-white rounded-2xl p-3 flex items-center justify-center gap-2.5 border border-white/10 shadow-lg">
-              <div className="p-1.5 rounded bg-emerald-800/60 text-emerald-300">
-                <Home size={14} />
-              </div>
-              <div className="flex flex-col text-left">
-                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider leading-none">Total Listings</span>
-                <span className="font-bold text-sm text-slate-100 leading-tight mt-1">{displayPropertiesCount.toLocaleString()} units</span>
+          {/* 1. Mobile Drawer Menu Overlay */}
+          {mobileMenuOpen && (
+            <div className="fixed inset-0 z-50 flex">
+              <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)} />
+              <div className="relative w-4/5 max-w-xs bg-white h-full shadow-2xl flex flex-col p-5 z-10 animate-fade-in">
+                <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+                  <div className="flex flex-col">
+                    <span className="font-extrabold text-xl text-[#047857]">FaujiNiwas</span>
+                    <span className="text-[9px] font-bold tracking-[0.12em] text-[#065f46] uppercase">Defence Housing Portal</span>
+                  </div>
+                  <button onClick={() => setMobileMenuOpen(false)} className="p-1.5 rounded-full hover:bg-slate-100 text-slate-500">
+                    <X size={20} />
+                  </button>
+                </div>
+
+                {userProfile ? (
+                  <div className="my-4 p-3.5 bg-slate-50 rounded-2xl border border-slate-100 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-[#047857] text-white flex items-center justify-center font-bold text-sm">
+                      {userProfile.name[0]}
+                    </div>
+                    <div className="flex flex-col min-w-0">
+                      <span className="font-bold text-xs text-slate-800 truncate">{userProfile.name}</span>
+                      <span className="text-[11px] text-[#047857] font-semibold">{userProfile.rank}</span>
+                    </div>
+                  </div>
+                ) : (
+                  <button 
+                    onClick={() => { setMobileMenuOpen(false); setIsProfileModalOpen(true); }}
+                    className="my-4 w-full py-3 bg-[#047857] text-white rounded-xl font-bold text-xs shadow-md"
+                  >
+                    Sign In / Register
+                  </button>
+                )}
+
+                <div className="flex-1 flex flex-col gap-2 overflow-y-auto py-2">
+                  <button onClick={() => { setMobileMenuOpen(false); setOpenModal('post'); }} className="flex items-center gap-3 px-3 py-3 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50">
+                    <PlusCircle size={18} className="text-[#047857]" /> Post Housing Rental
+                  </button>
+                  <button onClick={() => { setMobileMenuOpen(false); setSidebarTab('ssb'); setMobileActiveTab('home'); setMobileViewMode('homes_list'); }} className="flex items-center gap-3 px-3 py-3 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50">
+                    <Building2 size={18} className="text-[#047857]" /> SSB Candidate Dorms
+                  </button>
+                  <button onClick={() => { setMobileMenuOpen(false); setSidebarTab('marketplace'); setMobileActiveTab('home'); }} className="flex items-center gap-3 px-3 py-3 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50">
+                    <ShoppingBag size={18} className="text-[#047857]" /> Defence Marketplace
+                  </button>
+                  <button onClick={() => { setMobileMenuOpen(false); setOpenModal('relocation'); }} className="flex items-center gap-3 px-3 py-3 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50">
+                    <CheckCircle size={18} className="text-[#047857]" /> PC-to-PC Relocation Guide
+                  </button>
+                </div>
+
+                {user && (
+                  <button onClick={handleLogout} className="flex items-center justify-center gap-2 pt-4 border-t border-slate-100 text-red-600 font-bold text-xs">
+                    <LogOut size={16} /> Logout
+                  </button>
+                )}
               </div>
             </div>
-            <div className="backdrop-blur-md bg-slate-950/75 text-white rounded-2xl p-3 flex items-center justify-center gap-2.5 border border-white/10 shadow-lg">
-              <div className="p-1.5 rounded bg-emerald-800/60 text-emerald-300">
-                <TrendingUp size={14} />
-              </div>
-              <div className="flex flex-col text-left">
-                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider leading-none">Average Rent</span>
-                <span className="font-bold text-sm text-slate-100 leading-tight mt-1">₹{Math.round(displayAverageRent / 1000)} K / mo</span>
-              </div>
-            </div>
-          </div>
           )}
 
-          {/* Listings count and reset */}
-          {sidebarTab === 'properties' && (selectedRank !== "All" || selectedBhk !== "All" || selectedBudgetRange !== "All" || searchQuery !== "") && (
-            <div className="flex items-center justify-between text-xs font-semibold px-4 py-2.5 bg-slate-950/85 backdrop-blur-md text-white rounded-xl border border-white/10 pointer-events-auto shrink-0 shadow-lg">
-              <span className="text-slate-200">Filters Active</span>
-              <button
+
+          {/* 2. Mobile Main Scroll Container */}
+          <div className="flex-1 overflow-y-auto pb-24 scrollbar-none">
+            
+            {/* MAP VIEW TAB */}
+            {(mobileActiveTab === 'map' || mobileViewMode === 'homes_map') ? (
+              <div className="w-full h-full relative">
+                <Suspense fallback={
+                  <div className="w-full h-[80vh] flex items-center justify-center bg-slate-100">
+                    <div className="w-8 h-8 border-4 border-[#047857] border-t-transparent rounded-full animate-spin" />
+                  </div>
+                }>
+                  <Map
+                    properties={filteredProperties}
+                    selectedProperty={selectedProperty}
+                    onSelectProperty={setSelectedProperty}
+                    facilities={FACILITIES}
+                    activeFacilityTypes={facilityLayers}
+                    onBoundsChange={setVisiblePropertyIds}
+                    activeCity={activeCity}
+                  />
+                </Suspense>
+                {/* Floating controls in map mode */}
+                <div className="absolute top-4 left-4 right-4 z-[1000]">
+                  <div className="relative w-full shadow-lg">
+                    <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input
+                      type="text"
+                      placeholder="Search city, cantonment or academy"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full pl-10 pr-4 py-3 rounded-2xl bg-white border border-slate-200 text-xs font-medium text-slate-800 placeholder:text-slate-400 shadow-md focus:outline-none focus:border-[#047857]"
+                    />
+                  </div>
+                </div>
+              </div>
+            ) : (
+
+              /* HOME / LIST VIEW CONTENT */
+              <div className="px-4 pt-3 flex flex-col gap-4">
+
+                {/* HEADER ROW */}
+                <div className="flex items-center justify-between py-1">
+                  {mobileViewMode === 'homes_list' ? (
+                    <div className="flex items-center gap-2">
+                      <button 
+                        onClick={() => setMobileViewMode('feed')}
+                        className="p-1 rounded-full text-[#047857] hover:bg-slate-200/60"
+                      >
+                        <ChevronLeft size={22} />
+                      </button>
+                      <h1 className="font-extrabold text-xl text-[#047857]">Homes</h1>
+                    </div>
+                  ) : (
+                    <>
+                      <button onClick={() => setMobileMenuOpen(true)} className="p-2 rounded-xl text-[#047857] hover:bg-slate-200/50">
+                        <Menu size={22} />
+                      </button>
+                      <div className="flex flex-col items-center">
+                        <span className="font-extrabold text-lg tracking-tight text-[#047857] leading-none">FaujiNiwas</span>
+                        <span className="text-[9px] font-bold tracking-[0.14em] text-[#065f46] uppercase mt-0.5">DEFENCE HOUSING PORTAL</span>
+                      </div>
+                      <button onClick={() => ctxValue.showToast("No new notifications", "ok")} className="p-2 rounded-xl text-[#047857] hover:bg-slate-200/50">
+                        <Bell size={20} />
+                      </button>
+                    </>
+                  )}
+                </div>
+
+                {/* SEARCH INPUT BAR */}
+                <div className="relative w-full">
+                  <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="Search city, cantonment or academy"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 rounded-2xl bg-white border border-slate-200/90 text-xs font-medium text-slate-800 placeholder:text-slate-400 shadow-sm focus:outline-none focus:border-[#047857]"
+                  />
+                </div>
+
+                {/* LOCATION SELECTOR BAR */}
+                <div className="relative w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl bg-white border border-slate-200/90 text-xs font-medium text-slate-700 shadow-sm">
+                  <div className="flex items-center gap-2 truncate">
+                    <MapPin size={16} className="text-[#047857] shrink-0" />
+                    <span className="truncate font-semibold">{searchQuery || "Current Location"}</span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition((pos) => {
+                          if (typeof (window as any).flyToCoordinate === "function") {
+                            (window as any).flyToCoordinate(pos.coords.latitude, pos.coords.longitude);
+                          }
+                          ctxValue.showToast("Centered on your current GPS location", "ok");
+                        });
+                      }
+                    }}
+                    className="p-1 rounded-full text-[#047857] hover:bg-slate-100 transition-colors"
+                  >
+                    <Target size={16} />
+                  </button>
+                </div>
+
+                {/* FILTER DROPDOWN PILLS ROW */}
+                <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
+                  <select
+                    value={selectedRank}
+                    onChange={(e) => setSelectedRank(e.target.value)}
+                    className="px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-700 shadow-sm focus:outline-none"
+                  >
+                    <option value="All">Rank v</option>
+                    <option value="OR">OR</option>
+                    <option value="JCO">JCO</option>
+                    <option value="Officers">Officers</option>
+                  </select>
+
+                  <select
+                    value={selectedBhk}
+                    onChange={(e) => setSelectedBhk(e.target.value)}
+                    className="px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-700 shadow-sm focus:outline-none"
+                  >
+                    <option value="All">BHK v</option>
+                    <option value="1BHK">1 BHK</option>
+                    <option value="2BHK">2 BHK</option>
+                    <option value="3BHK">3 BHK</option>
+                  </select>
+
+                  <select
+                    value={selectedBudgetRange}
+                    onChange={(e) => setSelectedBudgetRange(e.target.value)}
+                    className="px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-700 shadow-sm focus:outline-none"
+                  >
+                    <option value="All">Budget v</option>
+                    <option value="under-15k">Under ₹15K</option>
+                    <option value="15k-20k">₹15K - ₹20K</option>
+                    <option value="over-20k">Over ₹20K</option>
+                  </select>
+
+                  <button 
+                    onClick={() => {
+                      setSelectedRank("All");
+                      setSelectedBhk("All");
+                      setSelectedBudgetRange("All");
+                      setSearchQuery("");
+                      setSelectedCategory("all");
+                    }}
+                    className="w-9 h-9 shrink-0 rounded-xl bg-[#047857] text-white flex items-center justify-center shadow-md active:scale-95 transition-transform"
+                  >
+                    <SlidersHorizontal size={16} />
+                  </button>
+                </div>
+
+                {/* SEGMENTED TOGGLE FOR HOMES VIEW MODE (IMAGE 2) */}
+                {mobileViewMode === 'homes_list' && (
+                  <div className="w-full bg-slate-200/80 p-1 rounded-2xl flex border border-slate-300/50">
+                    <button
+                      onClick={() => setMobileViewMode('homes_list')}
+                      className={`flex-1 py-2 rounded-xl text-xs font-extrabold transition-all ${
+                        mobileViewMode === 'homes_list' ? 'bg-[#047857] text-white shadow-md' : 'text-slate-600'
+                      }`}
+                    >
+                      List View
+                    </button>
+                    <button
+                      onClick={() => setMobileViewMode('homes_map')}
+                      className={`flex-1 py-2 rounded-xl text-xs font-extrabold transition-all ${
+                        mobileViewMode === 'homes_map' ? 'bg-[#047857] text-white shadow-md' : 'text-slate-600'
+                      }`}
+                    >
+                      Map View
+                    </button>
+                  </div>
+                )}
+
+
+                {/* CATEGORIES GRID (IMAGE 1 STYLE) */}
+                {mobileViewMode === 'feed' && (
+                  <div className="grid grid-cols-6 gap-2 py-1">
+                    {[
+                      { id: 'family', label: 'Family', icon: Home },
+                      { id: 'boys', label: 'Boys', icon: User },
+                      { id: 'girls', label: 'Girls', icon: Heart },
+                      { id: 'pg', label: 'PG', icon: Bed },
+                      { id: 'ssb', label: 'SSB Stay', icon: Building2 },
+                      { id: 'market', label: 'Market', icon: ShoppingBag },
+                    ].map((cat) => {
+                      const IconComp = cat.icon;
+                      const isSelected = selectedCategory === cat.id;
+                      return (
+                        <button
+                          key={cat.id}
+                          onClick={() => {
+                            if (cat.id === 'ssb') {
+                              setSidebarTab('ssb');
+                              setMobileViewMode('homes_list');
+                            } else if (cat.id === 'market') {
+                              setSidebarTab('marketplace');
+                            } else {
+                              setSelectedCategory(isSelected ? 'all' : cat.id as any);
+                            }
+                          }}
+                          className={`flex flex-col items-center justify-center p-2 rounded-2xl border transition-all ${
+                            isSelected 
+                              ? 'bg-emerald-50 border-[#047857] text-[#047857] shadow-sm' 
+                              : 'bg-white border-slate-200/90 text-slate-700 hover:border-slate-300'
+                          }`}
+                        >
+                          <div className={`p-2 rounded-xl mb-1 ${isSelected ? 'bg-[#047857] text-white' : 'bg-slate-100 text-[#047857]'}`}>
+                            <IconComp size={16} />
+                          </div>
+                          <span className="text-[10px] font-bold truncate max-w-full">{cat.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+
+
+                {/* RESULTS HEADER ROW (IMAGE 2) */}
+                {mobileViewMode === 'homes_list' && (
+                  <div className="flex items-center justify-between text-xs font-bold text-slate-600 pt-1">
+                    <span>{filteredProperties.length} Homes Found</span>
+                    <select
+                      value={mobileSort}
+                      onChange={(e) => setMobileSort(e.target.value as any)}
+                      className="bg-transparent text-xs font-bold text-slate-700 focus:outline-none cursor-pointer"
+                    >
+                      <option value="relevance">Sort: Relevance v</option>
+                      <option value="price_low">Sort: Price Low to High</option>
+                      <option value="price_high">Sort: Price High to Low</option>
+                      <option value="rating">Sort: Top Rated</option>
+                    </select>
+                  </div>
+                )}
+
+
+                {/* SECTION TITLE: POPULAR HOMES NEAR YOU (IMAGE 1 FEED MODE) */}
+                {mobileViewMode === 'feed' && (
+                  <div className="flex items-center justify-between pt-1">
+                    <h2 className="font-extrabold text-base text-slate-900">Popular Homes Near You</h2>
+                    <button 
+                      onClick={() => setMobileViewMode('homes_list')}
+                      className="text-xs font-extrabold text-[#047857] hover:underline"
+                    >
+                      View All
+                    </button>
+                  </div>
+                )}
+
+
+                {/* LISTING CARDS LIST */}
+                <div className="flex flex-col gap-3.5">
+                  {filteredProperties.length > 0 ? (
+                    filteredProperties.map((prop, idx) => {
+
+                      /* FULL WIDTH HERO CARD (IMAGE 2 STYLE FOR HOMES LIST VIEW) */
+                      if (mobileViewMode === 'homes_list') {
+                        return (
+                          <div
+                            key={prop.id}
+                            onClick={() => setSelectedProperty(prop)}
+                            className="bg-white rounded-3xl border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-md transition-all active:scale-[0.99] p-3"
+                          >
+                            {/* Image container */}
+                            <div className="relative w-full h-48 rounded-2xl overflow-hidden bg-slate-100 mb-3">
+                              <img
+                                src={prop.image}
+                                alt={prop.title}
+                                className="w-full h-full object-cover"
+                              />
+                              {/* Badges */}
+                              <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
+                                <span className="bg-[#047857] text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded-md shadow-sm">
+                                  {idx % 3 === 0 ? "Verified" : idx % 2 === 0 ? "Owner" : "Defence Area"}
+                                </span>
+                              </div>
+
+                              {/* Heart Bookmark */}
+                              <button
+                                onClick={(e) => handleToggleFavorite(prop.id, e)}
+                                className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-black/30 backdrop-blur-md flex items-center justify-center text-white"
+                              >
+                                <Heart size={15} className={prop.isFavorite ? "fill-red-500 text-red-500" : "text-white"} />
+                              </button>
+                            </div>
+
+                            {/* Info */}
+                            <div className="flex flex-col gap-1 px-1">
+                              <div className="flex items-center justify-between">
+                                <h3 className="font-extrabold text-base text-slate-900 truncate">{prop.title}</h3>
+                                <button onClick={(e) => handleToggleFavorite(prop.id, e)}>
+                                  <Heart size={16} className={prop.isFavorite ? "fill-red-500 text-red-500" : "text-slate-400"} />
+                                </button>
+                              </div>
+
+                              <div className="flex items-center gap-1 text-xs font-bold text-slate-500">
+                                <Star size={13} className="fill-amber-400 text-amber-400" />
+                                <span className="text-slate-800">{prop.rating}</span>
+                                <span className="text-slate-400">(128)</span>
+                              </div>
+
+                              <div className="flex items-baseline gap-1 mt-1">
+                                <span className="text-lg font-extrabold text-[#047857]">₹{prop.rent.toLocaleString()}</span>
+                                <span className="text-xs text-slate-400 font-medium">/month</span>
+                              </div>
+
+                              <div className="flex items-center gap-3 text-xs text-slate-500 font-semibold pt-1 border-t border-slate-100 mt-1">
+                                <span>🛏️ {prop.type}</span>
+                                <span>•</span>
+                                <span>🚿 1 Bath</span>
+                                <span>•</span>
+                                <span>📍 {prop.commute}</span>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      }
+
+                      /* HORIZONTAL COMPACT CARD (IMAGE 1 FEED STYLE) */
+                      return (
+                        <div
+                          key={prop.id}
+                          onClick={() => setSelectedProperty(prop)}
+                          className="bg-white rounded-3xl border border-slate-200/90 p-3 flex items-center gap-3.5 shadow-sm active:scale-[0.99] transition-all"
+                        >
+                          {/* Image */}
+                          <div className="relative w-28 h-24 shrink-0 rounded-2xl overflow-hidden bg-slate-100">
+                            <img
+                              src={prop.image}
+                              alt={prop.title}
+                              className="w-full h-full object-cover"
+                            />
+                            <span className="absolute top-1.5 left-1.5 bg-[#047857] text-white text-[9px] font-extrabold px-2 py-0.5 rounded-md shadow">
+                              {idx % 2 === 0 ? "Verified" : "Owner"}
+                            </span>
+                          </div>
+
+                          {/* Details */}
+                          <div className="flex-1 flex flex-col justify-between min-w-0 py-0.5">
+                            <div className="flex items-start justify-between gap-1">
+                              <h3 className="font-extrabold text-sm text-slate-900 truncate leading-snug">{prop.title}</h3>
+                              <button onClick={(e) => handleToggleFavorite(prop.id, e)} className="shrink-0">
+                                <Heart size={15} className={prop.isFavorite ? "fill-red-500 text-red-500" : "text-slate-300"} />
+                              </button>
+                            </div>
+
+                            <div className="flex items-center gap-1 text-[11px] font-bold text-slate-500 my-0.5">
+                              <Star size={11} className="fill-amber-400 text-amber-400" />
+                              <span className="text-slate-800">{prop.rating}</span>
+                              <span className="text-slate-400">(128)</span>
+                            </div>
+
+                            <div className="flex items-baseline gap-1">
+                              <span className="text-base font-extrabold text-[#047857]">₹{prop.rent.toLocaleString()}</span>
+                              <span className="text-[10px] text-slate-400 font-medium">/month</span>
+                            </div>
+
+                            <div className="flex items-center gap-2 text-[10px] text-slate-400 font-medium truncate">
+                              <span>🛏️ {prop.type}</span>
+                              <span>📍 {prop.commute}</span>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <div className="p-8 text-center bg-white rounded-3xl border border-slate-200">
+                      <p className="text-xs font-bold text-slate-500">No properties found in this filter.</p>
+                    </div>
+                  )}
+                </div>
+
+
+                {/* PROMO BANNER: LOOKING FOR SSB STAY? (IMAGE 1) */}
+                {mobileViewMode === 'feed' && (
+                  <div className="my-2 bg-gradient-to-br from-slate-50 to-emerald-50/60 rounded-3xl border border-slate-200/90 p-4 flex items-center justify-between gap-3 shadow-sm relative overflow-hidden">
+                    <div className="flex flex-col items-start pr-2">
+                      <h3 className="font-extrabold text-sm text-slate-900">Looking for SSB Stay?</h3>
+                      <p className="text-[11px] text-slate-500 mb-3 leading-tight mt-0.5">Comfortable & Safe Stay Near SSB Centres</p>
+                      <button
+                        onClick={() => {
+                          setSidebarTab('ssb');
+                          setMobileViewMode('homes_list');
+                        }}
+                        className="bg-[#047857] hover:bg-[#065f46] text-white text-xs font-extrabold px-3.5 py-2 rounded-xl shadow-md active:scale-95 transition-all"
+                      >
+                        Explore SSB Stay
+                      </button>
+                    </div>
+                    <img
+                      src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=300&q=80"
+                      alt="SSB Stay Room"
+                      className="w-24 h-20 rounded-2xl object-cover shrink-0 shadow-sm"
+                    />
+                  </div>
+                )}
+
+              </div>
+            )}
+          </div>
+
+
+          {/* 3. Floating Actions Bar in Homes List or Map View (Image 2 style) */}
+          {(mobileViewMode === 'homes_list' || mobileActiveTab === 'map') && (
+            <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-40 bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-xl rounded-full px-4 py-2 flex items-center gap-5 text-xs font-bold text-slate-700">
+              <button 
                 onClick={() => {
                   setSelectedRank("All");
                   setSelectedBhk("All");
                   setSelectedBudgetRange("All");
-                  setSearchQuery("");
-                }}
-                className="text-emerald-400 font-bold hover:underline cursor-pointer"
+                  ctxValue.showToast("Filters reset", "ok");
+                }} 
+                className="flex items-center gap-1.5 hover:text-[#047857]"
               >
-                Clear all
+                <SlidersHorizontal size={14} className="text-[#047857]" />
+                <span>Filters</span>
+              </button>
+              
+              <button 
+                onClick={() => ctxValue.openChat({ title: "Fauji AI Assistant" })}
+                className="w-10 h-10 rounded-full bg-[#047857] text-white flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-transform"
+                title="AI Helper"
+              >
+                <Bot size={20} />
+              </button>
+
+              <button 
+                onClick={() => {
+                  setMobileSort(mobileSort === 'price_low' ? 'price_high' : 'price_low');
+                  ctxValue.showToast(`Sorted by ${mobileSort === 'price_low' ? 'Price High' : 'Price Low'}`, "ok");
+                }} 
+                className="flex items-center gap-1.5 hover:text-[#047857]"
+              >
+                <ArrowUpDown size={14} className="text-[#047857]" />
+                <span>Sort</span>
               </button>
             </div>
           )}
 
-          {/* Properties Scroll List */}
-          {sidebarTab === 'properties' && (
-          <div className="flex-1 overflow-y-auto pr-2 flex flex-col gap-2 pointer-events-auto scrollbar-none">
-            {filteredProperties.length > 0 ? (
-              filteredProperties.map((prop) => (
-                <PropertyCard
-                  key={prop.id}
-                  property={prop}
-                  isSelected={selectedProperty?.id === prop.id}
-                  onSelect={() => setSelectedProperty(prop)}
-                  onToggleFavorite={handleToggleFavorite}
-                  userRank={userProfile?.rank}
-                  userBasicPay={userProfile?.basicPay}
-                />
-              ))
-            ) : (
-              <div className="py-8 px-4 rounded-2xl bg-slate-950/85 backdrop-blur-md border border-white/10 text-center flex flex-col items-center justify-center gap-2 text-white">
-                <HelpCircle size={24} className="text-slate-400" />
-                <p className="text-xs font-bold">No properties matched</p>
-                <p className="text-[10px] text-slate-400 leading-relaxed">
-                  Try clearing active filters or searching for other keywords.
-                </p>
-              </div>
-            )}
+
+          {/* 4. FIXED BOTTOM NAVIGATION BAR (MATCHING IMAGE 1 & IMAGE 2) */}
+          <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200/90 py-2 px-3 flex items-center justify-around shadow-2xl pwa-safe-bottom">
+            {[
+              { id: 'home', label: 'Home', icon: Home },
+              { id: 'map', label: 'Map', icon: MapPin },
+              { id: 'saved', label: 'Saved', icon: Heart },
+              { id: 'ai_helper', label: 'AI Helper', icon: Bot },
+              { id: 'profile', label: 'Profile', icon: User },
+            ].map((nav) => {
+              const IconComp = nav.icon;
+              const isActive = mobileActiveTab === nav.id;
+              return (
+                <button
+                  key={nav.id}
+                  onClick={() => {
+                    setMobileActiveTab(nav.id as any);
+                    if (nav.id === 'home') setMobileViewMode('feed');
+                    else if (nav.id === 'map') setMobileViewMode('homes_map');
+                    else if (nav.id === 'ai_helper') ctxValue.openChat({ title: "Fauji AI Helper" });
+                    else if (nav.id === 'profile') setIsProfileModalOpen(true);
+                  }}
+                  className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-xl transition-all ${
+                    isActive ? 'text-[#047857]' : 'text-slate-400 hover:text-slate-600'
+                  }`}
+                >
+                  <IconComp size={20} className={isActive ? 'fill-[#047857]/10 stroke-[#047857]' : ''} />
+                  <span className={`text-[10px] ${isActive ? 'font-black text-[#047857]' : 'font-semibold'}`}>{nav.label}</span>
+                </button>
+              );
+            })}
           </div>
-          )}
 
-          {/* SSB Dorm Tab */}
-          {sidebarTab === 'ssb' && (
-            <div className="flex-1 overflow-y-auto pr-2 flex flex-col gap-2 pointer-events-auto scrollbar-none">
-              <div className="backdrop-blur-md bg-slate-950/85 rounded-2xl p-4 border border-white/10 text-white">
-                <div className="flex items-center gap-2 mb-3">
-                  <Building2 size={14} className="text-amber-400" />
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400">SSB Dorm Availability</span>
-                </div>
-                {[
-                  { ssb: 'Allahabad SSB', city: 'Prayagraj', dorms: 24, available: 6, open: true },
-                  { ssb: 'Bhopal SSB', city: 'Bhopal', dorms: 18, available: 2, open: true },
-                  { ssb: 'Bangalore SSB', city: 'Bengaluru', dorms: 30, available: 0, open: false },
-                  { ssb: 'Dehradun SSB', city: 'Dehradun', dorms: 20, available: 8, open: true },
-                  { ssb: 'Kapurthala SSB', city: 'Punjab', dorms: 16, available: 4, open: true },
-                  { ssb: 'Mysore SSB', city: 'Mysuru', dorms: 22, available: 11, open: true },
-                  { ssb: 'Coimbatore SSB', city: 'Coimbatore', dorms: 14, available: 0, open: false },
-                ].map((s) => (
-                  <div key={s.ssb} className="flex items-center justify-between py-2.5 border-b border-white/5 last:border-0">
-                    <div>
-                      <p className="text-xs font-bold text-slate-100">{s.ssb}</p>
-                      <p className="text-[10px] text-slate-400">{s.city}</p>
-                    </div>
-                    <div className="text-right">
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        s.available > 0 ? 'bg-emerald-600/30 text-emerald-300' : 'bg-red-600/30 text-red-300'
-                      }`}>
-                        {s.available > 0 ? `${s.available} beds free` : 'Full'}
-                      </span>
-                      <p className="text-[9px] text-slate-500 mt-0.5">{s.dorms} total dorms</p>
-                    </div>
-                  </div>
-                ))}
-                <p className="text-[9px] text-slate-500 mt-3">⚠️ Availability is indicative. Contact SSB admin to confirm.</p>
-              </div>
-            </div>
-          )}
-
-          {/* Marketplace Tab */}
-          {sidebarTab === 'marketplace' && (
-            <div className="flex-1 overflow-y-auto pr-2 flex flex-col gap-2 pointer-events-auto scrollbar-none">
-              <div className="backdrop-blur-md bg-slate-950/85 rounded-2xl p-4 border border-white/10 text-white">
-                <div className="flex items-center gap-2 mb-3">
-                  <ShoppingBag size={14} className="text-amber-400" />
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400">Fauji Marketplace</span>
-                </div>
-                {[
-                  { item: 'Godrej Almirah (3-door)', price: '₹3,500', seller: 'Ex-Naik, Pune', tag: 'Furniture' },
-                  { item: 'Split AC (1.5T Voltas)', price: '₹12,000', seller: 'Maj. Sharma, Delhi Cantt', tag: 'Electronics' },
-                  { item: 'Military-grade Raincoat', price: '₹800', seller: 'Hav. Singh, Ambala', tag: 'Clothing' },
-                  { item: 'Generator (5kVA)', price: '₹28,000', seller: 'JCO Rathore, Jodhpur', tag: 'Equipment' },
-                  { item: 'Study Table + Chair Set', price: '₹2,200', seller: 'Capt. Verma, Secbad', tag: 'Furniture' },
-                ].map((m) => (
-                  <div key={m.item} className="py-2.5 border-b border-white/5 last:border-0">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 uppercase tracking-wider">{m.tag}</span>
-                        <p className="text-xs font-bold text-slate-100 mt-1">{m.item}</p>
-                        <p className="text-[10px] text-slate-400">{m.seller}</p>
-                      </div>
-                      <span className="text-sm font-extrabold text-emerald-400">{m.price}</span>
-                    </div>
-                  </div>
-                ))}
-                <p className="text-[9px] text-slate-500 mt-3">🛡️ Verified defence community only. Sign in to post.</p>
-              </div>
-            </div>
-          )}
         </div>
 
 
-        {/* 4. Right Floating Overlay: Nearby Facilities - hidden on mobile */}
-        <div 
-          className="hidden md:block absolute z-40 w-64 pointer-events-auto select-none"
-          style={{
-            top: '96px',
-            right: '16px',
-            transform: `translate(${facPosition.x}px, ${facPosition.y}px)`,
-          }}
-        >
-          <div className="bg-slate-950/85 backdrop-blur-md text-white rounded-2xl border border-white/10 shadow-2xl overflow-hidden">
-            <div
-              onMouseDown={handleMouseDown}
-              onTouchStart={handleTouchStart}
-              onClick={handleHeaderClick}
-              className="w-full flex items-center justify-between pl-6 pr-4 py-3.5 hover:bg-white/5 transition-colors"
-              style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
-            >
-              <h3 className="font-bold text-xs uppercase tracking-wider text-slate-400 flex items-center gap-2 pointer-events-none">
-                <Star size={13} className="text-amber-400 fill-amber-400" />
-                <span>Nearby Facilities</span>
-              </h3>
-              {facilitiesOpen ? <ChevronUp size={13} className="text-slate-400 pointer-events-none" /> : <ChevronDown size={13} className="text-slate-400 pointer-events-none" />}
-            </div>
-
-            {facilitiesOpen && (
-              <div className="pl-6 pr-4 pb-4 flex flex-col gap-3 text-xs font-medium text-slate-200 border-t border-white/5">
-                {/* Station Toggle */}
-                <label className="flex items-center gap-3 cursor-pointer group hover:text-white select-none mt-2">
-                  <input
-                    type="checkbox"
-                    checked={facilityLayers.station}
-                    onChange={(e) =>
-                      setFacilityLayers((prev) => ({ ...prev, station: e.target.checked }))
-                    }
-                    className="w-4 h-4 rounded cursor-pointer"
-                  />
-                  <div className="flex items-center gap-2">
-                    <div className="p-1 rounded bg-indigo-600 text-white shadow-md">
-                      <Train size={12} />
-                    </div>
-                    <span className="group-hover:translate-x-0.5 transition-transform text-[11px]">Station Commute Zone</span>
-                  </div>
-                </label>
-
-                {/* School Toggle */}
-                <label className="flex items-center gap-3 cursor-pointer group hover:text-white select-none">
-                  <input
-                    type="checkbox"
-                    checked={facilityLayers.school}
-                    onChange={(e) =>
-                      setFacilityLayers((prev) => ({ ...prev, school: e.target.checked }))
-                    }
-                    className="w-4 h-4 rounded cursor-pointer"
-                  />
-                  <div className="flex items-center gap-2">
-                    <div className="p-1 rounded bg-blue-600 text-white shadow-md">
-                      <School size={12} />
-                    </div>
-                    <span className="group-hover:translate-x-0.5 transition-transform text-[11px]">Army School</span>
-                  </div>
-                </label>
-
-                {/* Hospital Toggle */}
-                <label className="flex items-center gap-3 cursor-pointer group hover:text-white select-none">
-                  <input
-                    type="checkbox"
-                    checked={facilityLayers.hospital}
-                    onChange={(e) =>
-                      setFacilityLayers((prev) => ({ ...prev, hospital: e.target.checked }))
-                    }
-                    className="w-4 h-4 rounded cursor-pointer"
-                  />
-                  <div className="flex items-center gap-2">
-                    <div className="p-1 rounded bg-red-500 text-white shadow-md">
-                      <Cross size={11} className="text-white" fill="white" />
-                    </div>
-                    <span className="group-hover:translate-x-0.5 transition-transform text-[11px]">Military Hospital</span>
-                  </div>
-                </label>
-              </div>
-            )}
-          </div>
-        </div>
-
-
-        {/* 6. Modals Dialogs wrapped in separate Suspense boundaries to optimize performance */}
+        {/* =========================================================================
+            MODALS DIALOGS
+           ========================================================================= */}
         <Suspense fallback={null}>
           {isProfileModalOpen && (
-            <ProfileModal
-              onClose={() => setIsProfileModalOpen(false)}
-            />
+            <ProfileModal onClose={() => setIsProfileModalOpen(false)} />
           )}
         </Suspense>
 

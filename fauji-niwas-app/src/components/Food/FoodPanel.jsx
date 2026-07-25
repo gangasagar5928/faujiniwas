@@ -193,7 +193,7 @@ export default function FoodPanel({ city, onClose }) {
                     gap: 8, 
                     cursor: 'default',
                     border: '1px solid var(--border2)', 
-                    background: 'rgba(255,255,255,0.01)',
+                    background: 'var(--card)',
                     padding: 14,
                     borderRadius: 10
                   }}
@@ -219,7 +219,7 @@ export default function FoodPanel({ city, onClose }) {
                     <div style={{ color: 'var(--gold)', fontWeight: 800 }}>
                       🏷️ Price: {t.price}
                     </div>
-                    <div style={{ fontStyle: 'italic', color: '#60a5fa' }}>
+                    <div style={{ fontStyle: 'italic', color: 'var(--accent)' }}>
                       {t.special}
                     </div>
                   </div>
