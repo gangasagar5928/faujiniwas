@@ -1086,31 +1086,45 @@ export default function App() {
 
 
         {/* =========================================================================
-            MOBILE FILTER BOTTOM SHEET DIALOG
+            MOBILE FILTER BOTTOM SHEET DIALOG (PREMIUM z-[999999] OVERLAY)
            ========================================================================= */}
         {isMobileFilterOpen && (
-          <div className="fixed inset-0 z-[2000] flex items-end justify-center">
-            <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setIsMobileFilterOpen(false)} />
-            <div className="relative w-full bg-white rounded-t-3xl p-5 border-t border-slate-200 shadow-2xl z-10 flex flex-col gap-4 animate-slide-up max-h-[85vh] overflow-y-auto">
+          <div className="fixed inset-0 z-[999999] flex items-end justify-center">
+            <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-md transition-opacity" onClick={() => setIsMobileFilterOpen(false)} />
+            <div className="relative w-full max-w-lg bg-white rounded-t-[32px] px-6 pt-3 pb-8 border-t border-slate-200 shadow-[0_-20px_50px_rgba(0,0,0,0.3)] z-10 flex flex-col gap-5 max-h-[88vh] overflow-y-auto scrollbar-none animate-slide-up">
+              
+              {/* Drag Handle */}
+              <div className="w-12 h-1.5 bg-slate-300 rounded-full mx-auto shrink-0 mb-1" />
+
+              {/* Header */}
               <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                <h3 className="font-extrabold text-base text-slate-900">Filter Properties</h3>
-                <button onClick={() => setIsMobileFilterOpen(false)} className="p-1 rounded-full text-slate-400 hover:bg-slate-100">
-                  <X size={20} />
+                <div>
+                  <h3 className="font-extrabold text-lg text-slate-900 tracking-tight">Filter Properties</h3>
+                  <p className="text-[11px] font-semibold text-slate-500">{filteredProperties.length} homes available</p>
+                </div>
+                <button 
+                  onClick={() => setIsMobileFilterOpen(false)} 
+                  className="w-9 h-9 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200 hover:text-slate-800 transition-colors"
+                >
+                  <X size={18} />
                 </button>
               </div>
 
               {/* Rank filter */}
-              <div className="flex flex-col gap-2">
-                <label className="text-xs font-bold text-slate-700">Rank Eligibility</label>
+              <div className="flex flex-col gap-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-black uppercase tracking-wider text-slate-500">Rank Eligibility</span>
+                  {selectedRank !== 'All' && <span className="text-[11px] font-extrabold text-[#047857] bg-emerald-50 px-2 py-0.5 rounded-full">{selectedRank}</span>}
+                </div>
                 <div className="grid grid-cols-4 gap-2">
                   {["All", "OR", "JCO", "Officers"].map((r) => (
                     <button
                       key={r}
                       onClick={() => setSelectedRank(r)}
-                      className={`py-2 rounded-xl text-xs font-bold transition-all border ${
+                      className={`py-3 rounded-2xl text-xs font-bold transition-all border ${
                         selectedRank === r
-                          ? "bg-[#047857] text-white border-[#047857] shadow-sm"
-                          : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                          ? "bg-[#047857] text-white border-[#047857] shadow-md shadow-emerald-800/20 active:scale-95"
+                          : "bg-slate-50 text-slate-700 border-slate-200/90 hover:bg-slate-100 active:scale-95"
                       }`}
                     >
                       {r}
@@ -1120,17 +1134,20 @@ export default function App() {
               </div>
 
               {/* BHK filter */}
-              <div className="flex flex-col gap-2">
-                <label className="text-xs font-bold text-slate-700">BHK Configuration</label>
+              <div className="flex flex-col gap-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-black uppercase tracking-wider text-slate-500">BHK Configuration</span>
+                  {selectedBhk !== 'All' && <span className="text-[11px] font-extrabold text-[#047857] bg-emerald-50 px-2 py-0.5 rounded-full">{selectedBhk}</span>}
+                </div>
                 <div className="grid grid-cols-4 gap-2">
                   {["All", "1BHK", "2BHK", "3BHK"].map((b) => (
                     <button
                       key={b}
                       onClick={() => setSelectedBhk(b)}
-                      className={`py-2 rounded-xl text-xs font-bold transition-all border ${
+                      className={`py-3 rounded-2xl text-xs font-bold transition-all border ${
                         selectedBhk === b
-                          ? "bg-[#047857] text-white border-[#047857] shadow-sm"
-                          : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                          ? "bg-[#047857] text-white border-[#047857] shadow-md shadow-emerald-800/20 active:scale-95"
+                          : "bg-slate-50 text-slate-700 border-slate-200/90 hover:bg-slate-100 active:scale-95"
                       }`}
                     >
                       {b === "All" ? "All" : b.replace("BHK", " BHK")}
@@ -1140,22 +1157,24 @@ export default function App() {
               </div>
 
               {/* Budget Range filter */}
-              <div className="flex flex-col gap-2">
-                <label className="text-xs font-bold text-slate-700">Budget Range</label>
-                <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-col gap-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-black uppercase tracking-wider text-slate-500">Budget Range</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2.5">
                   {[
                     { id: "All", label: "All Budgets" },
-                    { id: "under-15k", label: "Under ₹15K" },
-                    { id: "15k-20k", label: "₹15K - ₹20K" },
-                    { id: "over-20k", label: "Over ₹20K" },
+                    { id: "under-15k", label: "Under ₹15,000" },
+                    { id: "15k-20k", label: "₹15,000 - ₹20,000" },
+                    { id: "over-20k", label: "Above ₹20,000" },
                   ].map((bg) => (
                     <button
                       key={bg.id}
                       onClick={() => setSelectedBudgetRange(bg.id)}
-                      className={`py-2.5 px-3 rounded-xl text-xs font-bold transition-all border ${
+                      className={`py-3 px-3 rounded-2xl text-xs font-bold transition-all border ${
                         selectedBudgetRange === bg.id
-                          ? "bg-[#047857] text-white border-[#047857] shadow-sm"
-                          : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                          ? "bg-[#047857] text-white border-[#047857] shadow-md shadow-emerald-800/20 active:scale-95"
+                          : "bg-slate-50 text-slate-700 border-slate-200/90 hover:bg-slate-100 active:scale-95"
                       }`}
                     >
                       {bg.label}
@@ -1165,24 +1184,26 @@ export default function App() {
               </div>
 
               {/* Category filter */}
-              <div className="flex flex-col gap-2">
-                <label className="text-xs font-bold text-slate-700">Property Category</label>
+              <div className="flex flex-col gap-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-black uppercase tracking-wider text-slate-500">Property Category</span>
+                </div>
                 <div className="grid grid-cols-3 gap-2">
                   {[
                     { id: "all", label: "All Types" },
                     { id: "family", label: "Family Homes" },
                     { id: "boys", label: "Boys / Bachelors" },
                     { id: "girls", label: "Girls Only" },
-                    { id: "pg", label: "PG / Single" },
+                    { id: "pg", label: "PG / Single Room" },
                     { id: "ssb", label: "SSB Stay" },
                   ].map((cat) => (
                     <button
                       key={cat.id}
                       onClick={() => setSelectedCategory(cat.id as any)}
-                      className={`py-2 px-2 rounded-xl text-[11px] font-bold transition-all border truncate ${
+                      className={`py-2.5 px-2 rounded-2xl text-[11px] font-bold transition-all border truncate ${
                         selectedCategory === cat.id
-                          ? "bg-[#047857] text-white border-[#047857] shadow-sm"
-                          : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                          ? "bg-[#047857] text-white border-[#047857] shadow-md shadow-emerald-800/20 active:scale-95"
+                          : "bg-slate-50 text-slate-700 border-slate-200/90 hover:bg-slate-100 active:scale-95"
                       }`}
                     >
                       {cat.label}
@@ -1191,8 +1212,8 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Action buttons */}
-              <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
+              {/* Bottom Action Sticky Bar */}
+              <div className="flex items-center gap-3 pt-3 border-t border-slate-100 mt-2 mb-2">
                 <button
                   onClick={() => {
                     setSelectedRank("All");
@@ -1203,64 +1224,87 @@ export default function App() {
                     setIsMobileFilterOpen(false);
                     ctxValue.showToast("Filters reset", "ok");
                   }}
-                  className="flex-1 py-3 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs hover:bg-slate-200"
+                  className="w-1/3 py-3.5 rounded-2xl bg-slate-100 text-slate-700 font-extrabold text-xs hover:bg-slate-200 active:scale-95 transition-all"
                 >
-                  Reset All
+                  Reset
                 </button>
                 <button
                   onClick={() => {
                     setIsMobileFilterOpen(false);
-                    ctxValue.showToast(`${filteredProperties.length} properties matched`, "ok");
+                    ctxValue.showToast(`${filteredProperties.length} properties found`, "ok");
                   }}
-                  className="flex-1 py-3 rounded-xl bg-[#047857] text-white font-bold text-xs shadow-md hover:bg-[#065f46]"
+                  className="flex-1 py-3.5 rounded-2xl bg-gradient-to-r from-[#047857] to-[#065f46] text-white font-extrabold text-xs shadow-lg shadow-emerald-900/20 hover:opacity-95 active:scale-95 transition-all"
                 >
                   Apply Filters ({filteredProperties.length})
                 </button>
               </div>
+
             </div>
           </div>
         )}
 
 
         {/* =========================================================================
-            MOBILE SORT BOTTOM SHEET DIALOG
+            MOBILE SORT BOTTOM SHEET DIALOG (PREMIUM z-[999999] OVERLAY)
            ========================================================================= */}
         {isMobileSortOpen && (
-          <div className="fixed inset-0 z-[2000] flex items-end justify-center">
-            <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setIsMobileSortOpen(false)} />
-            <div className="relative w-full bg-white rounded-t-3xl p-5 border-t border-slate-200 shadow-2xl z-10 flex flex-col gap-3 animate-slide-up">
+          <div className="fixed inset-0 z-[999999] flex items-end justify-center">
+            <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-md transition-opacity" onClick={() => setIsMobileSortOpen(false)} />
+            <div className="relative w-full max-w-lg bg-white rounded-t-[32px] px-6 pt-3 pb-8 border-t border-slate-200 shadow-[0_-20px_50px_rgba(0,0,0,0.3)] z-10 flex flex-col gap-4 animate-slide-up">
+              
+              {/* Drag Handle */}
+              <div className="w-12 h-1.5 bg-slate-300 rounded-full mx-auto shrink-0 mb-1" />
+
+              {/* Header */}
               <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                <h3 className="font-extrabold text-base text-slate-900">Sort Properties</h3>
-                <button onClick={() => setIsMobileSortOpen(false)} className="p-1 rounded-full text-slate-400 hover:bg-slate-100">
-                  <X size={20} />
+                <div>
+                  <h3 className="font-extrabold text-lg text-slate-900 tracking-tight">Sort Properties</h3>
+                  <p className="text-[11px] font-semibold text-slate-500">Order your results</p>
+                </div>
+                <button 
+                  onClick={() => setIsMobileSortOpen(false)} 
+                  className="w-9 h-9 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200 hover:text-slate-800 transition-colors"
+                >
+                  <X size={18} />
                 </button>
               </div>
 
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2.5 my-1">
                 {[
-                  { id: "relevance", label: "Relevance (Default)" },
-                  { id: "price_low", label: "Price: Low to High" },
-                  { id: "price_high", label: "Price: High to Low" },
-                  { id: "rating", label: "Top Rated First" },
-                ].map((opt) => (
-                  <button
-                    key={opt.id}
-                    onClick={() => {
-                      setMobileSort(opt.id as any);
-                      setIsMobileSortOpen(false);
-                      ctxValue.showToast(`Sorted by ${opt.label}`, "ok");
-                    }}
-                    className={`w-full py-3 px-4 rounded-xl text-xs font-bold text-left flex items-center justify-between transition-colors ${
-                      mobileSort === opt.id
-                        ? "bg-emerald-50 text-[#047857] border border-[#047857]"
-                        : "bg-slate-50 text-slate-700 hover:bg-slate-100"
-                    }`}
-                  >
-                    <span>{opt.label}</span>
-                    {mobileSort === opt.id && <CheckCircle size={16} className="text-[#047857]" />}
-                  </button>
-                ))}
+                  { id: "relevance", label: "Relevance (Default)", desc: "Best matches first" },
+                  { id: "price_low", label: "Price: Low to High", desc: "Most affordable listings" },
+                  { id: "price_high", label: "Price: High to Low", desc: "Premium properties" },
+                  { id: "rating", label: "Top Rated First", desc: "Highest user ratings" },
+                ].map((opt) => {
+                  const isSelected = mobileSort === opt.id;
+                  return (
+                    <button
+                      key={opt.id}
+                      onClick={() => {
+                        setMobileSort(opt.id as any);
+                        setIsMobileSortOpen(false);
+                        ctxValue.showToast(`Sorted by ${opt.label}`, "ok");
+                      }}
+                      className={`w-full p-4 rounded-2xl border text-left flex items-center justify-between transition-all active:scale-[0.98] ${
+                        isSelected
+                          ? "bg-emerald-50/90 border-[#047857] shadow-sm text-slate-900"
+                          : "bg-slate-50/80 border-slate-200/80 hover:bg-slate-100/80 text-slate-700"
+                      }`}
+                    >
+                      <div className="flex flex-col">
+                        <span className={`text-xs ${isSelected ? 'font-extrabold text-[#047857]' : 'font-bold text-slate-800'}`}>{opt.label}</span>
+                        <span className="text-[10px] font-medium text-slate-400 mt-0.5">{opt.desc}</span>
+                      </div>
+                      {isSelected && (
+                        <div className="w-6 h-6 rounded-full bg-[#047857] text-white flex items-center justify-center shrink-0">
+                          <CheckCircle size={14} />
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
+
             </div>
           </div>
         )}
