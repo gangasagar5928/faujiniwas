@@ -46,6 +46,8 @@ export default function App() {
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'family' | 'boys' | 'girls' | 'pg' | 'ssb' | 'market'>('all');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSort, setMobileSort] = useState<'relevance' | 'price_low' | 'price_high' | 'rating'>('relevance');
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+  const [isMobileSortOpen, setIsMobileSortOpen] = useState(false);
 
   // Expose global variables and API for external chatbot.js
   useEffect(() => {
@@ -643,13 +645,14 @@ export default function App() {
                 {/* Floating controls in map mode */}
                 <div className="absolute top-4 left-4 right-4 z-[1000]">
                   <div className="relative w-full shadow-lg">
-                    <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                     <input
                       type="text"
                       placeholder="Search city, cantonment or academy"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 rounded-2xl bg-white border border-slate-200 text-xs font-medium text-slate-800 placeholder:text-slate-400 shadow-md focus:outline-none focus:border-[#047857]"
+                      style={{ paddingLeft: '44px' }}
+                      className="w-full pr-4 py-3 rounded-2xl bg-white border border-slate-200 text-xs font-medium text-slate-800 placeholder:text-slate-400 shadow-md focus:outline-none focus:border-[#047857]"
                     />
                   </div>
                 </div>
@@ -689,13 +692,14 @@ export default function App() {
 
                 {/* SEARCH INPUT BAR */}
                 <div className="relative w-full">
-                  <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                   <input
                     type="text"
                     placeholder="Search city, cantonment or academy"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 rounded-2xl bg-white border border-slate-200/90 text-xs font-medium text-slate-800 placeholder:text-slate-400 shadow-sm focus:outline-none focus:border-[#047857]"
+                    style={{ paddingLeft: '44px' }}
+                    className="w-full pr-4 py-3 rounded-2xl bg-white border border-slate-200/90 text-xs font-medium text-slate-800 placeholder:text-slate-400 shadow-sm focus:outline-none focus:border-[#047857]"
                   />
                 </div>
 
@@ -758,14 +762,9 @@ export default function App() {
                   </select>
 
                   <button 
-                    onClick={() => {
-                      setSelectedRank("All");
-                      setSelectedBhk("All");
-                      setSelectedBudgetRange("All");
-                      setSearchQuery("");
-                      setSelectedCategory("all");
-                    }}
+                    onClick={() => setIsMobileFilterOpen(true)}
                     className="w-9 h-9 shrink-0 rounded-xl bg-[#047857] text-white flex items-center justify-center shadow-md active:scale-95 transition-transform"
+                    title="Open Filters"
                   >
                     <SlidersHorizontal size={16} />
                   </button>
@@ -1025,13 +1024,8 @@ export default function App() {
           {(mobileViewMode === 'homes_list' || mobileActiveTab === 'map') && (
             <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-40 bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-xl rounded-full px-4 py-2 flex items-center gap-5 text-xs font-bold text-slate-700">
               <button 
-                onClick={() => {
-                  setSelectedRank("All");
-                  setSelectedBhk("All");
-                  setSelectedBudgetRange("All");
-                  ctxValue.showToast("Filters reset", "ok");
-                }} 
-                className="flex items-center gap-1.5 hover:text-[#047857]"
+                onClick={() => setIsMobileFilterOpen(true)} 
+                className="flex items-center gap-1.5 hover:text-[#047857] active:scale-95 transition-transform"
               >
                 <SlidersHorizontal size={14} className="text-[#047857]" />
                 <span>Filters</span>
@@ -1046,11 +1040,8 @@ export default function App() {
               </button>
 
               <button 
-                onClick={() => {
-                  setMobileSort(mobileSort === 'price_low' ? 'price_high' : 'price_low');
-                  ctxValue.showToast(`Sorted by ${mobileSort === 'price_low' ? 'Price High' : 'Price Low'}`, "ok");
-                }} 
-                className="flex items-center gap-1.5 hover:text-[#047857]"
+                onClick={() => setIsMobileSortOpen(true)} 
+                className="flex items-center gap-1.5 hover:text-[#047857] active:scale-95 transition-transform"
               >
                 <ArrowUpDown size={14} className="text-[#047857]" />
                 <span>Sort</span>
@@ -1092,6 +1083,187 @@ export default function App() {
           </div>
 
         </div>
+
+
+        {/* =========================================================================
+            MOBILE FILTER BOTTOM SHEET DIALOG
+           ========================================================================= */}
+        {isMobileFilterOpen && (
+          <div className="fixed inset-0 z-[2000] flex items-end justify-center">
+            <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setIsMobileFilterOpen(false)} />
+            <div className="relative w-full bg-white rounded-t-3xl p-5 border-t border-slate-200 shadow-2xl z-10 flex flex-col gap-4 animate-slide-up max-h-[85vh] overflow-y-auto">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <h3 className="font-extrabold text-base text-slate-900">Filter Properties</h3>
+                <button onClick={() => setIsMobileFilterOpen(false)} className="p-1 rounded-full text-slate-400 hover:bg-slate-100">
+                  <X size={20} />
+                </button>
+              </div>
+
+              {/* Rank filter */}
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-bold text-slate-700">Rank Eligibility</label>
+                <div className="grid grid-cols-4 gap-2">
+                  {["All", "OR", "JCO", "Officers"].map((r) => (
+                    <button
+                      key={r}
+                      onClick={() => setSelectedRank(r)}
+                      className={`py-2 rounded-xl text-xs font-bold transition-all border ${
+                        selectedRank === r
+                          ? "bg-[#047857] text-white border-[#047857] shadow-sm"
+                          : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                      }`}
+                    >
+                      {r}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* BHK filter */}
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-bold text-slate-700">BHK Configuration</label>
+                <div className="grid grid-cols-4 gap-2">
+                  {["All", "1BHK", "2BHK", "3BHK"].map((b) => (
+                    <button
+                      key={b}
+                      onClick={() => setSelectedBhk(b)}
+                      className={`py-2 rounded-xl text-xs font-bold transition-all border ${
+                        selectedBhk === b
+                          ? "bg-[#047857] text-white border-[#047857] shadow-sm"
+                          : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                      }`}
+                    >
+                      {b === "All" ? "All" : b.replace("BHK", " BHK")}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Budget Range filter */}
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-bold text-slate-700">Budget Range</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { id: "All", label: "All Budgets" },
+                    { id: "under-15k", label: "Under ₹15K" },
+                    { id: "15k-20k", label: "₹15K - ₹20K" },
+                    { id: "over-20k", label: "Over ₹20K" },
+                  ].map((bg) => (
+                    <button
+                      key={bg.id}
+                      onClick={() => setSelectedBudgetRange(bg.id)}
+                      className={`py-2.5 px-3 rounded-xl text-xs font-bold transition-all border ${
+                        selectedBudgetRange === bg.id
+                          ? "bg-[#047857] text-white border-[#047857] shadow-sm"
+                          : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                      }`}
+                    >
+                      {bg.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Category filter */}
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-bold text-slate-700">Property Category</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { id: "all", label: "All Types" },
+                    { id: "family", label: "Family Homes" },
+                    { id: "boys", label: "Boys / Bachelors" },
+                    { id: "girls", label: "Girls Only" },
+                    { id: "pg", label: "PG / Single" },
+                    { id: "ssb", label: "SSB Stay" },
+                  ].map((cat) => (
+                    <button
+                      key={cat.id}
+                      onClick={() => setSelectedCategory(cat.id as any)}
+                      className={`py-2 px-2 rounded-xl text-[11px] font-bold transition-all border truncate ${
+                        selectedCategory === cat.id
+                          ? "bg-[#047857] text-white border-[#047857] shadow-sm"
+                          : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                      }`}
+                    >
+                      {cat.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Action buttons */}
+              <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
+                <button
+                  onClick={() => {
+                    setSelectedRank("All");
+                    setSelectedBhk("All");
+                    setSelectedBudgetRange("All");
+                    setSelectedCategory("all");
+                    setSearchQuery("");
+                    setIsMobileFilterOpen(false);
+                    ctxValue.showToast("Filters reset", "ok");
+                  }}
+                  className="flex-1 py-3 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs hover:bg-slate-200"
+                >
+                  Reset All
+                </button>
+                <button
+                  onClick={() => {
+                    setIsMobileFilterOpen(false);
+                    ctxValue.showToast(`${filteredProperties.length} properties matched`, "ok");
+                  }}
+                  className="flex-1 py-3 rounded-xl bg-[#047857] text-white font-bold text-xs shadow-md hover:bg-[#065f46]"
+                >
+                  Apply Filters ({filteredProperties.length})
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+
+        {/* =========================================================================
+            MOBILE SORT BOTTOM SHEET DIALOG
+           ========================================================================= */}
+        {isMobileSortOpen && (
+          <div className="fixed inset-0 z-[2000] flex items-end justify-center">
+            <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setIsMobileSortOpen(false)} />
+            <div className="relative w-full bg-white rounded-t-3xl p-5 border-t border-slate-200 shadow-2xl z-10 flex flex-col gap-3 animate-slide-up">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <h3 className="font-extrabold text-base text-slate-900">Sort Properties</h3>
+                <button onClick={() => setIsMobileSortOpen(false)} className="p-1 rounded-full text-slate-400 hover:bg-slate-100">
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                {[
+                  { id: "relevance", label: "Relevance (Default)" },
+                  { id: "price_low", label: "Price: Low to High" },
+                  { id: "price_high", label: "Price: High to Low" },
+                  { id: "rating", label: "Top Rated First" },
+                ].map((opt) => (
+                  <button
+                    key={opt.id}
+                    onClick={() => {
+                      setMobileSort(opt.id as any);
+                      setIsMobileSortOpen(false);
+                      ctxValue.showToast(`Sorted by ${opt.label}`, "ok");
+                    }}
+                    className={`w-full py-3 px-4 rounded-xl text-xs font-bold text-left flex items-center justify-between transition-colors ${
+                      mobileSort === opt.id
+                        ? "bg-emerald-50 text-[#047857] border border-[#047857]"
+                        : "bg-slate-50 text-slate-700 hover:bg-slate-100"
+                    }`}
+                  >
+                    <span>{opt.label}</span>
+                    {mobileSort === opt.id && <CheckCircle size={16} className="text-[#047857]" />}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
 
         {/* =========================================================================
