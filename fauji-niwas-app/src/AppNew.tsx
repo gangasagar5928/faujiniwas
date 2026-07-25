@@ -731,9 +731,23 @@ export default function App() {
                 {/* FILTER DROPDOWN PILLS ROW */}
                 <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
                   <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value as any)}
+                    className="px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-700 shadow-sm focus:outline-none shrink-0"
+                  >
+                    <option value="all">Category v</option>
+                    <option value="family">Family</option>
+                    <option value="boys">Boys</option>
+                    <option value="girls">Girls</option>
+                    <option value="pg">PG</option>
+                    <option value="ssb">SSB Stay</option>
+                    <option value="market">Market</option>
+                  </select>
+
+                  <select
                     value={selectedRank}
                     onChange={(e) => setSelectedRank(e.target.value)}
-                    className="px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-700 shadow-sm focus:outline-none"
+                    className="px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-700 shadow-sm focus:outline-none shrink-0"
                   >
                     <option value="All">Rank v</option>
                     <option value="OR">OR</option>
@@ -744,7 +758,7 @@ export default function App() {
                   <select
                     value={selectedBhk}
                     onChange={(e) => setSelectedBhk(e.target.value)}
-                    className="px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-700 shadow-sm focus:outline-none"
+                    className="px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-700 shadow-sm focus:outline-none shrink-0"
                   >
                     <option value="All">BHK v</option>
                     <option value="1BHK">1 BHK</option>
@@ -755,7 +769,7 @@ export default function App() {
                   <select
                     value={selectedBudgetRange}
                     onChange={(e) => setSelectedBudgetRange(e.target.value)}
-                    className="px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-700 shadow-sm focus:outline-none"
+                    className="px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-700 shadow-sm focus:outline-none shrink-0"
                   >
                     <option value="All">Budget v</option>
                     <option value="under-15k">Under ₹15K</option>
@@ -791,49 +805,6 @@ export default function App() {
                     >
                       Map View
                     </button>
-                  </div>
-                )}
-
-
-                {/* CATEGORIES GRID (IMAGE 1 STYLE) */}
-                {mobileViewMode === 'feed' && (
-                  <div className="grid grid-cols-6 gap-2 py-1">
-                    {[
-                      { id: 'family', label: 'Family', icon: Home },
-                      { id: 'boys', label: 'Boys', icon: User },
-                      { id: 'girls', label: 'Girls', icon: Heart },
-                      { id: 'pg', label: 'PG', icon: Bed },
-                      { id: 'ssb', label: 'SSB Stay', icon: Building2 },
-                      { id: 'market', label: 'Market', icon: ShoppingBag },
-                    ].map((cat) => {
-                      const IconComp = cat.icon;
-                      const isSelected = selectedCategory === cat.id;
-                      return (
-                        <button
-                          key={cat.id}
-                          onClick={() => {
-                            if (cat.id === 'ssb') {
-                              setSidebarTab('ssb');
-                              setMobileViewMode('homes_list');
-                            } else if (cat.id === 'market') {
-                              setSidebarTab('marketplace');
-                            } else {
-                              setSelectedCategory(isSelected ? 'all' : cat.id as any);
-                            }
-                          }}
-                          className={`flex flex-col items-center justify-center p-2 rounded-2xl border transition-all ${
-                            isSelected 
-                              ? 'bg-emerald-50 border-[#047857] text-[#047857] shadow-sm' 
-                              : 'bg-white border-slate-200/90 text-slate-700 hover:border-slate-300'
-                          }`}
-                        >
-                          <div className={`p-2 rounded-xl mb-1 ${isSelected ? 'bg-[#047857] text-white' : 'bg-slate-100 text-[#047857]'}`}>
-                            <IconComp size={16} />
-                          </div>
-                          <span className="text-[10px] font-bold truncate max-w-full">{cat.label}</span>
-                        </button>
-                      );
-                    })}
                   </div>
                 )}
 
@@ -964,17 +935,8 @@ export default function App() {
                           </div>
 
                           {/* Details */}
-                          <div className="flex-1 flex flex-col justify-between min-w-0 py-0.5 pr-1">
-                            <div className="flex items-start justify-between gap-2 pr-1">
-                              <h3 className="font-extrabold text-sm text-slate-900 truncate leading-snug">{prop.title}</h3>
-                              <button 
-                                onClick={(e) => handleToggleFavorite(prop.id, e)} 
-                                className="shrink-0 w-7 h-7 rounded-full bg-slate-100/90 hover:bg-slate-200 flex items-center justify-center transition-colors -mt-0.5 shadow-2xs"
-                                title="Favorite"
-                              >
-                                <Heart size={14} className={prop.isFavorite ? "fill-red-500 text-red-500" : "text-slate-400"} />
-                              </button>
-                            </div>
+                          <div className="flex-1 flex flex-col justify-between min-w-0 py-0.5">
+                            <h3 className="font-extrabold text-sm text-slate-900 truncate leading-snug">{prop.title}</h3>
 
                             <div className="flex items-center gap-1 text-xs font-bold text-slate-500 my-0.5">
                               <Star size={12} className="fill-amber-400 text-amber-400" />
@@ -993,6 +955,15 @@ export default function App() {
                               <span>📍 {prop.commute}</span>
                             </div>
                           </div>
+
+                          {/* Larger Vertically Centered Like Heart Button */}
+                          <button 
+                            onClick={(e) => handleToggleFavorite(prop.id, e)} 
+                            className="shrink-0 w-9 h-9 rounded-full bg-slate-100/90 hover:bg-slate-200 flex items-center justify-center transition-all active:scale-90 shadow-xs self-center mr-1"
+                            title="Favorite"
+                          >
+                            <Heart size={18} className={prop.isFavorite ? "fill-red-500 text-red-500" : "text-slate-400"} />
+                          </button>
                         </div>
                       );
                     })
