@@ -1,7 +1,6 @@
 import { useContext } from 'react';
 import { auth, db, doc, updateDoc, increment, collection, addDoc } from '../../firebase';
 import { ModalContext } from '../../App';
-import { useFilterStore } from '../../store/filterStore';
 import styles from './ReportModal.module.css';
 
 export default function ReportModal({ id, onClose }) {

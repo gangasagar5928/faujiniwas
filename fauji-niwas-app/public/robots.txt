@@ -23,8 +23,16 @@ Allow: /
 # ─── Microsoft Copilot / Bing AI ─────────────────────────────────────────────
 User-agent: Bingbot
 Allow: /
+Disallow: /app
+Disallow: /app.html
+User-agent: BingPreview
+Allow: /
+Disallow: /app
+Disallow: /app.html
 User-agent: msnbot
 Allow: /
+Disallow: /app
+Disallow: /app.html
 
 # ─── Anthropic Claude ────────────────────────────────────────────────────────
 User-agent: anthropic-ai

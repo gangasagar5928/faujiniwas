@@ -1,125 +1,168 @@
 <div align="center">
-  <img src="fauji-niwas-app/public/favicon.svg" alt="Fauji Niwas Logo" width="200" />
-  <h1>Fauji Niwas</h1>
-  <p><strong>Relocate Safely, Trust Implicitly</strong></p>
-  <p>A peer-to-peer network connecting Indian Armed Forces personnel, JCOs, and Officers with verified residential housing and transit stays near military stations.</p>
+  <img src="fauji-niwas-app/public/favicon.svg" alt="Fauji Niwas Logo" width="120" />
+  <h1>🪖 Fauji Niwas (फौजी निवास)</h1>
+  <p><strong>Zero-Brokerage Housing & Transit Relocation Network for the Indian Armed Forces</strong></p>
+  <p>Connecting Army, Navy, Air Force personnel, JCOs, and Officers with verified accommodations and SSB transit stays near military stations.</p>
 
-  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-  [![React](https://img.shields.io/badge/React-18-blue.svg)](https://reactjs.org/)
-  [![Firebase](https://img.shields.io/badge/Firebase-Hosting-orange.svg)](https://firebase.google.com/)
+  <p>
+    <a href="https://faujiniwas.web.app" target="_blank"><img src="https://img.shields.io/badge/Live_Web_App-faujiniwas.web.app-238636?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Live Demo" /></a>
+    <a href="https://github.com/gangasagar5928/Faujiniwas/releases"><img src="https://img.shields.io/badge/Android_APK-GitHub_Releases-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Android Release" /></a>
+  </p>
+
+  <p>
+    <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square" alt="License: MIT" />
+    <img src="https://img.shields.io/badge/React-18-61DAFB.svg?style=flat-square&logo=react&logoColor=black" alt="React 18" />
+    <img src="https://img.shields.io/badge/Flutter-3.x-02569B.svg?style=flat-square&logo=flutter&logoColor=white" alt="Flutter" />
+    <img src="https://img.shields.io/badge/Vite-6.x-646CFF.svg?style=flat-square&logo=vite&logoColor=white" alt="Vite" />
+    <img src="https://img.shields.io/badge/Firebase-Hosting%20%7C%20Firestore-FFCA28.svg?style=flat-square&logo=firebase&logoColor=black" alt="Firebase" />
+    <img src="https://img.shields.io/badge/Maps-Leaflet%20%26%20OSM-199900.svg?style=flat-square&logo=leaflet&logoColor=white" alt="Leaflet Maps" />
+    <img src="https://img.shields.io/badge/Coverage-62%2B%20Military%20Stations-success?style=flat-square" alt="62+ Stations" />
+    <img src="https://img.shields.io/badge/Brokerage-0%25%20Zero%20Broker-red?style=flat-square" alt="Zero Brokerage" />
+    <img src="https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=flat-square" alt="PRs Welcome" />
+  </p>
 </div>
 
-<hr />
+---
 
-## 🌟 About
+## 🎯 The Mission & Problem Space
 
-Fauji Niwas is designed to simplify transfer cycles for the Indian Armed Forces. Built for jawans, JCOs, and officers to share postings and rent homes near cantonments and military stations **without brokerage**. 
+Over **1.4 million active Indian Armed Forces personnel** and their families relocate every **2 to 3 years** across 62+ Cantonments and Military Stations nationwide.
 
-We ensure high-trust networks by vetting defence personnel and enabling direct P2P connections to avoid fraud.
+### The Realities of Defence Relocation:
+1. **Civilian Broker Exploitation:** Relocating jawans and officers lose thousands of rupees to aggressive civilian real estate brokers demanding 1–2 months' rent as brokerage.
+2. **Station Proximity & Security:** Personnel need homes near specific Cantonment gates, CSD canteens, ECHS polyclinics, and Army Public Schools (APS), without exposing sensitive military details on public civilian forums.
+3. **SSB & Transit Vulnerability:** Young SSB candidates and transit officers arriving at unfamiliar stations struggle to find verified, safe, budget-friendly transit dormitories.
+4. **HRA & Allowance Mismatch:** Finding rentals that conform exactly to 7th Central Pay Commission (CPC) House Rent Allowance (HRA) limits (X, Y, Z category cities) without out-of-pocket loss.
 
-## 🚀 Features
-
-* **🗺️ Station Search & Routing:** Pinpoint accommodations and SSB transit stays near Cantonments, Air Force Stations, or Naval Bases.
-* **🛡️ Verified Defence Listings:** Direct peer-to-peer listings posted by relocating personnel or verified defense-friendly owners. 
-* **💰 HRA Allowance Estimator:** Align your search budget with government House Rent Allowance (HRA) limits for Officers, JCOs, or ORs.
-* **📅 Relocation Timeline Match:** Sync your moving dates with vacancy states of outgoing officers to schedule seamless handovers.
-
-## 🛠️ Technology Stack
-
-* **Frontend:** React (Vite)
-* **Styling:** CSS Modules + Vanilla CSS, Framer Motion for animations
-* **Database:** Firebase Firestore (Realtime DB & Rules)
-* **Hosting:** Firebase Hosting
-* **Mapping:** Leaflet & React-Leaflet
+**Fauji Niwas solves this with a verified peer-to-peer ecosystem built exclusively for the defence community.**
 
 ---
 
-## 📱 Native Mobile Application (Flutter)
+## ⚡ Key Platform Capabilities
 
-Fauji Niwas includes a standalone native mobile app built in Flutter under the `fauji-niwas_app` directory. It operates fully offline using native Dart models and lists (seed synchronized with our database).
-
-### Features:
-- **Rentals & Station Search**: Native searches and filter bars (BHK, Max Rent, Owner type).
-- **SSB Candidate Dorms**: Fast guest house browsing with gate distance metrics and nearby food finders.
-- **CSD Canteens & Hospital Proximity**: Auto-calculation of nearest ECHS hubs, canteens, and schools.
-- **TA/DA Relocation Matrix**: Slider-driven official luggage allowance reimbursement calculator.
-- **Relocation Checklist**: Offline checklists tailored to OR, JCO, and Officer rank postings.
-
----
-
-## 📦 Local Development Setup
-
-### React Web Application:
-To run the web app, you will need [Node.js](https://nodejs.org/) installed:
-
-1. **Navigate to the app directory:**
-   ```bash
-   cd fauji-niwas-app
-   ```
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-3. **Start the development server:**
-   ```bash
-   npm run dev
-   ```
-4. **Build for production (generates city SEO templates):**
-   ```bash
-   npm run build
-   ```
-
-### Native Flutter Mobile Application:
-To run or build the Android APK, you will need [Flutter SDK](https://flutter.dev/docs/get-started/install) installed:
-
-1. **Navigate to the mobile app directory:**
-   ```bash
-   cd fauji-niwas_app
-   ```
-2. **Get Flutter packages:**
-   ```bash
-   flutter pub get
-   ```
-3. **Run on connected emulator or device:**
-   ```bash
-   flutter run
-   ```
-4. **Build the production release APK:**
-   ```bash
-   flutter build apk --release
-   ```
-   *Compiled APK output will be generated at:* `fauji-niwas_app/build/app/outputs/flutter-apk/app-release.apk`
+| Feature | React Web App (`/fauji-niwas-app`) | Flutter Native App (`/fauji-niwas_app`) |
+| :--- | :---: | :---: |
+| **Interactive Station Map** | ✅ Leaflet Geo-clustering | ✅ Native Map Views |
+| **Cantonment & Gate Search** | ✅ 62+ Stations indexed | ✅ Offline Station Cache |
+| **Verified Defence Listings** | ✅ P2P direct handover | ✅ Native Card Feed |
+| **SSB Transit Candidate Dorms** | ✅ Transit stays & ratings | ✅ Quick Gate Distance Finder |
+| **7th CPC HRA Calculator** | ✅ Live City Tier Filter (X/Y/Z) | ✅ Rank-based HRA estimator |
+| **Luggage TA/DA Matrix** | ✅ Relocation reimbursement | ✅ Slider Allowance Calculator |
+| **Offline Checklists** | ✅ Web Checklist UI | ✅ SQLite / Native Checklist |
+| **Military Identity Badging** | ✅ Verified Member Badge | ✅ Secure Defence Verification |
 
 ---
 
-## 🔐 Firebase Configuration
+## 🏗️ Architecture & Monorepo Structure
 
-Fauji Niwas relies on Firebase. You will need to setup your own Firebase project to fully use the backend:
-1. Create a project at [Firebase Console](https://console.firebase.google.com/).
-2. Enable Firestore and Hosting.
-3. Update the firebase config inside `src/firebase.js` (or `.env` variables if configured).
-
-To deploy:
-```bash
-npm run build
-firebase deploy --only hosting:faujiniwas
+```text
+Faujiniwas/
+├── fauji-niwas-app/             # 🌐 React 18 + Vite Web Application
+│   ├── public/                  # SEO landing templates, static assets & icons
+│   ├── src/
+│   │   ├── components/          # Bento dashboard, Modals, Leaflet Map engine
+│   │   ├── hooks/               # Auth, Geo-location, and Firestore hooks
+│   │   ├── App.jsx              # Core React entry and state router
+│   │   └── index.css            # Responsive styles & design system
+│   └── package.json             # Web dependencies (React, Leaflet, Framer Motion)
+│
+├── fauji-niwas_app/             # 📱 Standalone Flutter Mobile Application
+│   ├── lib/                     # Native Dart UI widgets, models & offline stores
+│   ├── android/                 # Android native gradle config & permissions
+│   └── pubspec.yaml             # Flutter dependencies & assets
+│
+├── .github/                     # ⚙️ Automation & Community Standards
+│   ├── workflows/               # CI/CD pipelines, release builders & Firebase deploy
+│   └── ISSUE_TEMPLATE/          # Standardized bug & feature request templates
+│
+├── firestore.rules              # 🛡️ Military-grade Firestore security rules
+├── firebase.json                # 🚀 Fast zero-downtime routing & security headers
+└── scripts/                     # 🔧 Development, SDK setup & maintenance scripts
 ```
+
+---
+
+## 🚀 Quickstart & Local Setup
+
+### 1. React Web Application
+
+```bash
+# Navigate to web application directory
+cd fauji-niwas-app
+
+# Install dependencies
+npm install
+
+# Launch local development server
+npm run dev
+
+# Build production bundle with automated City SEO generation
+npm run build
+```
+
+The web app will run locally at `http://localhost:5173`.
+
+---
+
+### 2. Flutter Mobile Application
+
+```bash
+# Navigate to mobile application directory
+cd fauji-niwas_app
+
+# Fetch Flutter packages
+flutter pub get
+
+# Run on connected Android / iOS device or emulator
+flutter run
+
+# Compile production release APK
+flutter build apk --release
+```
+
+*Generated APK location:* `fauji-niwas_app/build/app/outputs/flutter-apk/app-release.apk`
+
+---
+
+## 📦 Automated Releases & CI/CD
+
+To ensure high repository hygiene, **binary APK files are never committed directly into git history.** 
+
+- **Pull Requests & Commits:** Continuous Integration (`.github/workflows/ci.yml`) runs automated builds and static analysis for both Web and Mobile apps.
+- **Production APK Releases:** Every tagged release (`git tag v1.0.0 && git push --tags`) triggers `.github/workflows/release-apk.yml`, which automatically builds and publishes the optimized release APK to [GitHub Releases](https://github.com/gangasagar5928/Faujiniwas/releases).
+- **Web Continuous Deployment:** Merges to `main` automatically deploy to [Firebase Hosting](https://faujiniwas.web.app) via `.github/workflows/deploy.yml`.
+
+---
+
+## 🛡️ Security & Defence Privacy Standards
+
+Fauji Niwas adheres strictly to operational security best practices:
+- **Zero Tactical Data:** No military unit numbers, tactical coordinates, or sensitive personnel records are ever requested or stored.
+- **Client-Side Sanitization:** All user inputs and listings are sanitized using `DOMPurify` before DOM injection.
+- **Strict Firestore Rules:** Unauthorized write attempts are blocked at the rule level.
+- Read our complete [SECURITY.md](SECURITY.md) for responsible vulnerability disclosure.
+
+---
 
 ## 🤝 Contributing
 
-We welcome contributions to improve Fauji Niwas for our Armed Forces.
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+Contributions from the developer and defence community are warmly welcome. Please read our [CONTRIBUTING.md](CONTRIBUTING.md) before submitting pull requests.
+
+1. Fork the repo.
+2. Create your branch (`git checkout -b feat/station-enhancement`).
+3. Verify your changes (`npm run build` / `flutter analyze`).
+4. Commit your changes (`git commit -m 'feat: add ECHS polyclinic distance filter'`).
+5. Push to branch and open a Pull Request.
+
+---
 
 ## 📄 License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details.
 
-## 📞 Contact
+---
 
-**Project Admin** - [aman@faujiniwas.com](mailto:singhamankumar.5928@gmail.com)
-
-**Live Link:** [https://faujiniwas.web.app](https://faujiniwas.web.app)
+<div align="center">
+  <p>Jai Hind 🇮🇳 • Built with dedication for the Indian Armed Forces Community</p>
+  <p><strong>Live Web Application:</strong> <a href="https://faujiniwas.web.app">https://faujiniwas.web.app</a></p>
+</div>

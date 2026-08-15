@@ -9,8 +9,9 @@ export default function StationPulse({ items }) {
 
   const stats = useMemo(() => {
     if (!count) return null;
+    const now = Date.now();
     const verified = items.filter(i => i.verified).length;
-    const recent = items.filter(i => (i.createdAt || 0) > Date.now() - 7 * 24 * 60 * 60 * 1000).length;
+    const recent = items.filter(i => (i.createdAt || 0) > now - 7 * 24 * 60 * 60 * 1000).length;
     const direct = items.filter(i => i.ownerType === 'defence').length;
     
     // Virtual "Demand" signal

@@ -1,7 +1,7 @@
 import { useContext, useMemo } from 'react';
 import { ModalContext } from '../../App';
 import { useFilterStore } from '../../store/filterStore';
-import { ARMY_SCHOOLS, MILITARY_HOSPITALS } from '../../data';
+import { ARMY_SCHOOLS, MILITARY_HOSPITALS, CANTEENS } from '../../data';
 import styles from './StationModal.module.css';
 
 const STATIONS = [

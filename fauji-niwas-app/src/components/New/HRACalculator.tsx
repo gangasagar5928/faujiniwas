@@ -1,6 +1,11 @@
 import React, { useState } from "react";
-import { RANKS_HRA } from "../../dataNew";
 import { Calculator, Coins } from "lucide-react";
+
+export const RANKS_HRA = [
+  { rank: 'OR', label: 'Other Ranks (OR / Sepoy / Havildar)', defaultPay: 28000, minBasicPay: 21700, maxBasicPay: 69100, description: 'Pay Level 3-5 (7th CPC)' },
+  { rank: 'JCO', label: 'Junior Commissioned Officer (JCO / Subedar)', defaultPay: 47600, minBasicPay: 35400, maxBasicPay: 151100, description: 'Pay Level 6-8 (7th CPC)' },
+  { rank: 'Officer', label: 'Commissioned Officer (Captain / Major / Col)', defaultPay: 69400, minBasicPay: 56100, maxBasicPay: 225000, description: 'Pay Level 10+ (7th CPC)' }
+];
 
 interface HRACalculatorProps {
   selectedRank: string;
@@ -25,13 +30,17 @@ export default function HRACalculator({
   const [cityClass, setCityClass] = useState<"X" | "Y" | "Z">("Y");
 
   const activeRankInfo = RANKS_HRA.find((r) => r.rank === selectedRank) || RANKS_HRA[0];
-  const activeClass = CITY_CLASSES.find((c) => c.value === cityClass)!;
-  const calculatedHRA = Math.round(basicPay * (activeClass.rate / 100));
+  const activeClass = CITY_CLASSES.find((c) => c.value === cityClass) || CITY_CLASSES[1];
+  const safeBasicPay = Number(basicPay) || activeRankInfo.defaultPay;
+  const calculatedHRA = Math.round(safeBasicPay * (activeClass.rate / 100));
+
+  const minPay = activeRankInfo.minBasicPay || 21700;
+  const maxPay = activeRankInfo.maxBasicPay || 225000;
 
   const handleRankSelect = (rankName: string) => {
     onRankSelect(rankName);
     const rInfo = RANKS_HRA.find((r) => r.rank === rankName);
-    if (rInfo) onBasicPayChange(rInfo.minBasicPay);
+    if (rInfo) onBasicPayChange(rInfo.defaultPay);
   };
 
   return (
@@ -114,14 +123,14 @@ export default function HRACalculator({
               Basic Pay
             </span>
             <span className="text-[9px] text-slate-400 dark:text-slate-500">
-              Min: ₹{activeRankInfo.minBasicPay.toLocaleString()}
+              Min: ₹{minPay.toLocaleString()}
             </span>
           </div>
           <input
             type="number"
-            min={activeRankInfo.minBasicPay}
-            max={activeRankInfo.maxBasicPay}
-            value={basicPay}
+            min={minPay}
+            max={maxPay}
+            value={safeBasicPay}
             onChange={(e) => onBasicPayChange(Number(e.target.value))}
             style={{
               fontWeight: "bold",
@@ -137,10 +146,10 @@ export default function HRACalculator({
       {/* Slider */}
       <input
         type="range"
-        min={activeRankInfo.minBasicPay}
-        max={activeRankInfo.maxBasicPay}
+        min={minPay}
+        max={maxPay}
         step={500}
-        value={basicPay}
+        value={safeBasicPay}
         onChange={(e) => onBasicPayChange(Number(e.target.value))}
         className="w-full h-1.5 rounded-lg cursor-pointer accent-emerald-600 bg-slate-200 dark:bg-slate-700"
       />
@@ -167,7 +176,7 @@ export default function HRACalculator({
         </div>
         <div className="text-right flex flex-col">
           <span style={{ fontWeight: 800, fontSize: 20 }} className="text-emerald-600 dark:text-emerald-400">
-            ₹{calculatedHRA.toLocaleString()}
+            ₹{(calculatedHRA || 0).toLocaleString()}
           </span>
           <span className="text-[9px] text-slate-400 dark:text-slate-500">Per Month Max</span>
         </div>

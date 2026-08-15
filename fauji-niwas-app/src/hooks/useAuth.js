@@ -11,21 +11,24 @@ export function useAuth() {
   const [newDeviceAlert, setNewDeviceAlert] = useState(null);
 
   useEffect(() => {
-    // Check for mock user local bypass
-    const mockUserStr = localStorage.getItem('fn_mock_user');
-    if (mockUserStr) {
-      try {
-        const mu = JSON.parse(mockUserStr);
-        setUser(mu);
-        setDbUser({
-          uid: mu.uid,
-          name: mu.displayName || 'Lt. Col. Sandeep Mehta (Retd.)',
-          phone: mu.phoneNumber || '+919999999999',
-          points: 120,
-          verified: true
-        });
-        return;
-      } catch (_) {}
+    // Check for mock user local bypass (DEV mode only)
+    if (import.meta.env.DEV) {
+      const mockUserStr = localStorage.getItem('fn_mock_user');
+      if (mockUserStr) {
+        try {
+          const mu = JSON.parse(mockUserStr);
+          setUser(mu);
+          setDbUser({
+            uid: mu.uid,
+            name: mu.displayName || 'Lt. Col. Sandeep Mehta (Retd.)',
+            phone: mu.phoneNumber || '+919999999999',
+            role: 'admin',
+            points: 120,
+            verified: true
+          });
+          return;
+        } catch (_) {}
+      }
     }
 
     let unsubDb = () => {};
@@ -57,6 +60,7 @@ export function useAuth() {
             setDoc(userRef, { 
               uid: u.uid, 
               phone: u.phoneNumber || '', 
+              role: 'user',
               points: 0,
               createdAt: Date.now() 
             }, { merge: true });
@@ -72,8 +76,7 @@ export function useAuth() {
     return () => { unsubAuth(); unsubDb(); clearTimeout(timeout); };
   }, []);
 
-  const ADMIN_PHONES = ['+919999999999', '+911234567890', '+911234567891']; // Placeholder
-  const isAdmin = user && ADMIN_PHONES.includes(user.phoneNumber);
+  const isAdmin = Boolean(user && (dbUser?.role === 'admin' || (import.meta.env.DEV && user.phoneNumber === '+919999999999')));
 
   return { 
     user, 

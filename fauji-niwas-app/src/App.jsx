@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useState, useEffect } from 'react';
+import React, { Suspense, lazy, useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { HelmetProvider } from 'react-helmet-async';
 import { useListings } from './hooks/useListings';
 import { useAuth } from './hooks/useAuth';
@@ -21,15 +21,17 @@ const LegalModal     = lazy(() => import('./components/Modals/LegalModal'));
 const ChatModal      = lazy(() => import('./components/Modals/ChatModal'));
 const AdminModal     = lazy(() => import('./components/Modals/AdminModal'));
 const RelocationModal = lazy(() => import('./components/Modals/RelocationModal'));
+const AccessibilityModal = lazy(() => import('./components/Modals/AccessibilityModal'));
 
 export const ModalContext = React.createContext(null);
 
 export default function App() {
   useListings(); // subscribe Firestore → Zustand
-  const { loading: authLoading } = useAuth();
+  const { loading: authLoading, isAdmin } = useAuth();
   const setActiveView = useFilterStore((s) => s.setActiveView);
 
   const [toast, setToast] = useState(null);
+  const toastTimerRef = useRef(null);
   const [openModal, setOpenModal] = useState(null);
   const [detailId, setDetailId] = useState(null);
   const [reportId, setReportId] = useState(null);
@@ -86,63 +88,76 @@ export default function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, [foodCity]);
 
-  const showToast = (msg, type = 'ok', duration = 3000) => {
+  const showToast = useCallback((msg, type = 'ok', duration = 3000) => {
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
     setToast({ msg, type });
-    setTimeout(() => setToast(null), duration);
-  };
+    toastTimerRef.current = setTimeout(() => setToast(null), duration);
+  }, []);
 
-  const pushModalState = () => {
-    // Only push if we aren't already replacing the modal
-    if (!openModal && !foodCity) {
-      window.history.pushState({ modalOpen: true }, '');
-    }
-  };
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    };
+  }, []);
 
-  const closeModal = () => {
-    if (openModal) {
-      setOpenModal(null);
-      setDetailId(null);
-      setReportId(null);
-      setChatConfig(null);
-      window.history.back();
-    }
-  };
+  const closeModal = useCallback(() => {
+    setOpenModal(null);
+    setDetailId(null);
+    setReportId(null);
+    setChatConfig(null);
+    if (window.history.state?.modal) window.history.back();
+  }, []);
 
-  const closeFoodOnly = () => {
-    if (foodCity) {
-      setFoodCity(null);
-      window.history.back();
-    }
-  };
+  const closeFoodOnly = useCallback(() => {
+    setFoodCity(null);
+    if (window.history.state?.modal) window.history.back();
+  }, []);
 
-  const ctxValue = {
+  const openDetail = useCallback((id) => { window.history.pushState({ modal: 'detail' }, ''); setDetailId(id); setOpenModal('detail'); }, []);
+  const openPost = useCallback(() => { window.history.pushState({ modal: 'post' }, ''); setOpenModal('post'); }, []);
+  const openProfile = useCallback(() => { window.history.pushState({ modal: 'profile' }, ''); setOpenModal('profile'); }, []);
+  const openReport = useCallback((id) => { window.history.pushState({ modal: 'report' }, ''); setReportId(id); setOpenModal('report'); }, []);
+  const openTransfers = useCallback(() => { window.history.pushState({ modal: 'transfers' }, ''); setOpenModal('transfers'); }, []);
+  const openCompare = useCallback(() => { window.history.pushState({ modal: 'compare' }, ''); setOpenModal('compare'); }, []);
+  const openFood = useCallback((city) => { window.history.pushState({ modal: 'food' }, ''); setFoodCity(city); }, []);
+  const openLegal = useCallback(() => { window.history.pushState({ modal: 'legal' }, ''); setOpenModal('legal'); }, []);
+  const openChat = useCallback((config) => { window.history.pushState({ modal: 'chat' }, ''); setChatConfig(config); setOpenModal('chat'); }, []);
+  const openAdmin = useCallback(() => { window.history.pushState({ modal: 'admin' }, ''); setOpenModal('admin'); }, []);
+  const openRelocation = useCallback(() => { window.history.pushState({ modal: 'relocation' }, ''); setOpenModal('relocation'); }, []);
+  const openAccessibility = useCallback(() => { window.history.pushState({ modal: 'accessibility' }, ''); setOpenModal('accessibility'); }, []);
+
+  const ctxValue = useMemo(() => ({
     showToast,
-    openDetail: (id) => { window.history.pushState({ modal: 'detail' }, ''); setDetailId(id); setOpenModal('detail'); },
-    openPost:   ()   => { window.history.pushState({ modal: 'post' }, '');   setOpenModal('post'); },
-    openProfile:()   => { window.history.pushState({ modal: 'profile' }, ''); setOpenModal('profile'); },
-    openReport: (id) => { window.history.pushState({ modal: 'report' }, ''); setReportId(id); setOpenModal('report'); },
-    openTransfers:() => { window.history.pushState({ modal: 'transfers' }, ''); setOpenModal('transfers'); },
-    openCompare: () => { window.history.pushState({ modal: 'compare' }, ''); setOpenModal('compare'); },
-    openFood:   (city) => { window.history.pushState({ modal: 'food' }, ''); setFoodCity(city); },
-    openLegal:  ()   => { window.history.pushState({ modal: 'legal' }, ''); setOpenModal('legal'); },
-    openChat:   (config) => { window.history.pushState({ modal: 'chat' }, ''); setChatConfig(config); setOpenModal('chat'); },
-    openAdmin:  ()   => { window.history.pushState({ modal: 'admin' }, ''); setOpenModal('admin'); },
-    openRelocation:() => { window.history.pushState({ modal: 'relocation' }, ''); setOpenModal('relocation'); },
-    closeFood:  closeFoodOnly,
-    closeAll:   closeModal,
-  };
+    openDetail,
+    openPost,
+    openProfile,
+    openReport,
+    openTransfers,
+    openCompare,
+    openFood,
+    openLegal,
+    openChat,
+    openAdmin,
+    openRelocation,
+    openAccessibility,
+    closeFood: closeFoodOnly,
+    closeAll: closeModal,
+    isAdmin,
+  }), [showToast, openDetail, openPost, openProfile, openReport, openTransfers, openCompare, openFood, openLegal, openChat, openAdmin, openRelocation, openAccessibility, closeFoodOnly, closeModal, isAdmin]);
 
   // Expose API for external widgets (like chatbot.js)
   useEffect(() => {
     window.openDetailModal = ctxValue.openDetail;
     window.openFoodModal = ctxValue.openFood;
     window.openRelocationModal = ctxValue.openRelocation;
+    window.openAccessibilityModal = ctxValue.openAccessibility;
     return () => {
       delete window.openDetailModal;
       delete window.openFoodModal;
       delete window.openRelocationModal;
+      delete window.openAccessibilityModal;
     };
-  }, [ctxValue.openDetail, ctxValue.openFood, ctxValue.openRelocation]);
+  }, [ctxValue.openDetail, ctxValue.openFood, ctxValue.openRelocation, ctxValue.openAccessibility]);
 
   if (authLoading && !isInitTimedOut) return <Loader />;
 
@@ -182,10 +197,13 @@ export default function App() {
               {openModal === 'chat' && chatConfig && <ChatModal config={chatConfig} onClose={closeModal} />}
             </Suspense>
             <Suspense fallback={null}>
-              {openModal === 'admin' && <AdminModal onClose={closeModal} />}
+              {openModal === 'admin' && isAdmin && <AdminModal onClose={closeModal} />}
             </Suspense>
             <Suspense fallback={null}>
               {openModal === 'relocation' && <RelocationModal onClose={closeModal} />}
+            </Suspense>
+            <Suspense fallback={null}>
+              {openModal === 'accessibility' && <AccessibilityModal onClose={closeModal} />}
             </Suspense>
 
             {toast && <Toast msg={toast.msg} type={toast.type} />}

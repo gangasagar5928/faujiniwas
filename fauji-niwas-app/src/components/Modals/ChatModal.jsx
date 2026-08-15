@@ -20,43 +20,8 @@ export default function ChatModal({ config, onClose }) {
   const [safetyNumber, setSafetyNumber] = useState(null);
   const scrollRef = useRef(null);
 
-  // E2EE Session Key Rotation states
+  // E2EE Status Panel
   const [showKeyRotator, setShowKeyRotator] = useState(false);
-  const [rotating, setRotating] = useState(false);
-  const [rotationLogs, setRotationLogs] = useState([]);
-
-  const triggerKeyRotation = async () => {
-    if (rotating) return;
-    setRotating(true);
-    setRotationLogs([]);
-    
-    const addLog = (msg) => {
-      setRotationLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] ${msg}`]);
-    };
-
-    addLog("Initiating E2EE Session Key Rotation...");
-    await new Promise(r => setTimeout(r, 500));
-    addLog("Generating fresh ephemeral prime modulus p & base g...");
-    await new Promise(r => setTimeout(r, 650));
-    addLog("Computing new local private key component (1024-bit integer)...");
-    await new Promise(r => setTimeout(r, 700));
-    const localPublic = Array.from({length: 16}, () => Math.floor(Math.random()*16).toString(16)).join('').toUpperCase();
-    addLog(`Local public key computed: DH-PUB-KEY-${localPublic}`);
-    await new Promise(r => setTimeout(r, 800));
-    addLog("Broadcasting public key over secure socket channel...");
-    await new Promise(r => setTimeout(r, 600));
-    addLog("Received peer public key component from remote user.");
-    await new Promise(r => setTimeout(r, 500));
-    addLog("Calculating shared secret: S = (B^a) mod p...");
-    await new Promise(r => setTimeout(r, 700));
-    const newSessionHash = Array.from({length: 32}, () => Math.floor(Math.random()*16).toString(16)).join('');
-    addLog(`Derived HKDF session cipher key: AES-GCM-256 [${newSessionHash.substring(0, 16)}]`);
-    await new Promise(r => setTimeout(r, 500));
-    addLog("✓ Active session key rotation complete! Safe Tunnel Refreshed.");
-    
-    setRotating(false);
-    ctx.showToast("E2EE Session Key Rotated Successfully! 🔐", "ok");
-  };
 
   const { listingId, recipientId, name } = config;
   const participants = [user?.uid, recipientId].filter(Boolean).sort();
@@ -220,29 +185,20 @@ export default function ChatModal({ config, onClose }) {
 
         {showKeyRotator && (
           <div style={{ background: '#080d1a', borderBottom: '1px solid var(--border2)', padding: '14px 20px', fontFamily: 'monospace' }}>
-            <div style={{ display: 'flex', justifyItems: 'center', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-              <span style={{ fontSize: 11, color: 'var(--gold)', fontWeight: 800 }}>📟 ENCRYPTION KEY ROTATION</span>
-              <button 
-                className="bp" 
-                style={{ width: 'auto', padding: '4px 12px', fontSize: 10, background: rotating ? 'rgba(255,255,255,0.08)' : 'var(--accent)', color: '#000', marginBottom: 0 }}
-                onClick={triggerKeyRotation}
-                disabled={rotating}
-              >
-                {rotating ? '🔄 Rotating...' : '⚡ Force Rotate Session Key'}
-              </button>
+            <div style={{ display: 'flex', justifyItems: 'center', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+              <span style={{ fontSize: 11, color: 'var(--gold)', fontWeight: 800 }}>🔒 END-TO-END ENCRYPTION STATUS</span>
             </div>
             
-            <div style={{ minHeight: 120, maxHeight: 180, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 6, padding: 10, background: '#040710', borderRadius: 8, border: '1px solid rgba(255,255,255,0.03)' }}>
-              {rotationLogs.map((log, idx) => (
-                <div key={idx} style={{ fontSize: 10, color: '#4ade80', lineHeight: 1.4 }}>
-                  {log}
-                </div>
-              ))}
-              {rotationLogs.length === 0 && (
-                <div style={{ fontSize: 11, color: 'var(--muted)', fontStyle: 'italic', textAlign: 'center', marginTop: 35 }}>
-                  E2EE connection is active. Click "Force Rotate Session Key" to generate a new key.
-                </div>
-              )}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: 10, background: '#040710', borderRadius: 8, border: '1px solid rgba(255,255,255,0.03)' }}>
+              <div style={{ fontSize: 11, color: '#4ade80', lineHeight: 1.4 }}>
+                ✓ Web Crypto API initialized — AES-GCM-256 / RSA-OAEP active
+              </div>
+              <div style={{ fontSize: 11, color: 'var(--muted)', lineHeight: 1.4 }}>
+                • Safety Number: {safetyNumber || 'Generating...'}
+              </div>
+              <div style={{ fontSize: 11, color: 'var(--muted)', lineHeight: 1.4 }}>
+                • Messages encrypted client-side before transmission
+              </div>
             </div>
           </div>
         )}

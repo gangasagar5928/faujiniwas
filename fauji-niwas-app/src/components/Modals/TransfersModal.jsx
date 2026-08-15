@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from 'react';
-import { db, collection, addDoc, query, orderBy, onSnapshot, auth } from '../../firebase';
+import { db, collection, addDoc, query, orderBy, onSnapshot } from '../../firebase';
 import { useAuth } from '../../hooks/useAuth';
 import { ModalContext } from '../../App';
 import styles from './ProfileModal.module.css'; // Reusing some base styles

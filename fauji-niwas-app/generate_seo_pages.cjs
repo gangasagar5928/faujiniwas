@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const pingIndexNow = require('./ping_indexnow.cjs');
 
 const BASE = 'https://faujiniwas.web.app';
 
@@ -12,12 +13,6 @@ const CITIES = [
   },
   {
     name: 'Delhi', slug: 'delhi', zone: 'Army HQ Zone', listings: '342+',
-    areas: ['Delhi Cantonment', 'Kirby Place', 'Brar Square', 'Gopinath Bazaar', 'Naraina', 'Dhaula Kuan', 'Shankar Vihar', 'Subroto Park', 'Palam'],
-    landmarks: ['Army Hospital (Research & Referral)', 'Delhi Cantonment', 'Western Air Command', 'Army Public School Delhi Cantt', 'Army Public School Shankar Vihar', 'Air Force School Subroto Park', 'CSD Canteens', 'Delhi Cantt Railway Station'],
-    lat: 28.5967, lng: 77.1336, addressLocality: 'New Delhi', addressRegion: 'Delhi'
-  },
-  {
-    name: 'Delhi Cantt', slug: 'locations/delhi-cantt', zone: 'Army HQ Zone', listings: '342+',
     areas: ['Delhi Cantonment', 'Kirby Place', 'Brar Square', 'Gopinath Bazaar', 'Naraina', 'Dhaula Kuan', 'Shankar Vihar', 'Subroto Park', 'Palam'],
     landmarks: ['Army Hospital (Research & Referral)', 'Delhi Cantonment', 'Western Air Command', 'Army Public School Delhi Cantt', 'Army Public School Shankar Vihar', 'Air Force School Subroto Park', 'CSD Canteens', 'Delhi Cantt Railway Station'],
     lat: 28.5967, lng: 77.1336, addressLocality: 'New Delhi', addressRegion: 'Delhi'
@@ -193,14 +188,14 @@ function generateCityPage(html, city) {
   const { name, slug, zone, listings } = city;
   const pageUrl = `${BASE}/${slug}`;
   const citySlugShort = slug.split('/').pop();
-  const cantName = `${name} Cantonment`;
+  const cantName = name.toLowerCase().includes('cantt') ? name : `${name} Cantonment`;
 
   const title = `Rooms & Flats for Rent in ${name} for Defence Families | FaujiNiwas`;
   const description = `Find verified rooms, flats, PGs and houses for rent near ${cantName} for Army, Air Force, Navy and defence families. ${listings} listings. ${zone}. Zero brokerage.`;
   const keywords = `${name} room for rent, ${name} cantonment rental, Army family accommodation ${name}, Defence housing ${name}, Flat for rent ${name} cantt, fauji rent ${citySlugShort}`;
   const ogTitle = `Rooms for Rent in ${name} Cantt | FaujiNiwas`;
   const ogDescription = `Verified rental accommodation near ${cantName} for defence families.`;
-  const ogImage = `${BASE}/assets/og-image.webp`;
+  const ogImage = `${BASE}/og-image.jpg`;
 
   // Full 7-schema set for every city
   const schemas = [
@@ -218,7 +213,7 @@ function generateCityPage(html, city) {
       "@type": "Organization",
       "name": "FaujiNiwas",
       "url": BASE,
-      "logo": `${BASE}/logo.png`,
+      "logo": `${BASE}/favicon.svg`,
       "description": "India's defence community rental platform connecting military families with verified rental accommodation."
     },
     {
@@ -228,7 +223,7 @@ function generateCityPage(html, city) {
       "name": "FaujiNiwas",
       "potentialAction": {
         "@type": "SearchAction",
-        "target": `${BASE}/search?q={search_term_string}`,
+        "target": `${BASE}/app?search={search_term_string}`,
         "query-input": "required name=search_term_string"
       }
     },
@@ -293,9 +288,9 @@ function generateCityPage(html, city) {
       "name": `Rental Properties near ${cantName}`,
       "numberOfItems": parseInt(listings),
       "itemListElement": [
-        { "@type": "Residence", "name": `1 BHK Flat near ${name} Cantt`, "url": `${BASE}/app.html` },
-        { "@type": "Residence", "name": `2 BHK Flat near ${name} Cantt`, "url": `${BASE}/app.html` },
-        { "@type": "Residence", "name": `3 BHK House near ${cantName}`, "url": `${BASE}/app.html` }
+        { "@type": "Residence", "name": `1 BHK Flat near ${name} Cantt`, "url": `${BASE}/` },
+        { "@type": "Residence", "name": `2 BHK Flat near ${name} Cantt`, "url": `${BASE}/` },
+        { "@type": "Residence", "name": `3 BHK House near ${cantName}`, "url": `${BASE}/` }
       ]
     }
   ];
@@ -375,11 +370,52 @@ function writePage(baseDir, slug, content) {
   console.log(`Generated: ${targetPath}`);
 }
 
+function generateSitemap(cities, targetDir) {
+  const dateStr = new Date().toISOString().split('T')[0];
+  const staticPages = [
+    { loc: `${BASE}/`, priority: '1.0', changefreq: 'weekly' },
+    { loc: `${BASE}/locations`, priority: '0.95', changefreq: 'weekly' },
+    { loc: `${BASE}/about`, priority: '0.9', changefreq: 'monthly' },
+    { loc: `${BASE}/faq`, priority: '0.9', changefreq: 'weekly' },
+    { loc: `${BASE}/aman-kumar-singh`, priority: '0.85', changefreq: 'monthly' },
+    { loc: `${BASE}/community`, priority: '0.6', changefreq: 'weekly' },
+    { loc: `${BASE}/contact`, priority: '0.5', changefreq: 'monthly' },
+    { loc: `${BASE}/privacy`, priority: '0.4', changefreq: 'monthly' },
+    { loc: `${BASE}/terms`, priority: '0.4', changefreq: 'monthly' },
+    { loc: `${BASE}/security`, priority: '0.4', changefreq: 'monthly' }
+  ];
+
+  const cityPages = cities.map(c => ({
+    loc: `${BASE}/${c.slug}`,
+    priority: '0.8',
+    changefreq: 'monthly'
+  }));
+
+  const allUrls = [...staticPages, ...cityPages];
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${allUrls.map(u => `  <url>
+    <loc>${u.loc}</loc>
+    <lastmod>${dateStr}</lastmod>
+    <changefreq>${u.changefreq}</changefreq>
+    <priority>${u.priority}</priority>
+  </url>`).join('\n')}
+</urlset>
+`;
+
+  const sitemapPath = path.join(targetDir, 'sitemap.xml');
+  fs.writeFileSync(sitemapPath, xml);
+  console.log(`Generated Sitemap: ${sitemapPath} with ${allUrls.length} URLs.`);
+}
+
 // Generate for public directory (local dev)
 CITIES.forEach((city) => {
   const content = generateCityPage(template, city);
   writePage(publicDir, city.slug, content);
 });
+
+generateSitemap(CITIES, publicDir);
 
 // Generate in dist (after build)
 if (fs.existsSync(distDir)) {
@@ -387,8 +423,12 @@ if (fs.existsSync(distDir)) {
     const content = generateCityPage(template, city);
     writePage(distDir, city.slug, content);
   });
+  generateSitemap(CITIES, distDir);
 } else {
-  console.log('Note: dist/ not found, skipping dist generation. Run npm run build.');
+  console.log('Note: dist/ not found, skipping dist generation.');
 }
 
 console.log(`✅ ${CITIES.length} city SEO pages generated.`);
+
+// Ping IndexNow automatically
+pingIndexNow();

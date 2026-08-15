@@ -1,40 +1,62 @@
 # Contributing to Fauji Niwas
 
-First off, thank you for considering contributing to Fauji Niwas. It's people like you that make this platform a powerful, trusted tool for the Indian Armed Forces community.
+Thank you for your interest in contributing to **Fauji Niwas**, the peer-to-peer housing and relocation network for the Indian Armed Forces community.
 
-## How Can I Contribute?
+---
 
-### Reporting Bugs
-If you find a bug, please create an issue on GitHub. Please include:
-- A clear, descriptive title.
-- A detailed description of the issue.
-- Steps to reproduce the issue.
-- Details about your environment (browser, OS, device).
+## 🧭 Monorepo Structure
 
-### Suggesting Enhancements
-We are always open to new ideas that can help our Jawans, JCOs, and Officers! If you have a feature request:
-- Check the issue tracker to see if the feature has already been requested.
-- Open an issue describing your idea, why it would be useful, and how you envision it working.
+```text
+├── fauji-niwas-app/    # React 18 + Vite Web Application & Static SEO Pages
+├── fauji-niwas_app/    # Native Flutter Mobile Application (Android/iOS)
+├── firestore.rules     # Production Firestore Security Rules
+├── firebase.json       # Firebase Hosting & Header Configuration
+├── scripts/            # Utility and SDK setup scripts
+└── .github/            # CI/CD Workflows, PR & Issue Templates
+```
 
-### Code Contributions
-1. **Fork the Repository:** Start by forking the repository to your own GitHub account.
-2. **Clone:** Clone your fork to your local machine.
-3. **Branch:** Create a new branch for your feature or bugfix (`git checkout -b feature/your-feature-name` or `git checkout -b fix/your-bug-fix`).
-4. **Develop:** Make your changes locally. Ensure your code follows the existing style and conventions.
-5. **Test:** Test your changes locally to ensure everything works as expected.
-6. **Commit:** Commit your changes with clear, descriptive commit messages.
-7. **Push:** Push your branch to your fork on GitHub.
-8. **Pull Request:** Open a Pull Request against the `main` branch of the original Fauji Niwas repository. Provide a detailed description of your changes.
+---
 
-## Development Setup
+## 🛠️ Contribution Workflow
 
-See the [README.md](README.md) for detailed instructions on setting up your local development environment.
+1. **Fork the Repository:** Fork on GitHub to your account.
+2. **Clone & Branch:** 
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/Faujiniwas.git
+   cd Faujiniwas
+   git checkout -b feat/your-feature-name
+   ```
+3. **Develop & Verify:**
+   - For web changes:
+     ```bash
+     cd fauji-niwas-app
+     npm install
+     npm run dev
+     npm run build  # Ensure production bundle passes
+     ```
+   - For mobile changes:
+     ```bash
+     cd fauji-niwas_app
+     flutter pub get
+     flutter analyze
+     ```
+4. **Clean Commits:**
+   - Keep commits atomic and informative (e.g. `feat(web): add cantonment distance filter`, `fix(mobile): resolve HRA calculation rounding`).
+   - **Never commit `.apk`, `.diff`, `.log`, `.tmp`, or credential files.**
+5. **Open a Pull Request:**
+   - Submit PR against `main`. Fill in the PR template thoroughly.
 
-## Code Style
+---
 
-- We use ESLint and standard React (Vite) conventions.
-- Prefer functional components and React Hooks.
-- Ensure CSS Modules are used for scoped component styling, while global utility classes can be placed in `index.css`.
-- Leave comments for complex logical blocks, especially related to HRA arbitrage or sorting algorithms.
+## 📜 Code & Security Guidelines
 
-Thank you for contributing!
+- **Privacy First:** Never log, store, or solicit sensitive defence unit numbers or operational secrets.
+- **Components:** In the web app, keep components modular and maintain CSS modules or utility classes consistently.
+- **Leaflet Geo-data:** Sanitize latitude/longitude coordinates to avoid rendering exceptions or invalid bounding boxes.
+- **Accessibility:** Ensure high contrast and mobile-friendly tap targets across all viewports.
+
+---
+
+## 🤝 Code of Conduct
+
+Maintain respect, professional discourse, and dedication to serving our veterans and active-duty defence families.

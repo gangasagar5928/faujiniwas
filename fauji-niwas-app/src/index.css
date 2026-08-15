@@ -56,8 +56,26 @@ body {
   --shadow-lg:0 16px 64px rgba(0,0,0,.6);
   --ease:     cubic-bezier(0.4,0,0.2,1);
 
+  /* Bento & Glass variables for desktop panel/navbar CSS classes */
+  --glass-nav:   rgba(11, 19, 37, 0.92);
+  --glass:       rgba(15, 23, 42, 0.8);
+  --glass-ultra: rgba(15, 23, 42, 0.9);
+  --blur:        blur(12px);
+  --blur-xl:     blur(20px);
+  --green-mid:   #15803d;
+  --green-pale:  rgba(21, 128, 61, 0.18);
+  --green-glow:  rgba(34, 197, 94, 0.35);
+  --green-light: #4ade80;
+  --radius-pill: 9999px;
+  --radius-xl:   20px;
+  --radius-md:   12px;
+  --text-soft:   #94a3b8;
+  --text-mid:    #cbd5e1;
+  --shadow-card: 0 4px 24px rgba(0,0,0,0.4);
+  --shadow-pop:  0 8px 32px rgba(0,0,0,0.5);
+
   /* Glass tactical variable defaults */
-  --glass-tactical-bg: rgba(15, 23, 42, 0.65);
+  --glass-tactical-bg:     rgba(15, 23, 42, 0.65);
   --glass-tactical-border: rgba(255, 255, 255, 0.08);
   --glass-tactical-shadow: rgba(0, 0, 0, 0.4);
 
@@ -577,6 +595,17 @@ select.fb option { background: var(--card); color: var(--text); }
 
 .app-container.sidebar-closed #map {
   grid-column: 2;
+}
+
+/* Bento desktop: #map is absolutely positioned, override any grid */
+.bento-desktop #map {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  grid-row: unset !important;
+  grid-column: unset !important;
+  z-index: 0 !important;
 }
 
 @media (max-width: 768px) {
@@ -1437,11 +1466,29 @@ html.app-shell, body.app-shell {
 /* Mobile Accessibility & Chatbot Floating Widget Repositioning */
 @media (max-width: 768px) {
   #accessibility-widget {
-    bottom: 82px !important;
-    right: 14px !important;
-    z-index: 99990 !important;
+    position: fixed !important;
+    bottom: 76px !important;
+    left: 14px !important;
+    right: auto !important;
+    top: auto !important;
+    z-index: 99999 !important;
+    display: flex !important;
   }
-  #fauji-chatbot {
-    display: none !important;
+  #acc-trigger {
+    width: 44px !important;
+    height: 44px !important;
+    font-size: 18px !important;
+    background: #15803d !important;
+    border: 2px solid #ffffff !important;
+    box-shadow: 0 4px 14px rgba(21, 128, 61, 0.4) !important;
+    border-radius: 50% !important;
+  }
+  #fauji-chatbot, .chat-fab {
+    position: fixed !important;
+    bottom: 74px !important;
+    right: 14px !important;
+    left: auto !important;
+    top: auto !important;
+    z-index: 99998 !important;
   }
 }

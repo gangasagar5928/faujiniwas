@@ -4,7 +4,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  base: './',
+  base: '/',
   plugins: [
     tailwindcss(),
     react(),
@@ -34,14 +34,6 @@ export default defineConfig({
   ],
   build: {
     outDir: 'dist',
-    modulePreload: {
-      resolveDependencies(filename, deps, { hostId }) {
-        if (hostId && (hostId.includes('index.html') || hostId.includes('landing.jsx'))) {
-          return deps.filter(dep => !dep.includes('leaflet') && !dep.includes('firebase') && !dep.includes('framer-motion'));
-        }
-        return deps;
-      }
-    },
     rollupOptions: {
       input: {
         main: './index.html',

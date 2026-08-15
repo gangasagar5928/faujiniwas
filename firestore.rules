@@ -44,7 +44,8 @@ service cloud.firestore {
          && request.resource.data.verified == resource.data.verified
          && request.resource.data.reportCount == resource.data.reportCount)
         ||
-        (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reportCount'])
+        (isAuthed()
+         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reportCount'])
          && request.resource.data.reportCount == resource.data.reportCount + 1);
 
       allow delete: if isAdmin() || (isAuthed() && resource.data.uid == request.auth.uid);

@@ -39,15 +39,8 @@ export default function PostModal({ onClose }) {
     const files = Array.from(e.target.files);
     setImages(files);
     if (files.length > 0) {
-      setVisionVerifying(true);
-      setVisionStatus('🔍 AI Safeguard: Reading photo metadata (EXIF)...');
-      setTimeout(() => {
-        setVisionStatus('🛰️ AI Safeguard: Cross-referencing GPS coordinates...');
-        setTimeout(() => {
-          setVisionStatus('✅ AI Safeguard: Vision Integrity Verified (Device coordinate match, no duplicate internet fingerprints detected)');
-          setVisionVerifying(false);
-        }, 800);
-      }, 700);
+      const totalSizeMb = (files.reduce((acc, f) => acc + f.size, 0) / (1024 * 1024)).toFixed(1);
+      setVisionStatus(`📸 ${files.length} photo(s) selected (${totalSizeMb} MB total — auto-compressed on upload)`);
     } else {
       setVisionStatus('');
     }
@@ -89,15 +82,19 @@ export default function PostModal({ onClose }) {
       setOtpSent(true);
       ctx.showToast('OTP sent! 💬', 'ok');
     } catch (e) {
-      console.warn("SMS OTP Failed, falling back to mock login:", e);
-      ctx.showToast('SMS limit reached. Auto-logging in via Offline Demo! 👤', 'ok');
-      localStorage.setItem('fn_mock_user', JSON.stringify({ 
-        uid: 'mock_user_' + phone, 
-        phoneNumber: '+91' + phone, 
-        displayName: 'Officer ' + phone.slice(-4),
-        email: 'demo@faujiniwas.com' 
-      }));
-      setTimeout(() => window.location.reload(), 1200);
+      console.warn("SMS OTP Failed:", e);
+      if (import.meta.env.DEV) {
+        ctx.showToast('SMS limit reached. Auto-logging in via Offline Demo! 👤', 'ok');
+        localStorage.setItem('fn_mock_user', JSON.stringify({ 
+          uid: 'mock_user_' + phone, 
+          phoneNumber: '+91' + phone, 
+          displayName: 'Officer ' + phone.slice(-4),
+          email: 'demo@faujiniwas.com' 
+        }));
+        setTimeout(() => window.location.reload(), 1200);
+      } else {
+        ctx.showToast('SMS sending failed: ' + (e.message || 'Please try again.'), 'err');
+      }
     }
     setLoading(false);
   };
@@ -157,9 +154,9 @@ export default function PostModal({ onClose }) {
         }
       }
 
-      // 2.5 Broker Detection AI
+      // 2.5 Broker Detection AI (exclude pitch demo data)
       let finalOwnerType = form.ownerType;
-      const matchingPhones = listings.filter(l => l.phone === form.phone);
+      const matchingPhones = listings.filter(l => l.phone === form.phone && l._collection);
       if (matchingPhones.length >= 5) {
         finalOwnerType = 'broker';
       }

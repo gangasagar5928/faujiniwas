@@ -7,7 +7,6 @@ import { ModalContext } from '../../App';
 import { auth, db, collection, addDoc, doc, updateDoc, increment, onSnapshot, query, orderBy } from '../../firebase';
 import styles from './DetailModal.module.css';
 import { FOOD_BY_CITY, ARMY_SCHOOLS, MILITARY_HOSPITALS, CANTEENS } from '../../data';
-import { PROPERTIES } from '../../dataNew';
 import { generateNeighborhoodInsight } from '../../aiInsights';
 
 const PHOTO_POOL = [
@@ -45,7 +44,7 @@ export default function DetailModal({ id, onClose }) {
   const comparison = useUserStore(s => s.comparison) || [];
   const toggleComparison = useUserStore(s => s.toggleComparison);
   const isComparing = comparison.includes(id);
-  const currentListing = listings.find((listing) => listing.id === id) || PROPERTIES.find((p) => p.id === id);
+  const currentListing = listings.find((listing) => listing.id === id);
   const isMarketItem = currentListing?._collection === 'market' || currentListing?._collection === 'marketplace';
   const reviewRoot = isMarketItem ? 'marketplace' : 'rentals';
 

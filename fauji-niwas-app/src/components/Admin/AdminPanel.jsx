@@ -105,7 +105,7 @@ export default function AdminPanel({ onClose }) {
           <html>
             <head><title>Decrypted Military ID Card — Fauji Niwas</title></head>
             <body style="margin:0; background:#0b1325; display:flex; justify-content:center; align-items:center; height:100vh;">
-              <img src="${objectUrl}" style="max-width:90%; max-height:90vh; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.1);" />
+              <img src="${objectUrl}" alt="Decrypted Military ID Card" style="max-width:90%; max-height:90vh; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.1);" />
             </body>
           </html>
         `);

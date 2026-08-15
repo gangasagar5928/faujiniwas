@@ -50,7 +50,7 @@ export default function CompareModal({ onClose }) {
           <div style={{display:'flex', gap:10, marginBottom:20}}>
             {[l1, l2].map(l => (
               <div key={l.id} style={{flex:1}}>
-                <img src={l.mediaUrls?.[0]} style={{width:'100%', height:80, objectFit:'cover', borderRadius:8}} alt="" />
+                <img src={l.mediaUrls?.[0]} style={{width:'100%', height:80, objectFit:'cover', borderRadius:8}} alt={l.name || "Property preview"} />
                 <div style={{fontSize:13, fontWeight:700, marginTop:6, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis'}}>{l.name}</div>
               </div>
             ))}

@@ -110,7 +110,11 @@ function MapController({
   // Effect 1: Fly to selected property (only when selectedProperty is set)
   useEffect(() => {
     if (selectedProperty && isValidCoord(selectedProperty.lat, selectedProperty.lng)) {
-      map.flyTo([Number(selectedProperty.lat), Number(selectedProperty.lng)], 15, { duration: 1.2 });
+      const lat = Number(selectedProperty.lat);
+      const lng = Number(selectedProperty.lng);
+      if (isValidCoord(lat, lng)) {
+        map.flyTo([lat, lng], 15, { duration: 1.2 });
+      }
     }
   }, [selectedProperty, map]);
 
@@ -128,28 +132,33 @@ function MapController({
       }
     }
 
-    if (matchedCoords) {
+    if (matchedCoords && isValidCoord(matchedCoords[0], matchedCoords[1])) {
       map.flyTo(matchedCoords, 13, { duration: 1.5 });
       return;
     }
 
-    if (properties.length > 0) {
-      const validProps = properties.filter((p) => isValidCoord(p.lat, p.lng));
+    if (properties && properties.length > 0) {
+      const validProps = properties.filter((p) => p && isValidCoord(p.lat, p.lng));
       if (validProps.length > 0) {
-        const lats = validProps.map((p) => Number(p.lat));
-        const lngs = validProps.map((p) => Number(p.lng));
-        const minLat = Math.min(...lats);
-        const maxLat = Math.max(...lats);
-        const minLng = Math.min(...lngs);
-        const maxLng = Math.max(...lngs);
+        const lats = validProps.map((p) => Number(p.lat)).filter(n => !isNaN(n) && isFinite(n));
+        const lngs = validProps.map((p) => Number(p.lng)).filter(n => !isNaN(n) && isFinite(n));
         
-        if (validProps.length === 1) {
-          map.flyTo([Number(validProps[0].lat), Number(validProps[0].lng)], 14, { duration: 1.2 });
-        } else if (isValidCoord(minLat, minLng) && isValidCoord(maxLat, maxLng)) {
-          map.fitBounds([
-            [minLat, minLng],
-            [maxLat, maxLng],
-          ], { padding: [50, 50], maxZoom: 14 });
+        if (lats.length > 0 && lngs.length > 0) {
+          const minLat = Math.min(...lats);
+          const maxLat = Math.max(...lats);
+          const minLng = Math.min(...lngs);
+          const maxLng = Math.max(...lngs);
+          
+          if (validProps.length === 1 || (minLat === maxLat && minLng === maxLng)) {
+            if (isValidCoord(lats[0], lngs[0])) {
+              map.flyTo([lats[0], lngs[0]], 14, { duration: 1.2 });
+            }
+          } else if (isValidCoord(minLat, minLng) && isValidCoord(maxLat, maxLng)) {
+            map.fitBounds([
+              [minLat, minLng],
+              [maxLat, maxLng],
+            ], { padding: [50, 50], maxZoom: 14 });
+          }
         }
       }
     }
