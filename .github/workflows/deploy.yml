@@ -27,7 +27,7 @@ jobs:
 
       - name: Install Dependencies
         working-directory: fauji-niwas-app
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Build Web App
         working-directory: fauji-niwas-app

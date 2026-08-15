@@ -153,7 +153,7 @@ class _PwaWebViewScreenState extends State<PwaWebViewScreen>
           children: [
             WebViewWidget(controller: _controller),
 
-            if (false) // Disabled startup loading screen
+            if (_isLoading) // Startup loading screen
               FadeTransition(
                 opacity: _splashFadeIn,
                 child: ScaleTransition(

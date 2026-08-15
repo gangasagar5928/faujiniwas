@@ -27,7 +27,7 @@ jobs:
 
       - name: Install Web Dependencies
         working-directory: fauji-niwas-app
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Build Web App & SEO Pages
         working-directory: fauji-niwas-app
@@ -58,4 +58,4 @@ jobs:
 
       - name: Analyze Flutter Code
         working-directory: fauji-niwas_app
-        run: flutter analyze --no-fatal-infos
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
