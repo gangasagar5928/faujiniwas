@@ -1,6 +1,10 @@
 <div align="center">
-  <img src="fauji-niwas-app/public/favicon.svg" alt="Fauji Niwas Logo" width="120" />
-  <h1>🪖 Fauji Niwas (फौजी निवास)</h1>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/logo-dark.jpg">
+    <img src="assets/logo-light.jpg" alt="Fauji Niwas Official Logo" width="200" style="border-radius: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.15);" />
+  </picture>
+  <h1>Fauji Niwas (फौजी निवास)</h1>
+  <p><em>A HOME. A FAMILY. A FAUJI CONNECTION.</em></p>
   <p><strong>Zero-Brokerage Housing & Transit Relocation Network for the Indian Armed Forces</strong></p>
   <p>Connecting Army, Navy, Air Force personnel, JCOs, and Officers with verified accommodations and SSB transit stays near military stations.</p>
 
@@ -11,11 +15,11 @@
 
   <p>
     <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square" alt="License: MIT" />
-    <img src="https://img.shields.io/badge/React-18-61DAFB.svg?style=flat-square&logo=react&logoColor=black" alt="React 18" />
-    <img src="https://img.shields.io/badge/Flutter-3.x-02569B.svg?style=flat-square&logo=flutter&logoColor=white" alt="Flutter" />
-    <img src="https://img.shields.io/badge/Vite-6.x-646CFF.svg?style=flat-square&logo=vite&logoColor=white" alt="Vite" />
+    <img src="https://img.shields.io/badge/React-19-61DAFB.svg?style=flat-square&logo=react&logoColor=black" alt="React 19" />
+    <img src="https://img.shields.io/badge/Vite-8.x-646CFF.svg?style=flat-square&logo=vite&logoColor=white" alt="Vite 8" />
+    <img src="https://img.shields.io/badge/TailwindCSS-4.x-38B2AC.svg?style=flat-square&logo=tailwind-css&logoColor=white" alt="Tailwind 4" />
     <img src="https://img.shields.io/badge/Firebase-Hosting%20%7C%20Firestore-FFCA28.svg?style=flat-square&logo=firebase&logoColor=black" alt="Firebase" />
-    <img src="https://img.shields.io/badge/Maps-Leaflet%20%26%20OSM-199900.svg?style=flat-square&logo=leaflet&logoColor=white" alt="Leaflet Maps" />
+    <img src="https://img.shields.io/badge/Maps-Leaflet%20%26%20Google-199900.svg?style=flat-square&logo=leaflet&logoColor=white" alt="Leaflet Maps" />
     <img src="https://img.shields.io/badge/Coverage-62%2B%20Military%20Stations-success?style=flat-square" alt="62+ Stations" />
     <img src="https://img.shields.io/badge/Brokerage-0%25%20Zero%20Broker-red?style=flat-square" alt="Zero Brokerage" />
     <img src="https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=flat-square" alt="PRs Welcome" />
