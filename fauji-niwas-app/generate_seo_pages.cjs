@@ -213,7 +213,7 @@ function generateCityPage(html, city) {
       "@type": "Organization",
       "name": "FaujiNiwas",
       "url": BASE,
-      "logo": `${BASE}/favicon.svg`,
+      "logo": `${BASE}/logo-light.jpg`,
       "description": "India's defence community rental platform connecting military families with verified rental accommodation."
     },
     {

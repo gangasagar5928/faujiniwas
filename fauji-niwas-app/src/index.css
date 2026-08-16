@@ -1253,31 +1253,41 @@ html.app-shell, body.app-shell {
 .panel {
   position:fixed; top:62px; left:0; bottom:0;
   width:362px; z-index:900;
-  padding:12px 10px 28px;
+  padding:14px 12px 28px;
   overflow-y:auto;
-  background: rgba(240,247,241,0.85);
-  backdrop-filter: var(--blur-xl);
-  -webkit-backdrop-filter: var(--blur-xl);
-  border-right: 1.5px solid var(--border);
-  box-shadow: 2px 0 24px rgba(60,100,60,0.08);
+  background: rgba(248, 250, 248, 0.96) !important;
+  backdrop-filter: blur(28px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+  border-right: 1.5px solid rgba(0,0,0,0.08) !important;
+  box-shadow: 4px 0 30px rgba(0,0,0,0.06);
   scrollbar-width:thin; scrollbar-color:rgba(100,160,100,.25) transparent;
   animation: slideIn .4s ease both;
+}
+.dark-theme .panel, .dark .panel {
+  background: rgba(11, 19, 37, 0.96) !important;
+  border-right: 1.5px solid rgba(255,255,255,0.08) !important;
+  box-shadow: 4px 0 30px rgba(0,0,0,0.35);
 }
 
 /* ── CARDS ── */
 .card {
-  background: var(--glass-ultra) !important;
-  backdrop-filter: var(--blur) !important;
-  -webkit-backdrop-filter: var(--blur) !important;
-  border: 1.5px solid var(--border) !important;
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid rgba(0,0,0,0.08) !important;
   border-radius: var(--radius-xl) !important;
   overflow:hidden;
-  margin-bottom:10px;
+  margin-bottom:12px;
   cursor:pointer;
-  box-shadow: var(--shadow-card) !important;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.03) !important;
   transition: transform .2s ease, box-shadow .2s ease, border-color .2s;
   animation: cardUp .4s ease both;
   position:relative;
+}
+.dark-theme .card, .dark .card {
+  background: #111827 !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
 }
 
 .card:hover {
@@ -1310,9 +1320,9 @@ html.app-shell, body.app-shell {
 /* badge */
 .badge {
   position:absolute; bottom:10px; left:10px; z-index:2;
-  background: rgba(255,255,255,0.80);
+  background: rgba(255,255,255,0.92);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.9);
+  border: 1px solid rgba(255,255,255,0.95);
   border-radius: 7px;
   padding: 3px 9px;
   font-size:11px; font-weight:700;
@@ -1325,16 +1335,16 @@ html.app-shell, body.app-shell {
 .fav-btn {
   position:absolute; top:10px; right:10px; z-index:2;
   width:32px; height:32px;
-  background: rgba(255,255,255,0.72);
+  background: rgba(255,255,255,0.85);
   backdrop-filter: blur(10px);
-  border: 1.5px solid rgba(255,255,255,0.85);
+  border: 1.5px solid rgba(255,255,255,0.95);
   border-radius:50%;
   display:grid; place-items:center;
   cursor:pointer;
   box-shadow: 0 2px 8px rgba(0,0,0,0.12);
   transition: background .2s, transform .15s;
 }
-.fav-btn:hover { background:rgba(255,220,220,0.85); transform:scale(1.12); }
+.fav-btn:hover { background:rgba(255,220,220,0.95); transform:scale(1.12); }
 
 /* body */
 .card-body { padding:12px 14px 14px; }
@@ -1352,10 +1362,10 @@ html.app-shell, body.app-shell {
 
 /* ── PRICE BUBBLES ── */
 .pb {
-  background: rgba(255,255,255,0.76) !important;
+  background: rgba(255,255,255,0.90) !important;
   backdrop-filter: blur(14px) !important;
   -webkit-backdrop-filter: blur(14px) !important;
-  border: 1.5px solid rgba(255,255,255,0.90) !important;
+  border: 1.5px solid rgba(255,255,255,0.95) !important;
   border-radius: 22px !important;
   padding: 5px 13px !important;
   font-size: 12px !important; font-weight:700 !important;
@@ -1368,7 +1378,7 @@ html.app-shell, body.app-shell {
   letter-spacing: -.2px;
 }
 .pb:hover {
-  background: rgba(255,255,255,0.96) !important;
+  background: rgba(255,255,255,0.98) !important;
   color: var(--green) !important;
   transform: scale(1.12) translateY(-2px) !important;
   box-shadow: 0 8px 28px rgba(34,197,94,0.25), 0 2px 8px rgba(0,0,0,0.10) !important;
@@ -1390,18 +1400,28 @@ html.app-shell, body.app-shell {
 }
 .poi-pin span { transform:rotate(45deg); font-size:15px; }
 
-/* ── LEGEND (inside right-col, no fixed positioning) ── */
+/* ── LEGEND (bottom-right on desktop) ── */
 .legend {
-  background: var(--glass);
-  backdrop-filter: var(--blur-xl);
-  -webkit-backdrop-filter: var(--blur-xl);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-xl);
-  padding: 16px 20px;
-  box-shadow: var(--shadow-pop);
+  position: fixed !important;
+  bottom: 24px !important;
+  right: 20px !important;
+  z-index: 850 !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border: 1.5px solid rgba(226, 232, 240, 0.95) !important;
+  border-radius: var(--radius-xl) !important;
+  padding: 16px 20px !important;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06) !important;
   min-width: 210px;
   animation: riseIn .5s .3s ease both;
   flex-shrink: 0;
+}
+.dark-theme .legend, .dark .legend {
+  background: rgba(15, 23, 42, 0.96) !important;
+  border: 1.5px solid rgba(51, 65, 85, 0.8) !important;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.45) !important;
+  color: #ffffff !important;
 }
 
 .legend-title {
@@ -1417,49 +1437,59 @@ html.app-shell, body.app-shell {
 .l-icon {
   width:28px; height:28px; border-radius:50%;
   display:grid; place-items:center; font-size:13px; flex-shrink:0;
-  background:rgba(255,255,255,0.75);
-  border:1px solid rgba(200,220,200,.55);
+  background:rgba(255,255,255,0.9);
+  border:1px solid rgba(200,220,200,.65);
   box-shadow:0 1px 4px rgba(0,0,0,.07);
 }
-
-/* ── RIGHT COLUMN — single anchor, no overlaps ── */
-.right-col {
-  position: fixed;
-  right: 16px;
-  bottom: 24px;
-  z-index: 800;
-  display: flex;
-  flex-direction: column-reverse;  /* legend at bottom, controls above, FAB at top */
-  align-items: flex-end;
-  gap: 10px;
+.dark-theme .l-icon, .dark .l-icon {
+  background: rgba(30, 41, 59, 0.9);
+  border-color: rgba(71, 85, 105, 0.6);
 }
 
-/* ── MAP CONTROLS (inside right-col) ── */
+/* ── MAP CONTROLS (top-right on desktop) ── */
 .map-ctrl {
-  display:flex; flex-direction:column; gap:6px;
+  position: fixed !important;
+  top: 76px !important;
+  right: 20px !important;
+  z-index: 850 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
 }
 .ctrl-btn {
   width:40px; height:40px;
-  background: var(--glass);
-  backdrop-filter: var(--blur);
-  -webkit-backdrop-filter: var(--blur);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1.5px solid rgba(226, 232, 240, 0.9) !important;
+  border-radius: var(--radius-md) !important;
   font-size:17px; color:var(--text-mid);
   cursor:pointer; display:grid; place-items:center;
-  box-shadow: var(--shadow-card);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08) !important;
   transition: background .15s, border-color .15s, transform .15s;
   font-family:inherit;
 }
 .ctrl-btn:hover {
-  background:rgba(255,255,255,0.95);
-  border-color:var(--green-mid);
-  color:var(--green);
-  transform:scale(1.05);
+  background: #ffffff !important;
+  border-color: var(--green-mid) !important;
+  color: var(--green) !important;
+  transform: scale(1.05);
+}
+.dark-theme .ctrl-btn, .dark .ctrl-btn {
+  background: rgba(15, 23, 42, 0.92) !important;
+  border-color: rgba(51, 65, 85, 0.8) !important;
+  color: #f1f5f9 !important;
+}
+.dark-theme .ctrl-btn:hover, .dark .ctrl-btn:hover {
+  background: #1e293b !important;
 }
 
-/* ── CHAT FAB (inside right-col) ── */
+/* ── CHAT FAB (desktop anchor) ── */
 .chat-fab {
+  position: fixed !important;
+  bottom: 24px !important;
+  right: 246px !important;
+  z-index: 850 !important;
   width:48px; height:48px;
   background: linear-gradient(135deg,#15803d,#22c55e);
   border-radius:50%;
@@ -1471,6 +1501,17 @@ html.app-shell, body.app-shell {
   flex-shrink: 0;
 }
 .chat-fab:hover { transform:scale(1.1); box-shadow:0 6px 28px rgba(34,197,94,.55); }
+
+/* Global mobile suppression of floating widgets */
+@media (max-width: 768px) {
+  #accessibility-widget, 
+  #accessibility-widget > *,
+  #cb-bubble, 
+  #cb-badge, 
+  .chat-fab { 
+    display: none !important; 
+  }
+}
 
 /* popup override */
 .leaflet-popup-content-wrapper {

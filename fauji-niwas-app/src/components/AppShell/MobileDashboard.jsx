@@ -241,12 +241,18 @@ export default function MobileDashboard({ items = [] }) {
         {/* Row 1: Brand & Notification */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2.5">
-            {/* Shield Logo Badge */}
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#1b4332] to-[#2d6a4f] dark:from-[#2d6a4f] dark:to-[#1b4332] flex items-center justify-center shadow-md shadow-emerald-950/20">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                <path d="M9 12l2 2 4-4" stroke="white" strokeWidth="2.2" fill="none"/>
-              </svg>
+            {/* New Official 2nd June Logo */}
+            <div className="w-10 h-10 rounded-xl overflow-hidden shadow-sm flex items-center justify-center bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-700/60">
+              <img 
+                src="/logo-light.jpg" 
+                alt="FaujiNiwas" 
+                className="w-full h-full object-contain block dark:hidden"
+              />
+              <img 
+                src="/logo-dark.jpg" 
+                alt="FaujiNiwas" 
+                className="w-full h-full object-contain hidden dark:block"
+              />
             </div>
             <div className="flex flex-col leading-none">
               <span className="text-[23px] font-black text-[#1b4332] dark:text-[#52b788] tracking-tight leading-none">FaujiNiwas</span>
@@ -268,7 +274,7 @@ export default function MobileDashboard({ items = [] }) {
           </button>
         </div>
 
-        {/* Row 2: Search + Filter Accessibility Trigger */}
+        {/* Row 2: Search + Amber/Bronze Filter Accessibility Trigger */}
         <div className="flex items-center gap-2 mb-2.5">
           <div className="relative flex-1">
             <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 pointer-events-none" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -276,17 +282,18 @@ export default function MobileDashboard({ items = [] }) {
             </svg>
             <input
               type="text"
-              placeholder="Search city, cantonment or academy"
+              placeholder="Search city, cantt or academy"
               value={smartSearchQ}
               onChange={(e) => setSmartSearchQ(e.target.value)}
-              style={{ paddingLeft: '42px' }}
-              className="w-full bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 rounded-full py-2.5 pr-4 text-[14.5px] text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none focus:border-[#1b4332] dark:focus:border-emerald-500 transition-all font-medium"
+              style={{ paddingLeft: '40px' }}
+              className="w-full bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 rounded-full py-2.5 pr-3 text-[14px] text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none focus:border-[#d97706] dark:focus:border-amber-500 transition-all font-medium"
             />
           </div>
           <button
             onClick={() => ctx.openAccessibility?.()}
-            className="w-11 h-11 rounded-full bg-[#1b4332] dark:bg-emerald-700 text-white flex items-center justify-center shadow-md shadow-[#1b4332]/25 dark:shadow-emerald-950/40 cursor-pointer shrink-0 transition-transform active:scale-95 hover:bg-[#15803d]"
-            aria-label="Filter"
+            className="w-11 h-11 rounded-full bg-gradient-to-br from-[#d97706] to-[#b45309] hover:from-[#b45309] hover:to-[#92400e] text-white flex items-center justify-center shadow-md shadow-amber-950/20 cursor-pointer shrink-0 transition-transform active:scale-95 border border-amber-500/30"
+            aria-label="Accessibility and Filters"
+            title="Accessibility & Filters"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="4" y1="21" x2="4" y2="14"/>
@@ -490,7 +497,10 @@ export default function MobileDashboard({ items = [] }) {
               key={tab.id}
               onClick={() => {
                 setMobileTab(tab.id);
-                if (tab.id === 'ai') ctx.openChat?.();
+                if (tab.id === 'ai') {
+                  if (window.openFaujiChatbot) window.openFaujiChatbot();
+                  else if (ctx.openChat) ctx.openChat();
+                }
                 else if (tab.id === 'profile') ctx.openProfile?.();
               }}
               className="flex flex-col items-center justify-center flex-1 h-full gap-0.5 cursor-pointer transition-all active:scale-95"

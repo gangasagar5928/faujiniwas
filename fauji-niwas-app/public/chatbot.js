@@ -79,13 +79,34 @@ function createChatbotUI() {
     #fauji-chatbot {
     position: fixed;
     bottom: 24px;
-    right: 96px;
+    right: 240px;
     z-index: 999;
     font-family: 'Outfit', sans-serif;
     }
     @media (max-width: 768px) {
-        #fauji-chatbot { bottom: 90px; right: 16px; }
-        #cb-window { bottom: 74px; right: 0; max-height: 60vh; }
+        #fauji-chatbot { 
+          bottom: 74px; 
+          left: 50%;
+          right: auto;
+          transform: translateX(-50%);
+          width: 92%;
+          max-width: 380px;
+          z-index: 10000;
+        }
+        #cb-bubble, #cb-badge {
+          display: none !important;
+        }
+        #cb-window {
+          position: fixed !important;
+          bottom: 74px !important;
+          left: 50% !important;
+          right: auto !important;
+          transform: translateX(-50%) !important;
+          width: 92% !important;
+          max-width: 380px !important;
+          max-height: 72vh !important;
+          box-shadow: 0 20px 60px rgba(0,0,0,0.7) !important;
+        }
     }
     #cb-bubble {
     width: 60px; height: 60px; border-radius: 50%;
@@ -608,3 +629,15 @@ if (document.readyState === 'loading') {
 } else {
     createChatbotUI();
 }
+
+window.openFaujiChatbot = function() {
+    createChatbotUI();
+    const win = document.getElementById('cb-window');
+    if (win) {
+        win.style.display = 'flex';
+        botOpen = true;
+        if (botStep === 0) runBotFlow();
+    }
+};
+window.toggleChatbot = toggleChatbot;
+
