@@ -246,12 +246,12 @@ export default function MobileDashboard({ items = [] }) {
               <img 
                 src="/logo-light.jpg" 
                 alt="FaujiNiwas" 
-                className="w-full h-full object-contain block dark:hidden"
+                className="w-full h-full object-contain light-logo"
               />
               <img 
                 src="/logo-dark.jpg" 
                 alt="FaujiNiwas" 
-                className="w-full h-full object-contain hidden dark:block"
+                className="w-full h-full object-contain dark-logo"
               />
             </div>
             <div className="flex flex-col leading-none">

@@ -93,8 +93,8 @@ export default function LandingPage() {
       <nav className="fixed top-0 left-0 right-0 z-[1000] border-b border-slate-200/60 bg-[#FAF9F6]/80 backdrop-blur-xl transition-all duration-300">
         <div className="max-w-[1250px] mx-auto px-6 h-16 flex items-center justify-between">
           <a href="#" className="logo flex items-center gap-2 text-lg font-black tracking-tight text-slate-900 font-heading min-h-[48px] px-2">
-            <img src="/logo-light.jpg" alt="FaujiNiwas" className="w-8 h-8 rounded-lg object-contain block dark:hidden shadow-xs" />
-            <img src="/logo-dark.jpg" alt="FaujiNiwas" className="w-8 h-8 rounded-lg object-contain hidden dark:block shadow-xs" />
+            <img src="/logo-light.jpg" alt="FaujiNiwas" className="w-8 h-8 rounded-lg object-contain light-logo shadow-xs" />
+            <img src="/logo-dark.jpg" alt="FaujiNiwas" className="w-8 h-8 rounded-lg object-contain dark-logo shadow-xs" />
             <span><span className="text-amber-700">FAUJI</span> <span className="text-slate-950 font-normal">NIWAS</span></span>
           </a>
 
@@ -613,7 +613,8 @@ export default function LandingPage() {
       <footer id="footer" className="bg-[#FAF9F6] border-t border-slate-200/60 py-12 mt-16 relative z-10 text-left">
         <div className="max-w-[1250px] mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-2 text-xs font-black tracking-tight text-slate-900 font-heading">
-            <img src="/logo-light.jpg" alt="FaujiNiwas" className="w-6 h-6 rounded-md object-contain" />
+            <img src="/logo-light.jpg" alt="FaujiNiwas" className="w-6 h-6 rounded-md object-contain light-logo" />
+            <img src="/logo-dark.jpg" alt="FaujiNiwas" className="w-6 h-6 rounded-md object-contain dark-logo" />
             <span><span className="text-amber-700">FAUJI</span> <span className="text-slate-950 font-normal">NIWAS</span></span>
             <span className="text-slate-400 text-[10px] ml-1 font-mono">© 2026</span>
           </div>

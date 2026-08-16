@@ -646,213 +646,23 @@
     </script>
 
     <script type="module" src="/src/landing.jsx"></script>
-    <script src="/chatbot.js" defer></script>
-
-    <!-- ♿ ACCESSIBILITY WIDGET FOR OLD AGE PEOPLE -->
-    <div id="accessibility-widget" class="fixed bottom-24 left-5 md:left-auto md:right-6 md:bottom-28 z-[200000] flex flex-col items-start md:items-end gap-2">
-      <!-- Toggle trigger button -->
-      <button id="acc-trigger" class="w-14 h-14 rounded-full bg-[#15803d] hover:bg-[#166534] text-white flex items-center justify-center shadow-2xl font-bold text-2xl border-2 border-white select-none transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-emerald-900/40" title="Accessibility Panel / सुगम्यता सेटिंग्स" aria-label="Open Accessibility Panel">
-        ♿
-      </button>
-      
-      <!-- Google Translate element lives OUTSIDE the hidden panel so it renders correctly -->
-      <div id="google_translate_element" style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;"></div>
-
-      <!-- Panel popup menu -->
-      <div id="acc-menu" class="hidden flex-col bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-[#334155] rounded-2xl p-6 shadow-2xl w-[320px] sm:w-[360px] text-left gap-5 text-slate-800 dark:text-white border-2">
-        <div class="text-base font-extrabold text-slate-900 dark:text-amber-500 border-b border-slate-200 dark:border-[#334155] pb-3 uppercase tracking-wider flex items-center justify-between font-mono">
-          <span>Accessibility 🎖️</span>
-          <button id="acc-close" class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-xl cursor-pointer font-bold">&times;</button>
-        </div>
-        
-        <!-- Text Size -->
-        <div class="flex flex-col gap-2">
-          <span class="text-[11px] font-extrabold uppercase text-slate-500 dark:text-slate-400 font-mono tracking-wider">Text Size / आकार</span>
-          <div class="flex gap-1.5">
-            <button id="fs-small" class="flex-1 py-2.5 text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-all cursor-pointer">A-</button>
-            <button id="fs-normal" class="flex-1 py-2.5 text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-all cursor-pointer">A</button>
-            <button id="fs-large" class="flex-1 py-2.5 text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-all cursor-pointer">A+</button>
-            <button id="fs-elderly" class="flex-1 py-2.5 text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-all cursor-pointer">Senior</button>
-          </div>
-        </div>
-        
-        <!-- Language Option - custom buttons that trigger Google Translate -->
-        <div class="flex flex-col gap-2">
-          <span class="text-[11px] font-extrabold uppercase text-slate-500 dark:text-slate-400 font-mono tracking-wider">Language / भाषा</span>
-          <div class="flex flex-wrap gap-1.5 mt-1">
-            <button onclick="setLang('en')" class="px-3 py-1.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900 transition-all cursor-pointer border border-transparent hover:border-amber-400" title="English">EN</button>
-            <button onclick="setLang('hi')" class="px-3 py-1.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900 transition-all cursor-pointer border border-transparent hover:border-amber-400" title="Hindi">हिंदी</button>
-            <button onclick="setLang('pa')" class="px-3 py-1.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900 transition-all cursor-pointer border border-transparent hover:border-amber-400" title="Punjabi">ਪੰਜਾਬੀ</button>
-            <button onclick="setLang('ta')" class="px-3 py-1.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900 transition-all cursor-pointer border border-transparent hover:border-amber-400" title="Tamil">தமிழ்</button>
-            <button onclick="setLang('te')" class="px-3 py-1.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900 transition-all cursor-pointer border border-transparent hover:border-amber-400" title="Telugu">తెలుగు</button>
-            <button onclick="setLang('mr')" class="px-3 py-1.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900 transition-all cursor-pointer border border-transparent hover:border-amber-400" title="Marathi">मराठी</button>
-            <button onclick="setLang('kn')" class="px-3 py-1.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900 transition-all cursor-pointer border border-transparent hover:border-amber-400" title="Kannada">ಕನ್ನಡ</button>
-            <button onclick="setLang('bn')" class="px-3 py-1.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900 transition-all cursor-pointer border border-transparent hover:border-amber-400" title="Bengali">বাংলা</button>
-          </div>
-        </div>
-        
-        <!-- Dark/Light Theme -->
-        <div class="flex flex-col gap-2">
-          <span class="text-[11px] font-extrabold uppercase text-slate-500 dark:text-slate-400 font-mono tracking-wider">Contrast Theme / थीम</span>
-          <div class="flex gap-1.5">
-            <button id="theme-dark" class="flex-1 py-2.5 text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-all cursor-pointer">Dark</button>
-            <button id="theme-light" class="flex-1 py-2.5 text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-all cursor-pointer">Light</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <script>
     (function() {
-      // Apply saved values immediately to prevent FOUC
       var savedSize = localStorage.getItem('fn_fontsize') || '16px';
       document.documentElement.style.fontSize = savedSize;
 
       var savedTheme = localStorage.getItem('fn_theme') || 'light';
       if (savedTheme === 'dark') {
-        document.documentElement.classList.add('dark-theme');
-        document.body.classList.add('dark-theme');
+        document.documentElement.classList.add('dark', 'dark-theme');
+        document.body.classList.add('dark', 'dark-theme');
         document.documentElement.classList.remove('light-theme');
         document.body.classList.remove('light-theme');
       } else {
-        document.documentElement.classList.remove('dark-theme');
+        document.documentElement.classList.remove('dark', 'dark-theme');
         document.body.classList.remove('dark-theme');
         document.documentElement.classList.add('light-theme');
         document.body.classList.add('light-theme');
       }
-
-      // Setup Accessibility Widget event handlers
-      window.addEventListener('DOMContentLoaded', function() {
-        var widget = document.getElementById('accessibility-widget');
-        var trigger = document.getElementById('acc-trigger');
-        var menu = document.getElementById('acc-menu');
-        var closeBtn = document.getElementById('acc-close');
-
-        if (!trigger || !menu) return;
-
-        // Initialize Google Translate eagerly so it's ready when panel opens
-        window.googleTranslateElementInit = function() {
-          new google.translate.TranslateElement({
-            pageLanguage: 'en',
-            includedLanguages: 'en,hi,pa,te,ta,kn,mr,bn',
-            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-          }, 'google_translate_element');
-        };
-        if (!document.getElementById('google-translate-script')) {
-          var gtScript = document.createElement('script');
-          gtScript.id = 'google-translate-script';
-          gtScript.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-          document.body.appendChild(gtScript);
-        }
-
-        // setLang: called by custom language buttons in the accessibility panel
-        window.setLang = function(langCode) {
-          // Try Google Translate combo select approach
-          var combo = document.querySelector('.goog-te-combo');
-          if (combo) {
-            combo.value = langCode;
-            combo.dispatchEvent(new Event('change'));
-            return;
-          }
-          // Fallback: set cookie and reload
-          if (langCode === 'en') {
-            document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-            document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=' + location.hostname + '; path=/;';
-            window.location.reload();
-          } else {
-            document.cookie = 'googtrans=/en/' + langCode + '; path=/;';
-            document.cookie = 'googtrans=/en/' + langCode + '; domain=' + location.hostname + '; path=/;';
-            window.location.reload();
-          }
-        };
-
-        trigger.addEventListener('click', function() {
-          menu.classList.toggle('hidden');
-          menu.classList.toggle('flex');
-        });
-
-        closeBtn.addEventListener('click', function() {
-          menu.classList.add('hidden');
-          menu.classList.remove('flex');
-        });
-
-        // Theme toggles
-        var themeDark = document.getElementById('theme-dark');
-        var themeLight = document.getElementById('theme-light');
-        
-        function updateThemeButtons(theme) {
-          if (theme === 'dark') {
-            themeDark.className = 'flex-1 py-2.5 text-sm font-black bg-amber-500 text-black rounded-lg transition-all cursor-pointer';
-            themeLight.className = 'flex-1 py-2.5 text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-all cursor-pointer';
-          } else {
-            themeLight.className = 'flex-1 py-2.5 text-sm font-black bg-amber-500 text-black rounded-lg transition-all cursor-pointer';
-            themeDark.className = 'flex-1 py-2.5 text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-all cursor-pointer';
-          }
-        }
-
-        function applyDarkTheme(enable) {
-          if (enable) {
-            document.documentElement.classList.add('dark-theme');
-            document.body.classList.add('dark-theme');
-            document.documentElement.classList.remove('light-theme');
-            document.body.classList.remove('light-theme');
-          } else {
-            document.documentElement.classList.remove('dark-theme');
-            document.body.classList.remove('dark-theme');
-            document.documentElement.classList.add('light-theme');
-            document.body.classList.add('light-theme');
-          }
-        }
-
-        themeDark.addEventListener('click', function() {
-          applyDarkTheme(true);
-          localStorage.setItem('fn_theme', 'dark');
-          updateThemeButtons('dark');
-        });
-
-        themeLight.addEventListener('click', function() {
-          applyDarkTheme(false);
-          localStorage.setItem('fn_theme', 'light');
-          updateThemeButtons('light');
-        });
-
-        if (savedTheme === 'dark') {
-           applyDarkTheme(true);
-        }
-        updateThemeButtons(savedTheme);
-
-        // Font Size Toggles
-        var sizes = {
-          '14px': document.getElementById('fs-small'),
-          '16px': document.getElementById('fs-normal'),
-          '18px': document.getElementById('fs-large'),
-          '20px': document.getElementById('fs-elderly')
-        };
-
-        function updateSizeButtons(currentSize) {
-          Object.keys(sizes).forEach(function(size) {
-            var btn = sizes[size];
-            if (!btn) return;
-            if (size === currentSize) {
-              btn.className = 'flex-1 py-2.5 text-sm font-black bg-amber-500 text-black rounded-lg transition-all cursor-pointer';
-            } else {
-              btn.className = 'flex-1 py-2.5 text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-all cursor-pointer';
-            }
-          });
-        }
-
-        Object.keys(sizes).forEach(function(size) {
-          var btn = sizes[size];
-          if (!btn) return;
-          btn.addEventListener('click', function() {
-            document.documentElement.style.fontSize = size;
-            localStorage.setItem('fn_fontsize', size);
-            updateSizeButtons(size);
-          });
-        });
-
-        updateSizeButtons(savedSize);
-      });
     })();
     </script>
     <!-- Semantic Footer for Search Engines & AI Bots -->

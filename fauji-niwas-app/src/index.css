@@ -972,6 +972,22 @@ html.app-shell.light-theme, body.app-shell.light-theme {
   background-color: #faf9f6 !important;
 }
 
+/* Explicit Logo Theme Switching */
+.dark-logo { display: none !important; }
+.light-logo { display: block !important; }
+
+html.dark-theme .dark-logo, body.dark-theme .dark-logo,
+html.dark .dark-logo, body.dark .dark-logo,
+.dark-theme .dark-logo, .dark .dark-logo {
+  display: block !important;
+}
+
+html.dark-theme .light-logo, body.dark-theme .light-logo,
+html.dark .light-logo, body.dark .light-logo,
+.dark-theme .light-logo, .dark .light-logo {
+  display: none !important;
+}
+
 /* Landing Page Dark Theme Overrides */
 html.dark-theme, body.dark-theme {
   background: #080c14 !important;

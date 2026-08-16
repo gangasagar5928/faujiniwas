@@ -72,8 +72,8 @@ export default function UnifiedBentoDashboard() {
         {/* ══ NAVBAR ══ */}
         <nav className="navbar">
           <a className="logo flex items-center gap-2.5" href="#" onClick={(e) => e.preventDefault()}>
-            <img src="/logo-light.jpg" alt="FaujiNiwas" className="w-8 h-8 rounded-lg object-contain block dark:hidden shadow-xs" />
-            <img src="/logo-dark.jpg" alt="FaujiNiwas" className="w-8 h-8 rounded-lg object-contain hidden dark:block shadow-xs" />
+            <img src="/logo-light.jpg" alt="FaujiNiwas" className="w-8 h-8 rounded-lg object-contain light-logo shadow-xs" />
+            <img src="/logo-dark.jpg" alt="FaujiNiwas" className="w-8 h-8 rounded-lg object-contain dark-logo shadow-xs" />
             <span className="font-extrabold tracking-tight text-slate-800 dark:text-white text-base">FaujiNiwas</span>
           </a>
           <div className="search-wrap">
