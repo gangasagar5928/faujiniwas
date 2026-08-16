@@ -67,64 +67,64 @@ const DEFAULT_SAMPLE_HOMES = [
   },
 ];
 
-// SVG category icons - exact match to reference image
+// SVG category icons
 const CategoryIcons = {
   all: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
       <polyline points="9 22 9 12 15 12 15 22"/>
     </svg>
   ),
   bhk: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-      <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/>
+      <rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/>
     </svg>
   ),
   rank: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
       <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
     </svg>
   ),
   budget: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
       <line x1="12" y1="1" x2="12" y2="23"/>
       <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
     </svg>
   ),
   near_academy: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
     </svg>
   ),
 };
 
-// SVG bottom nav icons - exact match to reference image
+// SVG bottom nav icons
 const NavIcons = {
   home: (color) => (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill={color === '#15803d' ? color : 'none'} stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="23" height="23" viewBox="0 0 24 24" fill={color === '#15803d' || color === '#10b981' ? color : 'none'} stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
       <polyline points="9 22 9 12 15 12 15 22"/>
     </svg>
   ),
   map: (color) => (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="10" r="3"/>
       <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z"/>
     </svg>
   ),
   saved: (color, filled) => (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill={filled ? color : 'none'} stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="23" height="23" viewBox="0 0 24 24" fill={filled ? color : 'none'} stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
     </svg>
   ),
   ai: (color) => (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
     </svg>
   ),
   profile: (color) => (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
       <circle cx="12" cy="7" r="4"/>
     </svg>
@@ -188,7 +188,6 @@ export default function MobileDashboard({ items = [] }) {
   };
 
   const handleLocationChange = () => {
-    // Try real geolocation first
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
@@ -197,7 +196,6 @@ export default function MobileDashboard({ items = [] }) {
           ctx.showToast?.('Location updated to Current Location');
         },
         () => {
-          // Fallback cycle through cities
           const cities = ['Current Location', 'Delhi Cantt', 'Pune Cantt', 'Ambala Cantt', 'Chandigarh', 'Jaipur Cantt', 'Secunderabad'];
           const nextIdx = (cities.indexOf(selectedLocation) + 1) % cities.length;
           const nextLoc = cities[nextIdx];
@@ -235,46 +233,45 @@ export default function MobileDashboard({ items = [] }) {
   ];
 
   return (
-    <div className="w-full h-[100dvh] flex flex-col bg-white text-slate-900 font-sans overflow-hidden">
+    <div className="w-full h-[100dvh] flex flex-col bg-[#FAF9F6] dark:bg-[#0b1325] text-slate-900 dark:text-slate-100 font-sans overflow-hidden transition-colors duration-200">
 
-      {/* ══ TOP HEADER ══ */}
-      <header className="shrink-0 bg-white px-4 pt-4 pb-3 z-[900]" style={{ borderBottom: '1px solid #f1f5f9' }}>
+      {/* ══ TOP HEADER (Unified & Smooth, No Blunt Edges) ══ */}
+      <header className="shrink-0 bg-white/95 dark:bg-[#0b1325]/95 backdrop-blur-md px-4 pt-3.5 pb-2.5 z-[900] border-b border-slate-200/50 dark:border-slate-800/50 shadow-xs">
 
-        {/* Row 1: Logo + Bell */}
+        {/* Row 1: Brand & Notification */}
         <div className="flex items-center justify-between mb-3">
-          {/* Shield Logo + Text */}
           <div className="flex items-center gap-2.5">
-            {/* Shield SVG icon — exact match reference */}
-            <div className="w-10 h-10 rounded-xl bg-[#1b4332] flex items-center justify-center shadow-md">
+            {/* Shield Logo Badge */}
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#1b4332] to-[#2d6a4f] dark:from-[#2d6a4f] dark:to-[#1b4332] flex items-center justify-center shadow-md shadow-emerald-950/20">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                <path d="M9 12l2 2 4-4" stroke="white" strokeWidth="2" fill="none"/>
+                <path d="M9 12l2 2 4-4" stroke="white" strokeWidth="2.2" fill="none"/>
               </svg>
             </div>
             <div className="flex flex-col leading-none">
-              <span className="text-[22px] font-black text-[#1b4332] tracking-tight leading-none">FaujiNiwas</span>
-              <span className="text-[9px] font-bold text-[#92400e] uppercase tracking-widest mt-[3px]">DEFENCE HOUSING PORTAL</span>
+              <span className="text-[23px] font-black text-[#1b4332] dark:text-[#52b788] tracking-tight leading-none">FaujiNiwas</span>
+              <span className="text-[9.5px] font-extrabold text-[#b45309] dark:text-[#fbbf24] uppercase tracking-wider mt-[3px]">DEFENCE HOUSING PORTAL</span>
             </div>
           </div>
 
           {/* Bell Notification */}
           <button
             onClick={() => ctx.openTransfers?.()}
-            className="w-9 h-9 flex items-center justify-center cursor-pointer relative"
+            className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer relative hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors"
             aria-label="Notifications"
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1b4332" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-[#1b4332] dark:text-[#52b788]" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
               <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
             </svg>
-            <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-[#15803d] border border-white" />
+            <span className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-[#15803d] dark:bg-emerald-400 border-2 border-white dark:border-[#0b1325]" />
           </button>
         </div>
 
-        {/* Row 2: Search + Filter button */}
-        <div className="flex items-center gap-2 mb-3">
+        {/* Row 2: Search + Filter Accessibility Trigger */}
+        <div className="flex items-center gap-2 mb-2.5">
           <div className="relative flex-1">
-            <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2.5">
+            <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 pointer-events-none" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
             </svg>
             <input
@@ -282,17 +279,16 @@ export default function MobileDashboard({ items = [] }) {
               placeholder="Search city, cantonment or academy"
               value={smartSearchQ}
               onChange={(e) => setSmartSearchQ(e.target.value)}
-              style={{ paddingLeft: '38px' }}
-              className="w-full bg-[#f8fafc] border border-slate-200 rounded-full py-2.5 pr-4 text-[13px] text-slate-700 placeholder:text-slate-400 outline-none focus:border-[#1b4332] transition-all"
+              style={{ paddingLeft: '42px' }}
+              className="w-full bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 rounded-full py-2.5 pr-4 text-[14.5px] text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none focus:border-[#1b4332] dark:focus:border-emerald-500 transition-all font-medium"
             />
           </div>
-          {/* Dark green filter/tune button */}
           <button
             onClick={() => ctx.openAccessibility?.()}
-            className="w-10 h-10 rounded-full bg-[#1b4332] flex items-center justify-center shadow-md cursor-pointer shrink-0 transition-transform active:scale-95"
+            className="w-11 h-11 rounded-full bg-[#1b4332] dark:bg-emerald-700 text-white flex items-center justify-center shadow-md shadow-[#1b4332]/25 dark:shadow-emerald-950/40 cursor-pointer shrink-0 transition-transform active:scale-95 hover:bg-[#15803d]"
             aria-label="Filter"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="4" y1="21" x2="4" y2="14"/>
               <line x1="4" y1="10" x2="4" y2="3"/>
               <line x1="12" y1="21" x2="12" y2="12"/>
@@ -306,10 +302,10 @@ export default function MobileDashboard({ items = [] }) {
           </button>
         </div>
 
-        {/* Row 3: Location bar */}
-        <div className="flex items-center justify-between bg-white border border-slate-200 rounded-2xl px-3 py-2">
-          <div className="flex items-center gap-2 text-[13px] font-medium text-slate-700">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#15803d" strokeWidth="2.5">
+        {/* Row 3: Soft Location Bar */}
+        <div className="flex items-center justify-between bg-slate-50/80 dark:bg-slate-800/60 border border-slate-200/70 dark:border-slate-700/60 rounded-xl px-3.5 py-2">
+          <div className="flex items-center gap-2 text-[14px] font-semibold text-slate-800 dark:text-slate-200">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#15803d" className="dark:stroke-emerald-400" strokeWidth="2.5">
               <circle cx="12" cy="10" r="3"/>
               <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z"/>
             </svg>
@@ -317,9 +313,9 @@ export default function MobileDashboard({ items = [] }) {
           </div>
           <button
             onClick={handleLocationChange}
-            className="flex items-center gap-1 text-[12px] font-semibold text-slate-600 cursor-pointer"
+            className="flex items-center gap-1.5 text-[13px] font-bold text-slate-600 dark:text-slate-300 hover:text-emerald-700 dark:hover:text-emerald-400 cursor-pointer"
           >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2.5">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/>
             </svg>
             <span>Change</span>
@@ -333,13 +329,10 @@ export default function MobileDashboard({ items = [] }) {
           <MapView />
         </div>
       ) : (
-        <main className="flex-1 overflow-y-auto min-h-0 pb-24">
+        <main className="flex-1 overflow-y-auto min-h-0 pb-28">
 
-          {/* ══ CATEGORY ICONS — sticky translucent bar ══ */}
-          <div
-            className="sticky top-0 z-10 px-4 py-3 flex items-start justify-between gap-2 overflow-x-auto no-scrollbar"
-            style={{ background: 'rgba(255,255,255,0.82)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(241,245,249,0.8)' }}
-          >
+          {/* ══ CATEGORY ICONS (Smooth, Seamless, No Harsh Double Lines) ══ */}
+          <div className="px-4 pt-3 pb-2 flex items-start justify-between gap-2 overflow-x-auto no-scrollbar">
             {categories.map((cat) => {
               const isActive = activeCategory === cat.id;
               return (
@@ -349,25 +342,24 @@ export default function MobileDashboard({ items = [] }) {
                     setActiveCategory(cat.id);
                     if (cat.id === 'bhk') setBhkFilter('2');
                   }}
-                  className="flex flex-col items-center gap-1.5 cursor-pointer shrink-0"
-                  style={{ minWidth: '56px' }}
+                  className="flex flex-col items-center gap-1.5 cursor-pointer shrink-0 min-w-[58px]"
                 >
                   <div
-                    className={`w-11 h-11 rounded-full flex items-center justify-center transition-all ${
+                    className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${
                       isActive
-                        ? 'bg-[#1b4332] text-white shadow-md shadow-[#1b4332]/30'
-                        : 'bg-white border border-slate-200 text-slate-500'
+                        ? 'bg-[#1b4332] dark:bg-emerald-600 text-white shadow-md shadow-[#1b4332]/30 dark:shadow-emerald-950/40 border border-transparent'
+                        : 'bg-white dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 text-slate-600 dark:text-slate-300 shadow-xs'
                     }`}
                   >
                     {React.cloneElement(CategoryIcons[cat.id], {
-                      stroke: isActive ? 'white' : '#475569',
-                      width: 19,
-                      height: 19,
+                      stroke: isActive ? 'white' : 'currentColor',
+                      width: 20,
+                      height: 20,
                     })}
                   </div>
                   <span
-                    className={`text-[10px] text-center leading-tight whitespace-nowrap ${
-                      isActive ? 'text-[#1b4332] font-bold' : 'text-slate-500 font-medium'
+                    className={`text-[11.5px] text-center leading-tight whitespace-nowrap ${
+                      isActive ? 'text-[#1b4332] dark:text-emerald-400 font-bold' : 'text-slate-600 dark:text-slate-400 font-medium'
                     }`}
                   >
                     {cat.label}
@@ -378,11 +370,11 @@ export default function MobileDashboard({ items = [] }) {
           </div>
 
           {/* ══ SECTION HEADER ══ */}
-          <div className="flex items-center justify-between mb-3 px-4 mt-3">
-            <h2 className="text-[16px] font-black text-slate-900">Popular Homes Near You</h2>
+          <div className="flex items-center justify-between mb-3 px-4 mt-2">
+            <h2 className="text-[18px] font-black text-slate-900 dark:text-slate-100 tracking-tight">Popular Homes Near You</h2>
             <button
               onClick={() => setActiveCategory('all')}
-              className="text-[13px] font-bold text-[#854d0e] cursor-pointer"
+              className="text-[14px] font-bold text-[#b45309] dark:text-amber-400 cursor-pointer hover:underline"
             >
               View All
             </button>
@@ -400,11 +392,11 @@ export default function MobileDashboard({ items = [] }) {
                 <div
                   key={home.id}
                   onClick={() => handleCardClick(home)}
-                  className="bg-white border border-slate-200 rounded-2xl p-3 flex gap-3 relative shadow-sm hover:shadow-md transition-all cursor-pointer"
-                  style={{ minHeight: '96px' }}
+                  className="bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 rounded-2xl p-3 flex gap-3.5 relative shadow-xs hover:shadow-md dark:shadow-none transition-all cursor-pointer"
+                  style={{ minHeight: '100px' }}
                 >
                   {/* Thumbnail */}
-                  <div className="w-28 rounded-xl overflow-hidden shrink-0 relative bg-slate-100" style={{ aspectRatio: '4/3' }}>
+                  <div className="w-28 rounded-xl overflow-hidden shrink-0 relative bg-slate-100 dark:bg-slate-800" style={{ aspectRatio: '4/3' }}>
                     <img
                       src={home.image || home.mediaUrls?.[0] || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80'}
                       alt={home.name || 'Property'}
@@ -412,7 +404,7 @@ export default function MobileDashboard({ items = [] }) {
                       loading="lazy"
                     />
                     <span
-                      className="absolute top-1.5 left-1.5 text-[9px] font-bold px-2 py-0.5 rounded-md"
+                      className="absolute top-1.5 left-1.5 text-[10px] font-bold px-2 py-0.5 rounded-md shadow-xs"
                       style={{
                         background: isVerifiedBadge ? '#15803d' : '#92400e',
                         color: 'white',
@@ -425,37 +417,37 @@ export default function MobileDashboard({ items = [] }) {
                   {/* Details */}
                   <div className="flex-1 flex flex-col justify-between py-0.5 min-w-0 pr-6">
                     <div>
-                      <h3 className="text-[13.5px] font-bold text-slate-900 leading-snug">
+                      <h3 className="text-[15.5px] font-bold text-slate-900 dark:text-slate-100 leading-snug">
                         {home.name || 'Property'}
                       </h3>
-                      <div className="flex items-center gap-1 mt-0.5 text-[12px] text-slate-600">
-                        <span className="text-amber-400">★</span>
+                      <div className="flex items-center gap-1 mt-0.5 text-[13px] text-slate-600 dark:text-slate-400 font-medium">
+                        <span className="text-amber-500">★</span>
                         <span>{home.rating || '4.8 (128)'}</span>
                       </div>
                     </div>
                     <div className="mt-1">
-                      <span className="text-[15px] font-black text-[#15803d]">
+                      <span className="text-[17.5px] font-black text-[#15803d] dark:text-emerald-400">
                         ₹{priceVal.toLocaleString()}
                       </span>
-                      <span className="text-[11px] text-slate-500 ml-1">/month</span>
+                      <span className="text-[12px] text-slate-500 dark:text-slate-400 ml-1 font-normal">/month</span>
                     </div>
-                    <div className="flex items-center gap-2 text-[11px] text-slate-500 mt-1">
+                    <div className="flex items-center gap-2 text-[12.5px] text-slate-600 dark:text-slate-400 mt-1 font-medium">
                       <span>🛏 {home.bhk || '2BHK'}</span>
-                      <span className="text-slate-300">|</span>
+                      <span className="text-slate-300 dark:text-slate-600">•</span>
                       <span>📍 {home.distance || '2.7 km'}</span>
                     </div>
                   </div>
 
-                  {/* Heart */}
+                  {/* Heart Wishlist */}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       toggleWishlist(home.id);
                     }}
-                    className="absolute top-3 right-3 w-6 h-6 flex items-center justify-center cursor-pointer"
+                    className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center cursor-pointer"
                     aria-label="Save"
                   >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill={isSaved ? '#e11d48' : 'none'} stroke={isSaved ? '#e11d48' : '#cbd5e1'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill={isSaved ? '#e11d48' : 'none'} stroke={isSaved ? '#e11d48' : '#cbd5e1'} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                     </svg>
                   </button>
@@ -465,31 +457,30 @@ export default function MobileDashboard({ items = [] }) {
           </div>
 
           {/* ══ PROMO BANNER ══ */}
-          <div className="mt-5 mb-2 mx-4 bg-[#1b4332] rounded-2xl p-4 flex items-center justify-between shadow-md">
+          <div className="mt-5 mb-2 mx-4 bg-gradient-to-r from-[#1b4332] to-[#2d6a4f] dark:from-[#0d281e] dark:to-[#1b4332] rounded-2xl p-4 flex items-center justify-between shadow-md">
             <div className="flex flex-col pr-2">
-              <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-300">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" strokeWidth="2">
+              <div className="flex items-center gap-1.5 text-[12px] font-bold text-emerald-300">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" strokeWidth="2.2">
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                 </svg>
-                <span>Verified Listings • Trusted Owners • Secure Renting</span>
+                <span>Verified Defence Listings</span>
               </div>
-              <p className="text-[10px] text-slate-300 mt-1">Find your perfect home in defence communities</p>
+              <p className="text-[11px] text-slate-200 mt-1">Direct from defence personnel & verified owners</p>
             </div>
             <button
               onClick={() => ctx.openPost?.()}
-              className="bg-[#92400e] hover:bg-[#78350f] text-white text-[11px] font-bold px-3 py-2 rounded-xl cursor-pointer shrink-0 whitespace-nowrap active:scale-95 transition-all"
+              className="bg-[#b45309] hover:bg-[#92400e] text-white text-[12px] font-bold px-3.5 py-2.5 rounded-xl cursor-pointer shrink-0 whitespace-nowrap active:scale-95 transition-all shadow-sm"
             >
-              List Your Property
+              List Property
             </button>
           </div>
 
         </main>
       )}
 
-      {/* ══ BOTTOM NAVIGATION BAR ══ */}
+      {/* ══ TRANSLUCENT BOTTOM NAVIGATION BAR ══ */}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-[1000] bg-white px-2 py-1 flex items-center justify-around"
-        style={{ borderTop: '1px solid #f1f5f9', height: '60px' }}
+        className="fixed bottom-0 left-0 right-0 z-[1000] px-2 py-1.5 flex items-center justify-around bg-white/85 dark:bg-[#0b1325]/85 backdrop-blur-xl border-t border-slate-200/70 dark:border-slate-800/70 h-[64px] shadow-lg shadow-black/5"
       >
         {navTabs.map((tab) => {
           const isActive = mobileTab === tab.id;
@@ -502,12 +493,13 @@ export default function MobileDashboard({ items = [] }) {
                 if (tab.id === 'ai') ctx.openChat?.();
                 else if (tab.id === 'profile') ctx.openProfile?.();
               }}
-              className="flex flex-col items-center justify-center flex-1 h-full gap-0.5 cursor-pointer transition-all"
+              className="flex flex-col items-center justify-center flex-1 h-full gap-0.5 cursor-pointer transition-all active:scale-95"
             >
-              {NavIcons[tab.id](color, wishlist.length > 0 && tab.id === 'saved')}
+              {NavIcons[tab.id](isActive ? '#15803d' : '#94a3b8', wishlist.length > 0 && tab.id === 'saved')}
               <span
-                className="text-[10px] font-semibold leading-none"
-                style={{ color }}
+                className={`text-[11.5px] font-bold leading-none mt-1 ${
+                  isActive ? 'text-[#15803d] dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'
+                }`}
               >
                 {tab.label}
               </span>

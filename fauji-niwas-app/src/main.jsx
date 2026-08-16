@@ -47,6 +47,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/app" element={<App />} />
+          <Route path="/app.html" element={<App />} />
           <Route path="*" element={<LandingPage />} />
         </Routes>
       </BrowserRouter>

@@ -217,14 +217,17 @@ select.fb option { background: var(--card); color: var(--text); }
   animation: mfade .22s ease;
 }
 @media (max-width: 768px) {
-  .modal-backdrop { align-items: flex-end; }
+  .modal-backdrop {
+    align-items: flex-end;
+    background: rgba(0, 0, 0, 0.65) !important;
+  }
 }
 @keyframes mfade { from { opacity: 0; } to { opacity: 1; } }
 
 /* Modal card */
 .mc {
-  background: rgba(19, 31, 53, 0.85);
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  background: rgba(19, 31, 53, 0.88);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border2);
   border-radius: var(--radius-lg); width: 92%; max-width: 560px;
   max-height: 90vh; position: relative; box-shadow: var(--shadow-lg);
@@ -232,8 +235,29 @@ select.fb option { background: var(--card); color: var(--text); }
   display: flex; flex-direction: column; overflow: hidden;
   min-height: 0; /* Important for flex child scrolling */
 }
+.light-theme .mc {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 0, 0, 0.08);
+}
 @media (max-width: 768px) {
-  .mc { border-radius: 24px 24px 0 0 !important; width: 100%; max-height: 92vh; height: auto; }
+  .mc, .glass-tactical {
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-radius: 24px 24px 0 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 92vh !important;
+    height: auto;
+  }
+  .dark-theme .mc,
+  .dark-theme .glass-tactical,
+  .dark .mc,
+  .dark .glass-tactical {
+    background: #0f172a !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
 }
 @keyframes mcSpring {
   from { transform: translateY(28px) scale(.96); opacity: 0; }

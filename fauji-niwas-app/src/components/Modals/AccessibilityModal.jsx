@@ -25,13 +25,13 @@ export default function AccessibilityModal({ onClose }) {
     setTheme(mode);
     localStorage.setItem('fn_theme', mode);
     if (mode === 'dark') {
-      document.documentElement.classList.add('dark-theme');
-      document.body.classList.add('dark-theme');
+      document.documentElement.classList.add('dark', 'dark-theme');
+      document.body.classList.add('dark', 'dark-theme');
       document.documentElement.classList.remove('light-theme');
       document.body.classList.remove('light-theme');
     } else {
-      document.documentElement.classList.remove('dark-theme');
-      document.body.classList.remove('dark-theme');
+      document.documentElement.classList.remove('dark', 'dark-theme');
+      document.body.classList.remove('dark', 'dark-theme');
       document.documentElement.classList.add('light-theme');
       document.body.classList.add('light-theme');
     }

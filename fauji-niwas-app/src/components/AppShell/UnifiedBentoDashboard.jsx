@@ -13,7 +13,16 @@ export default function UnifiedBentoDashboard() {
   const ctx = useContext(ModalContext);
   const { user } = useAuth();
   const allState = useFilterStore((s) => s);
-  const { activeView, setActiveView, smartSearchQ, setSmartSearchQ } = allState;
+  const { 
+    activeView, 
+    setActiveView, 
+    smartSearchQ, 
+    setSmartSearchQ,
+    bhkFilter,
+    setBhkFilter,
+    maxPrice,
+    setMaxPrice
+  } = allState;
   const listings = getFilteredListings(allState);
 
   // Filter items based on active tab and search query
@@ -31,6 +40,20 @@ export default function UnifiedBentoDashboard() {
     return listings;
   }, [activeView, listings, smartSearchQ]);
 
+  const handleBhkToggle = () => {
+    if (bhkFilter === 'all') setBhkFilter('2');
+    else if (bhkFilter === '2') setBhkFilter('3');
+    else if (bhkFilter === '3') setBhkFilter('1');
+    else setBhkFilter('all');
+  };
+
+  const handleBudgetToggle = () => {
+    if (maxPrice >= 100000) setMaxPrice(15000);
+    else if (maxPrice <= 15000) setMaxPrice(30000);
+    else if (maxPrice <= 30000) setMaxPrice(50000);
+    else setMaxPrice(100000);
+  };
+
   return (
     <>
       {/* ══ MOBILE UI (< 768px) ══ */}
@@ -38,7 +61,7 @@ export default function UnifiedBentoDashboard() {
         <MobileDashboard items={items} />
       </div>
 
-      {/* ══ DESKTOP / LAPTOP UI (>= 768px) — original dark Bento ══ */}
+      {/* ══ DESKTOP / LAPTOP UI (>= 768px) ══ */}
       <div className="bento-desktop hidden md:block relative w-full h-[100dvh] overflow-hidden select-none">
 
         {/* ══ MAP BACKGROUND ══ */}
@@ -50,7 +73,7 @@ export default function UnifiedBentoDashboard() {
         <nav className="navbar">
           <a className="logo" href="#" onClick={(e) => e.preventDefault()}>
             <span className="logo-icon">🏠</span>
-            FaujiNiwas
+            <span className="font-extrabold tracking-tight">FaujiNiwas</span>
           </a>
           <div className="search-wrap">
             <input 
@@ -59,23 +82,39 @@ export default function UnifiedBentoDashboard() {
               value={smartSearchQ}
               onChange={e => setSmartSearchQ(e.target.value)}
             />
-            <svg className="s-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <svg className="s-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
             </svg>
           </div>
-          <button className="filter-btn" onClick={() => ctx.openFilter?.('rank')}>
-            Filter by Rank
+
+          <button 
+            className={`filter-btn ${bhkFilter !== 'all' ? 'active' : ''}`} 
+            onClick={handleBhkToggle}
+            title="Toggle BHK filter"
+          >
+            {bhkFilter === 'all' ? 'Filter by BHK' : `BHK: ${bhkFilter}BHK`}
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="m6 9 6 6 6-6"/></svg>
           </button>
-          <button className="filter-btn" onClick={() => ctx.openFilter?.('bhk')}>
-            Filter by BHK
+
+          <button 
+            className={`filter-btn ${maxPrice < 100000 ? 'active' : ''}`} 
+            onClick={handleBudgetToggle}
+            title="Toggle Budget limit"
+          >
+            {maxPrice >= 100000 ? 'Filter by Budget' : `Budget: ≤₹${maxPrice/1000}k`}
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="m6 9 6 6 6-6"/></svg>
           </button>
-          <button className="filter-btn" onClick={() => ctx.openFilter?.('budget')}>
-            Filter by Budget
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="m6 9 6 6 6-6"/></svg>
+
+          <button 
+            className="filter-btn" 
+            onClick={() => ctx.openAccessibility?.()}
+            title="Accessibility & Theme settings"
+          >
+            <span>♿ Contrast & Font</span>
           </button>
+
           <div className="nav-gap"></div>
+
           {user ? (
             <button onClick={() => ctx.openProfile?.()} className="sign-btn">
               Profile
@@ -91,11 +130,11 @@ export default function UnifiedBentoDashboard() {
         <div className="stats-bar">
           <div className="stat-pill">
             <span className="live-dot"></span>
-            Total listings <strong style={{marginLeft:'3px'}}>{items.length}</strong>
+            Total listings <strong style={{marginLeft:'4px'}}>{items.length}</strong>
           </div>
           <div className="stat-pill">
             <span className="live-dot" style={{background:'#f59e0b',boxShadow:'0 0 8px #f59e0b'}}></span>
-            Average rent <strong style={{marginLeft:'3px'}}>₹18K</strong>
+            Average rent <strong style={{marginLeft:'4px'}}>₹18K</strong>
           </div>
         </div>
 
@@ -103,7 +142,7 @@ export default function UnifiedBentoDashboard() {
         <div className="panel" id="panel">
           
           {/* Tabs Navigation */}
-          <div className="flex gap-2 mb-4 pb-2 border-b border-black/5 bg-[#0b1325]/5 p-1 rounded-xl">
+          <div className="flex gap-2 mb-4 pb-2 border-b border-black/5 bg-[#0b1325]/5 dark:bg-white/5 p-1.5 rounded-xl">
             {[
               { id: 'rentals', label: 'Rent Cantt HRA', icon: '🏠' },
               { id: 'dorms', label: 'SSB Dorms', icon: '🏨' },
@@ -112,10 +151,10 @@ export default function UnifiedBentoDashboard() {
               <button
                 key={tab.id}
                 onClick={() => setActiveView(tab.id)}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-[10px] font-bold transition-all cursor-pointer border ${
+                className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[12px] font-bold transition-all cursor-pointer border ${
                   activeView === tab.id
-                    ? 'bg-emerald-600 text-white border-emerald-600 shadow-md shadow-emerald-600/10'
-                    : 'bg-black/5 text-slate-700 border-black/5 hover:bg-black/10 hover:border-black/10'
+                    ? 'bg-emerald-600 text-white border-emerald-600 shadow-md shadow-emerald-600/20'
+                    : 'bg-white/70 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 border-black/5 hover:bg-white dark:hover:bg-slate-700'
                 }`}
               >
                 <span>{tab.icon}</span>
@@ -127,7 +166,7 @@ export default function UnifiedBentoDashboard() {
           {/* Scrolling List */}
           <div className="flex flex-col gap-3">
             {items.length > 0 ? (
-              items.slice(0, 15).map(item => {
+              items.slice(0, 20).map(item => {
                 if (activeView === 'dorms') {
                   return (
                     <DormCard
@@ -155,9 +194,9 @@ export default function UnifiedBentoDashboard() {
                 }
               })
             ) : (
-              <div className="flex flex-col items-center justify-center h-40 text-center px-4">
-                <span className="text-3xl mb-2 opacity-60">🗺️</span>
-                <p className="text-slate-500 text-xs">No matches found.<br/>Try adjusting your search.</p>
+              <div className="flex flex-col items-center justify-center h-48 text-center px-4">
+                <span className="text-4xl mb-2 opacity-60">🗺️</span>
+                <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">No matches found.<br/>Try adjusting your filters.</p>
               </div>
             )}
           </div>
@@ -167,7 +206,7 @@ export default function UnifiedBentoDashboard() {
         <div className="right-col">
           {/* LEGEND */}
           <div className="legend">
-            <div className="legend-title">Nearby Facilities</div>
+            <div className="legend-title font-bold">Nearby Facilities</div>
             <div className="legend-item"><div className="l-icon">🚉</div> Station Commute Zone</div>
             <div className="legend-item"><div className="l-icon">🎓</div> Army School</div>
             <div className="legend-item"><div className="l-icon">🏥</div> Military Hospital</div>
@@ -175,10 +214,10 @@ export default function UnifiedBentoDashboard() {
 
           {/* MAP CONTROLS */}
           <div className="map-ctrl">
-            <button onClick={() => window.dispatchEvent(new CustomEvent('map-zoom-in'))} className="ctrl-btn">+</button>
-            <button onClick={() => window.dispatchEvent(new CustomEvent('map-zoom-out'))} className="ctrl-btn">−</button>
+            <button onClick={() => window.dispatchEvent(new CustomEvent('map-zoom-in'))} className="ctrl-btn" title="Zoom In">+</button>
+            <button onClick={() => window.dispatchEvent(new CustomEvent('map-zoom-out'))} className="ctrl-btn" title="Zoom Out">−</button>
             <button onClick={() => window.dispatchEvent(new CustomEvent('map-recenter'))} className="ctrl-btn" title="Recenter Map">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                 <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/>
               </svg>
             </button>
@@ -186,8 +225,8 @@ export default function UnifiedBentoDashboard() {
           </div>
 
           {/* CHAT FAB */}
-          <button className="chat-fab" onClick={() => ctx.openChat?.()}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2">
+          <button className="chat-fab" onClick={() => ctx.openChat?.()} title="Open Military AI Assistant">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
             </svg>
           </button>
