@@ -1,39 +1,123 @@
+import React from 'react';
+import { useUserStore } from '../../store/userStore';
+
+const DORM_PHOTOS = [
+  'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=400&q=80',
+  'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=400&q=80',
+  'https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=400&q=80',
+  'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&q=80',
+];
+
 export default function DormCard({ dorm, onFoodClick }) {
+  const wishlist = useUserStore(s => s.wishlist) || [];
+  const toggleWishlist = useUserStore(s => s.toggleWishlist);
+  const isSaved = wishlist.includes(dorm.id);
+  
+  // Pick deterministic photo
+  const photoIndex = Math.abs((dorm.id?.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) || 0) % DORM_PHOTOS.length);
+  const thumb = dorm.mediaUrls?.[0] || DORM_PHOTOS[photoIndex];
+
   return (
-    <div className="flex bg-[#0b1325]/40 backdrop-blur-xl border border-white/5 overflow-hidden hover:bg-white/5 transition-all rounded-[12px] group">
-      
-      {/* Icon / Image block */}
-      <div className="w-[88px] h-[76px] shrink-0 bg-[#1e293b] flex flex-col items-center justify-center m-1.5 rounded-[8px]">
-        <span className="text-2xl drop-shadow-md group-hover:scale-110 transition-transform duration-300">🏨</span>
-        <span className="text-[8px] font-black text-amber-400 mt-1 uppercase tracking-wider">{dorm.budget}</span>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        borderRadius: '16px',
+        overflow: 'hidden',
+        cursor: 'pointer',
+        marginBottom: '10px',
+        background: '#ffffff',
+        border: '1px solid #e2e8f0',
+        boxShadow: '0 1px 4px rgba(0,0,0,0.07)',
+        transition: 'box-shadow 0.2s, border-color 0.2s',
+        minHeight: '120px',
+      }}
+      onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.12)'; e.currentTarget.style.borderColor = '#94a3b8'; }}
+      onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.07)'; e.currentTarget.style.borderColor = '#e2e8f0'; }}
+    >
+      {/* ── Photo / Thumbnail (Left) ── */}
+      <div style={{ position: 'relative', width: '120px', minHeight: '120px', flexShrink: 0, background: '#1e293b', overflow: 'hidden' }}>
+        <img
+          src={thumb}
+          loading="lazy"
+          alt={dorm.name || 'SSB Dorm'}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+          onError={e => { e.target.src = DORM_PHOTOS[0]; }}
+        />
+        {/* Star Rating Badge */}
+        <div style={{ position: 'absolute', bottom: 6, left: 6, display: 'flex', alignItems: 'center', gap: 3,
+          padding: '3px 7px', borderRadius: 7, background: 'rgba(0,0,0,0.65)', color: '#fbbf24',
+          fontSize: 11, fontWeight: 900, backdropFilter: 'blur(4px)' }}>
+          4.8 <span>★</span>
+        </div>
+        {/* SSB Center Tag */}
+        <div style={{ position: 'absolute', top: 6, left: 6, padding: '2px 6px', borderRadius: 6,
+          background: '#2563eb', color: '#fff', fontSize: 9, fontWeight: 800, textTransform: 'uppercase' }}>
+          SSB
+        </div>
+        {/* Bookmark button */}
+        <button
+          onClick={e => { e.stopPropagation(); toggleWishlist(dorm.id); }}
+          style={{ position: 'absolute', top: 6, right: 6, width: 26, height: 26, borderRadius: 8,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13,
+            background: 'rgba(255,255,255,0.88)', border: '1px solid rgba(255,255,255,0.5)',
+            boxShadow: '0 1px 4px rgba(0,0,0,0.15)', cursor: 'pointer',
+            color: isSaved ? '#f43f5e' : '#94a3b8' }}
+        >
+          {isSaved ? '♥' : '♡'}
+        </button>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 px-2 py-2 flex flex-col justify-between pr-3 min-w-0">
-        <div className="flex items-start justify-between gap-1">
-          <h4 className="text-[11px] font-extrabold text-white leading-tight truncate">
-            {dorm.name}
-          </h4>
-          <span className="text-[11px] font-black text-white shrink-0 ml-1">
-            ₹{dorm.price}/nt
+      {/* ── Details (Right) ── */}
+      <div style={{ display: 'flex', flexDirection: 'column', flex: 1, padding: '12px 12px 10px', minWidth: 0, gap: 4 }}>
+        {/* Title */}
+        <div style={{ fontSize: 14, fontWeight: 700, color: '#1e293b', lineHeight: 1.3,
+          display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+          {dorm.name || 'SSB Candidate Dorm'}
+        </div>
+
+        {/* Location & SSB Board */}
+        <div style={{ fontSize: 12, color: '#64748b', display: 'flex', alignItems: 'center', gap: 4, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+          <span style={{ fontSize: 11 }}>📍</span>
+          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {dorm.area}, {dorm.city}
           </span>
         </div>
-        
-        <p className="text-[9px] text-slate-400 mt-0.5 truncate">
-          {dorm.area}, {dorm.city}
-        </p>
+        <div style={{ fontSize: 11, color: '#d97706', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
+          <span>🎖️</span> {dorm.ssb} · 🚶 {dorm.distance} km
+        </div>
 
-        <div className="flex items-center justify-between mt-1 pb-0.5 gap-2">
-          <div className="flex flex-col text-[8px] text-slate-400 leading-normal min-w-0">
-            <span className="truncate font-bold text-amber-500/90">{dorm.ssb}</span>
-            <span className="truncate">🚶 {dorm.distance} km to gate</span>
+        {/* Divider */}
+        <div style={{ height: 1, background: '#f1f5f9', margin: '2px 0' }} />
+
+        {/* Price & Food Guide Action */}
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 6 }}>
+          <div style={{ lineHeight: 1 }}>
+            <div style={{ fontSize: 18, fontWeight: 900, color: '#f97316' }}>
+              ₹{dorm.price || 350}
+            </div>
+            <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 1 }}>/night</div>
           </div>
-          
-          <button 
-            onClick={(e) => { e.stopPropagation(); onFoodClick(dorm.city); }}
-            className="shrink-0 flex items-center gap-1 bg-amber-500/20 text-amber-300 hover:bg-amber-500/40 px-2 py-1 rounded text-[8px] font-bold uppercase transition-colors border border-amber-500/30 cursor-pointer"
+          <button
+            onClick={e => { e.stopPropagation(); onFoodClick?.(dorm.city); }}
+            style={{
+              padding: '5px 10px',
+              fontSize: '11px',
+              fontWeight: 800,
+              borderRadius: '8px',
+              border: '1px solid #fde68a',
+              background: '#fef3c7',
+              color: '#b45309',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              transition: 'background 0.15s'
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = '#fde68a'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = '#fef3c7'; }}
           >
-            🍽️ Food
+            🍜 Food Guide
           </button>
         </div>
       </div>

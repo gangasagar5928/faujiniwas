@@ -1,47 +1,106 @@
+import React from 'react';
 import { useUserStore } from '../../store/userStore';
+
+const MARKET_SAMPLE_PHOTOS = [
+  'https://images.unsplash.com/photo-1555529771-835f59bfc50c?w=400&q=80',
+  'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=400&q=80',
+  'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=400&q=80',
+  'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80',
+];
 
 export default function MarketCard({ item, onClick }) {
   const price = Number(item.price) || 0;
-  
   const wishlist = useUserStore(s => s.wishlist) || [];
   const toggleWishlist = useUserStore(s => s.toggleWishlist);
   const isSaved = wishlist.includes(item.id);
 
+  const thumb = item.mediaUrls?.[0] || MARKET_SAMPLE_PHOTOS[0];
+
   return (
     <div
-      className="flex bg-transparent border-b border-white/5 overflow-hidden cursor-pointer hover:bg-white/5 transition-colors group"
       onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={e => e.key === 'Enter' && onClick?.()}
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        borderRadius: '16px',
+        overflow: 'hidden',
+        cursor: 'pointer',
+        marginBottom: '10px',
+        background: '#ffffff',
+        border: '1px solid #e2e8f0',
+        boxShadow: '0 1px 4px rgba(0,0,0,0.07)',
+        transition: 'box-shadow 0.2s, border-color 0.2s',
+        minHeight: '120px',
+      }}
+      onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.12)'; e.currentTarget.style.borderColor = '#94a3b8'; }}
+      onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.07)'; e.currentTarget.style.borderColor = '#e2e8f0'; }}
     >
-      <div className="w-[88px] h-[76px] shrink-0 relative overflow-hidden bg-[#1e293b] m-1.5 rounded-[8px]">
+      {/* ── Photo (Left) ── */}
+      <div style={{ position: 'relative', width: '120px', minHeight: '120px', flexShrink: 0, background: '#1e293b', overflow: 'hidden' }}>
         <img
-          src={item.mediaUrls?.[0] || 'https://images.unsplash.com/photo-1555529771-835f59bfc50c?w=300'}
-          alt={item.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90"
+          src={thumb}
+          loading="lazy"
+          alt={item.name || 'Market Item'}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+          onError={e => { e.target.src = MARKET_SAMPLE_PHOTOS[0]; }}
         />
-        <div className="absolute top-1 left-1 bg-blue-500/90 text-white text-[7px] font-bold px-1 py-0.5 rounded-sm shadow">
+        {/* Condition Tag */}
+        <div style={{ position: 'absolute', top: 6, left: 6, padding: '2px 6px', borderRadius: 6,
+          background: '#0284c7', color: '#fff', fontSize: 9, fontWeight: 800, textTransform: 'uppercase' }}>
           {item.condition || 'Used'}
         </div>
+        {/* Verified Badge */}
+        <div style={{ position: 'absolute', bottom: 6, left: 6, padding: '3px 6px', borderRadius: 6,
+          background: '#10b981', color: '#fff', fontSize: 10, fontWeight: 700 }}>
+          Defence Item
+        </div>
+        {/* Bookmark */}
         <button
           onClick={e => { e.stopPropagation(); toggleWishlist(item.id); }}
-          className={`absolute top-1 right-1 w-5 h-5 rounded-full bg-black/40 backdrop-blur-sm border border-white/10 flex items-center justify-center text-[10px] shadow-sm transition-all hover:scale-110 ${isSaved ? 'text-red-400' : 'text-slate-300 hover:text-white'}`}
+          style={{ position: 'absolute', top: 6, right: 6, width: 26, height: 26, borderRadius: 8,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13,
+            background: 'rgba(255,255,255,0.88)', border: '1px solid rgba(255,255,255,0.5)',
+            boxShadow: '0 1px 4px rgba(0,0,0,0.15)', cursor: 'pointer',
+            color: isSaved ? '#f43f5e' : '#94a3b8' }}
         >
           {isSaved ? '♥' : '♡'}
         </button>
       </div>
 
-      <div className="flex-1 px-2 py-2 flex flex-col justify-between min-w-0 pr-3">
-        <div className="flex items-start justify-between gap-1">
-          <h4 className="text-[11px] font-extrabold text-white truncate group-hover:text-amber-400 transition-colors">
-            {item.name}
-          </h4>
-          <span className="text-[11px] font-black text-white shrink-0 ml-1">
-            ₹{price.toLocaleString()}
-          </span>
+      {/* ── Details (Right) ── */}
+      <div style={{ display: 'flex', flexDirection: 'column', flex: 1, padding: '12px 12px 10px', minWidth: 0, gap: 4 }}>
+        {/* Title */}
+        <div style={{ fontSize: 14, fontWeight: 700, color: '#1e293b', lineHeight: 1.3,
+          display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+          {item.name || 'Defence Household Item'}
         </div>
-        <div className="flex items-center gap-1.5 text-[9px] text-slate-400 font-medium mt-auto pb-1">
-          <span>{item.category || 'Market'}</span>
-          <span className="text-slate-600">·</span>
-          <span className="truncate">{item.city || 'Location'}</span>
+
+        {/* Category & Location */}
+        <div style={{ fontSize: 12, color: '#64748b', display: 'flex', alignItems: 'center', gap: 4, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+          <span style={{ fontSize: 11 }}>🏷️</span>
+          <span>{item.category || 'General'}</span>
+          <span>·</span>
+          <span>📍 {item.city || 'Cantonment'}</span>
+        </div>
+
+        {/* Divider */}
+        <div style={{ height: 1, background: '#f1f5f9', margin: '2px 0' }} />
+
+        {/* Price & Contact tag */}
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 6 }}>
+          <div style={{ lineHeight: 1 }}>
+            <div style={{ fontSize: 18, fontWeight: 900, color: '#f97316' }}>
+              ₹{price > 0 ? price.toLocaleString() : '—'}
+            </div>
+            <div style={{ fontSize: 10, color: '#10b981', fontWeight: 700, marginTop: 2 }}>Direct Seller</div>
+          </div>
+          <span style={{ fontSize: 11, color: '#64748b', fontWeight: 600, textAlign: 'right' }}>
+            {item.area || 'Cantt'}<br />
+            {item.rank ? `Rank: ${item.rank}` : 'Verified Post'}
+          </span>
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useContext, useMemo, useState, useCallback } from 'react';
 import { ModalContext } from '../../App';
 import { useAuth } from '../../hooks/useAuth';
 import { useFilterStore, getFilteredListings } from '../../store/filterStore';
@@ -33,6 +33,7 @@ export default function UnifiedBentoDashboard() {
   const listings = getFilteredListings(allState);
   const [isPanelOpen, setIsPanelOpen] = useState(true);
   const [isFacilitiesOpen, setIsFacilitiesOpen] = useState(true);
+  const [visibleIds, setVisibleIds] = useState(null);
 
   // Expose listings globally for chatbot
   if (typeof window !== 'undefined') {
@@ -53,6 +54,27 @@ export default function UnifiedBentoDashboard() {
     }
     return listings;
   }, [activeView, listings, smartSearchQ]);
+
+  // Live viewport calculations
+  const handleBoundsChange = useCallback((ids) => {
+    setVisibleIds(ids);
+  }, []);
+
+  const visibleItems = useMemo(() => {
+    if (!visibleIds || !visibleIds.length) return items;
+    const set = new Set(visibleIds);
+    const inView = items.filter(item => set.has(item.id));
+    return inView.length > 0 ? inView : items;
+  }, [items, visibleIds]);
+
+  const inViewCount = visibleItems.length;
+  const inViewAvgPrice = useMemo(() => {
+    const priced = visibleItems.filter(l => Number(l.price) > 0);
+    if (!priced.length) return 0;
+    return Math.round(priced.reduce((sum, l) => sum + (Number(l.price) || 0), 0) / priced.length);
+  }, [visibleItems]);
+
+  const formatK = (n) => n >= 1000 ? `₹${Math.round(n / 1000)}K` : `₹${n}`;
 
   const handleBhkToggle = () => {
     if (bhkFilter === 'all') setBhkFilter('2');
@@ -101,7 +123,7 @@ export default function UnifiedBentoDashboard() {
 
         {/* ══ MAP BACKGROUND ══ */}
         <div id="map" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 0 }}>
-          <MapView />
+          <MapView properties={items} onBoundsChange={handleBoundsChange} />
         </div>
 
         {/* ══ NAVBAR ══ */}
@@ -151,6 +173,33 @@ export default function UnifiedBentoDashboard() {
 
           <div className="nav-gap"></div>
 
+          {/* Top Nav Post Button */}
+          <button 
+            onClick={() => ctx.openPost?.()} 
+            style={{
+              padding: '6px 14px',
+              borderRadius: '10px',
+              background: '#16a34a',
+              color: '#ffffff',
+              border: '1px solid #15803d',
+              fontSize: '12px',
+              fontWeight: 800,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px',
+              boxShadow: '0 2px 8px rgba(22,163,74,0.25)',
+              marginRight: '6px',
+              transition: 'background 0.15s'
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = '#15803d'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = '#16a34a'; }}
+            title="Post a New Property or Marketplace Listing"
+          >
+            <span>✚</span>
+            <span>Post</span>
+          </button>
+
           {user ? (
             <button onClick={() => ctx.openProfile?.()} className="sign-btn">
               Profile
@@ -162,18 +211,18 @@ export default function UnifiedBentoDashboard() {
           )}
         </nav>
 
-        {/* ══ STATS ══ */}
+        {/* ══ STATS (Live Viewport Area Stats) ══ */}
         <div className="stats-bar" style={{
           left: isPanelOpen ? '376px' : '20px',
           transition: 'left 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
         }}>
           <div className="stat-pill">
             <span className="live-dot"></span>
-            Total listings <strong style={{marginLeft:'4px'}}>{items.length}</strong>
+            Listings in view <strong style={{marginLeft:'4px'}}>{inViewCount}</strong>
           </div>
           <div className="stat-pill">
             <span className="live-dot" style={{background:'#f59e0b',boxShadow:'0 0 8px #f59e0b'}}></span>
-            Average rent <strong style={{marginLeft:'4px'}}>₹18K</strong>
+            Average price <strong style={{marginLeft:'4px'}}>{inViewAvgPrice > 0 ? formatK(inViewAvgPrice) : '—'}</strong>
           </div>
         </div>
 
@@ -186,10 +235,10 @@ export default function UnifiedBentoDashboard() {
             transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
           }}
         >
-          {/* Tabs Navigation */}
+          {/* Tabs Navigation (Homes | SSB Dorms | Marketplace) */}
           <div className="flex gap-2 mb-4 pb-2 border-b border-black/5 bg-[#0b1325]/5 dark:bg-white/5 p-1.5 rounded-xl">
             {[
-              { id: 'rentals', label: 'Rent Cantt HRA', icon: '🏠' },
+              { id: 'rentals', label: 'Homes', icon: '🏠' },
               { id: 'dorms', label: 'SSB Dorms', icon: '🏨' },
               { id: 'market', label: 'Marketplace', icon: '🏷️' }
             ].map(tab => (
@@ -211,7 +260,7 @@ export default function UnifiedBentoDashboard() {
           {/* Scrolling List */}
           <div className="flex flex-col gap-3">
             {items.length > 0 ? (
-              items.slice(0, 20).map(item => {
+              items.slice(0, 25).map(item => {
                 if (activeView === 'dorms') {
                   return (
                     <DormCard
@@ -288,18 +337,28 @@ export default function UnifiedBentoDashboard() {
               <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/>
             </svg>
           </button>
-          {/* Post New Listing Button */}
+          {/* Post New Listing Button - High Visibility Green */}
           <button 
             onClick={() => ctx.openPost?.()} 
-            className="ctrl-btn" 
             title="Post New Listing"
             style={{
+              width: '40px',
+              height: '40px',
               background: '#16a34a',
               color: '#ffffff',
-              borderColor: '#15803d',
-              fontWeight: 800,
-              fontSize: '15px'
+              border: '1.5px solid #15803d',
+              borderRadius: '8px',
+              fontSize: '18px',
+              fontWeight: 900,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 14px rgba(22,163,74,0.35)',
+              transition: 'transform 0.15s, background 0.15s'
             }}
+            onMouseEnter={e => { e.currentTarget.style.background = '#15803d'; e.currentTarget.style.transform = 'scale(1.05)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = '#16a34a'; e.currentTarget.style.transform = 'scale(1)'; }}
           >
             ✚
           </button>
