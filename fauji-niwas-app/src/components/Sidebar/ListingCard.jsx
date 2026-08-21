@@ -25,21 +25,16 @@ export default function ListingCard({ listing, item, onClick }) {
   return (
     <div
       className="group relative flex rounded-2xl overflow-hidden cursor-pointer mb-3 transition-all duration-200
-        bg-white border border-slate-100 shadow-sm hover:shadow-md hover:border-slate-200
+        bg-white border border-slate-100 shadow-sm hover:shadow-md hover:border-slate-300
         dark:bg-[#131b2e] dark:border-white/10 dark:hover:border-white/20"
-      style={{
-        /* Desktop: horizontal — photo left, details right */
-        display: 'flex',
-        flexDirection: 'row',
-        minHeight: '110px',
-      }}
+      style={{ display: 'flex', flexDirection: 'row', minHeight: '140px' }}
       onClick={onClick}
       role="button"
       tabIndex={0}
       onKeyDown={e => e.key === 'Enter' && onClick?.()}
     >
       {/* ── Photo (left) ── */}
-      <div className="relative shrink-0 overflow-hidden bg-slate-100" style={{ width: '130px', minHeight: '110px' }}>
+      <div className="relative shrink-0 overflow-hidden bg-slate-100" style={{ width: '120px', minHeight: '140px' }}>
         <img
           src={thumb}
           loading="lazy"
@@ -49,56 +44,66 @@ export default function ListingCard({ listing, item, onClick }) {
           onError={e => { e.target.src = PHOTO_POOL[0]; }}
         />
 
-        {/* Star rating — bottom left of photo */}
-        <div className="absolute bottom-2 left-2 flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-black
-          bg-black/60 backdrop-blur-sm text-amber-400 border border-white/10">
-          4.8 <span className="text-[9px]">★</span>
+        {/* Star rating — bottom left */}
+        <div className="absolute bottom-2 left-2 flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-black
+          bg-black/65 backdrop-blur-sm text-amber-400">
+          4.8 <span>★</span>
         </div>
 
-        {/* Verified badge — bottom right of photo */}
+        {/* Verified — bottom right */}
         {r.verified && (
-          <div className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded-md text-[10px] font-bold
-            bg-emerald-500/90 text-white border border-white/20 backdrop-blur-sm">
+          <div className="absolute bottom-2 right-1 px-1.5 py-0.5 rounded-md text-[10px] font-bold
+            bg-emerald-500 text-white">
             Verified
           </div>
         )}
 
-        {/* Bookmark icon — top right */}
+        {/* Bookmark — top right */}
         <button
           onClick={e => { e.stopPropagation(); toggleWishlist(r.id); }}
-          className={`absolute top-2 right-2 w-7 h-7 rounded-lg flex items-center justify-center text-[13px]
-            bg-white/80 backdrop-blur-sm border border-white/40 shadow transition-all hover:scale-110
-            ${isSaved ? 'text-rose-500' : 'text-slate-400 hover:text-slate-600'}`}
+          className={`absolute top-2 right-2 w-7 h-7 rounded-lg flex items-center justify-center text-[14px]
+            bg-white/85 border border-white/50 shadow transition-all hover:scale-110
+            ${isSaved ? 'text-rose-500' : 'text-slate-400 hover:text-slate-700'}`}
         >
           {isSaved ? '♥' : '♡'}
         </button>
       </div>
 
       {/* ── Details (right) ── */}
-      <div className="flex flex-col justify-between flex-1 px-3 py-2.5 min-w-0">
-        {/* Title + location */}
-        <div>
-          <h4 className="text-[13px] font-bold text-slate-800 truncate leading-tight group-hover:text-blue-600 transition-colors
-            dark:text-white dark:group-hover:text-amber-400">
+      <div className="flex flex-col justify-between flex-1 px-3 py-3 min-w-0 overflow-hidden">
+
+        {/* Title */}
+        <div className="min-w-0">
+          <h4 className="text-[14px] font-bold leading-snug text-slate-800 group-hover:text-blue-600 transition-colors
+            dark:text-white dark:group-hover:text-amber-400"
+            style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
+          >
             {r.name || 'Premium Property'}
           </h4>
-          <p className="text-[11px] text-slate-400 truncate mt-0.5 flex items-center gap-1">
-            <span style={{ fontSize: '10px' }}>📍</span>
+          <p className="text-[12px] text-slate-500 mt-1 truncate flex items-center gap-1 dark:text-slate-400">
+            <span>📍</span>
             {r.city || r.address || 'Cantonment Area'}
           </p>
         </div>
 
+        {/* Divider */}
+        <div className="w-full h-px bg-slate-100 dark:bg-white/5 my-2" />
+
         {/* Price + specs */}
-        <div className="flex items-end justify-between mt-2">
-          <span className="text-[15px] font-black text-orange-500 leading-tight">
-            ₹{price > 0 ? price.toLocaleString() : '—'}
-            <span className="text-[10px] font-normal text-slate-400 ml-0.5">/mo</span>
-          </span>
-          <span className="text-[10px] text-slate-400 font-medium">
-            {r.bhk ? `${r.bhk} BHK` : 'Studio'} · {r.sqft || '1600'} sq.ft
+        <div className="flex items-end justify-between gap-2 min-w-0">
+          <div className="min-w-0">
+            <span className="text-[18px] font-black text-orange-500 leading-none block">
+              ₹{price > 0 ? price.toLocaleString() : '—'}
+            </span>
+            <span className="text-[11px] text-slate-400">/mo</span>
+          </div>
+          <span className="text-[11px] text-slate-400 font-medium text-right shrink-0">
+            {r.bhk ? `${r.bhk} BHK` : 'Studio'}<br />
+            {r.sqft || '1,400'} sq.ft
           </span>
         </div>
       </div>
     </div>
   );
+
 }
