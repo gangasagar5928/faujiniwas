@@ -439,10 +439,17 @@ function createChatbotUI() {
 
             // ── Safe Toggle ──
             window.toggleChatbot = () => {
-                botOpen = !botOpen;
                 const win = document.getElementById('cb-window');
+                if (!win) return;
+                const isVisible = win.style.display === 'flex';
+                botOpen = !isVisible;
                 win.style.display = botOpen ? 'flex' : 'none';
-                if (botOpen && botStep === 0) window.cbStart();
+                if (botOpen) {
+                    const msgs = document.getElementById('cb-messages');
+                    if (!msgs || msgs.children.length === 0 || botStep === 0) {
+                        window.cbStart();
+                    }
+                }
             };
 
                 window.cbStart = () => {
@@ -549,7 +556,9 @@ function cbShowResults() {
     setTimeout(() => {
         // Get listings from state (app.html) or pitch_data (index.html)
         let allListings = [];
-        if (window.state?.listings?.length) {
+        if (window.__fauji_listings && window.__fauji_listings.length) {
+            allListings = window.__fauji_listings;
+        } else if (window.state?.listings?.length) {
             allListings = window.state.listings;
         } else if (typeof PITCH_LISTINGS !== 'undefined') {
             allListings = PITCH_LISTINGS;
@@ -632,13 +641,8 @@ if (document.readyState === 'loading') {
 }
 
 window.openFaujiChatbot = function() {
-    createChatbotUI();
-    const win = document.getElementById('cb-window');
-    if (win) {
-        win.style.display = 'flex';
-        botOpen = true;
-        if (botStep === 0) runBotFlow();
+    if (typeof window.toggleChatbot === 'function') {
+        window.toggleChatbot();
     }
 };
-window.toggleChatbot = toggleChatbot;
 

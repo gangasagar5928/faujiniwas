@@ -30,6 +30,11 @@ export default function AppShell() {
 
   const isNative = window.faujiApp;
 
+  // Expose for chatbot and external components
+  if (typeof window !== 'undefined') {
+    window.__fauji_listings = listings;
+  }
+
   // Live stats
   const rentalListings = listings.filter(l => l._collection === 'rentals');
   const avgRent = rentalListings.length
@@ -229,13 +234,18 @@ export default function AppShell() {
             </div>
           )}
 
-          {/* Chat FAB — bottom right of map */}
+          {/* Chat FAB — bottom right of map (toggle on click) */}
           {!isNative && (
             <button
               className={styles.chatFab}
               onClick={() => {
-                if (window.openFaujiChatbot) window.openFaujiChatbot();
-                else if (ctx.openChat) ctx.openChat();
+                if (typeof window.toggleChatbot === 'function') {
+                  window.toggleChatbot();
+                } else if (typeof window.openFaujiChatbot === 'function') {
+                  window.openFaujiChatbot();
+                } else if (ctx.openChat) {
+                  ctx.openChat();
+                }
               }}
               title="Military AI Assistant"
             >

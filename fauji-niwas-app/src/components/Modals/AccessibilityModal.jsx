@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 export default function AccessibilityModal({ onClose }) {
   const [fontSize, setFontSize] = useState(() => localStorage.getItem('fn_fontsize') || '16px');
@@ -81,42 +81,71 @@ export default function AccessibilityModal({ onClose }) {
   };
 
   return (
-    <div className="modal-backdrop" onClick={onClose} style={{
-      position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)',
-      backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center',
-      justifyContent: 'center', zIndex: 999999
-    }}>
+    <div 
+      className="modal-backdrop" 
+      onClick={onClose} 
+      style={{
+        position: 'fixed', 
+        inset: 0, 
+        background: 'rgba(0,0,0,0.5)',
+        backdropFilter: 'blur(6px)', 
+        WebkitBackdropFilter: 'blur(6px)',
+        display: 'flex', 
+        alignItems: 'center',
+        justifyContent: 'center', 
+        zIndex: 999999,
+        padding: '16px'
+      }}
+    >
       <div 
-        className="mc bg-white dark:bg-[#0f172a] text-slate-800 dark:text-white p-6 max-w-[350px] w-[90%] rounded-[24px] shadow-2xl border border-slate-100 dark:border-slate-800 font-sans"
+        className="bg-white dark:bg-[#0f172a] text-slate-800 dark:text-white"
         onClick={e => e.stopPropagation()}
-        style={{ fontFamily: "'Outfit', sans-serif" }}
+        style={{
+          fontFamily: "'Outfit', sans-serif",
+          width: '320px',
+          maxWidth: '92vw',
+          padding: '18px 20px',
+          borderRadius: '22px',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+          border: '1px solid rgba(226, 232, 240, 0.8)',
+          boxSizing: 'border-box'
+        }}
       >
-        {/* Header matching Image 2 */}
-        <div className="flex items-center justify-between pb-3">
-          <h3 className="text-base font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
+        {/* Header — compact square style */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+          <div style={{ fontSize: '14px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'inherit', display: 'flex', alignItems: 'center', gap: '6px' }}>
             ACCESSIBILITY 🎖️
-          </h3>
+          </div>
           <button 
             onClick={onClose} 
-            className="text-slate-400 hover:text-slate-700 dark:hover:text-white text-lg font-bold w-7 h-7 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+            style={{
+              background: 'none',
+              border: 'none',
+              fontSize: '18px',
+              fontWeight: 700,
+              color: '#94a3b8',
+              cursor: 'pointer',
+              padding: '2px 6px',
+              lineHeight: 1
+            }}
             aria-label="Close modal"
           >
             ✕
           </button>
         </div>
 
-        {/* Thin Divider */}
-        <div className="h-px bg-slate-100 dark:bg-slate-800 mb-4" />
+        {/* Divider */}
+        <div style={{ height: '1px', background: '#f1f5f9', marginBottom: '12px' }} />
 
         {/* Controls Container */}
-        <div className="flex flex-col gap-4">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           
           {/* 1. TEXT SIZE / आकार */}
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+            <label style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#64748b' }}>
               TEXT SIZE / आकार
             </label>
-            <div className="grid grid-cols-4 gap-2">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' }}>
               {[
                 { label: 'A-', size: '14px' },
                 { label: 'A', size: '16px' },
@@ -128,11 +157,18 @@ export default function AccessibilityModal({ onClose }) {
                   <button
                     key={item.size}
                     onClick={() => applyFontSize(item.size)}
-                    className={`py-2.5 text-xs font-bold rounded-xl transition-all cursor-pointer ${
-                      isActive
-                        ? 'bg-[#f59e0b] text-white font-black shadow-sm'
-                        : 'bg-[#f1f5f9] dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700'
-                    }`}
+                    style={{
+                      padding: '8px 0',
+                      fontSize: '12px',
+                      fontWeight: isActive ? 900 : 700,
+                      borderRadius: '10px',
+                      border: 'none',
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease',
+                      background: isActive ? '#f59e0b' : '#f1f5f9',
+                      color: isActive ? '#ffffff' : '#334155',
+                      boxShadow: isActive ? '0 2px 8px rgba(245,158,11,0.3)' : 'none'
+                    }}
                   >
                     {item.label}
                   </button>
@@ -142,11 +178,11 @@ export default function AccessibilityModal({ onClose }) {
           </div>
 
           {/* 2. LANGUAGE / भाषा */}
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+            <label style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#64748b' }}>
               LANGUAGE / भाषा
             </label>
-            <div className="grid grid-cols-4 gap-1.5">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' }}>
               {[
                 { code: 'en', label: 'EN' },
                 { code: 'hi', label: 'हिंदी' },
@@ -162,11 +198,18 @@ export default function AccessibilityModal({ onClose }) {
                   <button
                     key={lang.code}
                     onClick={() => handleSetLang(lang.code)}
-                    className={`py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
-                      isActive
-                        ? 'bg-[#f59e0b] text-white font-black shadow-sm'
-                        : 'bg-[#f1f5f9] dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700'
-                    }`}
+                    style={{
+                      padding: '7px 0',
+                      fontSize: '12px',
+                      fontWeight: isActive ? 900 : 700,
+                      borderRadius: '10px',
+                      border: 'none',
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease',
+                      background: isActive ? '#f59e0b' : '#f1f5f9',
+                      color: isActive ? '#ffffff' : '#334155',
+                      boxShadow: isActive ? '0 2px 8px rgba(245,158,11,0.3)' : 'none'
+                    }}
                   >
                     {lang.label}
                   </button>
@@ -176,28 +219,42 @@ export default function AccessibilityModal({ onClose }) {
           </div>
 
           {/* 3. CONTRAST THEME / थीम */}
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+            <label style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#64748b' }}>
               CONTRAST THEME / थीम
             </label>
-            <div className="grid grid-cols-2 gap-2">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px' }}>
               <button
                 onClick={() => applyTheme('dark')}
-                className={`py-2.5 font-bold rounded-xl text-xs transition-all cursor-pointer ${
-                  theme === 'dark'
-                    ? 'bg-[#f59e0b] text-white font-black shadow-sm'
-                    : 'bg-[#f1f5f9] dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700'
-                }`}
+                style={{
+                  padding: '9px 0',
+                  fontSize: '12px',
+                  fontWeight: theme === 'dark' ? 900 : 700,
+                  borderRadius: '10px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                  background: theme === 'dark' ? '#f59e0b' : '#f1f5f9',
+                  color: theme === 'dark' ? '#ffffff' : '#334155',
+                  boxShadow: theme === 'dark' ? '0 2px 8px rgba(245,158,11,0.3)' : 'none'
+                }}
               >
                 Dark
               </button>
               <button
                 onClick={() => applyTheme('light')}
-                className={`py-2.5 font-bold rounded-xl text-xs transition-all cursor-pointer ${
-                  theme === 'light'
-                    ? 'bg-[#f59e0b] text-white font-black shadow-sm'
-                    : 'bg-[#f1f5f9] dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700'
-                }`}
+                style={{
+                  padding: '9px 0',
+                  fontSize: '12px',
+                  fontWeight: theme === 'light' ? 900 : 700,
+                  borderRadius: '10px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                  background: theme === 'light' ? '#f59e0b' : '#f1f5f9',
+                  color: theme === 'light' ? '#ffffff' : '#334155',
+                  boxShadow: theme === 'light' ? '0 2px 8px rgba(245,158,11,0.3)' : 'none'
+                }}
               >
                 Light
               </button>
@@ -205,24 +262,48 @@ export default function AccessibilityModal({ onClose }) {
           </div>
 
           {/* 4. VOICE READER (AI SPEECH) */}
-          <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-100 dark:border-slate-800 mt-1">
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '10px 12px',
+            background: '#f8fafc',
+            borderRadius: '12px',
+            border: '1px solid #f1f5f9'
+          }}>
             <div>
-              <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                <span>🗣️ Voice Reader (AI Speech)</span>
+              <div style={{ fontSize: '11px', fontWeight: 800, color: '#1e293b', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                🗣️ Voice Reader (AI Speech)
               </div>
-              <p className="text-[10px] text-slate-500 dark:text-slate-400">
+              <div style={{ fontSize: '10px', color: '#94a3b8' }}>
                 Speaks listing details when tapped.
-              </p>
+              </div>
             </div>
             <button
               onClick={toggleTts}
-              className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer flex-shrink-0 ${
-                ttsEnabled ? 'bg-[#f59e0b]' : 'bg-slate-300 dark:bg-slate-700'
-              }`}
+              style={{
+                width: '42px',
+                height: '22px',
+                borderRadius: '999px',
+                background: ttsEnabled ? '#f59e0b' : '#cbd5e1',
+                border: 'none',
+                cursor: 'pointer',
+                position: 'relative',
+                transition: 'background 0.2s',
+                padding: '2px',
+                flexShrink: 0
+              }}
             >
-              <span className={`block w-5 h-5 bg-white rounded-full shadow-sm transition-transform transform ${
-                ttsEnabled ? 'translate-x-5' : 'translate-x-0.5'
-              }`} />
+              <span style={{
+                display: 'block',
+                width: '18px',
+                height: '18px',
+                borderRadius: '50%',
+                background: '#fff',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+                transform: ttsEnabled ? 'translateX(20px)' : 'translateX(0px)',
+                transition: 'transform 0.2s'
+              }} />
             </button>
           </div>
 
