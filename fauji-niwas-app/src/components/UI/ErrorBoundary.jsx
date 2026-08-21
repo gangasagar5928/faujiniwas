@@ -33,7 +33,17 @@ export default class ErrorBoundary extends React.Component {
             </span>
           </p>
           <button 
-            onClick={() => window.location.reload()}
+            onClick={() => {
+              if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(regs => {
+                  regs.forEach(r => r.unregister());
+                });
+              }
+              if ('caches' in window) {
+                caches.keys().then(names => names.forEach(n => caches.delete(n)));
+              }
+              window.location.href = '/app.html?v=' + Date.now();
+            }}
             style={{
               marginTop: 30, padding: '12px 24px', background: '#FF9933', 
               color: '#000', border: 'none', borderRadius: 10, fontWeight: 800, cursor: 'pointer'
