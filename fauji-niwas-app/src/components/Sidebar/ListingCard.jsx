@@ -70,7 +70,10 @@ export default function ListingCard({ listing, item, onClick }) {
           loading="lazy"
           alt={r.name || 'Listing'}
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-          onError={e => { e.target.src = PHOTO_POOL[0]; }}
+          onError={e => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = PHOTO_POOL[0];
+          }}
         />
         {/* Star */}
         <div style={{ position: 'absolute', bottom: 6, left: 6, display: 'flex', alignItems: 'center', gap: 3,

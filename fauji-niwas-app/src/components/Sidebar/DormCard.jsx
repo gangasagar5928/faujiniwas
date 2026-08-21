@@ -46,7 +46,10 @@ export default function DormCard({ dorm, onFoodClick, onClick }) {
           loading="lazy"
           alt={dorm.name || 'SSB Dorm'}
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-          onError={e => { e.target.src = DORM_PHOTOS[0]; }}
+          onError={e => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = DORM_PHOTOS[photoIndex];
+          }}
         />
         {/* Star Rating Badge */}
         <div style={{ position: 'absolute', bottom: 6, left: 6, display: 'flex', alignItems: 'center', gap: 3,

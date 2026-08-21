@@ -9,12 +9,16 @@ const MARKET_SAMPLE_PHOTOS = [
 ];
 
 export default function MarketCard({ item, onClick }) {
-  const price = Number(item.price) || 0;
+  const price = Number(item?.price) || 0;
   const wishlist = useUserStore(s => s.wishlist) || [];
   const toggleWishlist = useUserStore(s => s.toggleWishlist);
-  const isSaved = wishlist.includes(item.id);
+  const isSaved = wishlist.includes(item?.id);
 
-  const thumb = item.mediaUrls?.[0] || MARKET_SAMPLE_PHOTOS[0];
+  const photoIndex = Math.abs((item?.id?.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) || 0) % MARKET_SAMPLE_PHOTOS.length);
+  const rawThumb = item?.mediaUrls?.[0];
+  const thumb = (rawThumb && typeof rawThumb === 'string' && rawThumb.trim().length > 5 && rawThumb.startsWith('http')) 
+    ? rawThumb 
+    : MARKET_SAMPLE_PHOTOS[photoIndex];
 
   return (
     <div
@@ -43,14 +47,17 @@ export default function MarketCard({ item, onClick }) {
         <img
           src={thumb}
           loading="lazy"
-          alt={item.name || 'Market Item'}
+          alt={item?.name || 'Market Item'}
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-          onError={e => { e.target.src = MARKET_SAMPLE_PHOTOS[0]; }}
+          onError={e => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = MARKET_SAMPLE_PHOTOS[photoIndex];
+          }}
         />
         {/* Condition Tag */}
         <div style={{ position: 'absolute', top: 6, left: 6, padding: '2px 6px', borderRadius: 6,
           background: '#0284c7', color: '#fff', fontSize: 9, fontWeight: 800, textTransform: 'uppercase' }}>
-          {item.condition || 'Used'}
+          {item?.condition || 'Used'}
         </div>
         {/* Verified Badge */}
         <div style={{ position: 'absolute', bottom: 6, left: 6, padding: '3px 6px', borderRadius: 6,
@@ -59,7 +66,7 @@ export default function MarketCard({ item, onClick }) {
         </div>
         {/* Bookmark */}
         <button
-          onClick={e => { e.stopPropagation(); toggleWishlist(item.id); }}
+          onClick={e => { e.stopPropagation(); toggleWishlist(item?.id); }}
           style={{ position: 'absolute', top: 6, right: 6, width: 26, height: 26, borderRadius: 8,
             display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13,
             background: 'rgba(255,255,255,0.88)', border: '1px solid rgba(255,255,255,0.5)',
@@ -75,15 +82,15 @@ export default function MarketCard({ item, onClick }) {
         {/* Title */}
         <div style={{ fontSize: 14, fontWeight: 700, color: '#1e293b', lineHeight: 1.3,
           display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-          {item.name || 'Defence Household Item'}
+          {item?.name || 'Defence Household Item'}
         </div>
 
         {/* Category & Location */}
         <div style={{ fontSize: 12, color: '#64748b', display: 'flex', alignItems: 'center', gap: 4, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
           <span style={{ fontSize: 11 }}>🏷️</span>
-          <span>{item.category || 'General'}</span>
+          <span>{item?.category || 'General'}</span>
           <span>·</span>
-          <span>📍 {item.city || 'Cantonment'}</span>
+          <span>📍 {item?.city || 'Cantonment'}</span>
         </div>
 
         {/* Divider */}
@@ -98,8 +105,8 @@ export default function MarketCard({ item, onClick }) {
             <div style={{ fontSize: 10, color: '#10b981', fontWeight: 700, marginTop: 2 }}>Direct Seller</div>
           </div>
           <span style={{ fontSize: 11, color: '#64748b', fontWeight: 600, textAlign: 'right' }}>
-            {item.area || 'Cantt'}<br />
-            {item.rank ? `Rank: ${item.rank}` : 'Verified Post'}
+            {item?.area || 'Cantt'}<br />
+            {item?.rank ? `Rank: ${item.rank}` : 'Verified Post'}
           </span>
         </div>
       </div>
