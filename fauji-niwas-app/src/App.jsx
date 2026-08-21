@@ -9,6 +9,8 @@ import Toast from './components/UI/Toast';
 import ErrorBoundary from './components/UI/ErrorBoundary';
 import SessionGuard from './components/Auth/SessionGuard';
 
+import AccessibilityModal from './components/Modals/AccessibilityModal';
+
 // Lazy-load heavy modals — off critical path
 const DetailModal    = lazy(() => import('./components/Modals/DetailModal'));
 const PostModal      = lazy(() => import('./components/Modals/PostModal'));
@@ -21,7 +23,6 @@ const LegalModal     = lazy(() => import('./components/Modals/LegalModal'));
 const ChatModal      = lazy(() => import('./components/Modals/ChatModal'));
 const AdminModal     = lazy(() => import('./components/Modals/AdminModal'));
 const RelocationModal = lazy(() => import('./components/Modals/RelocationModal'));
-const AccessibilityModal = lazy(() => import('./components/Modals/AccessibilityModal'));
 
 export const ModalContext = React.createContext(null);
 
@@ -202,9 +203,7 @@ export default function App() {
             <Suspense fallback={null}>
               {openModal === 'relocation' && <RelocationModal onClose={closeModal} />}
             </Suspense>
-            <Suspense fallback={null}>
-              {openModal === 'accessibility' && <AccessibilityModal onClose={closeModal} />}
-            </Suspense>
+            {openModal === 'accessibility' && <AccessibilityModal onClose={closeModal} />}
 
             {toast && <Toast msg={toast.msg} type={toast.type} />}
           </ErrorBoundary>

@@ -76,6 +76,19 @@ export default function UnifiedBentoDashboard() {
 
   const formatK = (n) => n >= 1000 ? `₹${Math.round(n / 1000)}K` : `₹${n}`;
 
+  const [bhkDropdownOpen, setBhkDropdownOpen] = useState(false);
+  const [budgetDropdownOpen, setBudgetDropdownOpen] = useState(false);
+
+  // Close dropdowns on window click
+  useEffect(() => {
+    const handleClose = () => {
+      setBhkDropdownOpen(false);
+      setBudgetDropdownOpen(false);
+    };
+    window.addEventListener('click', handleClose);
+    return () => window.removeEventListener('click', handleClose);
+  }, []);
+
   const handleBhkToggle = () => {
     if (bhkFilter === 'all') setBhkFilter('2');
     else if (bhkFilter === '2') setBhkFilter('3');
@@ -145,23 +158,136 @@ export default function UnifiedBentoDashboard() {
             </svg>
           </div>
 
-          <button 
-            className={`filter-btn ${bhkFilter !== 'all' ? 'active' : ''}`} 
-            onClick={handleBhkToggle}
-            title="Toggle BHK filter"
-          >
-            {bhkFilter === 'all' ? 'Filter by BHK' : `BHK: ${bhkFilter}BHK`}
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="m6 9 6 6 6-6"/></svg>
-          </button>
+          {/* BHK Filter with Dropdown */}
+          <div style={{ position: 'relative' }}>
+            <button 
+              className={`filter-btn ${bhkFilter !== 'all' ? 'active' : ''}`} 
+              onClick={(e) => {
+                e.stopPropagation();
+                setBhkDropdownOpen(!bhkDropdownOpen);
+                setBudgetDropdownOpen(false);
+              }}
+              title="Select BHK filter"
+            >
+              {bhkFilter === 'all' ? 'All BHK' : `${bhkFilter} BHK`}
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            {bhkDropdownOpen && (
+              <div 
+                onClick={e => e.stopPropagation()}
+                style={{
+                  position: 'absolute',
+                  top: 'calc(100% + 6px)',
+                  left: 0,
+                  background: '#ffffff',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '12px',
+                  boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
+                  padding: '6px',
+                  minWidth: '130px',
+                  zIndex: 1200,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '2px'
+                }}
+              >
+                {[
+                  { value: 'all', label: 'All BHK' },
+                  { value: '1', label: '1 BHK' },
+                  { value: '2', label: '2 BHK' },
+                  { value: '3', label: '3 BHK' },
+                  { value: '4', label: '4+ BHK' }
+                ].map(opt => (
+                  <button
+                    key={opt.value}
+                    onClick={() => {
+                      setBhkFilter(opt.value);
+                      setBhkDropdownOpen(false);
+                    }}
+                    style={{
+                      padding: '8px 12px',
+                      borderRadius: '8px',
+                      border: 'none',
+                      background: bhkFilter === opt.value ? '#f59e0b' : 'transparent',
+                      color: bhkFilter === opt.value ? '#ffffff' : '#334155',
+                      fontWeight: bhkFilter === opt.value ? 800 : 600,
+                      fontSize: '12px',
+                      textAlign: 'left',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
 
-          <button 
-            className={`filter-btn ${maxPrice < 100000 ? 'active' : ''}`} 
-            onClick={handleBudgetToggle}
-            title="Toggle Budget limit"
-          >
-            {maxPrice >= 100000 ? 'Filter by Budget' : `Budget: ≤₹${maxPrice/1000}k`}
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="m6 9 6 6 6-6"/></svg>
-          </button>
+          {/* Budget Filter with Dropdown */}
+          <div style={{ position: 'relative' }}>
+            <button 
+              className={`filter-btn ${maxPrice < 100000 ? 'active' : ''}`} 
+              onClick={(e) => {
+                e.stopPropagation();
+                setBudgetDropdownOpen(!budgetDropdownOpen);
+                setBhkDropdownOpen(false);
+              }}
+              title="Select Budget limit"
+            >
+              {maxPrice >= 100000 ? 'All Budgets' : `≤ ₹${maxPrice.toLocaleString()}`}
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            {budgetDropdownOpen && (
+              <div 
+                onClick={e => e.stopPropagation()}
+                style={{
+                  position: 'absolute',
+                  top: 'calc(100% + 6px)',
+                  left: 0,
+                  background: '#ffffff',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '12px',
+                  boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
+                  padding: '6px',
+                  minWidth: '160px',
+                  zIndex: 1200,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '2px'
+                }}
+              >
+                {[
+                  { value: 100000, label: 'All Budgets' },
+                  { value: 15000, label: 'Under ₹15,000 / mo' },
+                  { value: 25000, label: 'Under ₹25,000 / mo' },
+                  { value: 35000, label: 'Under ₹35,000 / mo' },
+                  { value: 50000, label: 'Under ₹50,000 / mo' },
+                  { value: 75000, label: 'Under ₹75,000 / mo' }
+                ].map(opt => (
+                  <button
+                    key={opt.value}
+                    onClick={() => {
+                      setMaxPrice(opt.value);
+                      setBudgetDropdownOpen(false);
+                    }}
+                    style={{
+                      padding: '8px 12px',
+                      borderRadius: '8px',
+                      border: 'none',
+                      background: maxPrice === opt.value ? '#f59e0b' : 'transparent',
+                      color: maxPrice === opt.value ? '#ffffff' : '#334155',
+                      fontWeight: maxPrice === opt.value ? 800 : 600,
+                      fontSize: '12px',
+                      textAlign: 'left',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
 
           <button 
             id="btn-accessibility"

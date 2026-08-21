@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, Search, ArrowUpRight, Check, FileText, Lock, Globe, Phone, Mail, Award, Navigation, Star, Menu, X } from 'lucide-react';
+import { Shield, Search, ArrowUpRight, Check, FileText, Lock, Globe, Phone, Mail, Award, Navigation, Star, Menu, X, Sparkles, Building, ShoppingBag, MapPin, Calculator, ShieldCheck, Zap } from 'lucide-react';
 const LeaseGeneratorModal = React.lazy(() => import('../components/Modals/LeaseGeneratorModal'));
 const WasmMaskingModal = React.lazy(() => import('../components/Modals/WasmMaskingModal'));
 const CSDPulseTicker = React.lazy(() => import('../components/CSD/CSDPulseTicker'));
@@ -228,7 +228,7 @@ export default function LandingPage() {
 
         {/* Features 2x3 Bento Grid */}
         {/* Compact 4-col / 2-col Feature Cards Grid with all new features */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-2">
 
           {/* Feature 1: Cantonment Map */}
           <motion.div
@@ -237,17 +237,22 @@ export default function LandingPage() {
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.4, delay: 0.05 }}
             onClick={handleLaunchApp}
-            className="feature-card relative p-5 rounded-2xl flex flex-col justify-between min-h-[210px] shadow-sm group hover:shadow-md hover:border-amber-600/30 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80"
+            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-amber-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
           >
             <div className="flex justify-between items-start">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-700 bg-amber-500/10 px-2 py-0.5 rounded-md">#01 Map Search</span>
+              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-800 bg-amber-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
+                <Navigation size={12} /> #01 Map Search
+              </span>
               <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-amber-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={14} />
+                <ArrowUpRight size={15} />
               </div>
             </div>
             <div>
-              <h3 className="text-sm font-black tracking-tight text-slate-900 mb-1">Cantonment Proximity</h3>
-              <p className="text-xs text-slate-600 leading-snug font-normal">Exact gate distance routing, Army Schools, and Military Hospitals.</p>
+              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">Cantonment Proximity</h3>
+              <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Exact gate distance routing, Army Schools, and Military Hospitals mapped in real-time.</p>
+            </div>
+            <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
+              📍 Gate Routing · 🏫 KV Schools · 🏥 Base Hosp
             </div>
           </motion.div>
 
@@ -258,17 +263,22 @@ export default function LandingPage() {
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.4, delay: 0.1 }}
             onClick={handleLaunchApp}
-            className="feature-card relative p-5 rounded-2xl flex flex-col justify-between min-h-[210px] shadow-sm group hover:shadow-md hover:border-amber-600/30 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80"
+            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-amber-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
           >
             <div className="flex justify-between items-start">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-700 bg-amber-500/10 px-2 py-0.5 rounded-md">#02 Defence Market</span>
+              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-800 bg-amber-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
+                <ShoppingBag size={12} /> #02 Defence Market
+              </span>
               <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-amber-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={14} />
+                <ArrowUpRight size={15} />
               </div>
             </div>
             <div>
-              <h3 className="text-sm font-black tracking-tight text-slate-900 mb-1">Defence Marketplace</h3>
-              <p className="text-xs text-slate-600 leading-snug font-normal">Direct peer-to-peer household transfers & verified postings without brokers.</p>
+              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">Defence Marketplace</h3>
+              <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Direct peer-to-peer household transfers & verified postings without middleman brokers.</p>
+            </div>
+            <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
+              🎖️ Verified Defence · 🚫 Zero Brokerage · 🛋️ Items
             </div>
           </motion.div>
 
@@ -279,17 +289,22 @@ export default function LandingPage() {
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.4, delay: 0.15 }}
             onClick={handleLaunchApp}
-            className="feature-card relative p-5 rounded-2xl flex flex-col justify-between min-h-[210px] shadow-sm group hover:shadow-md hover:border-amber-600/30 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80"
+            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-amber-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
           >
             <div className="flex justify-between items-start">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-700 bg-amber-500/10 px-2 py-0.5 rounded-md">#03 7th CPC HRA</span>
+              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-800 bg-amber-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
+                <Award size={12} /> #03 7th CPC HRA
+              </span>
               <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-amber-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={14} />
+                <ArrowUpRight size={15} />
               </div>
             </div>
             <div>
-              <h3 className="text-sm font-black tracking-tight text-slate-900 mb-1">Rank-Based HRA Matching</h3>
-              <p className="text-xs text-slate-600 leading-snug font-normal">Automatic allowance filters calibrated for Jawans, JCOs, and Officers.</p>
+              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">Rank-Based HRA Matching</h3>
+              <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Automatic allowance filters calibrated for Jawans, JCOs, and Commissioned Officers.</p>
+            </div>
+            <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
+              💰 7th CPC Bands · 🛡️ OR / JCO / Officers · 📋 Budgets
             </div>
           </motion.div>
 
@@ -300,17 +315,22 @@ export default function LandingPage() {
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.4, delay: 0.2 }}
             onClick={handleLaunchApp}
-            className="feature-card relative p-5 rounded-2xl flex flex-col justify-between min-h-[210px] shadow-sm group hover:shadow-md hover:border-amber-600/30 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80"
+            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-blue-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
           >
             <div className="flex justify-between items-start">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-blue-700 bg-blue-500/10 px-2 py-0.5 rounded-md">#04 SSB Dorms</span>
+              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-blue-800 bg-blue-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
+                <Star size={12} /> #04 SSB Dorms
+              </span>
               <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={14} />
+                <ArrowUpRight size={15} />
               </div>
             </div>
             <div>
-              <h3 className="text-sm font-black tracking-tight text-slate-900 mb-1">SSB Candidate Stays</h3>
-              <p className="text-xs text-slate-600 leading-snug font-normal">Budget dorms & food guide minutes away from SSB Allahabad, Bhopal, SCE & SCC.</p>
+              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">SSB Candidate Stays</h3>
+              <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Affordable budget stays and mess food guides minutes away from Selection Centres.</p>
+            </div>
+            <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
+              🪖 11 &amp; 33 SSB · 🛏️ From ₹200/night · 🍛 Food Guides
             </div>
           </motion.div>
 
@@ -321,17 +341,22 @@ export default function LandingPage() {
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.4, delay: 0.25 }}
             onClick={handleLaunchApp}
-            className="feature-card relative p-5 rounded-2xl flex flex-col justify-between min-h-[210px] shadow-sm group hover:shadow-md hover:border-amber-600/30 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80"
+            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-emerald-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
           >
             <div className="flex justify-between items-start">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-700 bg-emerald-500/10 px-2 py-0.5 rounded-md">#05 AI Assistant</span>
+              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-800 bg-emerald-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
+                <Sparkles size={12} /> #05 AI Assistant
+              </span>
               <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={14} />
+                <ArrowUpRight size={15} />
               </div>
             </div>
             <div>
-              <h3 className="text-sm font-black tracking-tight text-slate-900 mb-1">Military AI Assistant</h3>
-              <p className="text-xs text-slate-600 leading-snug font-normal">Instant station relocation advisory, HRA rules, and automated housing match.</p>
+              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">Military AI Assistant</h3>
+              <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Instant station relocation advisory, HRA calculations, and automatic housing matches.</p>
+            </div>
+            <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
+              🤖 Route Planner · 🗺️ Station Intel · ⚡ Instant Match
             </div>
           </motion.div>
 
@@ -342,17 +367,22 @@ export default function LandingPage() {
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.4, delay: 0.3 }}
             onClick={() => setShowLeaseModal(true)}
-            className="feature-card relative p-5 rounded-2xl flex flex-col justify-between min-h-[210px] shadow-sm group hover:shadow-md hover:border-amber-600/30 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80"
+            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-amber-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
           >
             <div className="flex justify-between items-start">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-700 bg-amber-500/10 px-2 py-0.5 rounded-md">#06 Lease Generator</span>
+              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-800 bg-amber-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
+                <FileText size={12} /> #06 Lease Generator
+              </span>
               <button onClick={(e) => { e.stopPropagation(); setShowLeaseModal(true); }} aria-label="Open Lease Generator" className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-amber-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={14} />
+                <ArrowUpRight size={15} />
               </button>
             </div>
             <div>
-              <h3 className="text-sm font-black tracking-tight text-slate-900 mb-1">Military Lease Agreements</h3>
-              <p className="text-xs text-slate-600 leading-snug font-normal">Official agreements embedded with standard 15-day military posting break clause.</p>
+              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">Military Lease Agreements</h3>
+              <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Official rent agreements embedded with standard 15-day military posting break clause.</p>
+            </div>
+            <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
+              📄 15-Day Break Clause · ⚖️ Standardized · 🖋️ Instant PDF
             </div>
           </motion.div>
 
@@ -363,17 +393,22 @@ export default function LandingPage() {
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.4, delay: 0.35 }}
             onClick={handleLaunchApp}
-            className="feature-card relative p-5 rounded-2xl flex flex-col justify-between min-h-[210px] shadow-sm group hover:shadow-md hover:border-amber-600/30 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80"
+            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-purple-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
           >
             <div className="flex justify-between items-start">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-purple-700 bg-purple-500/10 px-2 py-0.5 rounded-md">#07 CSD Pulse</span>
+              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-purple-800 bg-purple-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
+                <Zap size={12} /> #07 CSD Pulse
+              </span>
               <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-purple-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={14} />
+                <ArrowUpRight size={15} />
               </div>
             </div>
             <div>
-              <h3 className="text-sm font-black tracking-tight text-slate-900 mb-1">Live CSD &amp; URC Pulse</h3>
-              <p className="text-xs text-slate-600 leading-snug font-normal">Real-time canteen token queues, grocery stock updates, and AFD tracking.</p>
+              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">Live CSD &amp; URC Pulse</h3>
+              <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Real-time canteen token queues, grocery stock updates, and AFD tracking.</p>
+            </div>
+            <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
+              🛒 Token Queues · 🍾 Liquor Stock · 🚗 AFD CSD Portal
             </div>
           </motion.div>
 
@@ -384,17 +419,22 @@ export default function LandingPage() {
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.4, delay: 0.4 }}
             onClick={() => setShowWasmModal(true)}
-            className="feature-card relative p-5 rounded-2xl flex flex-col justify-between min-h-[210px] shadow-sm group hover:shadow-md hover:border-amber-600/30 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80"
+            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-rose-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
           >
             <div className="flex justify-between items-start">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-rose-700 bg-rose-500/10 px-2 py-0.5 rounded-md">#08 Client Privacy</span>
+              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-rose-800 bg-rose-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
+                <ShieldCheck size={12} /> #08 Client Privacy
+              </span>
               <button onClick={(e) => { e.stopPropagation(); setShowWasmModal(true); }} aria-label="Open Wasm Masking" className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-rose-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={14} />
+                <ArrowUpRight size={15} />
               </button>
             </div>
             <div>
-              <h3 className="text-sm font-black tracking-tight text-slate-900 mb-1">Wasm ID Masking</h3>
-              <p className="text-xs text-slate-600 leading-snug font-normal">Offline client-side redaction ensuring zero personal military data leaves your browser.</p>
+              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">Wasm ID Masking</h3>
+              <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Offline client-side redaction ensuring zero personal military data leaves your browser.</p>
+            </div>
+            <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
+              🔒 100% Offline Wasm · 🛡️ Zero Data Leak · 🆔 Redaction
             </div>
           </motion.div>
 

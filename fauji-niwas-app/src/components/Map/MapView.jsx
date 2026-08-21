@@ -81,24 +81,25 @@ function MapController({ activeCantt }) {
 }
 
 // Tactical Map FlyTo Micro-animation
-function MapAnimator({ activeCantt, draftCoords }) {
+function MapAnimator({ searchCity, activeCantt, draftCoords }) {
   const map = useMap();
   const activeLat = Number(activeCantt?.lat);
   const activeLng = Number(activeCantt?.lng);
   const draftLat = Number(draftCoords?.lat);
   const draftLng = Number(draftCoords?.lng);
 
+  // Track the previous explicit searchCity so we ONLY fly when search query actually changes
   useEffect(() => {
     try {
-      if (!isNaN(activeLat) && !isNaN(activeLng) && isFinite(activeLat) && isFinite(activeLng) && activeLat !== 0 && activeLng !== 0) {
-        map.flyTo([activeLat, activeLng], 13, { duration: 1.4 });
+      if (searchCity && !isNaN(activeLat) && !isNaN(activeLng) && isFinite(activeLat) && isFinite(activeLng) && activeLat !== 0 && activeLng !== 0) {
+        map.flyTo([activeLat, activeLng], 13, { duration: 1.2 });
       } else if (!isNaN(draftLat) && !isNaN(draftLng) && isFinite(draftLat) && isFinite(draftLng) && draftLat !== 0 && draftLng !== 0) {
-        map.flyTo([draftLat, draftLng], map.getZoom() || 13, { duration: 1.4 });
+        map.flyTo([draftLat, draftLng], map.getZoom() || 13, { duration: 1.2 });
       }
     } catch(e) {
       console.warn('MapAnimator warning:', e);
     }
-  }, [map, activeLat, activeLng, draftLat, draftLng]);
+  }, [map, searchCity, draftLat, draftLng]);
   return null;
 }
 
@@ -347,7 +348,7 @@ export default function MapView({
             attribution="&copy; Google Maps"
           />
           <MapController activeCantt={activeCantt} />
-          <MapAnimator activeCantt={activeCantt} draftCoords={allState.draftCoords} />
+          <MapAnimator searchCity={searchCity} activeCantt={activeCantt} draftCoords={allState.draftCoords} />
           <ScanningGrid />
           <BoundsHandler properties={displayListings} onBoundsChange={onBoundsChange} />
 
