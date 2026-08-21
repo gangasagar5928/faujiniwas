@@ -5,11 +5,29 @@ const LeaseGeneratorModal = React.lazy(() => import('../components/Modals/LeaseG
 const WasmMaskingModal = React.lazy(() => import('../components/Modals/WasmMaskingModal'));
 const CSDPulseTicker = React.lazy(() => import('../components/CSD/CSDPulseTicker'));
 import HRACalculator from '../components/New/HRACalculator';
+import AccessibilityModal from '../components/Modals/AccessibilityModal';
 
 export default function LandingPage() {
   const [showLeaseModal, setShowLeaseModal] = useState(false);
   const [showWasmModal, setShowWasmModal] = useState(false);
+  const [showAccessibilityModal, setShowAccessibilityModal] = useState(false);
   const [mobMenuOpen, setMobMenuOpen] = useState(false);
+  
+  const [isDarkTheme, setIsDarkTheme] = useState(() => {
+    return document.documentElement.classList.contains('dark') || document.documentElement.classList.contains('dark-theme');
+  });
+
+  useEffect(() => {
+    const handleTheme = () => {
+      setIsDarkTheme(document.documentElement.classList.contains('dark') || document.documentElement.classList.contains('dark-theme'));
+    };
+    window.addEventListener('theme-change', handleTheme);
+    window.addEventListener('storage', handleTheme);
+    return () => {
+      window.removeEventListener('theme-change', handleTheme);
+      window.removeEventListener('storage', handleTheme);
+    };
+  }, []);
   
   // HRA calculator states
   const [calcRank, setCalcRank] = useState('Major');
@@ -93,39 +111,50 @@ export default function LandingPage() {
       <nav className="fixed top-0 left-0 right-0 z-[1000] border-b border-slate-200/60 bg-[#FAF9F6]/80 backdrop-blur-xl transition-all duration-300">
         <div className="max-w-[1250px] mx-auto px-6 h-16 flex items-center justify-between">
           <a href="#" className="logo flex items-center gap-2 text-lg font-black tracking-tight text-slate-900 font-heading min-h-[48px] px-2">
-            <img src="/logo-light.jpg" alt="FaujiNiwas" className="w-8 h-8 rounded-lg object-contain light-logo shadow-xs" />
-            <img src="/logo-dark.jpg" alt="FaujiNiwas" className="w-8 h-8 rounded-lg object-contain dark-logo shadow-xs" />
-            <span><span className="text-amber-700">FAUJI</span> <span className="text-slate-950 font-normal">NIWAS</span></span>
+            <img 
+              src={isDarkTheme ? '/logo-dark.jpg' : '/logo-light.jpg'} 
+              alt="FaujiNiwas" 
+              className="w-8 h-8 rounded-lg object-contain shadow-xs" 
+            />
+            <span><span className="text-amber-700">FAUJI</span> <span className="text-slate-950 dark:text-white font-normal">NIWAS</span></span>
           </a>
 
           {/* Center Links - text contrast upgrades */}
-          <div className="hidden md:flex items-center gap-2 text-[11px] font-black uppercase tracking-wider text-slate-800">
-            <a href="#" className="hover:text-amber-800 transition-colors min-h-[48px] px-3 flex items-center">Home</a>
-            <button onClick={handleLaunchApp} className="hover:text-amber-800 transition-colors font-black uppercase cursor-pointer bg-transparent border-none min-h-[48px] px-3 flex items-center">Listings</button>
-            <button onClick={handleLaunchApp} className="hover:text-amber-800 transition-colors font-black uppercase cursor-pointer bg-transparent border-none min-h-[48px] px-3 flex items-center">Post Room</button>
-            <a href="/about.html" className="hover:text-amber-800 transition-colors min-h-[48px] px-3 flex items-center">About</a>
-            <a href="#comparison" className="hover:text-amber-800 transition-colors min-h-[48px] px-3 flex items-center">Compare</a>
-            <a href="#footer" className="hover:text-amber-800 transition-colors min-h-[48px] px-3 flex items-center">Contact</a>
+          <div className="hidden md:flex items-center gap-2 text-[11px] font-black uppercase tracking-wider text-slate-800 dark:text-slate-200">
+            <a href="#" className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors min-h-[48px] px-3 flex items-center">Home</a>
+            <button onClick={handleLaunchApp} className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors font-black uppercase cursor-pointer bg-transparent border-none min-h-[48px] px-3 flex items-center">Listings</button>
+            <button onClick={handleLaunchApp} className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors font-black uppercase cursor-pointer bg-transparent border-none min-h-[48px] px-3 flex items-center">Post Room</button>
+            <a href="/about.html" className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors min-h-[48px] px-3 flex items-center">About</a>
+            <a href="#comparison" className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors min-h-[48px] px-3 flex items-center">Compare</a>
+            <a href="#footer" className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors min-h-[48px] px-3 flex items-center">Contact</a>
           </div>
 
           {/* Action buttons */}
           <div className="flex items-center gap-2">
-            <button onClick={handleLaunchApp} className="text-slate-800 hover:text-amber-800 transition-colors cursor-pointer w-12 h-12 flex items-center justify-center" title="Search Listings" aria-label="Search">
-              <Search size={20} />
+            <button 
+              onClick={() => setShowAccessibilityModal(true)}
+              className="px-3.5 py-2 min-h-[40px] rounded-xl text-[11px] font-extrabold uppercase tracking-wider border border-slate-300 dark:border-slate-700 bg-white/90 dark:bg-slate-800/90 text-slate-800 dark:text-white shadow-xs hover:border-amber-600 transition-all cursor-pointer flex items-center gap-1.5"
+              title="Accessibility, Contrast & Font"
+            >
+              <span>♿</span>
+              <span className="hidden sm:inline">Contrast &amp; Font</span>
+            </button>
+            <button onClick={handleLaunchApp} className="text-slate-800 dark:text-slate-200 hover:text-amber-800 transition-colors cursor-pointer w-10 h-10 flex items-center justify-center" title="Search Listings" aria-label="Search">
+              <Search size={18} />
             </button>
             <button 
               onClick={handleLaunchApp}
-              className="px-5 py-3 min-h-[48px] rounded-full text-[10px] font-black uppercase tracking-widest border border-amber-700/40 text-amber-900 bg-amber-500/5 hover:bg-amber-500/10 transition-all cursor-pointer flex items-center"
+              className="px-5 py-2.5 min-h-[40px] rounded-full text-[10px] font-black uppercase tracking-widest border border-amber-700/40 text-amber-900 dark:text-amber-400 bg-amber-500/5 hover:bg-amber-500/10 transition-all cursor-pointer flex items-center"
             >
               Sign In
             </button>
             {/* Hamburger Toggle (Mobile) */}
             <button 
               onClick={() => setMobMenuOpen(!mobMenuOpen)}
-              className="md:hidden w-12 h-12 text-slate-800 hover:text-amber-800 transition-colors cursor-pointer flex items-center justify-center"
+              className="md:hidden w-10 h-10 text-slate-800 dark:text-slate-200 hover:text-amber-800 transition-colors cursor-pointer flex items-center justify-center"
               aria-label="Toggle Menu"
             >
-              {mobMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              {mobMenuOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
         </div>
@@ -836,6 +865,10 @@ export default function LandingPage() {
 
           </div>
         </div>
+      )}
+
+      {showAccessibilityModal && (
+        <AccessibilityModal onClose={() => setShowAccessibilityModal(false)} />
       )}
 
     </div>

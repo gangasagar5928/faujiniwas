@@ -1049,6 +1049,74 @@ html.dark-theme, body.dark-theme {
   color: #ffffff !important;
 }
 
+/* ══════════════════════════════════════════════════════════════════════════════════════
+   APP DARK MODE TACTICAL UPGRADES (Map, Sidebar Cards, Stats Bar)
+   ══════════════════════════════════════════════════════════════════════════════════════ */
+
+/* Dark Mode Tactical Map Inversion */
+html.dark-theme .leaflet-tile-pane,
+html.dark .leaflet-tile-pane,
+body.dark-theme .leaflet-tile-pane,
+body.dark .leaflet-tile-pane {
+  filter: brightness(0.65) invert(1) contrast(2.5) hue-rotate(200deg) saturate(0.3) brightness(0.75) !important;
+}
+
+/* Ensure markers, popups and overlays stay crisp and un-inverted */
+html.dark-theme .leaflet-marker-pane,
+html.dark .leaflet-marker-pane,
+body.dark-theme .leaflet-marker-pane,
+body.dark .leaflet-marker-pane,
+html.dark-theme .leaflet-popup-pane,
+html.dark .leaflet-popup-pane,
+body.dark-theme .leaflet-popup-pane,
+body.dark .leaflet-popup-pane,
+html.dark-theme .leaflet-overlay-pane,
+html.dark .leaflet-overlay-pane,
+body.dark-theme .leaflet-overlay-pane,
+body.dark .leaflet-overlay-pane {
+  filter: none !important;
+}
+
+/* Sidebar Cards in Dark Mode */
+html.dark-theme .panel [role="button"],
+html.dark .panel [role="button"],
+body.dark-theme .panel [role="button"],
+body.dark .panel [role="button"] {
+  background: #131d33 !important;
+  background-color: #131d33 !important;
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html.dark-theme .panel [role="button"]:hover,
+html.dark .panel [role="button"]:hover,
+body.dark-theme .panel [role="button"]:hover,
+body.dark .panel [role="button"]:hover {
+  border-color: #f59e0b !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5) !important;
+}
+
+/* Top Stats Bar in Dark Mode */
+html.dark-theme .stat-pill,
+html.dark .stat-pill,
+body.dark-theme .stat-pill,
+body.dark .stat-pill {
+  background: rgba(11, 19, 37, 0.92) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #f8fafc !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* Navbar in Dark Mode */
+html.dark-theme .navbar,
+html.dark .navbar,
+body.dark-theme .navbar,
+body.dark .navbar {
+  background: rgba(11, 19, 37, 0.95) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+}
+
 .dark-theme .border-slate-200 {
   border-color: rgba(255, 255, 255, 0.08) !important;
 }
