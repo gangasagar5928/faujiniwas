@@ -128,9 +128,11 @@ export default function ListingCard({ listing, item, onClick }) {
             </div>
             <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 1 }}>/mo</div>
           </div>
-          <div style={{ fontSize: 11, color: '#94a3b8', textAlign: 'right', lineHeight: 1.4, flexShrink: 0 }}>
-            {r.bhk ? `${r.bhk} BHK` : 'Studio'}<br />
-            {r.sqft || '1,400'} sq.ft
+          <div style={{ fontSize: 11, color: '#64748b', textAlign: 'right', lineHeight: 1.4, flexShrink: 0 }}>
+            <div style={{ fontWeight: 700, color: '#334155' }}>
+              {r.bhk ? `${r.bhk} BHK` : (r.name && r.name.match(/\b([1-4])\s*BHK\b/i) ? `${r.name.match(/\b([1-4])\s*BHK\b/i)[1]} BHK` : '2 BHK')}
+            </div>
+            <div style={{ color: '#94a3b8' }}>{r.sqft ? `${r.sqft} sq.ft` : '1,200 sq.ft'}</div>
           </div>
         </div>
       </div>

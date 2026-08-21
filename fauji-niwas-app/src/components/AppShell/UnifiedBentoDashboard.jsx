@@ -164,8 +164,11 @@ export default function UnifiedBentoDashboard() {
           </button>
 
           <button 
+            id="btn-accessibility"
             className="filter-btn" 
-            onClick={() => {
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
               if (ctx?.openAccessibility) {
                 ctx.openAccessibility();
               } else if (window.openAccessibilityModal) {

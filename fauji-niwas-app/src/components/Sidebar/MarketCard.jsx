@@ -82,7 +82,7 @@ export default function MarketCard({ item, onClick }) {
         {/* Title */}
         <div style={{ fontSize: 14, fontWeight: 700, color: '#1e293b', lineHeight: 1.3,
           display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-          {item?.name || 'Defence Household Item'}
+          {item?.name || item?.title || item?.itemName || item?.productName || (item?.type && item?.type !== 'market' ? `${item.type} · ${item.city || 'Defence Post'}` : (item?.category ? `${item.category} · ${item.city || 'Cantt'}` : 'Defence Post Item'))}
         </div>
 
         {/* Category & Location */}
