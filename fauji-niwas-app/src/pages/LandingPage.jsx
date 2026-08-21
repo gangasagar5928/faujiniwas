@@ -460,9 +460,29 @@ export default function LandingPage() {
           </div>
           <button 
             onClick={handleLaunchApp} 
-            className="self-start md:self-center bg-[#0b1325] hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider px-6 py-3.5 rounded-xl shadow-sm transition-all whitespace-nowrap cursor-pointer flex items-center gap-2"
+            style={{
+              backgroundColor: '#b45309',
+              color: '#ffffff',
+              fontWeight: 900,
+              padding: '14px 26px',
+              borderRadius: '14px',
+              border: 'none',
+              boxShadow: '0 4px 18px rgba(180, 83, 9, 0.35)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              fontSize: '12px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
+              whiteSpace: 'nowrap',
+              transition: 'transform 0.15s, background-color 0.15s'
+            }}
+            onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#92400e'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+            onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#b45309'; e.currentTarget.style.transform = 'translateY(0)'; }}
           >
-            Launch Relocation App <span>↗</span>
+            <span>Launch Relocation OS</span>
+            <span style={{ fontSize: '15px' }}>↗</span>
           </button>
         </motion.section>
 

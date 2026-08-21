@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState, useCallback } from 'react';
+import React, { useContext, useMemo, useState, useCallback, useEffect } from 'react';
 import { ModalContext } from '../../App';
 import { useAuth } from '../../hooks/useAuth';
 import { useFilterStore, getFilteredListings } from '../../store/filterStore';
