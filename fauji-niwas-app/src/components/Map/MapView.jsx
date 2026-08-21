@@ -47,8 +47,12 @@ function MapController({ activeCantt }) {
     // Zoom & Recenter handlers
     const zoomIn = () => { try { map.zoomIn(); } catch(e) {} };
     const zoomOut = () => { try { map.zoomOut(); } catch(e) {} };
-    const recenter = () => {
+    const recenter = (e) => {
       try {
+        if (e?.detail?.lat && e?.detail?.lng) {
+          map.flyTo([e.detail.lat, e.detail.lng], 14, { duration: 1.2 });
+          return;
+        }
         const lat = Number(activeCantt?.lat);
         const lng = Number(activeCantt?.lng);
         if (!isNaN(lat) && !isNaN(lng) && isFinite(lat) && isFinite(lng) && lat !== 0 && lng !== 0) {
@@ -56,7 +60,9 @@ function MapController({ activeCantt }) {
         } else {
           map.panTo([22.5, 82.0]);
         }
-      } catch(e) {}
+      } catch(err) {
+        console.warn('Recenter error:', err);
+      }
     };
     
     window.addEventListener('map-zoom-in', zoomIn);

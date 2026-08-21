@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { ModalContext } from '../../App';
 import { useAuth } from '../../hooks/useAuth';
 import { useFilterStore, getFilteredListings } from '../../store/filterStore';
@@ -21,9 +21,23 @@ export default function UnifiedBentoDashboard() {
     bhkFilter,
     setBhkFilter,
     maxPrice,
-    setMaxPrice
+    setMaxPrice,
+    showCommuteZones,
+    setShowCommuteZones,
+    showSchools,
+    setShowSchools,
+    showHospitals,
+    setShowHospitals
   } = allState;
+  
   const listings = getFilteredListings(allState);
+  const [isPanelOpen, setIsPanelOpen] = useState(true);
+  const [isFacilitiesOpen, setIsFacilitiesOpen] = useState(true);
+
+  // Expose listings globally for chatbot
+  if (typeof window !== 'undefined') {
+    window.__fauji_listings = listings;
+  }
 
   // Filter items based on active tab and search query
   const items = useMemo(() => {
@@ -52,6 +66,27 @@ export default function UnifiedBentoDashboard() {
     else if (maxPrice <= 15000) setMaxPrice(30000);
     else if (maxPrice <= 30000) setMaxPrice(50000);
     else setMaxPrice(100000);
+  };
+
+  const handleLocateMe = () => {
+    if (!navigator.geolocation) {
+      ctx?.showToast('Geolocation not supported on this device', 'error');
+      window.dispatchEvent(new CustomEvent('map-recenter'));
+      return;
+    }
+    ctx?.showToast('Locating your position...', 'ok');
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        window.dispatchEvent(new CustomEvent('map-recenter', { detail: { lat: coords.latitude, lng: coords.longitude } }));
+        ctx?.showToast('Found your location!', 'ok');
+      },
+      (err) => {
+        console.warn('Geolocation error:', err);
+        ctx?.showToast('Please enable location access in browser', 'error');
+        window.dispatchEvent(new CustomEvent('map-recenter'));
+      },
+      { enableHighAccuracy: true, timeout: 8000 }
+    );
   };
 
   return (
@@ -111,7 +146,7 @@ export default function UnifiedBentoDashboard() {
             onClick={() => ctx.openAccessibility?.()}
             title="Accessibility & Theme settings"
           >
-            <span>♿ Contrast & Font</span>
+            <span>♿ Contrast &amp; Font</span>
           </button>
 
           <div className="nav-gap"></div>
@@ -122,13 +157,16 @@ export default function UnifiedBentoDashboard() {
             </button>
           ) : (
             <button onClick={() => ctx.openProfile?.()} className="sign-btn">
-              Sign in / Sign Up
+              Sign In / Sign Up
             </button>
           )}
         </nav>
 
         {/* ══ STATS ══ */}
-        <div className="stats-bar">
+        <div className="stats-bar" style={{
+          left: isPanelOpen ? '376px' : '20px',
+          transition: 'left 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+        }}>
           <div className="stat-pill">
             <span className="live-dot"></span>
             Total listings <strong style={{marginLeft:'4px'}}>{items.length}</strong>
@@ -139,9 +177,15 @@ export default function UnifiedBentoDashboard() {
           </div>
         </div>
 
-        {/* ══ PANEL ══ */}
-        <div className="panel" id="panel">
-          
+        {/* ══ PANEL (Sidebar with smooth collapse) ══ */}
+        <div 
+          className="panel" 
+          id="panel"
+          style={{
+            transform: isPanelOpen ? 'translateX(0)' : 'translateX(-100%)',
+            transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+          }}
+        >
           {/* Tabs Navigation */}
           <div className="flex gap-2 mb-4 pb-2 border-b border-black/5 bg-[#0b1325]/5 dark:bg-white/5 p-1.5 rounded-xl">
             {[
@@ -188,7 +232,7 @@ export default function UnifiedBentoDashboard() {
                   return (
                     <ListingCard
                       key={item.id}
-                      item={item}
+                      listing={item}
                       onClick={() => ctx.openDetail?.(item.id)}
                     />
                   );
@@ -203,37 +247,215 @@ export default function UnifiedBentoDashboard() {
           </div>
         </div>
 
+        {/* ══ PANEL COLLAPSE TOGGLE BUTTON ══ */}
+        <button
+          onClick={() => setIsPanelOpen(v => !v)}
+          style={{
+            position: 'fixed',
+            top: '50%',
+            left: isPanelOpen ? '362px' : '0px',
+            transform: 'translateY(-50%)',
+            zIndex: 950,
+            width: '24px',
+            height: '48px',
+            background: '#ffffff',
+            border: '1px solid #cbd5e1',
+            borderLeft: isPanelOpen ? 'none' : '1px solid #cbd5e1',
+            borderRadius: '0 10px 10px 0',
+            boxShadow: '3px 0 12px rgba(0,0,0,0.12)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '16px',
+            fontWeight: 900,
+            color: '#475569',
+            cursor: 'pointer',
+            transition: 'left 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.15s, color 0.15s'
+          }}
+          title={isPanelOpen ? 'Collapse listings' : 'Expand listings'}
+          onMouseEnter={e => { e.currentTarget.style.background = '#f8fafc'; e.currentTarget.style.color = '#0f172a'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = '#ffffff'; e.currentTarget.style.color = '#475569'; }}
+        >
+          {isPanelOpen ? '‹' : '›'}
+        </button>
+
         {/* ══ MAP CONTROLS (Top Right) ══ */}
         <div className="map-ctrl">
           <button onClick={() => window.dispatchEvent(new CustomEvent('map-zoom-in'))} className="ctrl-btn" title="Zoom In">+</button>
           <button onClick={() => window.dispatchEvent(new CustomEvent('map-zoom-out'))} className="ctrl-btn" title="Zoom Out">−</button>
-          <button onClick={() => window.dispatchEvent(new CustomEvent('map-recenter'))} className="ctrl-btn" title="Recenter Map">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+          <button onClick={handleLocateMe} className="ctrl-btn" title="My Current Location">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
               <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/>
             </svg>
           </button>
-          <button onClick={() => ctx.openPost?.()} className="ctrl-btn" title="Add Listing">➕</button>
+          {/* Post New Listing Button */}
+          <button 
+            onClick={() => ctx.openPost?.()} 
+            className="ctrl-btn" 
+            title="Post New Listing"
+            style={{
+              background: '#16a34a',
+              color: '#ffffff',
+              borderColor: '#15803d',
+              fontWeight: 800,
+              fontSize: '15px'
+            }}
+          >
+            ✚
+          </button>
         </div>
 
-        {/* ══ LEGEND (Bottom Right) ══ */}
-        <div className="legend">
-          <div className="legend-title font-bold">Nearby Facilities</div>
-          <div className="legend-item"><div className="l-icon">🚉</div> Station Commute Zone</div>
-          <div className="legend-item"><div className="l-icon">🎓</div> Army School</div>
-          <div className="legend-item"><div className="l-icon">🏥</div> Military Hospital</div>
+        {/* ══ NEARBY FACILITIES (Collapsible & Interactive) ══ */}
+        <div className="legend" style={{ zIndex: 850 }}>
+          {!isFacilitiesOpen ? (
+            <button 
+              onClick={() => setIsFacilitiesOpen(true)}
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '12.5px',
+                fontWeight: 800,
+                color: 'inherit',
+                padding: '2px 0'
+              }}
+              title="Expand Nearby Facilities"
+            >
+              <span>📍 Nearby Facilities</span>
+              <span style={{ fontSize: '10px', opacity: 0.6 }}>▼</span>
+            </button>
+          ) : (
+            <>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                <div className="legend-title font-bold" style={{ margin: 0, fontSize: '13px' }}>
+                  Nearby Facilities
+                </div>
+                <button 
+                  onClick={() => setIsFacilitiesOpen(false)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    fontSize: '14px',
+                    fontWeight: 700,
+                    color: '#94a3b8',
+                    cursor: 'pointer',
+                    padding: '2px 6px',
+                    lineHeight: 1
+                  }}
+                  title="Collapse Facilities"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <button
+                  onClick={() => setShowCommuteZones(!showCommuteZones)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '10px',
+                    padding: '6px 8px',
+                    borderRadius: '10px',
+                    border: '1px solid',
+                    borderColor: showCommuteZones ? 'rgba(34,197,94,0.4)' : 'rgba(0,0,0,0.06)',
+                    background: showCommuteZones ? 'rgba(34,197,94,0.12)' : 'rgba(0,0,0,0.02)',
+                    cursor: 'pointer',
+                    fontSize: '12px',
+                    fontWeight: showCommuteZones ? 700 : 500,
+                    color: 'inherit',
+                    textAlign: 'left',
+                    transition: 'all 0.15s'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '14px' }}>🚆</span>
+                    <span>Station Commute Zone</span>
+                  </div>
+                  <span style={{ fontSize: '11px', color: showCommuteZones ? '#16a34a' : '#94a3b8' }}>
+                    {showCommuteZones ? '✓' : '○'}
+                  </span>
+                </button>
+
+                <button
+                  onClick={() => setShowSchools(!showSchools)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '10px',
+                    padding: '6px 8px',
+                    borderRadius: '10px',
+                    border: '1px solid',
+                    borderColor: showSchools ? 'rgba(59,130,246,0.4)' : 'rgba(0,0,0,0.06)',
+                    background: showSchools ? 'rgba(59,130,246,0.12)' : 'rgba(0,0,0,0.02)',
+                    cursor: 'pointer',
+                    fontSize: '12px',
+                    fontWeight: showSchools ? 700 : 500,
+                    color: 'inherit',
+                    textAlign: 'left',
+                    transition: 'all 0.15s'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '14px' }}>🏫</span>
+                    <span>Army School</span>
+                  </div>
+                  <span style={{ fontSize: '11px', color: showSchools ? '#2563eb' : '#94a3b8' }}>
+                    {showSchools ? '✓' : '○'}
+                  </span>
+                </button>
+
+                <button
+                  onClick={() => setShowHospitals(!showHospitals)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '10px',
+                    padding: '6px 8px',
+                    borderRadius: '10px',
+                    border: '1px solid',
+                    borderColor: showHospitals ? 'rgba(239,68,68,0.4)' : 'rgba(0,0,0,0.06)',
+                    background: showHospitals ? 'rgba(239,68,68,0.12)' : 'rgba(0,0,0,0.02)',
+                    cursor: 'pointer',
+                    fontSize: '12px',
+                    fontWeight: showHospitals ? 700 : 500,
+                    color: 'inherit',
+                    textAlign: 'left',
+                    transition: 'all 0.15s'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '14px' }}>🏥</span>
+                    <span>Military Hospital</span>
+                  </div>
+                  <span style={{ fontSize: '11px', color: showHospitals ? '#dc2626' : '#94a3b8' }}>
+                    {showHospitals ? '✓' : '○'}
+                  </span>
+                </button>
+              </div>
+            </>
+          )}
         </div>
 
-        {/* ══ CHAT FAB (Desktop Bottom Anchor) ══ */}
+        {/* ══ CHAT FAB (Desktop Bottom Anchor - Toggle open/collapse) ══ */}
         <button 
           className="chat-fab" 
           onClick={() => {
-            if (window.openFaujiChatbot) {
+            if (typeof window.toggleChatbot === 'function') {
+              window.toggleChatbot();
+            } else if (typeof window.openFaujiChatbot === 'function') {
               window.openFaujiChatbot();
             } else if (ctx.openChat) {
               ctx.openChat();
             }
           }} 
-          title="Open Military AI Assistant"
+          title="Military AI Assistant"
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
