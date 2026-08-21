@@ -26,6 +26,7 @@ export default function AppShell() {
   const ctx = useContext(ModalContext);
   const [, startTransition] = useTransition();
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const isNative = window.faujiApp;
 
@@ -176,9 +177,9 @@ export default function AppShell() {
           ══════════════════════════════════════════ */}
       <main className={styles.main}>
 
-        {/* Desktop Sidebar */}
+        {/* Desktop Sidebar — collapsible */}
         {!isNative && (
-          <aside className={styles.desktopSidebar}>
+          <aside className={`${styles.desktopSidebar} ${sidebarCollapsed ? styles.desktopSidebarCollapsed : ''}`}>
             {/* Nav tabs (Homes | SSB Dorms | Marketplace | Saved) */}
             <div className={styles.navTabsBar}>
               {navTabs.map(tab => (
@@ -196,6 +197,15 @@ export default function AppShell() {
             <div className={styles.sidebarList}>
               <Sidebar />
             </div>
+
+            {/* Collapse toggle — right edge of sidebar */}
+            <button
+              className={styles.collapseBtn}
+              onClick={() => setSidebarCollapsed(v => !v)}
+              title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            >
+              {sidebarCollapsed ? '›' : '‹'}
+            </button>
           </aside>
         )}
 
@@ -221,6 +231,23 @@ export default function AppShell() {
               </div>
             </div>
           )}
+
+          {/* Chat FAB — bottom right of map */}
+          {!isNative && (
+            <button
+              className={styles.chatFab}
+              onClick={() => {
+                if (window.openFaujiChatbot) window.openFaujiChatbot();
+                else if (ctx.openChat) ctx.openChat();
+              }}
+              title="Military AI Assistant"
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+            </button>
+          )}
+
           <MapView />
         </div>
       </main>

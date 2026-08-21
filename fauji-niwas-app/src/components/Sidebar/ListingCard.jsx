@@ -9,8 +9,6 @@ const PHOTO_POOL = [
   'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=600&q=80',
 ];
 
-/** Listing card — horizontal layout on desktop (matches reference screenshot),
- *  vertical stack on mobile (unchanged). */
 export default function ListingCard({ listing, item, onClick }) {
   const r = listing || item || {};
   const price = Number(String(r.price).replace(/[^0-9.]/g, '')) || 0;
@@ -24,86 +22,94 @@ export default function ListingCard({ listing, item, onClick }) {
 
   return (
     <div
-      className="group relative flex rounded-2xl overflow-hidden cursor-pointer mb-3 transition-all duration-200
-        bg-white border border-slate-100 shadow-sm hover:shadow-md hover:border-slate-300
-        dark:bg-[#131b2e] dark:border-white/10 dark:hover:border-white/20"
-      style={{ display: 'flex', flexDirection: 'row', minHeight: '140px' }}
       onClick={onClick}
       role="button"
       tabIndex={0}
       onKeyDown={e => e.key === 'Enter' && onClick?.()}
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        borderRadius: '16px',
+        overflow: 'hidden',
+        cursor: 'pointer',
+        marginBottom: '10px',
+        background: '#fff',
+        border: '1px solid #e2e8f0',
+        boxShadow: '0 1px 4px rgba(0,0,0,0.07)',
+        transition: 'box-shadow 0.2s, border-color 0.2s',
+        minHeight: '120px',
+      }}
+      onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.12)'; e.currentTarget.style.borderColor = '#94a3b8'; }}
+      onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.07)'; e.currentTarget.style.borderColor = '#e2e8f0'; }}
     >
-      {/* ── Photo (left) ── */}
-      <div className="relative shrink-0 overflow-hidden bg-slate-100" style={{ width: '120px', minHeight: '140px' }}>
+      {/* ── Photo ── */}
+      <div style={{ position: 'relative', width: '120px', minHeight: '120px', flexShrink: 0, background: '#f1f5f9', overflow: 'hidden' }}>
         <img
           src={thumb}
           loading="lazy"
           alt={r.name || 'Listing'}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          style={{ position: 'absolute', inset: 0 }}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
           onError={e => { e.target.src = PHOTO_POOL[0]; }}
         />
-
-        {/* Star rating — bottom left */}
-        <div className="absolute bottom-2 left-2 flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-black
-          bg-black/65 backdrop-blur-sm text-amber-400">
+        {/* Star */}
+        <div style={{ position: 'absolute', bottom: 6, left: 6, display: 'flex', alignItems: 'center', gap: 3,
+          padding: '3px 7px', borderRadius: 7, background: 'rgba(0,0,0,0.65)', color: '#fbbf24',
+          fontSize: 11, fontWeight: 900, backdropFilter: 'blur(4px)' }}>
           4.8 <span>★</span>
         </div>
-
-        {/* Verified — bottom right */}
+        {/* Verified */}
         {r.verified && (
-          <div className="absolute bottom-2 right-1 px-1.5 py-0.5 rounded-md text-[10px] font-bold
-            bg-emerald-500 text-white">
+          <div style={{ position: 'absolute', bottom: 6, right: 4, padding: '3px 6px', borderRadius: 6,
+            background: '#10b981', color: '#fff', fontSize: 10, fontWeight: 700 }}>
             Verified
           </div>
         )}
-
-        {/* Bookmark — top right */}
+        {/* Bookmark */}
         <button
           onClick={e => { e.stopPropagation(); toggleWishlist(r.id); }}
-          className={`absolute top-2 right-2 w-7 h-7 rounded-lg flex items-center justify-center text-[14px]
-            bg-white/85 border border-white/50 shadow transition-all hover:scale-110
-            ${isSaved ? 'text-rose-500' : 'text-slate-400 hover:text-slate-700'}`}
+          style={{ position: 'absolute', top: 6, right: 6, width: 28, height: 28, borderRadius: 8,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14,
+            background: 'rgba(255,255,255,0.88)', border: '1px solid rgba(255,255,255,0.5)',
+            boxShadow: '0 1px 4px rgba(0,0,0,0.15)', cursor: 'pointer', transition: 'transform 0.15s',
+            color: isSaved ? '#f43f5e' : '#94a3b8' }}
         >
           {isSaved ? '♥' : '♡'}
         </button>
       </div>
 
-      {/* ── Details (right) ── */}
-      <div className="flex flex-col justify-between flex-1 px-3 py-3 min-w-0 overflow-hidden">
-
+      {/* ── Details ── */}
+      <div style={{ display: 'flex', flexDirection: 'column', flex: 1, padding: '12px 12px 10px', minWidth: 0, gap: 4 }}>
         {/* Title */}
-        <div className="min-w-0">
-          <h4 className="text-[14px] font-bold leading-snug text-slate-800 group-hover:text-blue-600 transition-colors
-            dark:text-white dark:group-hover:text-amber-400"
-            style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
-          >
-            {r.name || 'Premium Property'}
-          </h4>
-          <p className="text-[12px] text-slate-500 mt-1 truncate flex items-center gap-1 dark:text-slate-400">
-            <span>📍</span>
+        <div style={{ fontSize: 14, fontWeight: 700, color: '#1e293b', lineHeight: 1.3,
+          display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+          {r.name || 'Premium Property'}
+        </div>
+
+        {/* Location */}
+        <div style={{ fontSize: 12, color: '#64748b', display: 'flex', alignItems: 'center', gap: 3, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+          <span style={{ fontSize: 11 }}>📍</span>
+          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {r.city || r.address || 'Cantonment Area'}
-          </p>
+          </span>
         </div>
 
         {/* Divider */}
-        <div className="w-full h-px bg-slate-100 dark:bg-white/5 my-2" />
+        <div style={{ height: 1, background: '#f1f5f9', margin: '2px 0' }} />
 
-        {/* Price + specs */}
-        <div className="flex items-end justify-between gap-2 min-w-0">
-          <div className="min-w-0">
-            <span className="text-[18px] font-black text-orange-500 leading-none block">
+        {/* Price row */}
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 6 }}>
+          <div style={{ lineHeight: 1 }}>
+            <div style={{ fontSize: 18, fontWeight: 900, color: '#f97316' }}>
               ₹{price > 0 ? price.toLocaleString() : '—'}
-            </span>
-            <span className="text-[11px] text-slate-400">/mo</span>
+            </div>
+            <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 1 }}>/mo</div>
           </div>
-          <span className="text-[11px] text-slate-400 font-medium text-right shrink-0">
+          <div style={{ fontSize: 11, color: '#94a3b8', textAlign: 'right', lineHeight: 1.4, flexShrink: 0 }}>
             {r.bhk ? `${r.bhk} BHK` : 'Studio'}<br />
             {r.sqft || '1,400'} sq.ft
-          </span>
+          </div>
         </div>
       </div>
     </div>
   );
-
 }
