@@ -133,14 +133,11 @@ export default function AppShell() {
 
               <button
                 className={styles.contractBtn}
-                onClick={() => ctx.openTransfers()}
-                title="Contract & Rent options"
+                onClick={() => ctx.openAccessibility?.()}
+                title="Accessibility, Font & Contrast"
               >
-                <svg width="13" height="13" viewBox="0 0 20 20" fill="none">
-                  <rect x="3" y="4" width="14" height="13" rx="2" stroke="currentColor" strokeWidth="1.6"/>
-                  <path d="M7 2v4M13 2v4M3 9h14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
-                </svg>
-                Contract &amp; Rent
+                <span style={{ fontSize: '13px' }}>♿</span>
+                Contrast &amp; Font
               </button>
 
               <button

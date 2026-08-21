@@ -79,10 +79,11 @@ function createChatbotUI() {
     #fauji-chatbot {
     position: fixed;
     bottom: 24px;
-    right: 240px;
-    z-index: 999;
+    right: 24px;
+    z-index: 10000;
     font-family: 'Outfit', sans-serif;
     }
+    #cb-bubble { display: none !important; }
     @media (max-width: 768px) {
         #fauji-chatbot { 
           bottom: 74px; 

@@ -230,6 +230,22 @@ export default function DetailModal({ id, onClose }) {
                 }}>
                 {isComparing ? '🗸 Comparing' : '🔁 Compare'}
               </button>
+              <button className={styles.reportBtn} onClick={() => {
+                if ('speechSynthesis' in window) {
+                  window.speechSynthesis.cancel();
+                  const speechText = `${displayName}. Rent is ${price ? price.toLocaleString() : ''} rupees per month. Located at ${locationStr}. ${bhkLabel}. ${furnishingLabel}.`;
+                  const msg = new SpeechSynthesisUtterance(speechText);
+                  msg.lang = 'en-IN';
+                  msg.rate = 1.0;
+                  const voices = window.speechSynthesis.getVoices();
+                  const indVoice = voices.find(v => v.lang.includes('IN') || v.lang.includes('hi') || v.name.includes('India') || v.lang.includes('en-GB') || v.lang.includes('en-US'));
+                  if (indVoice) msg.voice = indVoice;
+                  window.speechSynthesis.speak(msg);
+                  ctx.showToast('Reading listing details...', 'ok');
+                } else {
+                  ctx.showToast('Voice speech not supported', 'error');
+                }
+              }}>🗣️ Listen</button>
               <button className={styles.reportBtn} onClick={() => ctx.openChat({ listingId: r.id, recipientId: r.uid, name: displayName })}>💬 Chat</button>
               <button className={styles.reportBtn} style={{ color: 'var(--gold)', borderColor: 'rgba(255,215,0,0.3)', background: 'rgba(255,215,0,0.06)' }} onClick={() => setShowPremiumModal(true)}>⭐ Premium</button>
               <button className={styles.reportBtn} onClick={() => { onClose(); ctx.openReport(r.id); }}>🚩 Report</button>

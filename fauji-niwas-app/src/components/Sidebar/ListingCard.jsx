@@ -20,9 +20,30 @@ export default function ListingCard({ listing, item, onClick }) {
   const toggleWishlist = useUserStore(s => s.toggleWishlist);
   const isSaved = wishlist.includes(r.id);
 
+  const handleClick = () => {
+    if (window.fn_tts_active || localStorage.getItem('fn_tts') === 'true') {
+      if ('speechSynthesis' in window) {
+        try {
+          window.speechSynthesis.cancel();
+          const speechText = `${r.name || 'Property'}. Rent is ${price ? price.toLocaleString() : ''} rupees per month. Located at ${r.city || r.address || 'Cantonment Area'}. ${r.bhk ? r.bhk + ' BHK.' : ''}`;
+          const msg = new SpeechSynthesisUtterance(speechText);
+          msg.lang = 'en-IN';
+          msg.rate = 1.0;
+          const voices = window.speechSynthesis.getVoices();
+          const indVoice = voices.find(v => v.lang.includes('IN') || v.lang.includes('hi') || v.name.includes('India') || v.lang.includes('en-GB') || v.lang.includes('en-US'));
+          if (indVoice) msg.voice = indVoice;
+          window.speechSynthesis.speak(msg);
+        } catch (e) {
+          console.warn('TTS speak error:', e);
+        }
+      }
+    }
+    onClick?.();
+  };
+
   return (
     <div
-      onClick={onClick}
+      onClick={handleClick}
       role="button"
       tabIndex={0}
       onKeyDown={e => e.key === 'Enter' && onClick?.()}
