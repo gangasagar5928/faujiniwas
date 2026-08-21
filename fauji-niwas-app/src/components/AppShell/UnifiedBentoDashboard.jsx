@@ -165,7 +165,13 @@ export default function UnifiedBentoDashboard() {
 
           <button 
             className="filter-btn" 
-            onClick={() => ctx.openAccessibility?.()}
+            onClick={() => {
+              if (ctx?.openAccessibility) {
+                ctx.openAccessibility();
+              } else if (window.openAccessibilityModal) {
+                window.openAccessibilityModal();
+              }
+            }}
             title="Accessibility & Theme settings"
           >
             <span>♿ Contrast &amp; Font</span>
@@ -267,6 +273,7 @@ export default function UnifiedBentoDashboard() {
                       key={item.id}
                       dorm={item}
                       onFoodClick={(city) => ctx.openFood(item.city)}
+                      onClick={() => ctx.openDetail?.(item.id)}
                     />
                   );
                 } else if (activeView === 'market') {

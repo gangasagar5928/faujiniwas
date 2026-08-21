@@ -1416,11 +1416,11 @@ html.app-shell, body.app-shell {
 }
 .poi-pin span { transform:rotate(45deg); font-size:15px; }
 
-/* ── LEGEND (bottom-right on desktop) ── */
+/* ── LEGEND (bottom-right on desktop, above chat FAB) ── */
 .legend {
   position: fixed !important;
-  bottom: 24px !important;
-  right: 20px !important;
+  bottom: 86px !important;
+  right: 24px !important;
   z-index: 850 !important;
   background: rgba(255, 255, 255, 0.96) !important;
   backdrop-filter: blur(24px) !important;
@@ -1500,12 +1500,12 @@ html.app-shell, body.app-shell {
   background: #1e293b !important;
 }
 
-/* ── CHAT FAB (desktop anchor) ── */
+/* ── CHAT FAB (desktop anchor - bottom-right corner) ── */
 .chat-fab {
   position: fixed !important;
   bottom: 24px !important;
-  right: 246px !important;
-  z-index: 850 !important;
+  right: 24px !important;
+  z-index: 900 !important;
   width:48px; height:48px;
   background: linear-gradient(135deg,#15803d,#22c55e);
   border-radius:50%;

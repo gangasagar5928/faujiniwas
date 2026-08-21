@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Shield, Search, ArrowUpRight, Check, FileText, Lock, Globe, Phone, Mail, Award, Navigation, Star, Menu, X } from 'lucide-react';
 const LeaseGeneratorModal = React.lazy(() => import('../components/Modals/LeaseGeneratorModal'));
 const WasmMaskingModal = React.lazy(() => import('../components/Modals/WasmMaskingModal'));

@@ -8,17 +8,21 @@ const DORM_PHOTOS = [
   'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&q=80',
 ];
 
-export default function DormCard({ dorm, onFoodClick }) {
+export default function DormCard({ dorm, onFoodClick, onClick }) {
   const wishlist = useUserStore(s => s.wishlist) || [];
   const toggleWishlist = useUserStore(s => s.toggleWishlist);
-  const isSaved = wishlist.includes(dorm.id);
+  const isSaved = wishlist.includes(dorm?.id);
   
   // Pick deterministic photo
-  const photoIndex = Math.abs((dorm.id?.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) || 0) % DORM_PHOTOS.length);
-  const thumb = dorm.mediaUrls?.[0] || DORM_PHOTOS[photoIndex];
+  const photoIndex = Math.abs((dorm?.id?.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) || 0) % DORM_PHOTOS.length);
+  const thumb = dorm?.mediaUrls?.[0] || DORM_PHOTOS[photoIndex];
 
   return (
     <div
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={e => e.key === 'Enter' && onClick?.()}
       style={{
         display: 'flex',
         flexDirection: 'row',
