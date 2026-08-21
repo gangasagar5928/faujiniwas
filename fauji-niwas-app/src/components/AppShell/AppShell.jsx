@@ -1,60 +1,66 @@
-import { useContext } from 'react';
+import { useContext, useState, useTransition } from 'react';
 import { useFilterStore } from '../../store/filterStore';
 import { useUserStore } from '../../store/userStore';
 import { ModalContext } from '../../App';
-import { auth } from '../../firebase';
 import { useAuth } from '../../hooks/useAuth';
 import MapView from '../Map/MapView';
 import Sidebar from '../Sidebar/Sidebar';
 import TacticalFAB from '../Navigation/TacticalFAB';
+import logoLight from '../../assets/logo-light.jpg';
+import logoDark from '../../assets/logo-dark.jpg';
 import styles from './AppShell.module.css';
 
 export default function AppShell() {
   const { user, isAdmin, loading: authLoading } = useAuth();
   const activeView = useFilterStore((s) => s.activeView);
   const setActiveView = useFilterStore((s) => s.setActiveView);
+  const smartSearchQ = useFilterStore((s) => s.smartSearchQ);
+  const setSmartSearchQ = useFilterStore((s) => s.setSmartSearchQ);
+  const bhkFilter = useFilterStore((s) => s.bhkFilter);
+  const setBhkFilter = useFilterStore((s) => s.setBhkFilter);
+  const maxPrice = useFilterStore((s) => s.maxPrice);
+  const setMaxPrice = useFilterStore((s) => s.setMaxPrice);
+  const listings = useFilterStore((s) => s.listings);
+  const setIsPending = useFilterStore((s) => s.setIsPending);
   const comparison = useUserStore(s => s.comparison) || [];
   const ctx = useContext(ModalContext);
+  const [, startTransition] = useTransition();
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const isNative = window.faujiApp;
-  const viewSignal = {
-    rentals: {
-      eyebrow: 'Housing Finder',
-      title: 'Scan verified rentals around the cantonment belt.',
-      copy: 'Jump between listings, live map pins, and owner trust signals without losing track of your search.',
-    },
-    market: {
-      eyebrow: 'Posting-Out Exchange',
-      title: 'Marketplace movement is active right now.',
-      copy: 'Vehicles, furniture, and appliances are surfacing from real defence relocations instead of generic classifieds.',
-    },
-    dorms: {
-      eyebrow: 'SSB Movement Board',
-      title: 'Dorm scouting is streamlined for the next reporting day.',
-      copy: 'Shortlist board-adjacent stays, food options, and nearby support points from one surface.',
-    },
-    saved: {
-      eyebrow: 'Shortlist Locker',
-      title: 'Your saved options are ready for final comparison.',
-      copy: 'Use the shortlist as a calm staging area before the next family move or unit transfer.',
-    },
-  }[activeView] || {
-    eyebrow: 'Services',
-    title: 'Defence housing data is live.',
-    copy: 'Browse, compare, and act without losing context.',
+
+  // Live stats
+  const rentalListings = listings.filter(l => l._collection === 'rentals');
+  const avgRent = rentalListings.length
+    ? Math.round(rentalListings.reduce((s, l) => s + (Number(l.price) || 0), 0) / rentalListings.length)
+    : 0;
+  const formatK = (n) => n >= 1000 ? `₹${Math.round(n / 1000)}K` : `₹${n}`;
+
+  const handleFilter = (fn, val) => {
+    setIsPending(true);
+    startTransition(() => { fn(val); setTimeout(() => setIsPending(false), 30); });
   };
 
-  const navItems = [
-    { id: 'rentals', label: 'Rentals',    icon: '🏠' },
-    { id: 'market',  label: 'Marketplace',icon: '🏷️' },
-    { id: 'dorms',   label: 'SSB Dorms',  icon: '🏨' },
-    { id: 'saved',   label: 'Saved',      icon: '⭐' },
-    { id: 'transfers', label: 'Alerts',   icon: '🔔', action: () => ctx.openTransfers() },
-    { id: 'profile', label: 'Profile',    icon: '👤', action: () => ctx.openProfile() },
+  const navTabs = [
+    { id: 'rentals', label: 'Homes',       icon: '🏠' },
+    { id: 'dorms',   label: 'SSB Dorms',   icon: '🏨' },
+    { id: 'market',  label: 'Marketplace', icon: '🏷️' },
+    { id: 'saved',   label: 'Saved',       icon: '⭐' },
+  ];
+
+  const mobileNavItems = [
+    { id: 'rentals',   label: 'Homes',       icon: '🏠' },
+    { id: 'market',    label: 'Marketplace', icon: '🏷️' },
+    { id: 'dorms',     label: 'SSB Dorms',   icon: '🏨' },
+    { id: 'saved',     label: 'Saved',       icon: '⭐' },
+    { id: 'transfers', label: 'Alerts',      icon: '🔔', action: () => ctx.openTransfers() },
+    { id: 'profile',   label: 'Profile',     icon: '👤', action: () => ctx.openProfile() },
   ];
 
   return (
     <div className={`${styles.shell} ${isNative ? 'is-native-mode' : ''}`}>
+
+      {/* ── Ambient glow (visible in dark mode) ── */}
       <div className={styles.ambient} aria-hidden="true">
         <span className={`${styles.orb} ${styles.orbOne}`} />
         <span className={`${styles.orb} ${styles.orbTwo}`} />
@@ -62,94 +68,156 @@ export default function AppShell() {
         <span className={styles.gridVeil} />
       </div>
 
-      {/* ── Header ── */}
+      {/* ══════════════════════════════════════════
+          DESKTOP HEADER — Reference UI (white bar)
+          ══════════════════════════════════════════ */}
       {!isNative && (
         <header className={styles.header}>
           <div className={styles.hdrTop}>
-            <a href="/" className={styles.logo} title="Back to home">
-              Fauji<span>Niwas</span>
+
+            {/* Logo — light.jpg in light mode, dark.jpg in dark mode */}
+            <a href="/" className={styles.logoWrap} title="Back to home">
+              <img src={logoLight} alt="FaujiNiwas" className={`${styles.logoImg} ${styles.logoImgLight}`} />
+              <img src={logoDark}  alt="FaujiNiwas" className={`${styles.logoImg} ${styles.logoImgDark}`} />
             </a>
 
-            {/* Desktop nav */}
-            <nav className={styles.desktopNav}>
-              {['rentals','market','dorms','saved'].map(v => (
-                <button
-                  key={v}
-                  className={activeView === v ? styles.navBtnActive : styles.navBtn}
-                  onClick={() => setActiveView(v)}
-                >
-                  {v === 'rentals' ? '🏠 Rentals' : v === 'market' ? '🏷️ Marketplace' : v === 'dorms' ? '🏨 SSB Dorms' : '⭐ Saved'}
-                </button>
-              ))}
-            </nav>
-
-            <div className={styles.hdrActions}>
-              <button
-                className={styles.pill + ' ' + styles.pillStation}
-                onClick={() => ctx.openTransfers()}
-                title="Browse popular stations"
-              >🏰 Explore Stations</button>
-              <button
-                className={styles.pill + ' ' + styles.pillAlert}
-                onClick={() => ctx.openTransfers()}
-                title="Movement alerts"
-              >🔔 Movement Alerts</button>
-              <button
-                className={styles.pill + ' ' + styles.pillCab}
-                onClick={() => ctx.openTransfers()}
-                title="Shared cab board"
-              >🚗 Shared Cab</button>
-              <button
-                className={styles.pill}
-                onClick={() => ctx.openRelocation()}
-                title="Command Center Relocation Suite"
-                style={{ background: 'rgba(212, 175, 55, 0.12)', borderColor: 'rgba(212, 175, 55, 0.3)', color: '#D4AF37', fontWeight: 'bold' }}
-              >📋 Relocation Suite</button>
-              <button
-                className={styles.profileBtn}
-                onClick={() => ctx.openProfile()}
-                title={user ? 'Profile' : 'Login'}
-              >{user ? '👤' : '🔐'}</button>
-              
-              {/* Restrict Admin button to verified personnel */}
-              {authLoading === false && user && (isAdmin || ctx.isAdmin) && (
-                <button
-                  className={styles.pill + ' ' + styles.pillAdmin}
-                  onClick={() => ctx.openAdmin()}
-                  title="Command Center"
-                >🛡️ Admin</button>
+            {/* Search */}
+            <div className={styles.searchWrap}>
+              <svg className={styles.searchIcon} viewBox="0 0 20 20" fill="none">
+                <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" strokeWidth="1.6"/>
+                <path d="M13 13l3.5 3.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+              </svg>
+              <input
+                type="text"
+                placeholder="Search cantonment, area or city"
+                className={styles.searchInput}
+                value={smartSearchQ}
+                onChange={e => setSmartSearchQ(e.target.value)}
+                autoComplete="off"
+              />
+              {smartSearchQ && (
+                <button className={styles.searchClear} onClick={() => setSmartSearchQ('')}>✕</button>
               )}
+            </div>
+
+            {/* Filter controls */}
+            <div className={styles.filterGroup}>
+              <div className={styles.filterDropdown}>
+                <select
+                  value={bhkFilter}
+                  onChange={e => handleFilter(setBhkFilter, e.target.value)}
+                  className={styles.filterSelect}
+                >
+                  <option value="all">Filter by BHK ▾</option>
+                  <option value="1">1 BHK</option>
+                  <option value="2">2 BHK</option>
+                  <option value="3+">3+ BHK</option>
+                </select>
+              </div>
+
+              <div className={styles.filterDropdown}>
+                <select
+                  value={maxPrice}
+                  onChange={e => handleFilter(setMaxPrice, e.target.value)}
+                  className={styles.filterSelect}
+                >
+                  <option value={100000}>Filter by Budget ▾</option>
+                  <option value={10000}>Under ₹10K</option>
+                  <option value={15000}>Under ₹15K</option>
+                  <option value={20000}>Under ₹20K</option>
+                  <option value={30000}>Under ₹30K</option>
+                  <option value={50000}>Under ₹50K</option>
+                </select>
+              </div>
 
               <button
-                className={styles.postBtn}
-                onClick={() => ctx.openPost()}
-              >+ Post Listing</button>
+                className={styles.contractBtn}
+                onClick={() => ctx.openTransfers()}
+                title="Contract & Rent options"
+              >
+                <svg width="13" height="13" viewBox="0 0 20 20" fill="none">
+                  <rect x="3" y="4" width="14" height="13" rx="2" stroke="currentColor" strokeWidth="1.6"/>
+                  <path d="M7 2v4M13 2v4M3 9h14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+                </svg>
+                Contract &amp; Rent
+              </button>
+
+              <button
+                className={`${styles.filterIconBtn} ${showAdvanced ? styles.filterIconActive : ''}`}
+                onClick={() => setShowAdvanced(v => !v)}
+                title="More filters"
+              >
+                <svg width="15" height="15" viewBox="0 0 20 20" fill="none">
+                  <path d="M3 5h14M6 10h8M9 15h2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+                </svg>
+              </button>
+            </div>
+
+            {/* Auth / Admin */}
+            <div className={styles.authGroup}>
+              {authLoading === false && user && (isAdmin || ctx.isAdmin) && (
+                <button className={styles.adminBtn} onClick={() => ctx.openAdmin()}>
+                  🛡️ Admin
+                </button>
+              )}
+              <button className={styles.signInBtn} onClick={() => ctx.openProfile()}>
+                {user ? '👤 Profile' : 'Sign In / Sign Up'}
+              </button>
+              <button className={styles.postBtnHdr} onClick={() => ctx.openPost()}>
+                + Post
+              </button>
             </div>
           </div>
         </header>
       )}
 
-      {/* ── Main: Sidebar + Map ── */}
+      {/* ══════════════════════════════════════════
+          MAIN: Sidebar + Map
+          ══════════════════════════════════════════ */}
       <main className={styles.main}>
-        {!isNative && <Sidebar />}
+
+        {/* Desktop Sidebar */}
+        {!isNative && (
+          <aside className={styles.desktopSidebar}>
+            {/* Nav tabs (Homes | SSB Dorms | Marketplace | Saved) */}
+            <div className={styles.navTabsBar}>
+              {navTabs.map(tab => (
+                <button
+                  key={tab.id}
+                  className={activeView === tab.id ? styles.navTabActive : styles.navTab}
+                  onClick={() => setActiveView(tab.id)}
+                >
+                  <span className={styles.navTabIcon}>{tab.icon}</span>
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+            {/* Listing cards */}
+            <div className={styles.sidebarList}>
+              <Sidebar />
+            </div>
+          </aside>
+        )}
+
+        {/* Map */}
         <div id="map-wrapper" className={styles.mapWrapper}>
+          {/* Stats bar — desktop, top of map */}
           {!isNative && (
-            <div className={styles.signalCard}>
-              <div className={styles.signalContent}>
-                <div className={styles.signalEyebrow}>
-                  <span className={styles.signalDot} />
-                  {viewSignal.eyebrow}
+            <div className={styles.mapStatsBar}>
+              <div className={styles.mapStat}>
+                <span className={styles.mapStatIcon}>🏠</span>
+                <div>
+                  <div className={styles.mapStatLabel}>Total listings</div>
+                  <div className={styles.mapStatValue}>{rentalListings.length.toLocaleString()}</div>
                 </div>
-                <strong>{viewSignal.title}</strong>
-                <p>{viewSignal.copy}</p>
               </div>
-              <div className={styles.signalPrism} aria-hidden="true">
-                <span className={`${styles.signalPlate} ${styles.signalPlateBase}`} />
-                <span className={`${styles.signalPlate} ${styles.signalPlateMid}`} />
-                <span className={`${styles.signalPlate} ${styles.signalPlateTop}`} />
-                <span className={styles.signalRing} />
-                <span className={styles.signalRingAlt} />
-                <span className={styles.signalCore} />
+              <div className={styles.mapStatDivider} />
+              <div className={styles.mapStat}>
+                <span className={styles.mapStatIcon} style={{ fontSize: '15px', fontWeight: 800 }}>₹</span>
+                <div>
+                  <div className={styles.mapStatLabel}>Average rent</div>
+                  <div className={styles.mapStatValue}>{avgRent > 0 ? formatK(avgRent) : '—'}</div>
+                </div>
               </div>
             </div>
           )}
@@ -157,10 +225,10 @@ export default function AppShell() {
         </div>
       </main>
 
-      {/* ── Mobile Bottom Nav (PWA only) ── */}
+      {/* Mobile bottom nav */}
       {!isNative && (
         <nav className={styles.bottomNav}>
-          {navItems.map(item => (
+          {mobileNavItems.map(item => (
             <button
               key={item.id}
               className={activeView === item.id ? styles.bnBtnActive : styles.bnBtn}
@@ -173,22 +241,14 @@ export default function AppShell() {
         </nav>
       )}
 
-      {/* ── Tactical FAB (App only) ── */}
-      {isNative && (
-        <TacticalFAB />
-      )}
+      {isNative && <TacticalFAB />}
 
-      {/* ── FAB: Comparison Tray (PWA only) ── */}
       {!isNative && comparison.length === 2 && (
-        <button 
-          className={styles.compareFab} 
-          onClick={() => ctx.openCompare()}
-        >
+        <button className={styles.compareFab} onClick={() => ctx.openCompare()}>
           🔁 Compare Selected (2)
         </button>
       )}
 
-      {/* ── FAB: Post Listing (PWA only) ── */}
       {!isNative && (
         <button className={styles.fab} onClick={() => ctx.openPost()}>
           ✚ Post Listing
