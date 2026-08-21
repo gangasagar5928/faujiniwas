@@ -369,22 +369,16 @@ h1, h2, h3, h4, h5, h6 {
   color: #f59e0b !important;
 }
 
-/* ── Feature Cards Theme Styling (GEO & Contrast optimization) ── */
 .feature-card {
   position: relative;
-  background-color: #ffffff;
+  background: #ffffff;
   border: 1px solid rgba(15, 23, 42, 0.08);
+  background-image: none !important;
 }
 .feature-card:hover {
-  border-color: var(--accent-amber) !important;
-  box-shadow: 0 16px 36px rgba(245, 158, 11, 0.1) !important;
+  border-color: #d97706 !important;
+  box-shadow: 0 10px 25px rgba(217, 119, 6, 0.12) !important;
 }
-.feature-card:nth-child(1) { background-image: url('https://images.unsplash.com/photo-1524661135-423995f22d0b?w=400&q=30&fm=webp'); background-size: cover; background-position: center; }
-.feature-card:nth-child(2) { background-image: url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&q=30&fm=webp'); background-size: cover; background-position: center; }
-.feature-card:nth-child(3) { background-image: url('https://images.unsplash.com/photo-1589758438368-0ad531db3366?w=400&q=30&fm=webp'); background-size: cover; background-position: center; }
-.feature-card:nth-child(4) { background-image: url('https://images.unsplash.com/photo-1508962914676-134849a727f0?w=400&q=30&fm=webp'); background-size: cover; background-position: center; }
-.feature-card:nth-child(5) { background-image: url('https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&q=30&fm=webp'); background-size: cover; background-position: center; }
-.feature-card:nth-child(6) { background-image: url('https://images.unsplash.com/photo-1450133064473-71024230f91b?w=400&q=30&fm=webp'); background-size: cover; background-position: center; }
 
 .feature-card-overlay {
   background: rgba(255, 255, 255, 0.93) !important;
