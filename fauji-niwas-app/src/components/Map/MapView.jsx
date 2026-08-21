@@ -123,6 +123,106 @@ const CANTEEN_ICON = L.divIcon({
   html: '<div class="tactical-marker pulsing" style="--col:#FF9933">🛒</div>', 
   className: '', iconSize: [32, 32], iconAnchor: [16, 16] 
 });
+const USER_LOC_ICON = L.divIcon({
+  html: '<div style="width:18px;height:18px;border-radius:50%;background:#2563eb;border:3px solid #ffffff;box-shadow:0 0 12px rgba(37,99,235,0.9), 0 0 0 8px rgba(37,99,235,0.25);"></div>',
+  className: '',
+  iconSize: [18, 18],
+  iconAnchor: [9, 9]
+});
+
+// Strictly validates that coordinates are inside Indian territory (rejects foreign VPNs)
+function isWithinIndia(lat, lng) {
+  return !isNaN(lat) && !isNaN(lng) && isFinite(lat) && isFinite(lng) &&
+         lat >= 8.0 && lat <= 37.5 && lng >= 68.0 && lng <= 97.5;
+}
+
+// User Location Initializer: GPS -> Verified India IP -> Major Indian Defence Base
+function UserLocationInitializer({ userLoc, setUserLoc, hasExplicitSearch }) {
+  const map = useMap();
+  const initRef = React.useRef(false);
+
+  useEffect(() => {
+    if (initRef.current || hasExplicitSearch) return;
+    initRef.current = true;
+
+    let isMounted = true;
+
+    const locate = async () => {
+      // 1. Check cached session location
+      try {
+        const cached = sessionStorage.getItem('fauji_loc_v2');
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (isWithinIndia(parsed.lat, parsed.lng)) {
+            if (isMounted) {
+              setUserLoc(parsed);
+              map.flyTo([parsed.lat, parsed.lng], 13, { duration: 1.0 });
+              return;
+            }
+          }
+        }
+      } catch(e) {}
+
+      // 2. Try Browser GPS (2.5s timeout)
+      if (navigator.geolocation) {
+        try {
+          const pos = await new Promise((res, rej) => {
+            navigator.geolocation.getCurrentPosition(res, rej, {
+              enableHighAccuracy: false,
+              timeout: 2500,
+              maximumAge: 180000
+            });
+          });
+
+          if (isMounted && pos?.coords) {
+            const { latitude: lat, longitude: lng } = pos.coords;
+            if (isWithinIndia(lat, lng)) {
+              const loc = { lat, lng, source: 'gps' };
+              setUserLoc(loc);
+              try { sessionStorage.setItem('fauji_loc_v2', JSON.stringify(loc)); } catch(e) {}
+              map.flyTo([lat, lng], 13, { duration: 1.0 });
+              return;
+            }
+          }
+        } catch(e) {}
+      }
+
+      // 3. Fallback to IP Geolocation with strict India country check (ignores foreign VPN)
+      try {
+        const res = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(2500) });
+        if (res.ok) {
+          const data = await res.json();
+          const lat = Number(data.latitude);
+          const lng = Number(data.longitude);
+          const country = (data.country_code || data.country || '').toUpperCase();
+
+          if (country === 'IN' && isWithinIndia(lat, lng)) {
+            if (isMounted) {
+              const loc = { lat, lng, city: data.city, source: 'ip' };
+              setUserLoc(loc);
+              try { sessionStorage.setItem('fauji_loc_v2', JSON.stringify(loc)); } catch(e) {}
+              map.flyTo([lat, lng], 13, { duration: 1.0 });
+              return;
+            }
+          }
+        }
+      } catch(e) {}
+
+      // 4. Default fallback: Major Indian Defence Hub (Pune Cantt)
+      if (isMounted) {
+        const defaultLoc = { lat: 18.5089, lng: 73.8797, city: 'Pune', source: 'default' };
+        setUserLoc(defaultLoc);
+        map.flyTo([defaultLoc.lat, defaultLoc.lng], 13, { duration: 1.0 });
+      }
+    };
+
+    locate();
+
+    return () => { isMounted = false; };
+  }, [map, setUserLoc, hasExplicitSearch]);
+
+  return null;
+}
 
 // Tactical Scanning Grid Overlay
 function ScanningGrid() {
@@ -262,6 +362,17 @@ export default function MapView({
   selectedProperty = null,
   onSelectProperty = null
 }) {
+  const [userLoc, setUserLoc] = useState(() => {
+    try {
+      const cached = sessionStorage.getItem('fauji_loc_v2');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (isWithinIndia(parsed.lat, parsed.lng)) return parsed;
+      }
+    } catch(e) {}
+    return null;
+  });
+
   const activeView = useFilterStore((s) => s.activeView);
   const { listings, showCommuteZones, showHospitals, showSchools, showCanteens, isPending } = useFilterStore();
   const allState = useFilterStore((s) => s);
@@ -327,12 +438,14 @@ export default function MapView({
     return !isNaN(lat) && !isNaN(lng) && isFinite(lat) && isFinite(lng) && lat !== 0 && lng !== 0;
   });
 
+  const initialCenter = userLoc ? [userLoc.lat, userLoc.lng] : [18.5089, 73.8797];
+
   return (
     <MapErrorBoundary>
       <div className={`${styles.mapContainer} ${isPending ? styles.isPending : ''}`}>
         <MapContainer
-          center={[22.5, 82.0]}
-          zoom={5}
+          center={initialCenter}
+          zoom={13}
           zoomControl={false}
           maxBounds={[[6.5, 68.0], [35.5, 97.5]]}
           maxBoundsViscosity={1.0}
@@ -347,10 +460,22 @@ export default function MapView({
             noWrap={true}
             attribution="&copy; Google Maps"
           />
+          <UserLocationInitializer userLoc={userLoc} setUserLoc={setUserLoc} hasExplicitSearch={Boolean(searchCity)} />
           <MapController activeCantt={activeCantt} />
           <MapAnimator searchCity={searchCity} activeCantt={activeCantt} draftCoords={allState.draftCoords} />
           <ScanningGrid />
           <BoundsHandler properties={displayListings} onBoundsChange={onBoundsChange} />
+
+          {/* User Live Position Pulse Marker */}
+          {userLoc && (
+            <Marker position={[userLoc.lat, userLoc.lng]} icon={USER_LOC_ICON}>
+              <Popup>
+                <div style={{ fontWeight: 800, fontSize: '12px', color: '#1e293b', padding: '2px 4px' }}>
+                  📍 Your Location {userLoc.city ? `(${userLoc.city})` : ''}
+                </div>
+              </Popup>
+            </Marker>
+          )}
 
           <MarkerClusterGroup
             key={clusterKey}
