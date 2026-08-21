@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Shield, Search, ArrowUpRight, Check, FileText, Lock, Globe, Phone, Mail, Award, Navigation, Star, Menu, X } from 'lucide-react';
-import { motion } from 'framer-motion';
 const LeaseGeneratorModal = React.lazy(() => import('../components/Modals/LeaseGeneratorModal'));
 const WasmMaskingModal = React.lazy(() => import('../components/Modals/WasmMaskingModal'));
 const CSDPulseTicker = React.lazy(() => import('../components/CSD/CSDPulseTicker'));
@@ -63,7 +62,7 @@ export default function LandingPage() {
       setRedirectStep(3);
       
       // Signal app.html to fast-forward its loader
-      try { sessionStorage.setItem('fn_redirect', 'true'); } catch(e) {/* noop */}
+      try { sessionStorage.setItem('fn_redirect', 'true'); } catch { /* noop */ }
       
       // Step 1: Darken the page theme to match app.html (prevents white flash)
       document.documentElement.style.backgroundColor = '#030712';
@@ -620,10 +619,10 @@ export default function LandingPage() {
           </div>
           
           <div className="flex flex-wrap justify-center gap-6 text-[10px] font-bold uppercase tracking-wider text-slate-800">
-            <a href="/about.html" className="hover:text-amber-800 transition-colors">About the Founders</a>
-            <a href="/privacy.html" className="hover:text-amber-800 transition-colors">Privacy Policy</a>
-            <a href="/terms.html" className="hover:text-amber-800 transition-colors">Terms of Service</a>
-            <a href="mailto:support@faujiniwas.web.app" className="hover:text-amber-800 transition-colors">Contact Defence Admin</a>
+            <a href="/about" className="hover:text-amber-800 transition-colors">About the Founders</a>
+            <a href="/privacy" className="hover:text-amber-800 transition-colors">Privacy Policy</a>
+            <a href="/terms" className="hover:text-amber-800 transition-colors">Terms of Service</a>
+            <a href="mailto:faujiniwashq@gmail.com" className="hover:text-amber-800 transition-colors">Contact Support</a>
           </div>
           
           <div className="text-[9px] text-slate-700 font-medium">
@@ -637,23 +636,23 @@ export default function LandingPage() {
             🎖️ Popular Relocation Cities / लोकप्रिय सैन्य स्टेशन:
           </span>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] font-bold text-slate-750">
-            <a href="/pune.html" className="hover:text-amber-800 transition-colors">Pune Cantt</a>
+            <a href="/pune" className="hover:text-amber-800 transition-colors">Pune Cantt</a>
             <span className="text-slate-300">•</span>
-            <a href="/delhi.html" className="hover:text-amber-800 transition-colors">Delhi Cantt</a>
+            <a href="/delhi" className="hover:text-amber-800 transition-colors">Delhi Cantt</a>
             <span className="text-slate-300">•</span>
-            <a href="/ambala.html" className="hover:text-amber-800 transition-colors">Ambala Cantt</a>
+            <a href="/ambala" className="hover:text-amber-800 transition-colors">Ambala Cantt</a>
             <span className="text-slate-300">•</span>
-            <a href="/secunderabad.html" className="hover:text-amber-800 transition-colors">Secunderabad Cantt</a>
+            <a href="/secunderabad" className="hover:text-amber-800 transition-colors">Secunderabad Cantt</a>
             <span className="text-slate-300">•</span>
-            <a href="/bhopal.html" className="hover:text-amber-800 transition-colors">Bhopal Cantt</a>
+            <a href="/bhopal" className="hover:text-amber-800 transition-colors">Bhopal Cantt</a>
             <span className="text-slate-300">•</span>
-            <a href="/kapurthala.html" className="hover:text-amber-800 transition-colors">Kapurthala SSB</a>
+            <a href="/kapurthala" className="hover:text-amber-800 transition-colors">Kapurthala SSB</a>
             <span className="text-slate-300">•</span>
-            <a href="/prayagraj.html" className="hover:text-amber-800 transition-colors">Prayagraj SSB</a>
+            <a href="/prayagraj" className="hover:text-amber-800 transition-colors">Prayagraj SSB</a>
             <span className="text-slate-300">•</span>
-            <a href="/coimbatore.html" className="hover:text-amber-800 transition-colors">Coimbatore Cantt</a>
+            <a href="/coimbatore" className="hover:text-amber-800 transition-colors">Coimbatore Cantt</a>
             <span className="text-slate-300">•</span>
-            <a href="/bangalore.html" className="hover:text-amber-800 transition-colors">Bangalore Cantt</a>
+            <a href="/bangalore" className="hover:text-amber-800 transition-colors">Bangalore Cantt</a>
           </div>
         </div>
       </footer>

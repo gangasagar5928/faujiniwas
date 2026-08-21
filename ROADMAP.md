@@ -1,8 +1,8 @@
 # 🪖 Fauji Niwas — Product Roadmap, Security, and Architecture
 > **Incubator-Grade Technical Blueprint, Security Controls, and Strategic Roadmap for India's Privacy-First Military Relocation Platform.**
 > Live Web Platform: [faujiniwas.web.app](https://faujiniwas.web.app)
-> Document Version: v5.3.0 (Firebase Auth Integration, All India Search & Zoom Sync)
-> Last Updated: 2026-07-13T11:45:00+05:30
+> Document Version: v5.3.0 (Security Hardening, Admin Key Vault, DPDP 2023 Compliance & Zero-Broker Enforcement)
+> Last Updated: 2026-08-21T18:55:00+05:30
 
 ---
 
@@ -392,7 +392,7 @@ interface ListingDocument {
   lng: number; // Longitude coordinate
   distance: string; // Proximity to gate (km)
   type: '1BHK' | '2BHK' | '3BHK' | 'Room'; // Configuration
-  ownerType: 'defence' | 'civilian' | 'broker'; // Owner Categorization
+  ownerType: 'defence' | 'civilian'; // Owner Categorization (Brokers Strictly Prohibited)
   verified: boolean; // Verification status
   available: string; // '⚡ Now' or date string
   mediaUrls: string[]; // Image URLs
@@ -1068,104 +1068,167 @@ Logs are stored as append-only records with a unique identifier mapping `uid_tim
 ---
 
 ## 18. SECURITY EXECUTION ROADMAP ADDENDUM
-All development updates are validated against the STRIDE threat matrix prior to publication. Continuous deployment checks run lint audits and rules validation testing automatically.
-
----
-
-## 19. FIRESTORE SECURITY RULES (IMPLEMENTED)
+All development updates are val## 19. FIRESTORE SECURITY RULES (IMPLEMENTED)
 
 ```javascript
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Helper: Is the user authenticated?
+    // ── Authentication & Authorization Helpers ───────────────────────────────
     function isAuthed() {
       return request.auth != null;
     }
 
-    // Helper: Does the user have the Moderator role?
-    function isModerator() {
-      return isAuthed() && 
-        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['moderator', 'admin'];
+    function hasRole(role) {
+      return isAuthed() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == role;
     }
 
-    // Helper: Does the user have the Admin role?
     function isAdmin() {
-      return isAuthed() && 
-        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      return hasRole('admin');
     }
 
-    // ── Users Collection ─────────────────────────────────────────────────────
-    match /users/{userId} {
-      allow read: if isAuthed();
-      allow create: if isAuthed() && 
-        request.auth.uid == userId && 
-        request.resource.data.role == 'user' &&
-        (request.resource.data.verified == false || request.resource.data.verified == 'pending');
-      allow update: if isAuthed() && 
-        request.auth.uid == userId && 
-        request.resource.data.role == resource.data.role && 
-        request.resource.data.verified == resource.data.verified;
-      allow delete: if isAdmin();
+    function isModerator() {
+      return hasRole('moderator') || isAdmin();
     }
 
-    // ── Verifications Collection ─────────────────────────────────────────────
-    match /verifications/{userId} {
-      allow read, update: if isModerator();
-      allow create: if isAuthed() && request.auth.uid == userId;
-    }
-
-    // ── Listings Collection ──────────────────────────────────────────────────
-    match /listings/{listingId} {
+    // ── Rentals collection ──────────────────────────────────────────────────
+    match /rentals/{rental} {
       allow read: if true;
-      allow create: if isAuthed() && 
-        request.resource.data.uid == request.auth.uid &&
-        request.resource.data.verified == false &&
-        request.resource.data.price is number &&
-        request.resource.data.price > 0;
-      allow update: if isAdmin() || (isAuthed() && (
-        resource.data.uid == request.auth.uid || 
-        (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reportCount']) && 
-         request.resource.data.reportCount == resource.data.reportCount + 1)
-      ));
+
+      allow create: if isAuthed()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.reportCount == 0
+        && (!('verified' in request.resource.data) || request.resource.data.verified == false)
+        && request.resource.data.ownerType in ['civilian', 'defence', 'owner', 'family']
+        && request.resource.data.ownerType != 'broker'
+        && request.resource.data.price is number
+        && request.resource.data.price >= 500
+        && request.resource.data.price <= 300000
+        && request.resource.data.name is string
+        && request.resource.data.name.size() >= 5
+        && request.resource.data.name.size() <= 120
+        && request.resource.data.type in ['Flat', 'Room', 'Villa', 'PG', 'House']
+        && request.resource.data.city is string
+        && request.resource.data.area is string;
+
+      allow update: if 
+        isAdmin() ||
+        (isAuthed()
+         && resource.data.uid == request.auth.uid
+         && request.resource.data.uid == resource.data.uid
+         && request.resource.data.verified == resource.data.verified
+         && request.resource.data.reportCount == resource.data.reportCount
+         && request.resource.data.ownerType != 'broker')
+        ||
+        (isAuthed()
+         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reportCount'])
+         && request.resource.data.reportCount == resource.data.reportCount + 1);
+
       allow delete: if isAdmin() || (isAuthed() && resource.data.uid == request.auth.uid);
     }
 
-    // ── Chats & Messages Collection ──────────────────────────────────────────
+    // ── Marketplace collection ──────────────────────────────────────────────
+    match /marketplace/{item} {
+      allow read: if true;
+      allow create: if isAuthed()
+        && request.resource.data.uid == request.auth.uid
+        && (!('ownerType' in request.resource.data) || request.resource.data.ownerType != 'broker')
+        && request.resource.data.price is number
+        && request.resource.data.price > 0
+        && request.resource.data.price <= 1000000
+        && request.resource.data.name is string
+        && request.resource.data.name.size() >= 3
+        && request.resource.data.name.size() <= 100
+        && request.resource.data.category in ['Furniture', 'Electronics', 'Vehicles', 'Household', 'Kit/Gear', 'Other']
+        && request.resource.data.city is string;
+      allow update: if isAdmin() || (isAuthed() && resource.data.uid == request.auth.uid && request.resource.data.uid == resource.data.uid && (!('ownerType' in request.resource.data) || request.resource.data.ownerType != 'broker'));
+      allow delete: if isAdmin() || (isAuthed() && resource.data.uid == request.auth.uid);
+    }
+
+    // ── Reporting System ────────────────────────────────────────────────────
+    match /reports/{reportId} {
+      allow read: if isModerator();
+      allow create: if isAuthed()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.targetId is string
+        && request.resource.data.type in ['scam', 'spam', 'explicit', 'incorrect', 'other'];
+      allow update, delete: if isAdmin();
+    }
+
+    // ── Home Requests (contact/inquiry form) ────────────────────────────────
+    match /home_requests/{req} {
+      allow create: if isAuthed();
+      allow read, update, delete: if isModerator(); 
+    }
+
+    // ── Secure Real-Time Chat (E2EE Blobs) ──────────────────────────────────
     match /chats/{chatId} {
       allow read, update: if isAuthed() && (request.auth.uid in resource.data.participants || isModerator());
       allow create: if isAuthed() && request.auth.uid in request.resource.data.participants;
       
       match /messages/{messageId} {
         allow read: if isAuthed() && (request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants || isModerator());
-        allow create: if isAuthed() && 
-          request.auth.uid == request.resource.data.senderId && 
-          request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
+        allow create: if isAuthed() 
+          && request.auth.uid == request.resource.data.senderId
+          && request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
       }
     }
 
-    // ── CSD Pulse Collection ─────────────────────────────────────────────────
-    match /csd_pulse/{pulseId} {
-      allow read: if true;
-      allow create, update: if isAuthed() && request.resource.data.reportedBy == request.auth.uid;
-      allow delete: if isModerator();
+    // ── User Profiles & Roles (OPSEC: Restricted to Owner or Moderators) ─────
+    match /users/{userId} {
+      allow read: if isAuthed() && (request.auth.uid == userId || isModerator());
+      allow update: if isAuthed() && request.auth.uid == userId
+        && request.resource.data.role == resource.data.role
+        && request.resource.data.verified == resource.data.verified;
+      allow create: if isAuthed() && request.auth.uid == userId
+        && request.resource.data.role == 'user'
+        && (!('verified' in request.resource.data) || request.resource.data.verified == false || request.resource.data.verified == 'pending');
+      allow write: if isAdmin();
     }
 
-    // ── Audit Logs Collection ────────────────────────────────────────────────
+    // ── User Sessions & Security ───────────────────────────────────────────
+    match /sessions/{sessionId} {
+      allow read, update, delete: if isAuthed() && resource.data.uid == request.auth.uid;
+      allow create: if isAuthed() && request.resource.data.uid == request.auth.uid;
+    }
+
+    // ── Verifications (Encrypted ID Pipeline: Admin Only) ───────────────────
+    match /verifications/{userId} {
+      allow read, update, delete: if isAdmin();
+      allow create: if isAuthed() && request.auth.uid == userId;
+    }
+
+    // ── E2EE Public Keys ────────────────────────────────────────────────────
+    match /public_keys/{userId} {
+      allow read: if isAuthed();
+      allow write: if isAuthed() && (request.auth.uid == userId || isAdmin());
+    }
+
+    // ── Admin Key Registry ──────────────────────────────────────────────────
+    match /admin_keys/{keyId} {
+      allow read: if isAuthed();
+      allow write: if isAdmin();
+    }
+
+    // ── CSD Pulse Live Ticker & Inventory ───────────────────────────────────
+    match /csd_pulse/{stationId} {
+      allow read: if true;
+      allow create: if isModerator();
+      allow update: if isAuthed() 
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['votes', 'downvotes', 'stockYes', 'stockNo', 'waitTime', 'time', 'liquorQuota', 'groceries'])
+        && (
+          !request.resource.data.diff(resource.data).affectedKeys().contains('waitTime') ||
+          request.resource.data.waitTime in ['15 mins', '30 mins', '45 mins', '1.5 hrs', '2+ hrs', 'Unknown']
+        );
+      allow delete: if isAdmin();
+    }
+
+    // ── System Audit Logs (Append-Only) ─────────────────────────────────────
     match /audit_logs/{logId} {
       allow read: if isModerator();
       allow create: if isAuthed() && request.resource.data.uid == request.auth.uid;
       allow update, delete: if false;
-    }
-
-    // ── Reports Collection ───────────────────────────────────────────────────
-    match /reports/{reportId} {
-      allow read: if isModerator();
-      allow create: if isAuthed() && request.resource.data.uid == request.auth.uid;
-      allow update, delete: if isAdmin();
     }
   }
 }
@@ -1226,6 +1289,15 @@ The platform sustainability metrics are evaluated based on three potential conve
 * **v4.5.0 (Phase 26–28)**: Upgraded glassmorphic visual indicators, sitemaps, and mobile drawers.
 * **v5.0.0 (Phase 29)**: AI matches, local saved searches, notifications, and pay matrix updates.
 * **v5.1.0 (Phase 30)**: Enforced security rules, compiled native production APK releases, client-side decryption, and structured GEO JSON-LD FAQ integrations.
+* **v5.2.0**: Implemented zero-brokerage enforcement, moderator segregation, and initial DPDP Act 2023 audit.
+* **v5.3.0 (2026-08-21 — Production Hardening & Compliance Release)**:
+  - **Admin RSA Key Vault**: Added PBKDF2 (100,000 iterations, SHA-256) + AES-GCM (256-bit) password-encrypted backup (`.fnkey`) export and import flows in `documentEncrypt.js` and `AdminPanel.jsx` for cross-device key persistence.
+  - **Firestore Security Rules Hardening**: Gated `/rentals` and `/marketplace` against broker creation, enforced immutable `verified` status for non-admins, locked `/verifications` to `isAdmin()` (preventing wrapped AES key extraction), restricted `/users` reads to profile owners and moderators for military OPSEC, and throttled `/csd_pulse` metric updates.
+  - **Legal & DPDP Act 2023 Compliance**: Updated `/privacy` with designated Grievance Officer details (Aman Kumar Singh, `faujiniwashq@gmail.com`, 24h ACK / 15d SLA), Asia-South1 / Mumbai data residency declarations, retention timelines, and Right-to-Erasure workflows.
+  - **Terms of Service**: Added Section 79 IT Act Intermediary liability shields, 18+ age restrictions, and New Delhi arbitration & jurisdiction clauses.
+  - **Canonical Communications**: Standardized all contact, grievance, and support references globally to `faujiniwashq@gmail.com`.
+  - **OPSEC & Copy Sanitization**: Stripped crawlable raw phone numbers from `about.html`, purged inflated marketing claims in favor of honest statistics (`23+ Stations Mapped`, `100% Direct Owners`), and regenerated all 23 city SEO landing pages.
+  - **CI/CD & Code Quality**: Fixed `node-version: 20` CI runner typo, resolved ESLint React 19 hook ordering and static component rules across all modals, and validated clean production Vite builds.
 
 ---
 
@@ -1287,7 +1359,7 @@ export async function generateAdminRsaKeys() {
       publicExponent: new Uint8Array([1, 0, 1]), // 65537
       hash: "SHA-256",
     },
-    false, // Private key is NOT extractable
+    true, // Extractable to enable encrypted offline backup
     ["wrapKey", "unwrapKey"]
   );
 
@@ -1298,6 +1370,94 @@ export async function generateAdminRsaKeys() {
   await storePrivateKey(keyPair.privateKey);
   
   return { publicKeyJwk, privateKey: keyPair.privateKey };
+}
+
+/**
+ * Encrypted Key Backup & Restore Flow (PBKDF2 + AES-GCM)
+ */
+async function derivePassphraseKey(passphrase, salt) {
+  const enc = new TextEncoder();
+  const baseKey = await window.crypto.subtle.importKey(
+    'raw',
+    enc.encode(passphrase),
+    'PBKDF2',
+    false,
+    ['deriveKey']
+  );
+  return window.crypto.subtle.deriveKey(
+    {
+      name: 'PBKDF2',
+      salt,
+      iterations: 100000,
+      hash: 'SHA-256'
+    },
+    baseKey,
+    { name: 'AES-GCM', length: 256 },
+    false,
+    ['encrypt', 'decrypt']
+  );
+}
+
+export async function exportAdminKeyBackup(passphrase) {
+  const privateKey = await getPrivateKey();
+  if (!privateKey) throw new Error('No private key found in this browser.');
+  
+  const jwk = await window.crypto.subtle.exportKey('jwk', privateKey);
+  const salt = window.crypto.getRandomValues(new Uint8Array(16));
+  const iv = window.crypto.getRandomValues(new Uint8Array(12));
+  const encKey = await derivePassphraseKey(passphrase, salt);
+  
+  const enc = new TextEncoder();
+  const plaintext = enc.encode(JSON.stringify(jwk));
+  const ciphertext = await window.crypto.subtle.encrypt(
+    { name: 'AES-GCM', iv },
+    encKey,
+    plaintext
+  );
+  
+  const toHex = (buf) => Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  
+  return JSON.stringify({
+    version: '1.0',
+    app: 'FaujiNiwas',
+    salt: toHex(salt),
+    iv: toHex(iv),
+    payload: toHex(ciphertext),
+    exportedAt: Date.now()
+  });
+}
+
+export async function importAdminKeyBackup(backupJsonString, passphrase) {
+  const backup = typeof backupJsonString === 'string' ? JSON.parse(backupJsonString) : backupJsonString;
+  if (!backup.salt || !backup.iv || !backup.payload) {
+    throw new Error('Invalid backup file format.');
+  }
+  
+  const fromHex = (hex) => new Uint8Array(hex.match(/.{1,2}/g).map(b => parseInt(b, 16)));
+  const salt = fromHex(backup.salt);
+  const iv = fromHex(backup.iv);
+  const ciphertext = fromHex(backup.payload);
+  
+  const encKey = await derivePassphraseKey(passphrase, salt);
+  const decrypted = await window.crypto.subtle.decrypt(
+    { name: 'AES-GCM', iv },
+    encKey,
+    ciphertext
+  );
+  
+  const dec = new TextDecoder();
+  const jwk = JSON.parse(dec.decode(decrypted));
+  
+  const privateKey = await window.crypto.subtle.importKey(
+    'jwk',
+    jwk,
+    { name: 'RSA-OAEP', hash: 'SHA-256' },
+    true,
+    ['unwrapKey']
+  );
+  
+  await storePrivateKey(privateKey);
+  return privateKey;
 }
 
 /**
@@ -1814,7 +1974,7 @@ jobs:
       - name: Initialize Node Environment
         uses: actions/setup-node@v4
         with:
-          node-size: 20
+          node-version: 20
           cache: 'npm'
           cache-dependency-path: 'fauji-niwas-app/package-lock.json'
 

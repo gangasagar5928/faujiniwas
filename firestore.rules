@@ -2,7 +2,7 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ── Authentication Helpers ──────────────────────────────────────────────
+    // ── Authentication & Authorization Helpers ───────────────────────────────
     function isAuthed() {
       return request.auth != null;
     }
@@ -26,6 +26,9 @@ service cloud.firestore {
       allow create: if isAuthed()
         && request.resource.data.uid == request.auth.uid
         && request.resource.data.reportCount == 0
+        && (!('verified' in request.resource.data) || request.resource.data.verified == false)
+        && request.resource.data.ownerType in ['civilian', 'defence', 'owner', 'family']
+        && request.resource.data.ownerType != 'broker'
         && request.resource.data.price is number
         && request.resource.data.price >= 500
         && request.resource.data.price <= 300000
@@ -42,7 +45,8 @@ service cloud.firestore {
          && resource.data.uid == request.auth.uid
          && request.resource.data.uid == resource.data.uid
          && request.resource.data.verified == resource.data.verified
-         && request.resource.data.reportCount == resource.data.reportCount)
+         && request.resource.data.reportCount == resource.data.reportCount
+         && request.resource.data.ownerType != 'broker')
         ||
         (isAuthed()
          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reportCount'])
@@ -56,6 +60,7 @@ service cloud.firestore {
       allow read: if true;
       allow create: if isAuthed()
         && request.resource.data.uid == request.auth.uid
+        && (!('ownerType' in request.resource.data) || request.resource.data.ownerType != 'broker')
         && request.resource.data.price is number
         && request.resource.data.price > 0
         && request.resource.data.price <= 1000000
@@ -64,7 +69,8 @@ service cloud.firestore {
         && request.resource.data.name.size() <= 100
         && request.resource.data.category in ['Furniture', 'Electronics', 'Vehicles', 'Household', 'Kit/Gear', 'Other']
         && request.resource.data.city is string;
-      allow update, delete: if isAdmin() || (isAuthed() && resource.data.uid == request.auth.uid);
+      allow update: if isAdmin() || (isAuthed() && resource.data.uid == request.auth.uid && request.resource.data.uid == resource.data.uid && (!('ownerType' in request.resource.data) || request.resource.data.ownerType != 'broker'));
+      allow delete: if isAdmin() || (isAuthed() && resource.data.uid == request.auth.uid);
     }
 
     // ── Reporting System ────────────────────────────────────────────────────
@@ -96,9 +102,9 @@ service cloud.firestore {
       }
     }
 
-    // ── User Profiles & Roles ───────────────────────────────────────────────
+    // ── User Profiles & Roles (OPSEC: Restricted to Owner or Moderators) ─────
     match /users/{userId} {
-      allow read: if isAuthed();
+      allow read: if isAuthed() && (request.auth.uid == userId || isModerator());
       // Users can edit their own profile but NOT their own role or verified status
       allow update: if isAuthed() && request.auth.uid == userId
         && request.resource.data.role == resource.data.role
@@ -115,10 +121,9 @@ service cloud.firestore {
       allow create: if isAuthed() && request.resource.data.uid == request.auth.uid;
     }
 
-    // ── Verifications (Encrypted ID Pipeline) ───────────────────────────────
+    // ── Verifications (Encrypted ID Pipeline: Admin Only) ───────────────────
     match /verifications/{userId} {
-      // Access is restricted through IAM and operational policy (Moderators/Admins only)
-      allow read, update: if isModerator();
+      allow read, update, delete: if isAdmin();
       allow create: if isAuthed() && request.auth.uid == userId;
     }
 
@@ -126,6 +131,12 @@ service cloud.firestore {
     match /public_keys/{userId} {
       allow read: if isAuthed();
       allow write: if isAuthed() && (request.auth.uid == userId || isAdmin());
+    }
+
+    // ── Admin Key Registry ──────────────────────────────────────────────────
+    match /admin_keys/{keyId} {
+      allow read: if isAuthed();
+      allow write: if isAdmin();
     }
 
     // ── Audit Logs ──────────────────────────────────────────────────────────
@@ -141,9 +152,17 @@ service cloud.firestore {
       allow delete: if isModerator();
     }
 
+    // ── CSD Pulse Ticker (Throttled & Schema Validated) ─────────────────────
     match /csd_pulse/{pulseId} {
       allow read: if true;
-      allow write: if isAuthed();
+      allow create: if isModerator();
+      allow update: if isAuthed()
+        && request.resource.data.diff(resource.data).affectedKeys().hasAny(['votes', 'downvotes', 'stockYes', 'stockNo', 'waitTime', 'time', 'liquorQuota', 'groceries'])
+        && (
+          !request.resource.data.diff(resource.data).affectedKeys().hasAny(['waitTime']) ||
+          request.resource.data.waitTime in ['15 mins', '30 mins', '45 mins', '1.5 hrs', '2+ hrs']
+        );
+      allow delete: if isAdmin();
     }
   }
 }

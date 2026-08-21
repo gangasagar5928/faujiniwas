@@ -1,29 +1,33 @@
 import { useState, useEffect } from 'react';
 import { db } from '../../firebase';
 import { collection, query, where, getDocs, doc, updateDoc, orderBy, limit } from 'firebase/firestore';
-import { decryptFileBytes, getPrivateKey, generateAdminRsaKeys } from '../../security/documentEncrypt';
+import { decryptFileBytes, getPrivateKey, generateAdminRsaKeys, exportAdminKeyBackup, importAdminKeyBackup } from '../../security/documentEncrypt';
 import { setDoc, getDoc } from 'firebase/firestore';
 import Loader from '../UI/Loader';
 import styles from './AdminPanel.module.css';
 
 export default function AdminPanel({ onClose }) {
-  const [activeTab, setActiveTab] = useState('verifications'); // verifications | logs | flags
+  const [activeTab, setActiveTab] = useState('verifications'); // verifications | logs | flags | keyvault
   const [verifications, setVerifications] = useState([]);
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [decryptingId, setDecryptingId] = useState(null);
+  const [hasLocalKey, setHasLocalKey] = useState(false);
+  const [keyStatusMsg, setKeyStatusMsg] = useState('');
 
   useEffect(() => {
     const initKeys = async () => {
       try {
         const localPrivKey = await getPrivateKey();
+        setHasLocalKey(!!localPrivKey);
         const serverKeySnap = await getDoc(doc(db, 'admin_keys', 'active'));
-        if (!localPrivKey || !serverKeySnap.exists()) {
+        if (!localPrivKey && !serverKeySnap.exists()) {
           const { publicKeyJwk } = await generateAdminRsaKeys();
           await setDoc(doc(db, 'admin_keys', 'active'), {
             publicKeyJwk,
             createdAt: Date.now()
           });
+          setHasLocalKey(true);
           console.log("Admin RSA keys generated and published successfully.");
         }
       } catch (e) {
@@ -118,14 +122,63 @@ export default function AdminPanel({ onClose }) {
     setDecryptingId(null);
   };
 
+  const handleExportBackup = async () => {
+    const pass = prompt("Enter a strong passphrase to encrypt your Admin Key Backup:");
+    if (!pass) return;
+    try {
+      const backupJson = await exportAdminKeyBackup(pass);
+      const blob = new Blob([backupJson], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `faujiniwas-admin-key-backup-${new Date().toISOString().split('T')[0]}.fnkey`;
+      a.click();
+      URL.revokeObjectURL(url);
+      setKeyStatusMsg('✅ Encrypted key backup downloaded successfully! Store it securely.');
+    } catch (e) {
+      alert("Key export failed: " + e.message);
+    }
+  };
+
+  const handleImportBackup = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const pass = prompt("Enter the passphrase used to encrypt this backup:");
+    if (!pass) return;
+    try {
+      const text = await file.text();
+      await importAdminKeyBackup(text, pass);
+      setHasLocalKey(true);
+      setKeyStatusMsg('✅ Private key restored successfully! You can now decrypt verification documents on this browser.');
+    } catch (e) {
+      alert("Key restore failed: " + e.message);
+    }
+  };
+
+  const handleRegenerateServerKeys = async () => {
+    if (!confirm("Generate a new Admin RSA Keypair? Any previously encrypted documents will require the old key unless re-encrypted.")) return;
+    try {
+      const { publicKeyJwk } = await generateAdminRsaKeys();
+      await setDoc(doc(db, 'admin_keys', 'active'), {
+        publicKeyJwk,
+        createdAt: Date.now()
+      });
+      setHasLocalKey(true);
+      setKeyStatusMsg('✅ New Admin RSA keys generated & published successfully.');
+    } catch (e) {
+      alert("Generation failed: " + e.message);
+    }
+  };
+
   return (
     <div className={styles.container}>
       <h2 style={{fontSize:18, marginBottom:16, color:'#f59e0b'}}>🛡️ Security Command Center</h2>
       
-      <div style={{display:'flex', gap:10, marginBottom:16}}>
+      <div style={{display:'flex', gap:10, marginBottom:16, flexWrap:'wrap'}}>
         <button onClick={() => setActiveTab('verifications')} className={activeTab==='verifications' ? styles.tabActive : styles.tab}>Verification Queue</button>
         <button onClick={() => setActiveTab('logs')} className={activeTab==='logs' ? styles.tabActive : styles.tab}>Audit Logs</button>
         <button onClick={() => setActiveTab('flags')} className={activeTab==='flags' ? styles.tabActive : styles.tab}>Scam Flags</button>
+        <button onClick={() => setActiveTab('keyvault')} className={activeTab==='keyvault' ? styles.tabActive : styles.tab}>🔑 Key Vault</button>
       </div>
 
       <div className={styles.content}>
@@ -181,6 +234,40 @@ export default function AdminPanel({ onClose }) {
                 <h3>AI Anti-Scam Heuristics</h3>
                 <p>System monitoring incoming property data for anomalous pricing or scraped images.</p>
                 <div style={{fontSize:14, marginTop:10, color:'#10b981'}}>All clear.</div>
+              </div>
+            )}
+
+            {activeTab === 'keyvault' && (
+              <div style={{padding:16, background:'rgba(255,255,255,0.03)', borderRadius:12, border:'1px solid var(--border)'}}>
+                <h3 style={{fontSize:15, marginBottom:12, color:'#f59e0b'}}>🔑 Admin Master Key Management</h3>
+                <p style={{fontSize:13, color:'var(--muted)', marginBottom:16}}>
+                  Military ID uploads are encrypted client-side using hybrid AES-256 and RSA-2048. To prevent permanent data loss if browser storage is cleared, export an encrypted offline backup.
+                </p>
+                
+                <div style={{display:'flex', alignItems:'center', gap:10, marginBottom:16}}>
+                  <div style={{fontSize:13}}>
+                    Browser Key Status: {hasLocalKey ? <strong style={{color:'#10b981'}}>✅ Active on this device</strong> : <strong style={{color:'#ef4444'}}>❌ Missing Private Key</strong>}
+                  </div>
+                </div>
+
+                {keyStatusMsg && (
+                  <div style={{fontSize:12, color:'#10b981', marginBottom:16, padding:8, background:'rgba(16,185,129,0.1)', borderRadius:6}}>
+                    {keyStatusMsg}
+                  </div>
+                )}
+
+                <div style={{display:'flex', gap:12, flexWrap:'wrap', marginTop:8}}>
+                  <button className={styles.btnSecure} onClick={handleExportBackup} disabled={!hasLocalKey}>
+                    💾 Download Encrypted Key Backup (.fnkey)
+                  </button>
+                  <label className={styles.tab} style={{cursor:'pointer', display:'inline-flex', alignItems:'center', padding:'8px 16px', background:'#3b5323', color:'#fff', borderRadius:8}}>
+                    📥 Restore Key from Backup
+                    <input type="file" accept=".fnkey,.json" onChange={handleImportBackup} style={{display:'none'}} />
+                  </label>
+                  <button className={styles.btnReject} onClick={handleRegenerateServerKeys}>
+                    🔄 Generate New Keypair
+                  </button>
+                </div>
               </div>
             )}
           </>

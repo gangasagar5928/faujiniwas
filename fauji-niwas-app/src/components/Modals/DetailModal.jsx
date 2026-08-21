@@ -128,24 +128,23 @@ export default function DetailModal({ id, onClose }) {
   const repScore = (hasVerifiedBadge ? 30 : 10) + (isDefenceOwner ? 30 : 15) + (hasHighRating ? 40 : 20);
   const isCommandRecommended = repScore >= 90;
 
-  // Tactical Proximity Calculation — Memoized
-  const proximity = useMemo(() => {
-    const getNearest = (dict, lat, lng) => {
-      if (lat == null || lng == null || Number.isNaN(Number(lat)) || Number.isNaN(Number(lng))) return null;
-      let min = Infinity, nearest = null;
-      Object.values(dict).flat().forEach(item => {
-        if (item.lat == null || item.lng == null) return;
-        const d = Math.sqrt(Math.pow(Number(item.lat) - Number(lat), 2) + Math.pow(Number(item.lng) - Number(lng), 2)) * 111; // rough km
-        if (!Number.isNaN(d) && isFinite(d) && d < min) { min = d; nearest = { ...item, dist: d.toFixed(1) }; }
-      });
-      return nearest;
-    };
-    return {
-      school: getNearest(ARMY_SCHOOLS, r.lat, r.lng),
-      hosp: getNearest(MILITARY_HOSPITALS, r.lat, r.lng),
-      canteen: getNearest(CANTEENS, r.lat, r.lng)
-    };
-  }, [r.lat, r.lng]);
+  // Tactical Proximity Calculation
+  const getNearest = (dict, lat, lng) => {
+    if (lat == null || lng == null || Number.isNaN(Number(lat)) || Number.isNaN(Number(lng))) return null;
+    let min = Infinity, nearest = null;
+    Object.values(dict).flat().forEach(item => {
+      if (item.lat == null || item.lng == null) return;
+      const d = Math.sqrt(Math.pow(Number(item.lat) - Number(lat), 2) + Math.pow(Number(item.lng) - Number(lng), 2)) * 111; // rough km
+      if (!Number.isNaN(d) && isFinite(d) && d < min) { min = d; nearest = { ...item, dist: d.toFixed(1) }; }
+    });
+    return nearest;
+  };
+
+  const proximity = {
+    school: getNearest(ARMY_SCHOOLS, r.lat, r.lng),
+    hosp: getNearest(MILITARY_HOSPITALS, r.lat, r.lng),
+    canteen: getNearest(CANTEENS, r.lat, r.lng)
+  };
 
   const nearestSchool = proximity.school;
   const nearestHosp = proximity.hosp;

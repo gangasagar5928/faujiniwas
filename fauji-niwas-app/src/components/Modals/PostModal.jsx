@@ -154,12 +154,12 @@ export default function PostModal({ onClose }) {
         }
       }
 
-      // 2.5 Broker Detection AI (exclude pitch demo data)
-      let finalOwnerType = form.ownerType;
+      // 2.5 Broker Detection AI & Zero-Brokerage Enforcement
       const matchingPhones = listings.filter(l => l.phone === form.phone && l._collection);
-      if (matchingPhones.length >= 5) {
-        finalOwnerType = 'broker';
+      if (matchingPhones.length >= 5 || form.ownerType === 'broker') {
+        throw new Error('Zero-Brokerage Policy: Commercial real estate brokers and agents are strictly prohibited on Fauji Niwas. Only direct owners and verified defence families may list properties.');
       }
+      const finalOwnerType = form.ownerType === 'defence' ? 'defence' : 'civilian';
 
       // 3. Save to Firestore
       const coll = view === 'market' ? 'marketplace' : 'rentals';
@@ -289,9 +289,8 @@ export default function PostModal({ onClose }) {
                     <option>Semi</option><option>Fully</option><option>Unfurnished</option>
                   </select>
                   <select className="fi" value={form.ownerType} onChange={e => set('ownerType',e.target.value)}>
-                    <option value="civilian">👤 Civilian</option>
-                    <option value="defence">🎖️ Defence</option>
-                    <option value="broker">🏢 Broker</option>
+                    <option value="civilian">👤 Civilian Owner</option>
+                    <option value="defence">🎖️ Defence Personnel</option>
                   </select>
                 </div>
                 <div className={styles.row2}>

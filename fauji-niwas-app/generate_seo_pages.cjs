@@ -191,7 +191,7 @@ function generateCityPage(html, city) {
   const cantName = name.toLowerCase().includes('cantt') ? name : `${name} Cantonment`;
 
   const title = `Rooms & Flats for Rent in ${name} for Defence Families | FaujiNiwas`;
-  const description = `Find verified rooms, flats, PGs and houses for rent near ${cantName} for Army, Air Force, Navy and defence families. ${listings} listings. ${zone}. Zero brokerage.`;
+  const description = `Find verified rooms, flats, PGs and houses for rent near ${cantName} for Army, Air Force, Navy and defence families. Verified community listings in ${zone}. Zero brokerage.`;
   const keywords = `${name} room for rent, ${name} cantonment rental, Army family accommodation ${name}, Defence housing ${name}, Flat for rent ${name} cantt, fauji rent ${citySlugShort}`;
   const ogTitle = `Rooms for Rent in ${name} Cantt | FaujiNiwas`;
   const ogDescription = `Verified rental accommodation near ${cantName} for defence families.`;
@@ -324,7 +324,7 @@ function generateCityPage(html, city) {
     },
     {
       question: `What is the average rent near ${cantName}?`,
-      answer: `Rents near ${cantName} range from Rs.5,000/mo for PG rooms to Rs.25,000/mo for 3 BHK furnished flats depending on proximity and amenities. FaujiNiwas shows live rent data from ${listings} active listings.`
+      answer: `Rents near ${cantName} range from Rs.5,000/mo for PG rooms to Rs.25,000/mo for 3 BHK furnished flats depending on proximity and amenities. FaujiNiwas shows live rent data from verified community listings.`
     }
   ];
 

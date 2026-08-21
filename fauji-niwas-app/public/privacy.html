@@ -236,60 +236,94 @@
                 <h2>🛡️ Privacy-First Foundation</h2>
                 <p>
                     Fauji Niwas is designed from the ground up to respect the privacy of India's Armed Forces. 
-                    Unlike traditional housing portals, we do not monitor your search activity, sell user data, 
-                    or use commercial ad tracking SDKs.
+                    Unlike commercial housing portals, we do not track browsing patterns, sell personal data to advertisers, 
+                    or share telephone records with commercial brokers.
                 </p>
             </section>
 
             <section class="card">
-                <h2>📊 Data We Collect & How We Use It</h2>
+                <h2>📊 Data We Collect & Processing Purposes</h2>
                 <ul>
-                    <li><strong>Phone Number (OTP Verification):</strong> Used solely to authenticate your account and ensure only verified personnel can list properties or interact.</li>
-                    <li><strong>Listings Data:</strong> Property descriptions, prices, photos, and approximate coordinates. Photos are auto-compressed client-side to strip metadata like camera model and exact GPS location to protect operational security.</li>
-                    <li><strong>E2EE Chats:</strong> Peer-to-peer chats are encrypted on your device using Web Crypto API. We do not store cleartext chat histories on our central database.</li>
-                    <li><strong>Local Vault Documents (ECHS):</strong> Health card vaults and verification proofs are encrypted locally on your browser with AES-256 and stored in IndexedDB. They are not sent to our cloud.</li>
+                    <li><strong>Phone Number (OTP Authentication):</strong> Used solely to authenticate your session, prevent fraud, and verify defence community affiliation.</li>
+                    <li><strong>Listings & Housing Data:</strong> Property descriptions, rent amounts, photos, and approximate area coordinates. Uploaded photos are stripped of EXIF metadata (camera model, GPS precision) client-side before storage to maintain military operational security (OPSEC).</li>
+                    <li><strong>Encrypted Military ID Verifications:</strong> Official service cards and proofs uploaded for verification are encrypted client-side using hybrid AES-256 and RSA-2048 keys. Only designated administrators can decrypt and review these files during verification.</li>
+                    <li><strong>Peer-to-Peer Encrypted Chats:</strong> Chat messages are end-to-end encrypted on device using the Web Crypto API. Plaintext messages are never stored on central application databases.</li>
+                    <li><strong>Local Vault Documents (ECHS):</strong> Health cards and personal records in the health vault remain encrypted inside your device's browser IndexedDB and are never uploaded to remote servers.</li>
                 </ul>
             </section>
 
             <section class="card">
-                <h2>🇮🇳 DPDP Act 2023 Compliance</h2>
+                <h2>🇮🇳 Digital Personal Data Protection (DPDP) Act 2023 Compliance</h2>
                 <p>
-                    Fauji Niwas operates in full compliance with India's Digital Personal Data Protection (DPDP) Act 2023. 
-                    You retain full ownership of your data, including the right to delete your listings, close your account, 
-                    and purge all stored telemetry at any time.
+                    Fauji Niwas acts as a Data Fiduciary under India's Digital Personal Data Protection Act, 2023. As a Data Principal, you are entitled to:
                 </p>
+                <ul>
+                    <li><strong>Right to Access & Summary:</strong> Request a summary of personal data being processed.</li>
+                    <li><strong>Right to Correction & Erasure:</strong> Modify inaccurate profile data or request complete erasure of your account, listings, and verification records.</li>
+                    <li><strong>Right of Grievance Redressal:</strong> Direct access to our designated Grievance Officer for privacy concerns or complaints.</li>
+                    <li><strong>Right to Nominate:</strong> Nominate another individual to exercise data rights in the event of death or incapacity.</li>
+                </ul>
             </section>
 
             <section class="card">
-                <h2>🔐 Information Security Boundaries</h2>
+                <h2>⏳ Data Retention & Deletion Policy</h2>
                 <p>
-                    We use Firebase Auth and Firebase Security Rules to isolate user data. App Check attestation blockades 
-                    are deployed to protect against data scraping bots and unauthorized API requests.
+                    We retain personal data only as long as necessary to fulfill service purposes or comply with statutory requirements:
                 </p>
+                <ul>
+                    <li><strong>Active Accounts:</strong> Account profile and published listings are maintained while your account remains active.</li>
+                    <li><strong>Verification Blobs:</strong> Encrypted verification images are purged once verification checks are complete.</li>
+                    <li><strong>Right to Erasure Process:</strong> You may submit an erasure request directly through your profile settings or by emailing <a href="mailto:faujiniwashq@gmail.com" style="color: var(--accent); font-weight: 600;">faujiniwashq@gmail.com</a>. Upon receipt, all associated personal database records will be permanently purged within 7 business days.</li>
+                </ul>
+            </section>
+
+            <section class="card">
+                <h2>☁️ Third-Party Data Processors</h2>
+                <p>
+                    To provide hosting, authentication, and secure storage, Fauji Niwas engages the following verified cloud infrastructure providers:
+                </p>
+                <ul>
+                    <li><strong>Google Cloud Platform / Firebase (Alphabet Inc.):</strong> Cloud hosting, encrypted database (Firestore), Firebase Authentication, and storage bucket services located in data centers within the Republic of India (Asia-South1 / Mumbai region).</li>
+                    <li><strong>OpenStreetMap / Nominatim:</strong> Public reverse-geocoding for cantonment proximity mapping (non-identifiable area strings only).</li>
+                </ul>
+            </section>
+
+            <section class="card">
+                <h2>⚖️ Grievance Redressal Officer (IT Rules & DPDP Act)</h2>
+                <p>
+                    In accordance with the Information Technology (Intermediary Guidelines and Digital Media Ethics Code) Rules, 2021 and the Digital Personal Data Protection Act, 2023, the details of the designated Grievance Officer are:
+                </p>
+                <div style="background: var(--accent-bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px; font-size: 13px; margin-top: 12px;">
+                    <p style="margin-bottom: 6px;"><strong>Name:</strong> Aman Kumar Singh</p>
+                    <p style="margin-bottom: 6px;"><strong>Designation:</strong> Grievance Redressal Officer & Founder</p>
+                    <p style="margin-bottom: 6px;"><strong>Email:</strong> <a href="mailto:faujiniwashq@gmail.com" style="color: var(--accent); font-weight: 600;">faujiniwashq@gmail.com</a></p>
+                    <p style="margin-bottom: 6px;"><strong>Location:</strong> India</p>
+                    <p style="margin-bottom: 0;"><strong>SLA:</strong> Grievance acknowledgement within <strong>24 hours</strong>; resolution within <strong>15 days</strong>.</p>
+                </div>
             </section>
         </main>
 
         <footer>
             <div class="footer-logo">🪖 FAUJI NIWAS</div>
             <div class="footer-legal-bar">
-                <a href="/about.html">About Founders</a>
-                <a href="/privacy.html">Privacy Policy</a>
-                <a href="/terms.html">Terms of Service</a>
-                <a href="mailto:support@faujiniwas.web.app">Contact support</a>
+                <a href="/about">About Founders</a>
+                <a href="/privacy">Privacy Policy</a>
+                <a href="/terms">Terms of Service</a>
+                <a href="mailto:faujiniwashq@gmail.com">Contact Support</a>
             </div>
 
             <!-- Popular Cities SEO Links -->
             <div class="seo-links">
                 <span style="font-weight: 800; text-transform: uppercase; font-size: 9px; display: block; margin-bottom: 8px;">🎖️ Popular Relocation Cities / लोकप्रिय सैन्य स्टेशन</span>
-                <a href="/pune.html">Pune Cantt</a> •
-                <a href="/delhi.html">Delhi Cantt</a> •
-                <a href="/ambala.html">Ambala Cantt</a> •
-                <a href="/secunderabad.html">Secunderabad Cantt</a> •
-                <a href="/bhopal.html">Bhopal Cantt</a> •
-                <a href="/kapurthala.html">Kapurthala SSB</a> •
-                <a href="/prayagraj.html">Prayagraj SSB</a> •
-                <a href="/coimbatore.html">Coimbatore Cantt</a> •
-                <a href="/bangalore.html">Bangalore Cantt</a>
+                <a href="/pune">Pune Cantt</a> •
+                <a href="/delhi">Delhi Cantt</a> •
+                <a href="/ambala">Ambala Cantt</a> •
+                <a href="/secunderabad">Secunderabad Cantt</a> •
+                <a href="/bhopal">Bhopal Cantt</a> •
+                <a href="/kapurthala">Kapurthala SSB</a> •
+                <a href="/prayagraj">Prayagraj SSB</a> •
+                <a href="/coimbatore">Coimbatore Cantt</a> •
+                <a href="/bangalore">Bangalore Cantt</a>
             </div>
             <p style="font-size: 11px; color: var(--text-muted); margin-top: 16px;">© 2026 Fauji Niwas · Built secure and direct for defence personnel families · Made in India 🇮🇳</p>
         </footer>

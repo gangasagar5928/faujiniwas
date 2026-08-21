@@ -53,7 +53,7 @@ export async function generateAdminRsaKeys() {
       publicExponent: new Uint8Array([1, 0, 1]), // 65537
       hash: "SHA-256",
     },
-    false, // Private key is NOT extractable
+    true, // Extractable to enable encrypted offline backup
     ["wrapKey", "unwrapKey"]
   );
 
@@ -64,6 +64,94 @@ export async function generateAdminRsaKeys() {
   await storePrivateKey(keyPair.privateKey);
   
   return { publicKeyJwk, privateKey: keyPair.privateKey };
+}
+
+/**
+ * Encrypted Key Backup & Restore Flow (PBKDF2 + AES-GCM)
+ */
+async function derivePassphraseKey(passphrase, salt) {
+  const enc = new TextEncoder();
+  const baseKey = await window.crypto.subtle.importKey(
+    'raw',
+    enc.encode(passphrase),
+    'PBKDF2',
+    false,
+    ['deriveKey']
+  );
+  return window.crypto.subtle.deriveKey(
+    {
+      name: 'PBKDF2',
+      salt,
+      iterations: 100000,
+      hash: 'SHA-256'
+    },
+    baseKey,
+    { name: 'AES-GCM', length: 256 },
+    false,
+    ['encrypt', 'decrypt']
+  );
+}
+
+export async function exportAdminKeyBackup(passphrase) {
+  const privateKey = await getPrivateKey();
+  if (!privateKey) throw new Error('No private key found in this browser.');
+  
+  const jwk = await window.crypto.subtle.exportKey('jwk', privateKey);
+  const salt = window.crypto.getRandomValues(new Uint8Array(16));
+  const iv = window.crypto.getRandomValues(new Uint8Array(12));
+  const encKey = await derivePassphraseKey(passphrase, salt);
+  
+  const enc = new TextEncoder();
+  const plaintext = enc.encode(JSON.stringify(jwk));
+  const ciphertext = await window.crypto.subtle.encrypt(
+    { name: 'AES-GCM', iv },
+    encKey,
+    plaintext
+  );
+  
+  const toHex = (buf) => Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  
+  return JSON.stringify({
+    version: '1.0',
+    app: 'FaujiNiwas',
+    salt: toHex(salt),
+    iv: toHex(iv),
+    payload: toHex(ciphertext),
+    exportedAt: Date.now()
+  });
+}
+
+export async function importAdminKeyBackup(backupJsonString, passphrase) {
+  const backup = typeof backupJsonString === 'string' ? JSON.parse(backupJsonString) : backupJsonString;
+  if (!backup.salt || !backup.iv || !backup.payload) {
+    throw new Error('Invalid backup file format.');
+  }
+  
+  const fromHex = (hex) => new Uint8Array(hex.match(/.{1,2}/g).map(b => parseInt(b, 16)));
+  const salt = fromHex(backup.salt);
+  const iv = fromHex(backup.iv);
+  const ciphertext = fromHex(backup.payload);
+  
+  const encKey = await derivePassphraseKey(passphrase, salt);
+  const decrypted = await window.crypto.subtle.decrypt(
+    { name: 'AES-GCM', iv },
+    encKey,
+    ciphertext
+  );
+  
+  const dec = new TextDecoder();
+  const jwk = JSON.parse(dec.decode(decrypted));
+  
+  const privateKey = await window.crypto.subtle.importKey(
+    'jwk',
+    jwk,
+    { name: 'RSA-OAEP', hash: 'SHA-256' },
+    true,
+    ['unwrapKey']
+  );
+  
+  await storePrivateKey(privateKey);
+  return privateKey;
 }
 
 /**

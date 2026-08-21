@@ -4,6 +4,16 @@ import { useUserStore } from '../../store/userStore';
 import { ModalContext } from '../../App';
 import styles from './ProfileModal.module.css'; // Use shared base styles
 
+function CompareRow({ label, v1, v2, better = null }) {
+  return (
+    <div style={{display:'flex', borderBottom:'1px solid var(--border2)', padding:'10px 0'}}>
+      <div style={{flex: 1, textAlign:'center', fontSize:13, fontWeight: better === 1 ? 700 : 400, color: better === 1 ? 'var(--accent)' : 'inherit'}}>{v1}</div>
+      <div style={{width: 80, textAlign:'center', fontSize:11, color:'var(--muted)', fontWeight:600}}>{label}</div>
+      <div style={{flex: 1, textAlign:'center', fontSize:13, fontWeight: better === 2 ? 700 : 400, color: better === 2 ? 'var(--accent)' : 'inherit'}}>{v2}</div>
+    </div>
+  );
+}
+
 export default function CompareModal({ onClose }) {
   const listings = useFilterStore(s => s.listings);
   const comparisonIds = useUserStore(s => s.comparison) || [];
@@ -30,14 +40,6 @@ export default function CompareModal({ onClose }) {
 
   const [l1, l2] = selectedListings;
 
-  const Row = ({ label, v1, v2, better = null }) => (
-    <div style={{display:'flex', borderBottom:'1px solid var(--border2)', padding:'10px 0'}}>
-      <div style={{flex: 1, textAlign:'center', fontSize:13, fontWeight: better === 1 ? 700 : 400, color: better === 1 ? 'var(--accent)' : 'inherit'}}>{v1}</div>
-      <div style={{width: 80, textAlign:'center', fontSize:11, color:'var(--muted)', fontWeight:600}}>{label}</div>
-      <div style={{flex: 1, textAlign:'center', fontSize:13, fontWeight: better === 2 ? 700 : 400, color: better === 2 ? 'var(--accent)' : 'inherit'}}>{v2}</div>
-    </div>
-  );
-
   return (
     <div className="modal-backdrop" onClick={e => e.target === e.currentTarget && onClose()}>
       <div className="mc" style={{maxWidth: 600, width:'95%'}}>
@@ -56,17 +58,17 @@ export default function CompareModal({ onClose }) {
             ))}
           </div>
 
-          <Row label="PRICE" 
+          <CompareRow label="PRICE" 
             v1={`₹${(Number(l1.price) || 0).toLocaleString()}`} 
             v2={`₹${(Number(l2.price) || 0).toLocaleString()}`} 
             better={(Number(l1.price) || 0) < (Number(l2.price) || 0) ? 1 : (Number(l2.price) || 0) < (Number(l1.price) || 0) ? 2 : null} 
           />
-          <Row label="BHK" v1={l1.bhk || '1'} v2={l2.bhk || '1'} />
-          <Row label="AREA" v1={l1.sqft || '—'} v2={l2.sqft || '—'} better={(parseInt(l1.sqft) || 0) > (parseInt(l2.sqft) || 0) ? 1 : (parseInt(l2.sqft) || 0) > (parseInt(l1.sqft) || 0) ? 2 : null} />
-          <Row label="FURNISH" v1={l1.furnishing || '—'} v2={l2.furnishing || '—'} />
-          <Row label="DIST" v1={l1.distance+' km'} v2={l2.distance+' km'} better={(parseFloat(l1.distance) || Infinity) < (parseFloat(l2.distance) || Infinity) ? 1 : (parseFloat(l2.distance) || Infinity) < (parseFloat(l1.distance) || Infinity) ? 2 : null} />
-          <Row label="PETS" v1={l1.petFriendly ? '✅' : '❌'} v2={l2.petFriendly ? '✅' : '❌'} />
-          <Row label="OWNER" v1={l1.ownerType} v2={l2.ownerType} />
+          <CompareRow label="BHK" v1={l1.bhk || '1'} v2={l2.bhk || '1'} />
+          <CompareRow label="AREA" v1={l1.sqft || '—'} v2={l2.sqft || '—'} better={(parseInt(l1.sqft) || 0) > (parseInt(l2.sqft) || 0) ? 1 : (parseInt(l2.sqft) || 0) > (parseInt(l1.sqft) || 0) ? 2 : null} />
+          <CompareRow label="FURNISH" v1={l1.furnishing || '—'} v2={l2.furnishing || '—'} />
+          <CompareRow label="DIST" v1={l1.distance+' km'} v2={l2.distance+' km'} better={(parseFloat(l1.distance) || Infinity) < (parseFloat(l2.distance) || Infinity) ? 1 : (parseFloat(l2.distance) || Infinity) < (parseFloat(l1.distance) || Infinity) ? 2 : null} />
+          <CompareRow label="PETS" v1={l1.petFriendly ? '✅' : '❌'} v2={l2.petFriendly ? '✅' : '❌'} />
+          <CompareRow label="OWNER" v1={l1.ownerType} v2={l2.ownerType} />
 
           <div style={{display:'flex', gap:10, marginTop:24}}>
             <button className="bp" style={{flex:1}} onClick={() => { onClose(); ctx.openDetail(l1.id); }}>View Left</button>

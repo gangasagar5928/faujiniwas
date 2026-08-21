@@ -18,7 +18,7 @@ async function loadFaceModels() {
  * @returns {Promise<Blob>} - The masked image blob
  */
 export async function maskDocument(file) {
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve, reject) => {
     try {
       const imgUrl = URL.createObjectURL(file);
       const image = new Image();
