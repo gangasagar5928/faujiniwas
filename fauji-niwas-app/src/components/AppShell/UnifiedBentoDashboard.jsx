@@ -207,13 +207,13 @@ export default function UnifiedBentoDashboard() {
         {/* ══════════════════════════════════════════
             1. TOP NAVBAR HEADER
             ══════════════════════════════════════════ */}
-        <header className="h-[64px] px-6 liquid-glass-nav relative flex items-center justify-between z-50 flex-shrink-0">
+        <header className="h-[64px] min-h-[64px] px-5 lg:px-6 gap-2 liquid-glass-nav relative flex items-center justify-between z-50 flex-shrink-0">
           
           {/* Left: Brand Logo & Subtitle */}
-          <a 
-            href="/" 
+          <a
+            href="/"
             onClick={(e) => { e.preventDefault(); window.location.href = '/'; }}
-            className="flex items-center gap-3 no-underline group cursor-pointer"
+            className="flex items-center gap-3 no-underline group cursor-pointer flex-shrink-0"
           >
             <img 
               src="/logo-light.jpg" 
@@ -236,16 +236,16 @@ export default function UnifiedBentoDashboard() {
           </a>
 
           {/* Center: Search & Filter Controls */}
-          <div className="flex items-center gap-2 max-w-[360px] lg:max-w-[440px] flex-1 mx-3">
-            
+          <div className="flex items-center gap-2 flex-1 mx-3 min-w-0">
+
             {/* Search Pill Input */}
-            <div className="relative flex-1">
-              <input 
-                type="text" 
+            <div className="relative flex-1 min-w-[180px]">
+              <input
+                type="text"
                 placeholder="Search cantonment, area or city..."
                 value={smartSearchQ}
                 onChange={e => setSmartSearchQ(e.target.value)}
-                className="w-full h-[38px] pl-3.5 pr-9 text-[13px] font-medium bg-white/40 dark:bg-white/10 backdrop-blur-xl border border-slate-200/70 dark:border-white/20 rounded-full focus:outline-none focus:border-emerald-600 dark:focus:border-emerald-500 transition-all placeholder:text-slate-400" style={{color:'var(--text)'}}
+                className="w-full h-[38px] pl-4 pr-10 text-[13px] font-medium bg-white/40 dark:bg-white/10 backdrop-blur-xl border border-slate-200/70 dark:border-white/20 rounded-full focus:outline-none focus:border-emerald-600 dark:focus:border-emerald-500 transition-all placeholder:text-slate-400" style={{color:'var(--text)'}}
               />
               <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: 'var(--muted)' }} />
               {smartSearchQ && (
@@ -417,10 +417,10 @@ export default function UnifiedBentoDashboard() {
         <div className="flex-1 flex overflow-hidden relative min-h-0">
 
           {/* ── COLUMN 1: LEFT NAVIGATION SIDEBAR ── */}
-          <aside className="w-[230px] liquid-glass border-r-0 flex flex-col justify-between p-3 flex-shrink-0 z-20 min-h-0 overflow-hidden">
-            
+          <aside className="w-[230px] liquid-glass-deep flex flex-col justify-between p-3 flex-shrink-0 z-20 min-h-0 overflow-hidden">
+
             {/* Nav Menu */}
-            <div className="flex flex-col gap-1 overflow-y-auto custom-scrollbar-panel pr-0.5">
+            <div className="flex flex-col gap-1.5 overflow-y-auto custom-scrollbar-panel pr-0.5">
               {navMenuItems.map(item => {
                 const IconComponent = item.icon;
                 const isActive = activeTab === item.id;
@@ -428,26 +428,26 @@ export default function UnifiedBentoDashboard() {
                   <button
                     key={item.id}
                     onClick={item.action}
-                    className={`relative w-full h-[40px] flex items-center justify-between px-3 rounded-xl text-[14px] font-bold transition-all cursor-pointer border flex-shrink-0 ${
+                    className={`relative w-full h-[42px] flex items-center justify-between px-3.5 rounded-2xl text-[14px] font-bold transition-all cursor-pointer flex-shrink-0 ${
                       isActive
                         ? 'text-[#00875a] dark:text-[#34d399]'
-                        : 'hover:bg-black/5 dark:hover:bg-white/10'
+                        : 'text-transparent hover:bg-white/[0.06]'
                     }`}
                     style={isActive ? undefined : { color: 'var(--text)' }}
                   >
                     {isActive && (
                       <motion.div
                         layoutId="nav-pill"
-                        className="absolute inset-0 rounded-xl border border-[#86efac] dark:border-[#059669] bg-[#ebfbee] dark:bg-[#064e3b]/50"
+                        className="absolute inset-0 rounded-2xl border border-[#86efac]/60 dark:border-[#059669]/60 bg-[#ebfbee] dark:bg-[#064e3b]/40 backdrop-blur-md"
                         transition={{ type: 'spring', stiffness: 480, damping: 36, mass: 0.5 }}
                       />
                     )}
                     <div className="relative z-10 flex items-center gap-2.5">
-                      <IconComponent className={`w-4 h-4 ${isActive ? 'text-[#00875a] dark:text-[#34d399]' : ''}`} style={isActive ? undefined : { color: 'var(--muted)' }} />
+                      <IconComponent className={`w-[18px] h-[18px] ${isActive ? 'text-[#00875a] dark:text-[#34d399]' : ''}`} style={isActive ? undefined : { color: 'var(--muted)' }} />
                       <span>{item.label}</span>
                     </div>
                     {item.count !== undefined && item.count > 0 && (
-                      <span className="relative z-10 text-[10px] font-extrabold px-1.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300">
+                      <span className="relative z-10 text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100/80 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 backdrop-blur-sm">
                         {item.count}
                       </span>
                     )}
