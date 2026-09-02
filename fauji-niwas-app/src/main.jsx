@@ -61,6 +61,20 @@ window.dispatchEvent(new Event('app-ready'));
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js').then((reg) => {
+      // Auto-update: the moment a newer service worker installs (skipWaiting),
+      // reload so users get the freshly built bundles instead of a stale
+      // cached shell. Guarded against reload loops via a session flag.
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        if (!newWorker) return;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'activated' && !sessionStorage.getItem('_fn_sw_reloaded')) {
+            sessionStorage.setItem('_fn_sw_reloaded', '1');
+            console.info('[PWA] New version ready — reloading to apply updates.');
+            window.location.reload();
+          }
+        });
+      });
       reg.update();
     }).catch((err) => {
       console.error('[PWA] Service Worker registration failed:', err);
