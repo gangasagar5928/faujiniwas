@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { useUserStore } from '../../store/userStore';
 
 const DORM_PHOTOS = [
@@ -18,11 +19,14 @@ export default function DormCard({ dorm, onFoodClick, onClick }) {
   const thumb = dorm?.mediaUrls?.[0] || DORM_PHOTOS[photoIndex];
 
   return (
-    <div
+    <motion.div
       onClick={onClick}
       role="button"
       tabIndex={0}
       onKeyDown={e => e.key === 'Enter' && onClick?.()}
+      whileTap={{ scale: 0.97 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 24 }}
+      className="liquid-glass-chip fluid-press"
       style={{
         display: 'flex',
         flexDirection: 'row',
@@ -30,14 +34,8 @@ export default function DormCard({ dorm, onFoodClick, onClick }) {
         overflow: 'hidden',
         cursor: 'pointer',
         marginBottom: '10px',
-        background: '#ffffff',
-        border: '1px solid #e2e8f0',
-        boxShadow: '0 1px 4px rgba(0,0,0,0.07)',
-        transition: 'box-shadow 0.2s, border-color 0.2s',
         minHeight: '120px',
       }}
-      onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.12)'; e.currentTarget.style.borderColor = '#94a3b8'; }}
-      onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.07)'; e.currentTarget.style.borderColor = '#e2e8f0'; }}
     >
       {/* ── Photo / Thumbnail (Left) ── */}
       <div style={{ position: 'relative', width: '120px', minHeight: '120px', flexShrink: 0, background: '#1e293b', overflow: 'hidden' }}>
@@ -78,13 +76,13 @@ export default function DormCard({ dorm, onFoodClick, onClick }) {
       {/* ── Details (Right) ── */}
       <div style={{ display: 'flex', flexDirection: 'column', flex: 1, padding: '12px 12px 10px', minWidth: 0, gap: 4 }}>
         {/* Title */}
-        <div style={{ fontSize: 14, fontWeight: 700, color: '#1e293b', lineHeight: 1.3,
+        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)', lineHeight: 1.3,
           display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
           {dorm.name || 'SSB Candidate Dorm'}
         </div>
 
         {/* Location & SSB Board */}
-        <div style={{ fontSize: 12, color: '#64748b', display: 'flex', alignItems: 'center', gap: 4, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+        <div style={{ fontSize: 12, color: 'var(--muted)', display: 'flex', alignItems: 'center', gap: 4, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
           <span style={{ fontSize: 11 }}>📍</span>
           <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {dorm.area}, {dorm.city}
@@ -95,7 +93,7 @@ export default function DormCard({ dorm, onFoodClick, onClick }) {
         </div>
 
         {/* Divider */}
-        <div style={{ height: 1, background: '#f1f5f9', margin: '2px 0' }} />
+        <div style={{ height: 1, background: 'var(--border)', margin: '2px 0' }} />
 
         {/* Price & Food Guide Action */}
         <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 6 }}>
@@ -103,7 +101,7 @@ export default function DormCard({ dorm, onFoodClick, onClick }) {
             <div style={{ fontSize: 18, fontWeight: 900, color: '#f97316' }}>
               ₹{dorm.price || 350}
             </div>
-            <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 1 }}>/night</div>
+            <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 1 }}>/night</div>
           </div>
           <button
             onClick={e => { e.stopPropagation(); onFoodClick?.(dorm.city); }}
@@ -128,6 +126,6 @@ export default function DormCard({ dorm, onFoodClick, onClick }) {
           </button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

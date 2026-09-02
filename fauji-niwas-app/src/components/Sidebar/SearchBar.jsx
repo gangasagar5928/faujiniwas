@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import { motion } from 'framer-motion';
 import { ModalContext } from '../../App';
 import { useFilterStore } from '../../store/filterStore';
 import styles from './SearchBar.module.css';
@@ -13,12 +14,12 @@ export default function SearchBar() {
       ctx?.showToast('Voice search not supported on this browser', 'error');
       return;
     }
-    
+
     const r = new SR();
     r.lang = 'en-IN'; r.interimResults = false; r.maxAlternatives = 1; r.continuous = false;
-    
+
     const btn = document.getElementById('mic-btn');
-    
+
     r.onstart = () => {
       if (btn) btn.classList.add(styles.listening);
       ctx?.showToast('Listening...', 'ok');
@@ -30,8 +31,8 @@ export default function SearchBar() {
       const inp = document.getElementById('searchInput');
       if (inp) inp.value = transcript;
     };
-    
-    r.onerror = (err) => { 
+
+    r.onerror = (err) => {
       console.error('Speech error:', err);
       if (err.error === 'not-allowed') {
         ctx?.showToast('Microphone access denied', 'error');
@@ -41,9 +42,9 @@ export default function SearchBar() {
         ctx?.showToast('Voice search error', 'error');
       }
     };
-    
+
     r.onend = () => { if (btn) btn.classList.remove(styles.listening); };
-    
+
     try {
       r.start();
     } catch (e) {
@@ -52,7 +53,11 @@ export default function SearchBar() {
   };
 
   return (
-    <div className={styles.search}>
+    <motion.div
+      className={`${styles.search} liquid-glass`}
+      whileTap={{ scale: 0.985 }}
+      transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+    >
       <input
         id="searchInput"
         type="text"
@@ -63,17 +68,26 @@ export default function SearchBar() {
         autoComplete="off"
       />
       {useFilterStore(s => s.smartSearchQ) && (
-        <button 
-          className={styles.clear} 
+        <motion.button
+          className={styles.clear}
+          whileTap={{ scale: 0.85 }}
+          transition={{ type: 'spring', stiffness: 500, damping: 28 }}
           onClick={() => {
             setSmartSearchQ('');
             const inp = document.getElementById('searchInput');
             if (inp) inp.value = '';
           }}
           title="Clear search"
-        >✕</button>
+        >✕</motion.button>
       )}
-      <button id="mic-btn" className={styles.mic} onClick={tryVoice} title="Voice search">🎤</button>
-    </div>
+      <motion.button
+        id="mic-btn"
+        className={styles.mic}
+        whileTap={{ scale: 0.85 }}
+        transition={{ type: 'spring', stiffness: 500, damping: 28 }}
+        onClick={tryVoice}
+        title="Voice search"
+      >🎤</motion.button>
+    </motion.div>
   );
 }

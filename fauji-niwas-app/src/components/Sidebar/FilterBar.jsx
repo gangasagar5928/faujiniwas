@@ -1,18 +1,21 @@
 import { useTransition } from 'react';
+import { motion } from 'framer-motion';
 import { useFilterStore } from '../../store/filterStore';
 import styles from './FilterBar.module.css';
 
 const PillGroup = ({ options, value, onChange, disabled }) => (
   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', opacity: disabled ? 0.6 : 1, pointerEvents: disabled ? 'none' : 'auto' }}>
     {options.map((o) => (
-      <button
+      <motion.button
         key={o.v}
-        className={`fb ${value === o.v ? 'active' : ''}`}
+        whileTap={{ scale: 0.94 }}
+        transition={{ type: 'spring', stiffness: 500, damping: 28 }}
+        className={`liquid-glass-chip fluid-press ${value === o.v ? 'active' : ''}`}
         onClick={() => onChange(o.v)}
         style={{ padding: '6px 10px', fontSize: '11px', flexGrow: 1 }}
       >
         {o.l}
-      </button>
+      </motion.button>
     ))}
   </div>
 );
@@ -36,7 +39,7 @@ export default function FilterBar() {
     setIsPending(true);
     startTransition(() => {
       fn(val);
-      // We don't have a reliable way to know when Zustand's set is 'done' processing the filter function 
+      // We don't have a reliable way to know when Zustand's set is 'done' processing the filter function
       // but startTransition helps React prioritize this.
       setTimeout(() => setIsPending(false), 30);
     });
@@ -49,10 +52,13 @@ export default function FilterBar() {
         {!isMarket && !isDorm && !isSaved && (
           <>
             {['all','Flat','Room','Villa','PG'].map(t => (
-              <button key={t} className={`fb ${typeFilter === t ? 'active' : ''}`}
+              <motion.button key={t}
+                whileTap={{ scale: 0.94 }}
+                transition={{ type: 'spring', stiffness: 500, damping: 28 }}
+                className={`liquid-glass-chip fluid-press ${typeFilter === t ? 'active' : ''}`}
                 onClick={() => handleAction(setTypeFilter, t)}>
                 {t === 'all' ? 'All Types' : t}
-              </button>
+              </motion.button>
             ))}
           </>
         )}
@@ -195,7 +201,12 @@ export default function FilterBar() {
                 className={styles.slider}
               />
             </div>
-            <button className={styles.resetBtn} onClick={() => handleAction(resetAdvancedFilters)}>↺ Reset</button>
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 28 }}
+              className={styles.resetBtn}
+              onClick={() => handleAction(resetAdvancedFilters)}
+            >↺ Reset</motion.button>
           </div>
         </details>
       )}

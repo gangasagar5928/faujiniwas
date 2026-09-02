@@ -1,4 +1,5 @@
 import { useContext, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useFilterStore, getFilteredListings } from '../../store/filterStore';
 import { SSB_DORMS } from '../../data';
 import { ModalContext } from '../../App';
@@ -25,7 +26,7 @@ export default function Sidebar() {
     return (
       <div className="space-y-3">
         {[1, 2, 3].map(i => (
-          <div key={i} className="h-24 bg-slate-100 border border-slate-200 rounded-2xl animate-pulse" />
+          <div key={i} className="liquid-glass animate-pulse" style={{ height: 96, borderRadius: 18 }} />
         ))}
       </div>
     );
@@ -33,7 +34,7 @@ export default function Sidebar() {
 
   if (items.length === 0) {
     return (
-      <div className="text-slate-400 text-center py-12 text-xs">
+      <div style={{ color: 'var(--muted)', textAlign: 'center', padding: '48px 16px', fontSize: 12 }}>
         No matching listings. Try adjusting your filters.
       </div>
     );
@@ -41,33 +42,59 @@ export default function Sidebar() {
 
   return (
     <div className="space-y-3">
-      {items.map(r => {
-        if (activeView === 'dorms') {
-          return (
-            <DormCard
-              key={r.id}
-              dorm={r}
-              onFoodClick={(city) => ctx.openFood(city)}
-            />
-          );
-        } else if (activeView === 'market') {
-          return (
-            <MarketCard
-              key={r.id}
-              item={r}
-              onClick={() => ctx.openDetail && ctx.openDetail(r)}
-            />
-          );
-        } else {
-          return (
-            <ListingCard
-              key={r.id}
-              listing={r}
-              onClick={() => ctx.openDetail && ctx.openDetail(r)}
-            />
-          );
-        }
-      })}
+      <AnimatePresence mode="popLayout">
+        {items.map(r => {
+          if (activeView === 'dorms') {
+            return (
+              <motion.div
+                key={r.id}
+                layout
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+              >
+                <DormCard
+                  dorm={r}
+                  onFoodClick={(city) => ctx.openFood(city)}
+                />
+              </motion.div>
+            );
+          } else if (activeView === 'market') {
+            return (
+              <motion.div
+                key={r.id}
+                layout
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+              >
+                <MarketCard
+                  item={r}
+                  onClick={() => ctx.openDetail && ctx.openDetail(r)}
+                />
+              </motion.div>
+            );
+          } else {
+            return (
+              <motion.div
+                key={r.id}
+                layout
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+              >
+                <ListingCard
+                  listing={r}
+                  onClick={() => ctx.openDetail && ctx.openDetail(r)}
+                />
+              </motion.div>
+            );
+          }
+        })}
+      </AnimatePresence>
     </div>
   );
 }
