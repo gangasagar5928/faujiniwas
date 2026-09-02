@@ -59,7 +59,6 @@ export default function CSDPulseTicker() {
 
   const requireAuth = (action) => {
     if (!user && !localStorage.getItem('fn_mock_user')) {
-      // Emit a sign-in prompt via DOM event or console
       alert('Sign in to vote and contribute to URC Pulse.');
       return false;
     }
@@ -106,8 +105,8 @@ export default function CSDPulseTicker() {
 
   if (pulseData.length === 0) {
     return (
-      <div className="bg-white border border-slate-200 rounded-[2rem] p-8 flex flex-col justify-center items-center h-44 shadow-sm animate-pulse">
-        <span className="text-xs text-slate-400 font-mono tracking-wider">Syncing Live URC Ledger...</span>
+      <div className="liquid-glass rounded-[2rem] p-8 flex flex-col justify-center items-center h-44 animate-pulse" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
+        <span className="font-mono tracking-wider" style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>Syncing Live URC Ledger...</span>
       </div>
     );
   }
@@ -120,16 +119,18 @@ export default function CSDPulseTicker() {
     <motion.div
       initial={{ y: 20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className="bg-white border border-slate-200/80 rounded-[2rem] p-8 flex flex-col relative overflow-hidden shadow-md select-none text-left"
+      transition={{ type: 'spring', stiffness: 260, damping: 22 }}
+      className="liquid-glass rounded-[2rem] p-8 flex flex-col relative overflow-hidden select-none text-left"
+      style={{ border: '1px solid var(--border2)' }}
     >
       {/* Header + CSD Selector */}
       <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2 text-amber-700">
+        <div className="flex items-center gap-2" style={{ color: 'var(--gold)' }}>
           <ShoppingCart size={20} />
-          <span className="font-heading font-black uppercase tracking-wider text-xs">Live URC Pulse</span>
+          <span className="font-heading font-black uppercase tracking-wider" style={{ fontSize: '0.75rem' }}>Live URC Pulse</span>
         </div>
-        <span className="flex items-center gap-1.5 text-xs text-slate-400 font-semibold">
-          <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+        <span className="flex items-center gap-1.5 font-semibold" style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>
+          <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: 'var(--red)' }}></span>
           Live
         </span>
       </div>
@@ -138,20 +139,25 @@ export default function CSDPulseTicker() {
       <div className="relative mb-4">
         <button
           onClick={() => setCsdOpen(o => !o)}
-          className="w-full flex items-center justify-between gap-2 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100 transition-all cursor-pointer"
+          className="w-full flex items-center justify-between gap-2 px-4 py-2.5 rounded-xl font-semibold transition-all cursor-pointer"
+          style={{ background: 'var(--card)', border: '1px solid var(--border)', fontSize: '0.75rem', color: 'var(--text)' }}
         >
           <span>📍 {selectedCSD}</span>
           <ChevronDown size={13} className={`transition-transform ${csdOpen ? 'rotate-180' : ''}`} />
         </button>
         {csdOpen && (
-          <div className="absolute top-[calc(100%+4px)] left-0 right-0 z-30 bg-white border border-slate-200 rounded-xl shadow-xl overflow-hidden max-h-48 overflow-y-auto">
+          <div className="absolute top-[calc(100%+4px)] left-0 right-0 z-30 rounded-xl shadow-xl overflow-hidden max-h-48 overflow-y-auto liquid-glass" style={{ border: '1px solid var(--border2)' }}>
             {CSD_STATIONS.map(s => (
               <button
                 key={s}
                 onClick={() => { setSelectedCSD(s); setCsdOpen(false); }}
-                className={`w-full text-left px-4 py-2 text-xs transition-colors cursor-pointer ${
-                  s === selectedCSD ? 'bg-amber-50 text-amber-800 font-bold' : 'text-slate-700 hover:bg-slate-50'
-                }`}
+                className="w-full text-left px-4 py-2 transition-colors cursor-pointer"
+                style={{
+                  fontSize: '0.75rem',
+                  color: s === selectedCSD ? 'var(--gold)' : 'var(--text)',
+                  fontWeight: s === selectedCSD ? 700 : 400,
+                  background: s === selectedCSD ? 'rgba(212,175,55,0.08)' : 'transparent',
+                }}
               >
                 {s}
               </button>
@@ -168,25 +174,28 @@ export default function CSDPulseTicker() {
             initial={{ y: 15, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -15, opacity: 0 }}
-            transition={{ duration: 0.35 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 24 }}
             className="absolute inset-0 flex flex-col gap-2"
           >
             <div className="flex items-start justify-between">
-              <h4 className="text-slate-900 font-heading font-bold text-base leading-tight">{pulse.cantonment}</h4>
-              <span className="text-xs text-slate-400 font-medium font-mono shrink-0 ml-2">{pulse.time}</span>
+              <h4 className="font-heading font-bold leading-tight" style={{ fontSize: '1rem', color: 'var(--text)' }}>{pulse.cantonment}</h4>
+              <span className="font-medium font-mono shrink-0 ml-2" style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>{pulse.time}</span>
             </div>
-            <div className="flex gap-4 text-sm mt-1 flex-wrap">
-              <div className="flex items-center gap-1.5 text-slate-600">
-                <Clock size={15} className="text-amber-700" />
-                <span className="text-slate-800 font-medium text-xs">Wait: <strong>{pulse.waitTime}</strong></span>
+            <div className="flex gap-4 mt-1 flex-wrap">
+              <div className="flex items-center gap-1.5">
+                <Clock size={15} style={{ color: 'var(--gold)' }} />
+                <span className="font-medium" style={{ fontSize: '0.75rem', color: 'var(--text)' }}>Wait: <strong>{pulse.waitTime}</strong></span>
               </div>
-              <div className="h-5 w-px bg-slate-200"></div>
-              <div className="flex items-center gap-1.5 text-slate-600">
-                <span className="font-medium text-xs">In Stock:</span>
-                <span className={`font-bold text-xs ${(pulse.stockYes || 0) >= (pulse.stockNo || 0) ? 'text-green-600' : 'text-red-600'}`}>
+              <div className="h-5 w-px" style={{ background: 'var(--border)' }}></div>
+              <div className="flex items-center gap-1.5">
+                <span className="font-medium" style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>In Stock:</span>
+                <span className="font-bold" style={{
+                  fontSize: '0.75rem',
+                  color: (pulse.stockYes || 0) >= (pulse.stockNo || 0) ? 'var(--green)' : 'var(--red)',
+                }}>
                   {(pulse.stockYes || 0) >= (pulse.stockNo || 0) ? 'Yes' : 'No'}
                 </span>
-                <span className="text-[10px] text-slate-400 font-mono">({pulse.stockYes || 0} vs {pulse.stockNo || 0})</span>
+                <span className="font-mono" style={{ fontSize: '0.625rem', color: 'var(--muted)' }}>({pulse.stockYes || 0} vs {pulse.stockNo || 0})</span>
               </div>
             </div>
           </motion.div>
@@ -194,10 +203,10 @@ export default function CSDPulseTicker() {
       </div>
 
       {/* Voting Actions */}
-      <div className="mt-2 pt-4 border-t border-slate-100 flex flex-col gap-3 text-xs">
+      <div className="mt-2 pt-4 flex flex-col gap-3" style={{ borderTop: '1px solid var(--border)' }}>
         {!isAuthenticated ? (
-          <p className="text-center text-[11px] text-slate-500 py-1">
-            🔒 <button onClick={() => alert('Please sign in via the Sign In button in the top bar.')} className="text-amber-700 font-bold underline cursor-pointer">Sign in</button> to vote &amp; report
+          <p className="text-center py-1" style={{ fontSize: '0.6875rem', color: 'var(--muted)' }}>
+            🔒 <button onClick={() => alert('Please sign in via the Sign In button in the top bar.')} className="font-bold underline cursor-pointer" style={{ color: 'var(--gold)' }}>Sign in</button> to vote &amp; report
           </p>
         ) : (
           <>
@@ -207,18 +216,24 @@ export default function CSDPulseTicker() {
                 <button
                   onClick={() => handleVoteSpeed(pulse.id, 'up', pulse.votes)}
                   disabled={!!speedVoted}
-                  className={`flex items-center gap-1 font-bold uppercase tracking-wider text-[10px] cursor-pointer transition-all ${
-                    speedVoted === 'up' ? 'text-emerald-900' : 'text-emerald-700 hover:text-emerald-900 hover:scale-[1.03]'
-                  } ${speedVoted ? 'opacity-60' : ''}`}
+                  className="flex items-center gap-1 font-bold uppercase tracking-wider cursor-pointer transition-all"
+                  style={{
+                    fontSize: '0.625rem',
+                    color: speedVoted === 'up' ? 'var(--green)' : 'var(--green)',
+                    opacity: speedVoted ? 0.6 : 1,
+                  }}
                 >
                   ▲ Fast ({pulse.votes || 0})
                 </button>
                 <button
                   onClick={() => handleVoteSpeed(pulse.id, 'down', pulse.downvotes)}
                   disabled={!!speedVoted}
-                  className={`flex items-center gap-1 font-bold uppercase tracking-wider text-[10px] cursor-pointer transition-all ${
-                    speedVoted === 'down' ? 'text-red-900' : 'text-red-700 hover:text-red-900 hover:scale-[1.03]'
-                  } ${speedVoted ? 'opacity-60' : ''}`}
+                  className="flex items-center gap-1 font-bold uppercase tracking-wider cursor-pointer transition-all"
+                  style={{
+                    fontSize: '0.625rem',
+                    color: speedVoted === 'down' ? 'var(--red)' : 'var(--red)',
+                    opacity: speedVoted ? 0.6 : 1,
+                  }}
                 >
                   ▼ Slow ({pulse.downvotes || 0})
                 </button>
@@ -226,32 +241,41 @@ export default function CSDPulseTicker() {
 
               {/* Stock vote */}
               <div className="flex items-center gap-2">
-                <span className="text-slate-500 font-bold text-[10px] uppercase">Stock?</span>
+                <span className="font-bold uppercase" style={{ fontSize: '0.625rem', color: 'var(--muted)' }}>Stock?</span>
                 <button
                   onClick={() => handleVoteStock(pulse.id, 'yes', pulse.stockYes)}
                   disabled={!!stockVoted}
-                  className={`px-2 py-0.5 rounded border font-bold text-[9px] cursor-pointer transition-all ${
-                    stockVoted === 'yes' ? 'bg-emerald-200 text-emerald-900 border-emerald-400' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border-emerald-300'
-                  }`}
+                  className="px-2 py-0.5 rounded border font-bold cursor-pointer transition-all"
+                  style={{
+                    fontSize: '0.5625rem',
+                    background: stockVoted === 'yes' ? 'rgba(34,197,94,0.2)' : 'rgba(34,197,94,0.05)',
+                    color: 'var(--green)',
+                    borderColor: stockVoted === 'yes' ? 'var(--green)' : 'rgba(34,197,94,0.3)',
+                  }}
                 >
                   👍 Yes ({pulse.stockYes || 0})
                 </button>
                 <button
                   onClick={() => handleVoteStock(pulse.id, 'no', pulse.stockNo)}
                   disabled={!!stockVoted}
-                  className={`px-2 py-0.5 rounded border font-bold text-[9px] cursor-pointer transition-all ${
-                    stockVoted === 'no' ? 'bg-red-200 text-red-900 border-red-400' : 'bg-red-50 text-red-700 hover:bg-red-100 border-red-300'
-                  }`}
+                  className="px-2 py-0.5 rounded border font-bold cursor-pointer transition-all"
+                  style={{
+                    fontSize: '0.5625rem',
+                    background: stockVoted === 'no' ? 'rgba(244,63,94,0.2)' : 'rgba(244,63,94,0.05)',
+                    color: 'var(--red)',
+                    borderColor: stockVoted === 'no' ? 'var(--red)' : 'rgba(244,63,94,0.3)',
+                  }}
                 >
                   👎 No ({pulse.stockNo || 0})
                 </button>
               </div>
             </div>
 
-            <div className="flex justify-between items-center pt-1 text-[9px] font-mono text-slate-400">
+            <div className="flex justify-between items-center pt-1 font-mono" style={{ fontSize: '0.5625rem', color: 'var(--muted)' }}>
               <button
                 onClick={() => setReportingId(reportingId === pulse.id ? null : pulse.id)}
-                className="hover:text-slate-900 transition-all font-bold uppercase cursor-pointer"
+                className="transition-all font-bold uppercase cursor-pointer"
+                style={{ color: 'var(--muted)' }}
               >
                 ✍️ Report Wait Time
               </button>
@@ -263,10 +287,10 @@ export default function CSDPulseTicker() {
 
       {/* Floating Status Reporter */}
       {reportingId === pulse.id && (
-        <div className="absolute bottom-16 left-8 bg-white border border-slate-200/80 rounded-xl p-3 shadow-lg flex gap-2 z-30">
-          <button onClick={() => handleReportWait(pulse.id, 'low')} className="px-2.5 py-1 text-[9px] bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 rounded-md font-bold cursor-pointer">🟢 15m</button>
-          <button onClick={() => handleReportWait(pulse.id, 'med')} className="px-2.5 py-1 text-[9px] bg-amber-500/10 border border-amber-500/30 text-amber-700 rounded-md font-bold cursor-pointer">🟡 30m</button>
-          <button onClick={() => handleReportWait(pulse.id, 'high')} className="px-2.5 py-1 text-[9px] bg-red-500/10 border border-red-500/30 text-red-700 rounded-md font-bold cursor-pointer">🔴 1.5h</button>
+        <div className="absolute bottom-16 left-8 rounded-xl p-3 shadow-lg flex gap-2 z-30 liquid-glass" style={{ border: '1px solid var(--border2)' }}>
+          <button onClick={() => handleReportWait(pulse.id, 'low')} className="px-2.5 py-1 rounded-md font-bold cursor-pointer" style={{ fontSize: '0.5625rem', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)', color: 'var(--green)' }}>🟢 15m</button>
+          <button onClick={() => handleReportWait(pulse.id, 'med')} className="px-2.5 py-1 rounded-md font-bold cursor-pointer" style={{ fontSize: '0.5625rem', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.3)', color: 'var(--gold)' }}>🟡 30m</button>
+          <button onClick={() => handleReportWait(pulse.id, 'high')} className="px-2.5 py-1 rounded-md font-bold cursor-pointer" style={{ fontSize: '0.5625rem', background: 'rgba(244,63,94,0.1)', border: '1px solid rgba(244,63,94,0.3)', color: 'var(--red)' }}>🔴 1.5h</button>
         </div>
       )}
     </motion.div>

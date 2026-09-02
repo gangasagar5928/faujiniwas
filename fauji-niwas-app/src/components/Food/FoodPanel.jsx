@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
+import { motion } from 'framer-motion';
 import { db, collection, query, where, onSnapshot, addDoc, serverTimestamp } from '../../firebase';
 import { FOOD_BY_CITY, SSB_DORMS } from '../../data';
 import { ModalContext } from '../../App';
@@ -60,15 +61,15 @@ export default function FoodPanel({ city, onClose }) {
   const cityLower = city?.toLowerCase() || '';
   const key = Object.keys(FOOD_BY_CITY).find(k => cityLower.includes(k.toLowerCase()));
   const opts = key ? FOOD_BY_CITY[key] : [];
-  
+
   // Also find any candidate stays for this city
-  const stays = (SSB_DORMS || []).filter(d => 
+  const stays = (SSB_DORMS || []).filter(d =>
     d.city?.toLowerCase().includes(cityLower) || cityLower.includes(d.city?.toLowerCase())
   );
 
   useEffect(() => {
     if (!opts.length) return;
-    
+
     // Fetch summary for all vendors in this city
     const q = query(collection(db, 'food_reviews'), where('city', '==', key));
     const unsub = onSnapshot(q, (snap) => {
@@ -115,7 +116,12 @@ export default function FoodPanel({ city, onClose }) {
   return (
     <>
       <div className={`${styles.backdrop} ${styles.open}`} onClick={onClose} />
-      <div className={`${styles.panel} ${styles.open}`}>
+      <motion.div
+        className={`${styles.panel} ${styles.open} liquid-glass`}
+        initial={{ y: '100%', opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ type: 'spring', stiffness: 260, damping: 28 }}
+      >
         <div className={styles.handle} />
         <div className={styles.header}>
           <h3>🍽️ Mess & Hotels in {city}</h3>
@@ -162,7 +168,7 @@ export default function FoodPanel({ city, onClose }) {
                 const r = reviews[vendorId] || { avg: 0, count: 0 };
                 const cls = f.budget === '₹' ? styles.fpLo : f.budget === '₹₹' ? styles.fpMid : styles.fpHi;
                 return (
-                  <div key={i} className={styles.card} onClick={() => setSelectedVendor(f)}>
+                  <div key={i} className={`${styles.card} fluid-press`} onClick={() => setSelectedVendor(f)}>
                     <div className={styles.fname}>{f.name}</div>
                     <div className={styles.ftype}>{f.type}</div>
                     <StarRating rating={r.avg} count={r.count} />
@@ -175,7 +181,7 @@ export default function FoodPanel({ city, onClose }) {
 
             {/* CSD Home Tiffin Marketplace */}
             <h4 className={styles.sectionTitle} style={{ marginTop: 24, display: 'flex', alignItems: 'center', gap: 6 }}>
-              🎖️ Home Tiffin Services 
+              🎖️ Home Tiffin Services
               <span className="tag" style={{ fontSize: 9, color: 'var(--gold)', borderColor: 'var(--gold)', padding: '1px 6px', textTransform: 'uppercase' }}>Verified Home Cooks</span>
             </h4>
             <p style={{ fontSize: 11, color: 'var(--muted)', marginBottom: 12 }}>
@@ -184,15 +190,15 @@ export default function FoodPanel({ city, onClose }) {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 20 }}>
               {TIFFIN_SERVICES.map((t, idx) => (
-                <div 
-                  key={idx} 
-                  className={styles.card}
-                  style={{ 
-                    display: 'flex', 
-                    flexDirection: 'column', 
-                    gap: 8, 
+                <div
+                  key={idx}
+                  className={`${styles.card} liquid-glass`}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 8,
                     cursor: 'default',
-                    border: '1px solid var(--border2)', 
+                    border: '1px solid var(--border2)',
                     background: 'var(--card)',
                     padding: 14,
                     borderRadius: 10
@@ -205,7 +211,7 @@ export default function FoodPanel({ city, onClose }) {
                     </div>
                     <StarRating rating={t.rating} count={t.reviews} />
                   </div>
-                  
+
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, fontSize: 11, color: 'var(--muted)', borderBottom: '1px solid var(--border2)', paddingBottom: 8 }}>
                     <div style={{ textAlign: 'left' }}>
                       <b>🍴 Menu:</b> {t.menu}
@@ -225,14 +231,14 @@ export default function FoodPanel({ city, onClose }) {
                   </div>
 
                   {/* WhatsApp Order Button */}
-                  <button 
-                    className="bp" 
-                    style={{ 
-                      marginTop: 4, 
-                      padding: '8px 12px', 
-                      fontSize: 12, 
-                      background: 'rgba(34,197,94,0.1)', 
-                      borderColor: 'var(--green)', 
+                  <button
+                    className="bp fluid-press"
+                    style={{
+                      marginTop: 4,
+                      padding: '8px 12px',
+                      fontSize: 12,
+                      background: 'rgba(34,197,94,0.1)',
+                      borderColor: 'var(--green)',
                       color: 'var(--green)',
                       width: '100%',
                       display: 'flex',
@@ -252,7 +258,7 @@ export default function FoodPanel({ city, onClose }) {
             </div>
           </div>
         )}
-      </div>
+      </motion.div>
     </>
   );
 }

@@ -78,12 +78,22 @@ function createChatbotUI() {
     <style>
     #fauji-chatbot {
     position: fixed;
-    bottom: 24px;
-    right: 24px;
+    bottom: 56px;
+    right: 20px;
     z-index: 10000;
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     }
-    #cb-bubble { display: none !important; }
+    #cb-bubble { 
+      display: flex !important;
+      width: 52px; height: 52px; border-radius: 50%;
+      background: linear-gradient(135deg, #00875a, #047857);
+      box-shadow: 0 6px 24px rgba(0,135,90,0.45);
+      align-items: center; justify-content: center;
+      font-size: 24px; cursor: pointer;
+      border: 2px solid #ffffff; outline: none;
+      transition: transform 0.2s ease;
+    }
+    #cb-bubble:hover { transform: scale(1.08); }
     @media (max-width: 768px) {
         #fauji-chatbot { 
           bottom: 74px; 
