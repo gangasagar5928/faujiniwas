@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { MapContainer, TileLayer, Marker, Circle, useMap, Popup } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import L from 'leaflet';
@@ -110,24 +110,24 @@ const createClusterCustomIcon = (cluster) => L.divIcon({
   iconSize: [36, 36],
 });
 
-// Upgraded Tactical Icons — pulsing and high-contrast
+// Upgraded Tactical Icons — clean high-contrast icons without noisy ripples
 const MH_ICON = L.divIcon({ 
-  html: '<div class="tactical-marker pulsing" style="--col:#ef4444">🏥</div>', 
-  className: '', iconSize: [32, 32], iconAnchor: [16, 16] 
+  html: '<div style="width:28px;height:28px;border-radius:50%;background:#ffffff;border:2px solid #ef4444;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 6px rgba(0,0,0,0.25);cursor:pointer;">🏥</div>', 
+  className: '', iconSize: [28, 28], iconAnchor: [14, 14] 
 });
 const SCHOOL_ICON = L.divIcon({ 
-  html: '<div class="tactical-marker pulsing" style="--col:#3b82f6">🏫</div>', 
-  className: '', iconSize: [32, 32], iconAnchor: [16, 16] 
+  html: '<div style="width:28px;height:28px;border-radius:50%;background:#ffffff;border:2px solid #3b82f6;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 6px rgba(0,0,0,0.25);cursor:pointer;">🏫</div>', 
+  className: '', iconSize: [28, 28], iconAnchor: [14, 14] 
 });
 const CANTEEN_ICON = L.divIcon({ 
-  html: '<div class="tactical-marker pulsing" style="--col:#FF9933">🛒</div>', 
-  className: '', iconSize: [32, 32], iconAnchor: [16, 16] 
+  html: '<div style="width:28px;height:28px;border-radius:50%;background:#ffffff;border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 6px rgba(0,0,0,0.25);cursor:pointer;">🛒</div>', 
+  className: '', iconSize: [28, 28], iconAnchor: [14, 14] 
 });
 const USER_LOC_ICON = L.divIcon({
-  html: '<div style="width:18px;height:18px;border-radius:50%;background:#2563eb;border:3px solid #ffffff;box-shadow:0 0 12px rgba(37,99,235,0.9), 0 0 0 8px rgba(37,99,235,0.25);"></div>',
+  html: '<div style="width:16px;height:16px;border-radius:50%;background:#2563eb;border:3px solid #ffffff;box-shadow:0 0 10px rgba(37,99,235,0.8);"></div>',
   className: '',
-  iconSize: [18, 18],
-  iconAnchor: [9, 9]
+  iconSize: [16, 16],
+  iconAnchor: [8, 8]
 });
 
 // Strictly validates that coordinates are inside Indian territory (rejects foreign VPNs)
@@ -317,30 +317,34 @@ function AutoPoiLayers({ activeCity, showCommuteZones, showHospitals, showSchool
 
 function BoundsHandler({ properties, onBoundsChange }) {
   const map = useMap();
+  const debounceTimerRef = useRef(null);
 
   useEffect(() => {
     if (!onBoundsChange) return;
 
     const updateBounds = () => {
-      try {
-        const bounds = map.getBounds();
-        if (!bounds || typeof bounds.contains !== 'function') return;
-        const visibleIds = (properties || [])
-          .filter(p => {
-            const lat = Number(p?.lat);
-            const lng = Number(p?.lng);
-            if (isNaN(lat) || isNaN(lng) || !isFinite(lat) || !isFinite(lng)) return false;
-            try {
-              return bounds.contains([lat, lng]);
-            } catch(e) {
-              return false;
-            }
-          })
-          .map(p => p.id);
-        onBoundsChange(visibleIds);
-      } catch (err) {
-        console.warn('BoundsHandler warning:', err);
-      }
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+      debounceTimerRef.current = setTimeout(() => {
+        try {
+          const bounds = map.getBounds();
+          if (!bounds || typeof bounds.contains !== 'function') return;
+          const visibleIds = (properties || [])
+            .filter(p => {
+              const lat = Number(p?.lat);
+              const lng = Number(p?.lng);
+              if (isNaN(lat) || isNaN(lng) || !isFinite(lat) || !isFinite(lng)) return false;
+              try {
+                return bounds.contains([lat, lng]);
+              } catch(e) {
+                return false;
+              }
+            })
+            .map(p => p.id);
+          onBoundsChange(visibleIds);
+        } catch (err) {
+          console.warn('BoundsHandler warning:', err);
+        }
+      }, 180);
     };
 
     updateBounds();
@@ -348,6 +352,7 @@ function BoundsHandler({ properties, onBoundsChange }) {
     map.on('moveend', updateBounds);
     map.on('zoomend', updateBounds);
     return () => {
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
       map.off('moveend', updateBounds);
       map.off('zoomend', updateBounds);
     };
@@ -377,7 +382,9 @@ export default function MapView({
   const { listings, showCommuteZones, showHospitals, showSchools, showCanteens, isPending } = useFilterStore();
   const allState = useFilterStore((s) => s);
   
-  const displayListings = (properties && properties.length > 0) ? properties : getFilteredListings(allState);
+  const displayListings = useMemo(() => {
+    return (properties && properties.length > 0) ? properties : getFilteredListings(allState);
+  }, [properties, allState.bhkFilter, allState.maxPrice, allState.sortPref, allState.smartSearchQ, allState.activeView, listings]);
 
   // Logic to find active Cantt centroid safely
   let activeCantt = null;
@@ -424,19 +431,23 @@ export default function MapView({
   const activeCity = activeCantt ? (activeCantt.city || searchCity || 'Pune') : null;
   const clusterKey = activeView;
 
-  const validDorms = (SSB_DORMS || []).filter(d => {
-    if (!d) return false;
-    const lat = Number(d.lat);
-    const lng = Number(d.lng);
-    return !isNaN(lat) && !isNaN(lng) && isFinite(lat) && isFinite(lng) && lat !== 0 && lng !== 0;
-  });
+  const validDorms = useMemo(() => {
+    return (SSB_DORMS || []).filter(d => {
+      if (!d) return false;
+      const lat = Number(d.lat);
+      const lng = Number(d.lng);
+      return !isNaN(lat) && !isNaN(lng) && isFinite(lat) && isFinite(lng) && lat !== 0 && lng !== 0;
+    });
+  }, []);
 
-  const validListings = (displayListings || []).filter(r => {
-    if (!r) return false;
-    const lat = Number(r.lat);
-    const lng = Number(r.lng);
-    return !isNaN(lat) && !isNaN(lng) && isFinite(lat) && isFinite(lng) && lat !== 0 && lng !== 0;
-  });
+  const validListings = useMemo(() => {
+    return (displayListings || []).filter(r => {
+      if (!r) return false;
+      const lat = Number(r.lat);
+      const lng = Number(r.lng);
+      return !isNaN(lat) && !isNaN(lng) && isFinite(lat) && isFinite(lng) && lat !== 0 && lng !== 0;
+    });
+  }, [displayListings]);
 
   const initialCenter = userLoc ? [userLoc.lat, userLoc.lng] : [18.5089, 73.8797];
 
@@ -463,7 +474,6 @@ export default function MapView({
           <UserLocationInitializer userLoc={userLoc} setUserLoc={setUserLoc} hasExplicitSearch={Boolean(searchCity)} />
           <MapController activeCantt={activeCantt} />
           <MapAnimator searchCity={searchCity} activeCantt={activeCantt} draftCoords={allState.draftCoords} />
-          <ScanningGrid />
           <BoundsHandler properties={displayListings} onBoundsChange={onBoundsChange} />
 
           {/* User Live Position Pulse Marker */}

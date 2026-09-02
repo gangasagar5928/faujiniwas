@@ -15,8 +15,11 @@ export default function DormMarker({ dorm: d }) {
   }
 
   const icon = L.divIcon({
-    className: '',
-    html: `<div class="pm" style="border-color:#f4c542;color:#f4c542;background:#1a1a1a;font-size:17px;padding:6px 10px;border-radius:10px;">🏨</div>`,
+    className: 'custom-price-marker',
+    html: `<div style="display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:18px;background:#ffffff;border:1.5px solid #e2e8f0;box-shadow:0 3px 10px rgba(0,0,0,0.25);white-space:nowrap;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:transform 0.15s ease;">
+      <span style="font-size:13px;display:flex;align-items:center;">🏨</span>
+      <span style="font-size:11px;font-weight:900;color:#0f172a;letter-spacing:0.2px;">${d.name ? d.name.split(' ')[0] : 'Dorm'}</span>
+    </div>`,
     iconAnchor: [30, 34], popupAnchor: [0, -38], iconSize: [60, 34],
   });
 
@@ -30,14 +33,14 @@ export default function DormMarker({ dorm: d }) {
   return (
     <Marker position={[lat, lng]} icon={icon} eventHandlers={{ click: handleClick }}>
       <Popup>
-        <div style={{ fontFamily: "'Outfit',sans-serif", minWidth: 200 }}>
+        <div style={{ fontFamily: "'Plus Jakarta Sans','Outfit',sans-serif", minWidth: 200 }}>
           <b style={{ fontSize: 15 }}>{d.name}</b><br />
           <span style={{ color: 'var(--muted)', fontSize: 13 }}>{d.area}, {d.city}</span><br />
-          <b style={{ color: '#f4c542', fontSize: 14 }}>₹{d.price}/night · {d.type}</b><br />
+          <b style={{ color: '#0f172a', fontSize: 14 }}>₹{d.price}/night · {d.type}</b><br />
           <small style={{ color: 'var(--muted)' }}>🎯 {d.ssb} · 🚶 {d.distance} km gate</small><br />
           <button
             onClick={() => ctx.openFood?.(d.city)}
-            style={{ marginTop: 10, width: '100%', background: '#f4c542', color: '#000', border: 'none', padding: 9, borderRadius: 7, fontWeight: 700, cursor: 'pointer' }}
+            style={{ marginTop: 10, width: '100%', background: 'var(--accent)', color: '#0f172a', border: 'none', padding: 9, borderRadius: 7, fontWeight: 700, cursor: 'pointer' }}
           >🍽️ Nearby Food & Mess</button>
         </div>
       </Popup>
