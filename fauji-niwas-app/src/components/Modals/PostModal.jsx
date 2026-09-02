@@ -1,4 +1,5 @@
 import { useState, useContext, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { auth, db, collection, addDoc, updateDoc, doc, increment } from '../../firebase';
 import { ModalContext } from '../../App';
 import { useAuth } from '../../hooks/useAuth';
@@ -198,7 +199,7 @@ export default function PostModal({ onClose }) {
       <div className="mc" style={{ height: '88vh' }}>
         <div className={styles.header}>
           <h2 className="mh2">{step === 0 ? '🔐 Login to Post' : '📝 Post a Listing'}</h2>
-          <button className={styles.closeBtn} onClick={onClose}>✕</button>
+          <motion.button className={styles.closeBtn} onClick={onClose} whileTap={{ scale: 0.9 }} transition={{ type:'spring', stiffness:400, damping:24 }}>✕</motion.button>
         </div>
 
         <div className={styles.body}>
@@ -213,16 +214,16 @@ export default function PostModal({ onClose }) {
                     <div style={{background:'var(--bg)', border:'1px solid var(--border2)', color:'var(--text)', borderRadius:10, padding:'11px', fontSize:14, flexShrink:0}}>+91</div>
                     <input className="fi" type="tel" placeholder="Mobile Number" style={{marginBottom:0}} value={phone} onChange={e => setPhone(e.target.value)} />
                   </div>
-                  <button className="bp" onClick={handleSendOtp} disabled={loading || phone.length < 10}>
+                  <motion.button className="bp" onClick={handleSendOtp} disabled={loading || phone.length < 10} whileTap={{ scale: 0.97 }} transition={{ type:'spring', stiffness:400, damping:24 }}>
                     {loading ? 'Please wait…' : 'Get OTP 💬'}
-                  </button>
+                  </motion.button>
                 </>
               ) : (
                 <>
                   <input className="fi" type="number" placeholder="Enter 6-digit OTP" value={otp} onChange={e => setOtp(e.target.value)} />
-                  <button className="bp" onClick={handleVerifyOtp} disabled={loading || otp.length < 6}>
+                  <motion.button className="bp" onClick={handleVerifyOtp} disabled={loading || otp.length < 6} whileTap={{ scale: 0.97 }} transition={{ type:'spring', stiffness:400, damping:24 }}>
                     {loading ? 'Verifying…' : 'Verify & Proceed ✅'}
-                  </button>
+                  </motion.button>
                 </>
               )}
             </div>
@@ -230,8 +231,8 @@ export default function PostModal({ onClose }) {
             // Listing form
             <div>
               <div className={styles.viewToggle}>
-                <button className={view === 'rentals' ? styles.activeTab : ''} onClick={() => setView('rentals')}>🏠 Rental</button>
-                <button className={view === 'market' ? styles.activeTab : ''} onClick={() => setView('market')}>🛒 Marketplace</button>
+                <motion.button className={view === 'rentals' ? styles.activeTab : ''} onClick={() => setView('rentals')} whileTap={{ scale: 0.95 }} transition={{ type:'spring', stiffness:400, damping:24 }}>🏠 Rental</motion.button>
+                <motion.button className={view === 'market' ? styles.activeTab : ''} onClick={() => setView('market')} whileTap={{ scale: 0.95 }} transition={{ type:'spring', stiffness:400, damping:24 }}>🛒 Marketplace</motion.button>
               </div>
 
               <div className={styles.uploadArea}>
@@ -241,12 +242,12 @@ export default function PostModal({ onClose }) {
                   <div className={styles.uploadLabel}>{images.length > 0 ? `${images.length} Photos Selected` : 'Add Property Photos'}</div>
                   <div className={styles.uploadSub}>Click to browse (Auto-Compressed)</div>
                 </label>
-                {images.length > 0 && <button className={styles.clearPhotos} onClick={() => { setImages([]); setVisionStatus(''); }}>✕ Clear All</button>}
+                {images.length > 0 && <motion.button className={styles.clearPhotos} onClick={() => { setImages([]); setVisionStatus(''); }} whileTap={{ scale: 0.95 }} transition={{ type:'spring', stiffness:400, damping:24 }}>✕ Clear All</motion.button>}
               </div>
 
               {visionStatus && (
                 <div style={{
-                  background: 'rgba(255, 255, 255, 0.02)',
+                  background: 'var(--card)',
                   border: '1px solid var(--border2)',
                   borderRadius: '8px',
                   padding: '8px 12px',
@@ -278,7 +279,7 @@ export default function PostModal({ onClose }) {
               
               {view === 'rentals' && avgPrice && (
                 <div style={{fontSize:11, color:'var(--accent)', marginBottom:12, marginTop:4, display:'flex', gap:4, alignItems:'center'}}>
-                   ✨ AI Suggestion: Market average in {form.city} is ₹{avgPrice.toLocaleString()} {form.price && Number(form.price) > avgPrice && <span style={{color:'#f43f5e'}}>(Yours is higher)</span>}
+                   ✨ AI Suggestion: Market average in {form.city} is ₹{avgPrice.toLocaleString()} {form.price && Number(form.price) > avgPrice && <span style={{color:'var(--red)'}}>(Yours is higher)</span>}
                 </div>
               )}
 
@@ -321,9 +322,9 @@ export default function PostModal({ onClose }) {
 
               <input className="fi" type="tel" placeholder="WhatsApp Number *" value={form.phone} onChange={e => set('phone',e.target.value)} />
               {view === 'rentals' && <input className="fi" type="date" placeholder="Available from" value={form.available} onChange={e => set('available',e.target.value)} />}
-              <button className="bp" onClick={handleSubmit} disabled={loading}>
+              <motion.button className="bp liquid-glass-chip fluid-press" onClick={handleSubmit} disabled={loading} whileTap={{ scale: 0.97 }} transition={{ type:'spring', stiffness:400, damping:24 }}>
                 {loading ? 'Submitting…' : view === 'market' ? 'Post Item Now 🚀' : 'Submit for Review ✅'}
-              </button>
+              </motion.button>
               <p style={{fontSize:11,color:'var(--muted)',textAlign:'center',marginTop:8}}>
                 {view === 'market' ? 'Classifieds are live instantly.' : 'Listings go live after admin verification.'}
               </p>

@@ -1,4 +1,5 @@
 import { useContext, useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { auth } from '../../firebase';
 import { signOut } from 'firebase/auth';
 import { useAuth } from '../../hooks/useAuth';
@@ -330,12 +331,12 @@ export default function ProfileModal({ onClose }) {
       <div className="modal-backdrop" onClick={e => e.target === e.currentTarget && onClose()}>
         <div className="mc">
           <div className={styles.header}><h2 className="mh2">👤 My Dashboard</h2>
-          <button className={styles.closeBtn} onClick={onClose}>✕</button></div>
+          <motion.button className={styles.closeBtn} onClick={onClose} whileTap={{ scale: 0.9 }} transition={{ type:'spring', stiffness:400, damping:24 }}>✕</motion.button></div>
           <div className={styles.body}>
             <p style={{color:'var(--muted)',fontSize:13,marginBottom:16,textAlign:'center'}}>Sign in or register to access your housing dashboard.</p>
             
             <div style={{ display: 'flex', borderBottom: '1px solid var(--border2)', marginBottom: 16 }}>
-              <button 
+              <motion.button
                 onClick={() => setUseEmail(false)}
                 style={{
                   flex: 1,
@@ -348,10 +349,11 @@ export default function ProfileModal({ onClose }) {
                   cursor: 'pointer',
                   fontSize: 12
                 }}
+                whileTap={{ scale: 0.97 }} transition={{ type:'spring', stiffness:400, damping:24 }}
               >
                 📱 Mobile OTP
-              </button>
-              <button 
+              </motion.button>
+              <motion.button
                 onClick={() => setUseEmail(true)}
                 style={{
                   flex: 1,
@@ -364,9 +366,10 @@ export default function ProfileModal({ onClose }) {
                   cursor: 'pointer',
                   fontSize: 12
                 }}
+                whileTap={{ scale: 0.97 }} transition={{ type:'spring', stiffness:400, damping:24 }}
               >
                 ✉️ Email / Password
-              </button>
+              </motion.button>
             </div>
 
             {useEmail ? (
@@ -386,9 +389,9 @@ export default function ProfileModal({ onClose }) {
                   onChange={e => setPassword(e.target.value)} 
                   style={{ marginBottom: 14 }}
                 />
-                <button className="bp" onClick={handleEmailLogin} disabled={loading}>
+                <motion.button className="bp liquid-glass-chip fluid-press" onClick={handleEmailLogin} disabled={loading} whileTap={{ scale: 0.97 }} transition={{ type:'spring', stiffness:400, damping:24 }}>
                   {loading ? 'Processing…' : 'Sign In / Sign Up 🔑'}
-                </button>
+                </motion.button>
               </>
             ) : (
               <>
@@ -398,9 +401,9 @@ export default function ProfileModal({ onClose }) {
                         <div style={{background:'var(--bg)', border:'1px solid var(--border2)', color:'var(--text)', borderRadius:10, padding:'11px', fontSize:14, flexShrink:0}}>+91</div>
                         <input className="fi" type="tel" placeholder="10-digit Mobile Number" maxLength={10} style={{marginBottom:0}} value={phone} onChange={e => setPhone(e.target.value.replace(/\D/g, '').slice(0,10))} />
                       </div>
-                      <button className="bp" onClick={handleSendOtp} disabled={loading || phone.length < 10}>
+                      <motion.button className="bp liquid-glass-chip fluid-press" onClick={handleSendOtp} disabled={loading || phone.length < 10} whileTap={{ scale: 0.97 }} transition={{ type:'spring', stiffness:400, damping:24 }}>
                         {loading ? 'Sending OTP…' : 'Get OTP 💬'}
-                      </button>
+                      </motion.button>
                       <div id="recaptcha-profile" style={{ marginTop: 12, display: 'flex', justifyContent: 'center' }}></div>
                     </>
                   ) : (
@@ -409,12 +412,12 @@ export default function ProfileModal({ onClose }) {
                         OTP sent to <strong style={{color:'var(--text)'}}>+91 {phone}</strong>
                       </p>
                       <input className="fi" type="number" placeholder="Enter 6-digit OTP" value={otp} onChange={e => setOtp(e.target.value.slice(0,6))} />
-                      <button className="bp" onClick={handleVerifyOtp} disabled={loading || otp.length < 6}>
+                      <motion.button className="bp liquid-glass-chip fluid-press" onClick={handleVerifyOtp} disabled={loading || otp.length < 6} whileTap={{ scale: 0.97 }} transition={{ type:'spring', stiffness:400, damping:24 }}>
                         {loading ? 'Verifying…' : 'Verify & Login ✅'}
-                      </button>
-                      <button onClick={handleResendOtp} style={{background:'none',border:'none',color:'var(--accent)',fontSize:13,marginTop:10,cursor:'pointer',width:'100%',textAlign:'center'}}>
+                      </motion.button>
+                      <motion.button onClick={handleResendOtp} style={{background:'none',border:'none',color:'var(--accent)',fontSize:13,marginTop:10,cursor:'pointer',width:'100%',textAlign:'center'}} whileTap={{ scale: 0.97 }} transition={{ type:'spring', stiffness:400, damping:24 }}>
                         ↩ Wrong number / Resend OTP
-                      </button>
+                      </motion.button>
                     </>
                   )}
               </>
@@ -423,13 +426,14 @@ export default function ProfileModal({ onClose }) {
             {/* Google OAuth Sign-In */}
             <div style={{ marginTop: 16, borderTop: '1px solid var(--border2)', paddingTop: 16 }}>
               <p style={{ color: 'var(--muted)', fontSize: 11, textAlign: 'center', marginBottom: 10 }}>— or continue with —</p>
-              <button
+              <motion.button
                 onClick={handleGoogleLogin}
                 disabled={loading}
+                className="liquid-glass-chip fluid-press"
                 style={{
                   width: '100%',
-                  background: '#fff',
-                  color: '#1e293b',
+                  background: 'var(--card)',
+                  color: 'var(--text)',
                   border: '1px solid var(--border2)',
                   borderRadius: 10,
                   padding: '11px 16px',
@@ -443,6 +447,7 @@ export default function ProfileModal({ onClose }) {
                   boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
                   transition: 'box-shadow 0.2s'
                 }}
+                whileTap={{ scale: 0.97 }} transition={{ type:'spring', stiffness:400, damping:24 }}
               >
                 <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
                   <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908C16.658 14.233 17.64 11.926 17.64 9.2Z" fill="#4285F4"/>
@@ -451,7 +456,7 @@ export default function ProfileModal({ onClose }) {
                   <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 6.293C4.672 4.166 6.656 3.58 9 3.58Z" fill="#EA4335"/>
                 </svg>
                 Continue with Google
-              </button>
+              </motion.button>
             </div>
           </div>
         </div>
@@ -463,14 +468,14 @@ export default function ProfileModal({ onClose }) {
   const identity = user.phoneNumber || user.email || 'User';
   const points = dbUser?.points || 0;
   const level = points < 100 ? 'Rookie' : points < 500 ? 'Veteran' : 'Legend';
-  const levelColor = points < 100 ? '#94a3b8' : points < 500 ? '#f59e0b' : '#14b8a6';
+  const levelColor = points < 100 ? 'var(--muted)' : points < 500 ? 'var(--accent)' : 'var(--green)';
 
   return (
     <div className="modal-backdrop" onClick={e => e.target === e.currentTarget && onClose()}>
       <div className="mc" style={{ height: '88vh' }}>
         <div className={styles.header}>
           <h2 className="mh2">{TRANSLATIONS[language].dashboardTitle}</h2>
-          <button className={styles.closeBtn} onClick={onClose}>✕</button>
+          <motion.button className={styles.closeBtn} onClick={onClose} whileTap={{ scale: 0.9 }} transition={{ type:'spring', stiffness:400, damping:24 }}>✕</motion.button>
         </div>
         <div className={styles.body}>
           <div className={styles.userCard}>
@@ -496,13 +501,13 @@ export default function ProfileModal({ onClose }) {
                     margin: 0
                   }}
                 />
-                <button 
+                <motion.button
                   onClick={handleSaveName}
                   disabled={loading}
-                  className="bp"
+                  className="bp fluid-press"
                   style={{
                     background: 'var(--accent)',
-                    color: '#000',
+                    color: 'var(--bg)',
                     border: 'none',
                     borderRadius: 8,
                     padding: '6px 12px',
@@ -512,9 +517,10 @@ export default function ProfileModal({ onClose }) {
                     width: 'auto',
                     margin: 0
                   }}
+                  whileTap={{ scale: 0.95 }} transition={{ type:'spring', stiffness:400, damping:24 }}
                 >
                   Save
-                </button>
+                </motion.button>
               </div>
               <div style={{display:'flex', gap:6, alignItems:'center', marginTop:4}}>
                 <div style={{background:levelColor, color:'white', fontSize:9, fontWeight:800, padding:'2px 6px', borderRadius:4, textTransform:'uppercase'}}>{level}</div>
@@ -524,17 +530,17 @@ export default function ProfileModal({ onClose }) {
                 <div className={styles.progFill} style={{ width: `${Math.min(100, (points / (points < 100 ? 100 : points < 500 ? 500 : 1000)) * 100)}%` }} />
               </div>
               {dbUser?.verified === true ? (
-                <div style={{fontSize:10,color:'#22c55e',marginTop:2}}>✅ Verified defence member</div>
+                <div style={{fontSize:10,color:'var(--green)',marginTop:2}}>✅ Verified defence member</div>
               ) : dbUser?.verified === 'pending' ? (
-                 <div style={{fontSize:10,color:'#f59e0b',marginTop:2}}>⏳ Verification under review</div>
+                 <div style={{fontSize:10,color:'var(--accent)',marginTop:2}}>⏳ Verification under review</div>
               ) : (
                  <div style={{fontSize:10,color:'var(--muted)',marginTop:2}}>❌ Not verified. Go to Verification tab.</div>
               )}
             </div>
             <div style={{display:'flex', flexDirection:'column', gap:'6px', alignItems:'flex-end'}}>
-              <button className={styles.logout} onClick={async () => { await signOut(auth); onClose(); ctx.showToast('Logged out', 'ok'); }}>
+              <motion.button className={styles.logout} onClick={async () => { await signOut(auth); onClose(); ctx.showToast('Logged out', 'ok'); }} whileTap={{ scale: 0.95 }} transition={{ type:'spring', stiffness:400, damping:24 }}>
                 Log Out
-              </button>
+              </motion.button>
             </div>
           </div>
 
@@ -554,10 +560,10 @@ export default function ProfileModal({ onClose }) {
 
           <div style={{display:'flex',gap:16,borderBottom:'1px solid var(--border2)',marginBottom:16,paddingBottom:0,overflowX:'auto',marginTop:16}}>
             {['listings','wishlisted','messages','verification','rewards','security','seen','echs','schoolAdmission','jobs','accessibility'].map(t => (
-              <button key={t} onClick={() => setActiveTab(t)} style={{
+              <motion.button key={t} onClick={() => setActiveTab(t)} style={{
                 background:'none', border:'none', borderBottom: activeTab === t ? '2px solid var(--accent)' : '2px solid transparent',
                 color: activeTab === t ? 'var(--accent)' : 'var(--muted)', fontSize:13, fontWeight:600, paddingBottom:8, cursor:'pointer', whiteSpace:'nowrap', textTransform:'capitalize'
-              }}>{TRANSLATIONS[language][t] || t}</button>
+              }} whileTap={{ scale: 0.95 }} transition={{ type:'spring', stiffness:400, damping:24 }}>{TRANSLATIONS[language][t] || t}</motion.button>
             ))}
           </div>
 
@@ -567,7 +573,7 @@ export default function ProfileModal({ onClose }) {
                 <div className={styles.empty}>
                   <div style={{fontSize:32,marginBottom:8}}>📭</div>
                   <p style={{fontSize:14,color:'var(--muted)'}}>No listings posted yet.</p>
-                  <button className="bp" style={{marginTop:12,width:'auto',padding:'10px 24px'}} onClick={() => { onClose(); ctx.openPost(); }}>Post Your First Listing</button>
+                  <motion.button className="bp liquid-glass-chip fluid-press" style={{marginTop:12,width:'auto',padding:'10px 24px'}} onClick={() => { onClose(); ctx.openPost(); }} whileTap={{ scale: 0.97 }} transition={{ type:'spring', stiffness:400, damping:24 }}>Post Your First Listing</motion.button>
                 </div>
               ) : myListings.map(l => (
                 <div key={l.id} className={styles.listingItem}>
@@ -599,7 +605,7 @@ export default function ProfileModal({ onClose }) {
                         <div style={{fontWeight:700,fontSize:14}}>{l.name}</div>
                         <div style={{fontSize:12,color:'var(--muted)'}}>📍 {l.area}, {l.city} · ₹{l.price?.toLocaleString()}/mo</div>
                       </div>
-                      <span className={styles.live} style={{background: 'rgba(244,197,66,0.1)', color: '#f4c542'}}>★ Saved</span>
+                      <span className={styles.live} style={{background: 'rgba(212,175,55,0.1)', color: 'var(--gold)'}}>★ Saved</span>
                     </div>
                   )
                 })
@@ -690,13 +696,13 @@ export default function ProfileModal({ onClose }) {
                {dbUser?.verified === true ? (
                  <div className={styles.empty}>
                    <div style={{fontSize:32,marginBottom:8}}>🎖️</div>
-                   <h3 style={{color:'#22c55e', marginBottom:4}}>You are a Verified Fauji</h3>
+                   <h3 style={{color:'var(--green)', marginBottom:4}}>You are a Verified Fauji</h3>
                    <p style={{fontSize:13,color:'var(--muted)'}}>Your military ID has been vetted. This badge appears on all your listings.</p>
                  </div>
                ) : dbUser?.verified === 'pending' ? (
                  <div className={styles.empty}>
                    <div style={{fontSize:32,marginBottom:8}}>⏳</div>
-                   <h3 style={{color:'#f59e0b', marginBottom:4}}>Under Review</h3>
+                   <h3 style={{color:'var(--accent)', marginBottom:4}}>Under Review</h3>
                    <p style={{fontSize:13,color:'var(--muted)'}}>Our team is verifying your submitted ID. Please wait 24–48 hours.</p>
                  </div>
                ) : (
@@ -715,11 +721,11 @@ export default function ProfileModal({ onClose }) {
                      </ul>
                    </div>
 
-                   <div style={{border:'1px dashed var(--border2)', borderRadius:10, padding:16, marginBottom:16, background:'rgba(0,0,0,0.2)', textAlign:'center'}}>
+                   <div className="liquid-glass-chip" style={{border:'1px dashed var(--border2)', borderRadius:10, padding:16, marginBottom:16, background:'var(--card)', textAlign:'center'}}>
                      <input type="file" accept="image/*" id="id-upload" onChange={e => setIdFile(e.target.files[0])} style={{display:'none'}} />
                      <label htmlFor="id-upload" style={{cursor:'pointer', display:'block'}}>
                         {idFile ? (
-                           <div style={{color:'#14b8a6', fontWeight:600}}>📎 {idFile.name}</div>
+                           <div style={{color:'var(--green)', fontWeight:600}}>📎 {idFile.name}</div>
                         ) : (
                            <div style={{color:'var(--accent)'}}>📤 Tap to select Military ID / Canteen Card</div>
                         )}
@@ -727,7 +733,7 @@ export default function ProfileModal({ onClose }) {
                      </label>
                    </div>
                    
-                   <button className="bp" disabled={!idFile || loading} onClick={async () => {
+                   <motion.button className="bp liquid-glass-chip fluid-press" disabled={!idFile || loading} whileTap={{ scale: 0.97 }} transition={{ type:'spring', stiffness:400, damping:24 }} onClick={async () => {
                       if(!idFile) return;
                       setLoading(true);
                       try {
@@ -788,7 +794,7 @@ export default function ProfileModal({ onClose }) {
                       setLoading(false);
                    }}>
                      {loading ? 'Processing...' : 'Encrypt & Submit ID 🔒'}
-                   </button>
+                   </motion.button>
                  </div>
                )}
             </div>
@@ -801,9 +807,9 @@ export default function ProfileModal({ onClose }) {
                   <div style={{fontSize:32,marginBottom:8}}>💬</div>
                   <p style={{fontSize:14,color:'var(--muted)'}}>No active chats yet.</p>
                   <div style={{marginTop:12, display:'flex', gap:10}}>
-                    <button onClick={() => window.location.href = '/about.html'} style={{background:'var(--card2)', border:'1px solid var(--border2)', color:'var(--accent)', fontSize:11, padding:'6px 12px', borderRadius:8, cursor:'pointer'}}>ℹ️ About Us</button>
-                    <button onClick={ctx.openLegal} style={{background:'var(--card2)', border:'1px solid var(--border2)', color:'var(--accent)', fontSize:11, padding:'6px 12px', borderRadius:8, cursor:'pointer'}}>⚖️ Privacy Policy</button>
-                    <button onClick={ctx.openLegal} style={{background:'var(--card2)', border:'1px solid var(--border2)', color:'var(--accent)', fontSize:11, padding:'6px 12px', borderRadius:8, cursor:'pointer'}}>📜 Terms of Use</button>
+                    <motion.button onClick={() => window.location.href = '/about.html'} style={{background:'var(--card2)', border:'1px solid var(--border2)', color:'var(--accent)', fontSize:11, padding:'6px 12px', borderRadius:8, cursor:'pointer'}} whileTap={{ scale: 0.95 }} transition={{ type:'spring', stiffness:400, damping:24 }}>ℹ️ About Us</motion.button>
+                    <motion.button onClick={ctx.openLegal} style={{background:'var(--card2)', border:'1px solid var(--border2)', color:'var(--accent)', fontSize:11, padding:'6px 12px', borderRadius:8, cursor:'pointer'}} whileTap={{ scale: 0.95 }} transition={{ type:'spring', stiffness:400, damping:24 }}>⚖️ Privacy Policy</motion.button>
+                    <motion.button onClick={ctx.openLegal} style={{background:'var(--card2)', border:'1px solid var(--border2)', color:'var(--accent)', fontSize:11, padding:'6px 12px', borderRadius:8, cursor:'pointer'}} whileTap={{ scale: 0.95 }} transition={{ type:'spring', stiffness:400, damping:24 }}>📜 Terms of Use</motion.button>
                   </div>
                   <p style={{fontSize:12,color:'var(--muted)',marginTop:4}}>Reach out to owners via the map to start an encrypted conversation.</p>
                 </div>
@@ -830,9 +836,9 @@ export default function ProfileModal({ onClose }) {
                   Your account is secured by your phone number. You can delete your data permanently here.
                 </p>
                 <div style={{marginTop:12, display:'flex', gap:10}}>
-                  <button onClick={() => window.location.href = '/about.html'} style={{background:'var(--card2)', border:'1px solid var(--border2)', color:'var(--accent)', fontSize:11, padding:'6px 12px', borderRadius:8, cursor:'pointer'}}>ℹ️ About Us</button>
-                  <button onClick={ctx.openLegal} style={{background:'var(--card2)', border:'1px solid var(--border2)', color:'var(--accent)', fontSize:11, padding:'6px 12px', borderRadius:8, cursor:'pointer'}}>⚖️ Privacy Policy</button>
-                  <button onClick={ctx.openLegal} style={{background:'var(--card2)', border:'1px solid var(--border2)', color:'var(--accent)', fontSize:11, padding:'6px 12px', borderRadius:8, cursor:'pointer'}}>📜 Terms of Use</button>
+                  <motion.button onClick={() => window.location.href = '/about.html'} style={{background:'var(--card2)', border:'1px solid var(--border2)', color:'var(--accent)', fontSize:11, padding:'6px 12px', borderRadius:8, cursor:'pointer'}} whileTap={{ scale: 0.95 }} transition={{ type:'spring', stiffness:400, damping:24 }}>ℹ️ About Us</motion.button>
+                  <motion.button onClick={ctx.openLegal} style={{background:'var(--card2)', border:'1px solid var(--border2)', color:'var(--accent)', fontSize:11, padding:'6px 12px', borderRadius:8, cursor:'pointer'}} whileTap={{ scale: 0.95 }} transition={{ type:'spring', stiffness:400, damping:24 }}>⚖️ Privacy Policy</motion.button>
+                  <motion.button onClick={ctx.openLegal} style={{background:'var(--card2)', border:'1px solid var(--border2)', color:'var(--accent)', fontSize:11, padding:'6px 12px', borderRadius:8, cursor:'pointer'}} whileTap={{ scale: 0.95 }} transition={{ type:'spring', stiffness:400, damping:24 }}>📜 Terms of Use</motion.button>
                 </div>
               </div>
 
@@ -840,14 +846,14 @@ export default function ProfileModal({ onClose }) {
                 <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:12}}>
                   <h3 style={{fontSize:15}}>📱 Active Sessions</h3>
                   {sessions.length > 1 && (
-                    <button style={{fontSize:11, color:'var(--gold)', background:'none', border:'none', cursor:'pointer'}} 
+                    <motion.button style={{fontSize:11, color:'var(--gold)', background:'none', border:'none', cursor:'pointer'}}
                       onClick={async () => {
                       if(window.confirm('Log out all other devices?')) {
                         const count = await terminateAllOtherSessions(user.uid);
                         ctx.showToast(`Logged out of ${count} device(s)`, 'ok');
                         getUserSessions(user.uid).then(setSessions);
                       }
-                    }}>Log out all other devices</button>
+                    }} whileTap={{ scale: 0.95 }} transition={{ type:'spring', stiffness:400, damping:24 }}>Log out all other devices</motion.button>
                   )}
                 </div>
                 {sessions.length === 0 ? <p>Loading sessions...</p> : (
@@ -855,19 +861,20 @@ export default function ProfileModal({ onClose }) {
                     {sessions.map(s => {
                       const isCurrent = s.id === `${user.uid}_${generateDeviceFingerprint()}`;
                       return (
-                      <div key={s.id} style={{display:'flex',justifyContent:'space-between', alignItems:'center', padding:10, borderRadius:8, background:'rgba(255,255,255,0.03)', border:'1px solid var(--border)'}}>
+                      <div key={s.id} className="liquid-glass-chip" style={{display:'flex',justifyContent:'space-between', alignItems:'center', padding:10, borderRadius:8, background:'var(--card)', border:'1px solid var(--border)'}}>
                         <div>
-                          <div style={{fontSize:13, fontWeight:600}}>{s.device} · {s.browser} {isCurrent && <span style={{fontSize:10, color:'#10b981', marginLeft:4}}>Current</span>}</div>
+                          <div style={{fontSize:13, fontWeight:600}}>{s.device} · {s.browser} {isCurrent && <span style={{fontSize:10, color:'var(--green)', marginLeft:4}}>Current</span>}</div>
                           <div style={{fontSize:11, color:'var(--muted)'}}>Last active: {s.lastLoginAt?.toLocaleDateString() || 'Recently'}</div>
                         </div>
                         {!isCurrent && (
-                          <button style={{fontSize:12, color:'var(--red)', background:'none', border:'none', cursor:'pointer'}}
+                          <motion.button style={{fontSize:12, color:'var(--red)', background:'none', border:'none', cursor:'pointer'}}
                             onClick={async () => {
                               await terminateSession(s.id);
                               getUserSessions(user.uid).then(setSessions);
                               ctx.showToast('Session terminated', 'ok');
                             }}
-                          >Revoke</button>
+                            whileTap={{ scale: 0.95 }} transition={{ type:'spring', stiffness:400, damping:24 }}
+                          >Revoke</motion.button>
                         )}
                       </div>
                     )})}
@@ -880,9 +887,10 @@ export default function ProfileModal({ onClose }) {
                 <p style={{fontSize:12, color:'var(--muted)', marginBottom:16}}>
                   Deleting your account will remove your profile, wishlist, and **all listings and messages** permanently. This cannot be undone.
                 </p>
-                <button 
-                  className="bp" 
-                  style={{background:'var(--red)', color:'white'}} 
+                <motion.button
+                  className="bp fluid-press"
+                  style={{background:'var(--red)', color:'white'}}
+                  whileTap={{ scale: 0.97 }} transition={{ type:'spring', stiffness:400, damping:24 }}
                   onClick={async () => {
                     if (window.confirm('ARE YOU SURE? This will permanently delete your account, all your listings, and all your messages.')) {
                       setLoading(true);
@@ -925,7 +933,7 @@ export default function ProfileModal({ onClose }) {
                   disabled={loading}
                 >
                   {loading ? 'Deleting Everything...' : 'Delete My Account Permanently'}
-                </button>
+                </motion.button>
               </div>
             </div>
           )}
@@ -937,27 +945,30 @@ export default function ProfileModal({ onClose }) {
                   🌐 {TRANSLATIONS[language].selectLang}
                 </h3>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
-                  <button 
-                    className={`fb ${language === 'en' ? 'active' : ''}`} 
+                  <motion.button
+                    className={`fb ${language === 'en' ? 'active' : ''}`}
                     style={{ padding: 10, fontSize: 13, borderRadius: 8 }}
                     onClick={() => handleLanguageChange('en')}
+                    whileTap={{ scale: 0.95 }} transition={{ type:'spring', stiffness:400, damping:24 }}
                   >
                     English (EN)
-                  </button>
-                  <button 
-                    className={`fb ${language === 'hi' ? 'active' : ''}`} 
+                  </motion.button>
+                  <motion.button
+                    className={`fb ${language === 'hi' ? 'active' : ''}`}
                     style={{ padding: 10, fontSize: 13, borderRadius: 8 }}
                     onClick={() => handleLanguageChange('hi')}
+                    whileTap={{ scale: 0.95 }} transition={{ type:'spring', stiffness:400, damping:24 }}
                   >
                     हिन्दी (HI)
-                  </button>
-                  <button 
-                    className={`fb ${language === 'pa' ? 'active' : ''}`} 
+                  </motion.button>
+                  <motion.button
+                    className={`fb ${language === 'pa' ? 'active' : ''}`}
                     style={{ padding: 10, fontSize: 13, borderRadius: 8 }}
                     onClick={() => handleLanguageChange('pa')}
+                    whileTap={{ scale: 0.95 }} transition={{ type:'spring', stiffness:400, damping:24 }}
                   >
                     ਪੰਜਾਬੀ (PA)
-                  </button>
+                  </motion.button>
                 </div>
               </div>
 
@@ -1002,21 +1013,22 @@ export default function ProfileModal({ onClose }) {
                 </p>
 
                 {/* ECHS Upload Section */}
-                <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px dashed var(--border2)', borderRadius: 8, padding: 12, textAlign: 'center', marginBottom: 12 }}>
+                <div className="liquid-glass-chip" style={{ background: 'var(--card)', border: '1px dashed var(--border2)', borderRadius: 8, padding: 12, textAlign: 'center', marginBottom: 12 }}>
                   {echsUploaded ? (
                     <div>
-                      <div style={{ color: '#22c55e', fontSize: 12, fontWeight: 'bold', marginBottom: 4 }}>
+                      <div style={{ color: 'var(--green)', fontSize: 12, fontWeight: 'bold', marginBottom: 4 }}>
                         🔒 {TRANSLATIONS[language].echsVaulted || 'Locally Encrypted & Vaulted Successfully'}
                       </div>
                       <div style={{ color: 'var(--text)', fontSize: 11, fontFamily: 'monospace' }}>
                         {echsFileName}
                       </div>
-                      <button 
+                      <motion.button
                         onClick={() => { setEchsUploaded(false); setEchsFileName(''); }}
                         style={{ background: 'none', border: 'none', color: 'var(--red)', fontSize: 11, cursor: 'pointer', marginTop: 8, textDecoration: 'underline' }}
+                        whileTap={{ scale: 0.95 }} transition={{ type:'spring', stiffness:400, damping:24 }}
                       >
                         {TRANSLATIONS[language].echsRemove || 'Remove Document'}
-                      </button>
+                      </motion.button>
                     </div>
                   ) : (
                     <div>
@@ -1049,14 +1061,14 @@ export default function ProfileModal({ onClose }) {
                     <select 
                       value={opdHospital} 
                       onChange={(e) => setOpdHospital(e.target.value)}
-                      style={{ 
-                        flexGrow: 1, 
-                        background: 'rgba(0,0,0,0.2)', 
-                        border: '1px solid var(--border2)', 
-                        color: 'var(--text)', 
-                        borderRadius: 6, 
-                        padding: '6px 10px', 
-                        fontSize: 12 
+                      style={{
+                        flexGrow: 1,
+                        background: 'var(--card)',
+                        border: '1px solid var(--border2)',
+                        color: 'var(--text)',
+                        borderRadius: 6,
+                        padding: '6px 10px',
+                        fontSize: 12
                       }}
                     >
                       <option value="Base Hospital Delhi Cantt">Base Hospital Delhi Cantt</option>
@@ -1065,23 +1077,25 @@ export default function ProfileModal({ onClose }) {
                       <option value="Station Hospital Secunderabad">Station Hospital Secunderabad</option>
                     </select>
 
-                    <button 
+                    <motion.button
                       onClick={handleBookOPDToken}
                       disabled={opdLoading}
-                      style={{ 
-                        background: 'var(--accent)', 
-                        color: '#000', 
-                        border: 'none', 
-                        borderRadius: 6, 
-                        padding: '6px 12px', 
-                        fontSize: 12, 
-                        fontWeight: 'bold', 
+                      className="fluid-press"
+                      style={{
+                        background: 'var(--accent)',
+                        color: 'var(--bg)',
+                        border: 'none',
+                        borderRadius: 6,
+                        padding: '6px 12px',
+                        fontSize: 12,
+                        fontWeight: 'bold',
                         cursor: 'pointer',
                         whiteSpace: 'nowrap'
                       }}
+                      whileTap={{ scale: 0.95 }} transition={{ type:'spring', stiffness:400, damping:24 }}
                     >
                       {opdLoading ? '...' : (TRANSLATIONS[language].echsBook || 'Book OPD Token')}
-                    </button>
+                    </motion.button>
                   </div>
 
                   {opdToken && (
@@ -1096,7 +1110,7 @@ export default function ProfileModal({ onClose }) {
                       <div style={{ fontSize: 10, color: 'var(--muted)', textTransform: 'uppercase' }}>
                         {TRANSLATIONS[language].echsTokenActive || 'Active OPD Queue Token'}
                       </div>
-                      <div style={{ fontSize: 18, fontWeight: 900, color: '#22c55e', margin: '4px 0' }}>
+                      <div style={{ fontSize: 18, fontWeight: 900, color: 'var(--green)', margin: '4px 0' }}>
                         {opdToken}
                       </div>
                       <div style={{ fontSize: 10, color: 'var(--text)' }}>
@@ -1123,7 +1137,7 @@ export default function ProfileModal({ onClose }) {
                   <select 
                     value={schoolCity} 
                     onChange={(e) => setSchoolCity(e.target.value)}
-                    style={{ flexGrow: 1, background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border2)', color: 'var(--text)', borderRadius: 6, padding: '6px 10px', fontSize: 12 }}
+                    style={{ flexGrow: 1, background: 'var(--card)', border: '1px solid var(--border2)', color: 'var(--text)', borderRadius: 6, padding: '6px 10px', fontSize: 12 }}
                   >
                     <option value="Pune">Pune Cantonment</option>
                     <option value="Delhi">Delhi Cantonment</option>
@@ -1134,7 +1148,7 @@ export default function ProfileModal({ onClose }) {
                   <select 
                     value={schoolGrade} 
                     onChange={(e) => setSchoolGrade(e.target.value)}
-                    style={{ flexGrow: 1, background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border2)', color: 'var(--text)', borderRadius: 6, padding: '6px 10px', fontSize: 12 }}
+                    style={{ flexGrow: 1, background: 'var(--card)', border: '1px solid var(--border2)', color: 'var(--text)', borderRadius: 6, padding: '6px 10px', fontSize: 12 }}
                   >
                     <option value="Class 1">Class 1</option>
                     <option value="Class 5">Class 5</option>
@@ -1149,23 +1163,24 @@ export default function ProfileModal({ onClose }) {
                     { name: `Kendriya Vidyalaya (KV) No. 1 ${schoolCity}`, seats: 5, status: 'Vacancy Open' },
                     { name: `Kendriya Vidyalaya (KV) No. 2 ${schoolCity}`, seats: 0, status: 'Waiting List Only' }
                   ].map((sch, i) => (
-                    <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.02)', padding: 10, borderRadius: 8, border: '1px solid var(--border2)' }}>
+                    <div key={i} className="liquid-glass-chip" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--card)', padding: 10, borderRadius: 8, border: '1px solid var(--border2)' }}>
                       <div>
                         <div style={{ fontSize: 12, fontWeight: 'bold', color: 'var(--text)' }}>{sch.name}</div>
-                        <div style={{ fontSize: 10, color: sch.seats > 0 ? '#22c55e' : '#f43f5e', marginTop: 2 }}>
+                        <div style={{ fontSize: 10, color: sch.seats > 0 ? 'var(--green)' : 'var(--red)', marginTop: 2 }}>
                           {sch.seats > 0 ? `🟢 ${sch.seats} Seats Available (${sch.status})` : `🔴 Full (${sch.status})`}
                         </div>
                       </div>
                       {sch.seats > 0 && (
-                        <button 
+                        <motion.button
                           onClick={() => {
                             setAppliedAdmissionSchool(sch.name);
                             ctx.showToast(`Priority Transfer certificate application submitted to ${sch.name}! 🏫`, 'ok');
                           }}
                           disabled={appliedAdmissionSchool === sch.name}
+                          className="fluid-press"
                           style={{
-                            background: appliedAdmissionSchool === sch.name ? 'rgba(255,255,255,0.1)' : 'var(--accent)',
-                            color: appliedAdmissionSchool === sch.name ? 'var(--muted)' : '#000',
+                            background: appliedAdmissionSchool === sch.name ? 'var(--card2)' : 'var(--accent)',
+                            color: appliedAdmissionSchool === sch.name ? 'var(--muted)' : 'var(--bg)',
                             border: 'none',
                             borderRadius: 6,
                             padding: '4px 10px',
@@ -1173,9 +1188,10 @@ export default function ProfileModal({ onClose }) {
                             fontWeight: 'bold',
                             cursor: 'pointer'
                           }}
+                          whileTap={{ scale: 0.95 }} transition={{ type:'spring', stiffness:400, damping:24 }}
                         >
                           {appliedAdmissionSchool === sch.name ? 'Applied' : 'Apply TC Transfer'}
-                        </button>
+                        </motion.button>
                       )}
                     </div>
                   ))}
@@ -1200,23 +1216,24 @@ export default function ProfileModal({ onClose }) {
                     { title: "Head of Corporate Intelligence & Security", company: "Tata Steel Group", location: "Jamshedpur", salary: "₹28-34 LPA", type: "Full Time" },
                     { title: "Chief Logistics Officer", company: "Adani Ports", location: "Mundra", salary: "₹30-38 LPA", type: "Full Time" }
                   ].map((job, i) => (
-                    <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: 6, background: 'rgba(255,255,255,0.02)', padding: 12, borderRadius: 8, border: '1px solid var(--border2)' }}>
+                    <div key={i} className="liquid-glass-chip" style={{ display: 'flex', flexDirection: 'column', gap: 6, background: 'var(--card)', padding: 12, borderRadius: 8, border: '1px solid var(--border2)' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                         <div>
                           <div style={{ fontSize: 13, fontWeight: 'extrabold', color: 'var(--text)' }}>{job.title}</div>
                           <div style={{ fontSize: 11, color: 'var(--accent)', fontWeight: 600, marginTop: 2 }}>{job.company}</div>
                         </div>
-                        <span style={{ fontSize: 10, background: 'rgba(34,197,94,0.1)', color: '#22c55e', padding: '2px 6px', borderRadius: 4, fontWeight: 'bold' }}>
+                        <span style={{ fontSize: 10, background: 'rgba(34,197,94,0.1)', color: 'var(--green)', padding: '2px 6px', borderRadius: 4, fontWeight: 'bold' }}>
                           Ex-Servicemen Quota
                         </span>
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 10, color: 'var(--muted)', marginTop: 4 }}>
                         <div>📍 {job.location} · 💰 {job.salary} · ⏱️ {job.type}</div>
-                        <button 
+                        <motion.button
                           onClick={() => ctx.showToast(`Applied to ${job.company} successfully! Recruiter will contact via verified mobile. 💼`, 'ok')}
+                          className="fluid-press"
                           style={{
                             background: 'var(--accent)',
-                            color: '#000',
+                            color: 'var(--bg)',
                             border: 'none',
                             borderRadius: 6,
                             padding: '5px 12px',
@@ -1224,9 +1241,10 @@ export default function ProfileModal({ onClose }) {
                             fontWeight: 'bold',
                             cursor: 'pointer'
                           }}
+                          whileTap={{ scale: 0.95 }} transition={{ type:'spring', stiffness:400, damping:24 }}
                         >
                           Apply Direct
-                        </button>
+                        </motion.button>
                       </div>
                     </div>
                   ))}

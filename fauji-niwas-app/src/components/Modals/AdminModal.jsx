@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
+import { motion } from 'framer-motion';
 import { db, auth } from '../../firebase';
 import { collection, query, where, onSnapshot, doc, updateDoc, deleteDoc, getDocs, addDoc } from 'firebase/firestore';
 import { ModalContext } from '../../App';
@@ -38,7 +39,7 @@ export default function AdminModal({ onClose }) {
         verificationStatusChanged: Date.now(),
         notification: status === true ? 'Your Fauji ID has been verified! 🎖️' : reason
       });
-      
+
       // Write audit log
       await addDoc(collection(db, 'audit_logs'), {
         uid: auth.currentUser?.uid || 'system',
@@ -66,7 +67,7 @@ export default function AdminModal({ onClose }) {
   const handleDismissReport = async (rentalId) => {
     try {
       await updateDoc(doc(db, 'rentals', rentalId), { reportCount: 0 });
-      
+
       // Write audit log
       await addDoc(collection(db, 'audit_logs'), {
         uid: auth.currentUser?.uid || 'system',
@@ -85,7 +86,7 @@ export default function AdminModal({ onClose }) {
     if (!confirm('Are you sure you want to delete this listing permanently?')) return;
     try {
       await deleteDoc(doc(db, 'rentals', rentalId));
-      
+
       // Write audit log
       await addDoc(collection(db, 'audit_logs'), {
         uid: auth.currentUser?.uid || 'system',
@@ -105,22 +106,24 @@ export default function AdminModal({ onClose }) {
       <div className="mc" style={{ maxWidth: 800, width: '95%' }}>
         <div className={styles.header}>
           <h2 className="mh2">🛠️ Admin Panel</h2>
-          <button className={styles.closeBtn} onClick={onClose}>✕</button>
+          <motion.button whileTap={{scale:0.97}} className={`${styles.closeBtn} fluid-press`} onClick={onClose}>✕</motion.button>
         </div>
-        
+
         <div className={styles.tabs}>
-          <button 
-            className={activeTab === 'verifications' ? styles.activeTab : ''} 
+          <motion.button
+            whileTap={{scale:0.97}}
+            className={`liquid-glass-chip fluid-press ${activeTab === 'verifications' ? styles.activeTab : ''}`}
             onClick={() => setActiveTab('verifications')}
           >
             Verifications ({pendingUsers.length})
-          </button>
-          <button 
-            className={activeTab === 'reports' ? styles.activeTab : ''} 
+          </motion.button>
+          <motion.button
+            whileTap={{scale:0.97}}
+            className={`liquid-glass-chip fluid-press ${activeTab === 'reports' ? styles.activeTab : ''}`}
             onClick={() => setActiveTab('reports')}
           >
             Reports ({allReports.length})
-          </button>
+          </motion.button>
         </div>
 
         <div className={styles.body}>
@@ -130,7 +133,7 @@ export default function AdminModal({ onClose }) {
                 <div className={styles.empty}>No pending verifications.</div>
               ) : (
                 pendingUsers.map(u => (
-                  <div key={u.id} className={styles.card}>
+                  <div key={u.id} className={`${styles.card} liquid-glass`}>
                     <div className={styles.cardInfo}>
                       <strong>{u.phone || u.email || 'Unknown User'}</strong>
                       <div className={styles.meta}>UID: {u.id}</div>
@@ -144,14 +147,14 @@ export default function AdminModal({ onClose }) {
                     <div className={styles.actions}>
                       {u.verified !== true && (
                         <div className={styles.rejectWrap}>
-                          <input 
-                            className={styles.reasonInput} 
-                            placeholder="Reason for rejection..." 
+                          <input
+                            className={styles.reasonInput}
+                            placeholder="Reason for rejection..."
                             value={rejectionReasons[u.id] || ''}
                             onChange={(e) => setRejectionReasons(prev => ({ ...prev, [u.id]: e.target.value }))}
                           />
-                          <button className={styles.btnApprove} onClick={() => handleVerify(u.id, true)}>Approve ✅</button>
-                          <button className={styles.btnReject} onClick={() => handleVerify(u.id, false)}>Reject ❌</button>
+                          <motion.button whileTap={{scale:0.97}} className={`${styles.btnApprove} fluid-press`} onClick={() => handleVerify(u.id, true)}>Approve ✅</motion.button>
+                          <motion.button whileTap={{scale:0.97}} className={`${styles.btnReject} fluid-press`} onClick={() => handleVerify(u.id, false)}>Reject ❌</motion.button>
                         </div>
                       )}
                     </div>
@@ -167,7 +170,7 @@ export default function AdminModal({ onClose }) {
                 <div className={styles.empty}>No pending reports.</div>
               ) : (
                 allReports.map(r => (
-                  <div key={r.id} className={styles.card}>
+                  <div key={r.id} className={`${styles.card} liquid-glass`}>
                     <div className={styles.cardInfo}>
                       <div style={{display:'flex', gap:8, alignItems:'center'}}>
                         <strong style={{color:'var(--red)'}}>🚨 {r.reason}</strong>
@@ -177,17 +180,17 @@ export default function AdminModal({ onClose }) {
                       <div className={styles.meta}>Reported by: {r.reportedBy}</div>
                     </div>
                     <div className={styles.actions}>
-                      <button className={styles.btnDismiss} onClick={async () => {
+                      <motion.button whileTap={{scale:0.97}} className={`${styles.btnDismiss} fluid-press`} onClick={async () => {
                         await updateDoc(doc(db, 'reports', r.id), { status: 'dismissed' });
                         ctx.showToast('Report dismissed', 'ok');
-                      }}>Dismiss 🤝</button>
-                      <button className={styles.btnDelete} onClick={async () => {
+                      }}>Dismiss 🤝</motion.button>
+                      <motion.button whileTap={{scale:0.97}} className={`${styles.btnDelete} fluid-press`} onClick={async () => {
                         if(confirm('Delete this listing?')) {
                           await deleteDoc(doc(db, 'rentals', r.listingId));
                           await updateDoc(doc(db, 'reports', r.id), { status: 'resolved' });
                           ctx.showToast('Listing deleted', 'ok');
                         }
-                      }}>Delete Listing 🗑️</button>
+                      }}>Delete Listing 🗑️</motion.button>
                     </div>
                   </div>
                 ))

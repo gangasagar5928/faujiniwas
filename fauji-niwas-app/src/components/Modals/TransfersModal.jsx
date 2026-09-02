@@ -1,8 +1,11 @@
 import { useState, useContext, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { db, collection, addDoc, query, orderBy, onSnapshot } from '../../firebase';
 import { useAuth } from '../../hooks/useAuth';
 import { ModalContext } from '../../App';
 import styles from './ProfileModal.module.css'; // Reusing some base styles
+
+const springTap = { whileTap: { scale: 0.97 }, transition: { type: 'spring', stiffness: 400, damping: 24 } };
 
 export default function TransfersModal({ onClose }) {
   const { user } = useAuth();
@@ -55,32 +58,32 @@ export default function TransfersModal({ onClose }) {
             Post your upcoming transfer to help others plan or find shared cabs.
           </p>
 
-          <form onSubmit={handleSubmit} style={{background: 'var(--bg)', border: '1px solid var(--border2)', borderRadius: 12, padding: 16, marginBottom: 24}}>
+          <form onSubmit={handleSubmit} className="liquid-glass-chip" style={{padding: 16, marginBottom: 24}}>
             <div style={{display:'flex', gap:8, marginBottom:8}}>
               <input className="fi" style={{marginBottom:0}} placeholder="From (City/Cantt)" value={from} onChange={e => setFrom(e.target.value)} required />
               <input className="fi" style={{marginBottom:0}} placeholder="To (City/Cantt)" value={to} onChange={e => setTo(e.target.value)} required />
             </div>
-            <textarea className="fi" placeholder="Message (e.g., Looking for flat-mate or shared cab...)" 
+            <textarea className="fi" placeholder="Message (e.g., Looking for flat-mate or shared cab...)"
               value={msg} onChange={e => setMsg(e.target.value)} style={{height:60, resize:'none'}} />
-            <button className="bp" type="submit" disabled={loading}>
+            <motion.button className="bp fluid-press" type="submit" disabled={loading} {...springTap}>
               {loading ? 'Posting...' : 'Post Alert 🔔'}
-            </button>
+            </motion.button>
           </form>
 
           <div style={{display:'flex', flexDirection:'column', gap:12}}>
             {transfers.map(t => (
-              <div key={t.id} style={{background: 'var(--bg)', border: '1px solid var(--border2)', borderRadius:12, padding: 12}}>
+              <motion.div key={t.id} className="liquid-glass-chip" style={{borderRadius:12, padding: 12}} {...springTap}>
                 <div style={{display:'flex', gap:8, alignItems:'center', marginBottom:8}}>
-                  <div style={{fontWeight:700, fontSize:14}}>{t.from}</div>
+                  <div style={{fontWeight:700, fontSize:14, color:'var(--text)'}}>{t.from}</div>
                   <div style={{fontSize:12, color:'var(--muted)'}}>➡️</div>
-                  <div style={{fontWeight:700, fontSize:14}}>{t.to}</div>
+                  <div style={{fontWeight:700, fontSize:14, color:'var(--text)'}}>{t.to}</div>
                 </div>
                 {t.message && <p style={{fontSize:13, color:'var(--text2)', marginBottom:8}}>{t.message}</p>}
                 <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
                   <div style={{fontSize:11, color:'var(--accent)', fontWeight:600}}>🎖️ {t.userName}</div>
                   <div style={{fontSize:10, color:'var(--muted)'}}>{new Date(t.createdAt).toLocaleDateString()}</div>
                 </div>
-              </div>
+              </motion.div>
             ))}
             {transfers.length === 0 && <p style={{textAlign:'center', color:'var(--muted)', fontSize:13}}>No active movement alerts.</p>}
           </div>

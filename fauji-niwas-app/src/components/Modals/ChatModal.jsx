@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useContext } from 'react';
+import { motion } from 'framer-motion';
 import { db, auth, storage } from '../../firebase';
 import { collection, query, orderBy, onSnapshot, addDoc, doc, setDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -160,37 +161,40 @@ export default function ChatModal({ config, onClose }) {
         <div className={styles.header}>
           <div className={styles.headerInfo}>
             <div className={styles.name}>{name || 'Chat'}</div>
-            <div className={styles.status} style={{color:'#10b981'}}>
+            <div className={styles.status} style={{color:'var(--green)'}}>
               🔒 End-to-End Encrypted
             </div>
           </div>
           <div style={{display:'flex', gap:8}}>
              {safetyNumber && (
-                <button 
+                <motion.button
                   onClick={() => alert(`Safety Number with this user:\n\n${safetyNumber}\n\nVerify this out-of-band to ensure no one is intercepting your messages.`)}
                   style={{background:'none', border:'1px solid var(--border)', color:'var(--muted)', fontSize:11, padding:'4px 8px', borderRadius:4, cursor:'pointer'}}
+                  whileTap={{ scale: 0.95 }} transition={{ type:'spring', stiffness:400, damping:24 }}
                 >
                   Verify
-                </button>
+                </motion.button>
              )}
-            <button 
+            <motion.button
               onClick={() => setShowKeyRotator(prev => !prev)}
+              className="liquid-glass-chip fluid-press"
               style={{background:'rgba(255,215,0,0.1)', border:'1px solid var(--gold)', color:'var(--gold)', fontSize:11, padding:'4px 8px', borderRadius:4, cursor:'pointer'}}
+              whileTap={{ scale: 0.95 }} transition={{ type:'spring', stiffness:400, damping:24 }}
             >
               🔐 Encryption
-            </button>
-            <button className={styles.closeBtn} onClick={onClose}>✕</button>
+            </motion.button>
+            <motion.button className={styles.closeBtn} onClick={onClose} whileTap={{ scale: 0.9 }} transition={{ type:'spring', stiffness:400, damping:24 }}>✕</motion.button>
           </div>
         </div>
 
         {showKeyRotator && (
-          <div style={{ background: '#080d1a', borderBottom: '1px solid var(--border2)', padding: '14px 20px', fontFamily: 'monospace' }}>
+          <div className="liquid-glass" style={{ borderBottom: '1px solid var(--border2)', padding: '14px 20px', fontFamily: 'monospace' }}>
             <div style={{ display: 'flex', justifyItems: 'center', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
               <span style={{ fontSize: 11, color: 'var(--gold)', fontWeight: 800 }}>🔒 END-TO-END ENCRYPTION STATUS</span>
             </div>
             
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: 10, background: '#040710', borderRadius: 8, border: '1px solid rgba(255,255,255,0.03)' }}>
-              <div style={{ fontSize: 11, color: '#4ade80', lineHeight: 1.4 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: 10, background: 'var(--card)', borderRadius: 8, border: '1px solid var(--border)' }}>
+              <div style={{ fontSize: 11, color: 'var(--green)', lineHeight: 1.4 }}>
                 ✓ Web Crypto API initialized — AES-GCM-256 / RSA-OAEP active
               </div>
               <div style={{ fontSize: 11, color: 'var(--muted)', lineHeight: 1.4 }}>
@@ -221,7 +225,7 @@ export default function ChatModal({ config, onClose }) {
           {messages.length === 0 && (
             <div className={styles.welcome}>
               <div style={{fontSize: 40}}>🔐</div>
-              <h3 style={{color:'#10b981'}}>Secure Tunnel Active</h3>
+              <h3 style={{color:'var(--green)'}}>Secure Tunnel Active</h3>
               <p>Messages and calls are end-to-end encrypted. No one outside of this chat, not even FaujiNiwas, can read or listen to them.</p>
             </div>
           )}
@@ -240,9 +244,9 @@ export default function ChatModal({ config, onClose }) {
             onKeyDown={e => e.key === 'Enter' && sendMessage(text)}
             disabled={!isReady}
           />
-          <button className={styles.sendBtn} onClick={() => sendMessage(text)} disabled={sending || !text.trim() || !isReady}>
+          <motion.button className={`${styles.sendBtn} liquid-glass-chip fluid-press`} onClick={() => sendMessage(text)} disabled={sending || !text.trim() || !isReady} whileTap={{ scale: 0.94 }} transition={{ type:'spring', stiffness:400, damping:24 }}>
             {sending ? '...' : 'Send'}
-          </button>
+          </motion.button>
         </div>
       </div>
     </div>

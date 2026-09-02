@@ -1,16 +1,19 @@
 import { useContext } from 'react';
+import { motion } from 'framer-motion';
 import { useFilterStore } from '../../store/filterStore';
 import { useUserStore } from '../../store/userStore';
 import { ModalContext } from '../../App';
 import styles from './ProfileModal.module.css'; // Use shared base styles
 
+const springTap = { whileTap: { scale: 0.97 }, transition: { type: 'spring', stiffness: 400, damping: 24 } };
+
 function CompareRow({ label, v1, v2, better = null }) {
   return (
-    <div style={{display:'flex', borderBottom:'1px solid var(--border2)', padding:'10px 0'}}>
+    <motion.div style={{display:'flex', borderBottom:'1px solid var(--border2)', padding:'10px 0'}} {...springTap}>
       <div style={{flex: 1, textAlign:'center', fontSize:13, fontWeight: better === 1 ? 700 : 400, color: better === 1 ? 'var(--accent)' : 'inherit'}}>{v1}</div>
       <div style={{width: 80, textAlign:'center', fontSize:11, color:'var(--muted)', fontWeight:600}}>{label}</div>
       <div style={{flex: 1, textAlign:'center', fontSize:13, fontWeight: better === 2 ? 700 : 400, color: better === 2 ? 'var(--accent)' : 'inherit'}}>{v2}</div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -51,10 +54,10 @@ export default function CompareModal({ onClose }) {
           
           <div style={{display:'flex', gap:10, marginBottom:20}}>
             {[l1, l2].map(l => (
-              <div key={l.id} style={{flex:1}}>
+              <motion.div key={l.id} className="liquid-glass-chip" style={{flex:1, padding:8}} {...springTap}>
                 <img src={l.mediaUrls?.[0]} style={{width:'100%', height:80, objectFit:'cover', borderRadius:8}} alt={l.name || "Property preview"} />
                 <div style={{fontSize:13, fontWeight:700, marginTop:6, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis'}}>{l.name}</div>
-              </div>
+              </motion.div>
             ))}
           </div>
 
@@ -71,8 +74,8 @@ export default function CompareModal({ onClose }) {
           <CompareRow label="OWNER" v1={l1.ownerType} v2={l2.ownerType} />
 
           <div style={{display:'flex', gap:10, marginTop:24}}>
-            <button className="bp" style={{flex:1}} onClick={() => { onClose(); ctx.openDetail(l1.id); }}>View Left</button>
-            <button className="bp" style={{flex:1}} onClick={() => { onClose(); ctx.openDetail(l2.id); }}>View Right</button>
+            <motion.button className="bp fluid-press" style={{flex:1}} onClick={() => { onClose(); ctx.openDetail(l1.id); }} {...springTap}>View Left</motion.button>
+            <motion.button className="bp fluid-press" style={{flex:1}} onClick={() => { onClose(); ctx.openDetail(l2.id); }} {...springTap}>View Right</motion.button>
           </div>
 
         </div>

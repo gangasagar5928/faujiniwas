@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { motion } from 'framer-motion';
 import { maskDocument } from '../../security/EdgeDocumentMasker';
 import { X, Upload, ShieldCheck, RefreshCw } from 'lucide-react';
 
@@ -28,80 +29,88 @@ export default function WasmMaskingModal({ onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
-      <div className="bg-[#13161c] border border-[#232833] rounded-3xl w-full max-w-4xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
-        
+    <div className="modal-backdrop" onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className="mc" style={{ maxWidth: 800, width: '95%', display: 'flex', flexDirection: 'column', maxHeight: '90vh', overflow: 'hidden' }}>
+
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-[#232833] bg-[#0d0f12]">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-[#22c55e]/10 flex items-center justify-center text-[#22c55e]">
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 24px', borderBottom: '1px solid var(--border2)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <div style={{ width: 48, height: 48, borderRadius: 14, background: 'rgba(34,197,94,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--green)' }}>
               <ShieldCheck size={28} />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-white">WASM Edge Document Masking</h2>
-              <p className="text-sm text-[#8892a4]">DPDP Act 2023 Compliant Zero-Trust Uploads</p>
+              <h2 className="mh2" style={{ fontSize: 20 }}>WASM Edge Document Masking</h2>
+              <p style={{ fontSize: 12, color: 'var(--muted)', marginTop: 2 }}>DPDP Act 2023 Compliant Zero-Trust Uploads</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-2 text-[#8892a4] hover:text-white rounded-full hover:bg-white/5 transition">
+          <motion.button whileTap={{scale:0.97}} onClick={onClose} className="fluid-press" style={{ padding: 8, color: 'var(--muted)', borderRadius: '50%', cursor: 'pointer', border: 'none', background: 'none' }}>
             <X size={24} />
-          </button>
+          </motion.button>
         </div>
 
         {/* Body */}
-        <div className="p-8 overflow-y-auto custom-scrollbar flex-1 flex flex-col gap-8">
-          
-          <div className="bg-[#00D4FF]/10 border border-[#00D4FF]/20 p-5 rounded-2xl text-[#00D4FF] text-sm leading-relaxed">
+        <div style={{ padding: 32, overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: 32 }}>
+
+          <div className="liquid-glass-chip" style={{ padding: 20, borderRadius: 14, color: 'var(--accent)', fontSize: 13, lineHeight: 1.6 }}>
             <strong>How it works:</strong> This module uses client-side WebAssembly (WASM) to run OCR and Face Detection directly in your browser. It automatically finds and redacts faces, Aadhaar numbers, PAN cards, and Military Service Numbers <em>before</em> the image is ever transmitted to Firebase Storage. The server never sees the raw PII.
           </div>
 
           {!originalImage ? (
-            <div 
+            <motion.div
+              whileTap={{scale:0.98}}
               onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-[#2d3646] hover:border-[#00D4FF] rounded-3xl h-64 flex flex-col items-center justify-center cursor-pointer transition-colors bg-[#0d0f12] group"
+              className="liquid-glass fluid-press"
+              style={{ border: '2px dashed var(--border2)', borderRadius: 20, height: 256, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
             >
-              <div className="w-16 h-16 rounded-full bg-[#171c24] flex items-center justify-center text-[#8892a4] group-hover:text-[#00D4FF] group-hover:bg-[#00D4FF]/10 transition-colors mb-4">
+              <div className="liquid-glass-chip" style={{ width: 64, height: 64, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted)', marginBottom: 16 }}>
                 <Upload size={28} />
               </div>
-              <p className="text-white font-medium text-lg">Click to Upload ID Document</p>
-              <p className="text-[#8892a4] mt-2">JPEG, PNG, WEBP</p>
-            </div>
+              <p style={{ fontWeight: 500, fontSize: 16, color: 'var(--text)' }}>Click to Upload ID Document</p>
+              <p style={{ marginTop: 8, color: 'var(--muted)', fontSize: 13 }}>JPEG, PNG, WEBP</p>
+            </motion.div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
               {/* Original Preview */}
-              <div className="flex flex-col gap-3">
-                <h3 className="text-white font-bold flex items-center gap-2">Original <span className="text-xs font-normal text-red-400 bg-red-400/10 px-2 py-0.5 rounded-full">Dangerous (Never Uploaded)</span></h3>
-                <div className="bg-[#0d0f12] border border-[#2d3646] rounded-2xl aspect-[3/2] overflow-hidden relative">
-                  <img src={originalImage} alt="Original" className="w-full h-full object-contain" />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <h3 style={{ fontWeight: 700, color: 'var(--text)', display: 'flex', alignItems: 'center', gap: 8, fontSize: 14 }}>
+                  Original <span style={{ fontSize: 11, fontWeight: 400, color: 'var(--red)', background: 'rgba(244,63,94,0.1)', padding: '2px 10px', borderRadius: 20 }}>Dangerous (Never Uploaded)</span>
+                </h3>
+                <div className="liquid-glass" style={{ borderRadius: 14, aspectRatio: '3/2', overflow: 'hidden', position: 'relative' }}>
+                  <img src={originalImage} alt="Original" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                 </div>
               </div>
 
               {/* Masked Preview */}
-              <div className="flex flex-col gap-3">
-                <h3 className="text-white font-bold flex items-center gap-2">Masked Output <span className="text-xs font-normal text-green-400 bg-green-400/10 px-2 py-0.5 rounded-full">Safe to Store</span></h3>
-                <div className="bg-[#0d0f12] border border-[#2d3646] rounded-2xl aspect-[3/2] overflow-hidden flex items-center justify-center relative">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <h3 style={{ fontWeight: 700, color: 'var(--text)', display: 'flex', alignItems: 'center', gap: 8, fontSize: 14 }}>
+                  Masked Output <span style={{ fontSize: 11, fontWeight: 400, color: 'var(--green)', background: 'rgba(34,197,94,0.1)', padding: '2px 10px', borderRadius: 20 }}>Safe to Store</span>
+                </h3>
+                <div className="liquid-glass" style={{ borderRadius: 14, aspectRatio: '3/2', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                   {isProcessing ? (
-                    <div className="flex flex-col items-center text-[#00D4FF] gap-3">
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: 'var(--accent)', gap: 12 }}>
                       <RefreshCw size={32} className="animate-spin" />
-                      <p className="text-sm font-medium animate-pulse">Running Neural Engine in Browser...</p>
+                      <p style={{ fontSize: 13, fontWeight: 500 }}>Running Neural Engine in Browser...</p>
                     </div>
                   ) : maskedImage ? (
-                    <img src={maskedImage} alt="Masked" className="w-full h-full object-contain" />
+                    <img src={maskedImage} alt="Masked" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                   ) : null}
                 </div>
               </div>
             </div>
           )}
 
-          <input type="file" accept="image/*" ref={fileInputRef} onChange={handleFileChange} className="hidden" />
+          <input type="file" accept="image/*" ref={fileInputRef} onChange={handleFileChange} style={{ display: 'none' }} />
 
           {originalImage && !isProcessing && (
-             <div className="flex justify-center mt-4">
-               <button 
+             <div style={{ display: 'flex', justifyContent: 'center', marginTop: 8 }}>
+               <motion.button
+                 whileTap={{scale:0.97}}
                  onClick={() => { setOriginalImage(null); setMaskedImage(null); }}
-                 className="text-[#8892a4] hover:text-white underline text-sm"
+                 className="fluid-press"
+                 style={{ color: 'var(--muted)', textDecoration: 'underline', fontSize: 13, cursor: 'pointer', border: 'none', background: 'none' }}
                >
                  Try another document
-               </button>
+               </motion.button>
              </div>
           )}
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import styles from './LegalModal.module.css';
 
 export default function LegalModal({ onClose }) {
@@ -7,7 +8,7 @@ export default function LegalModal({ onClose }) {
       <div className="mc" style={{ maxWidth: 650, width: '95%' }}>
         <div className={styles.header}>
           <h2 className="mh2">⚖️ Legal & Privacy</h2>
-          <button className={styles.closeBtn} onClick={onClose}>✕</button>
+          <motion.button whileTap={{scale:0.97}} className={`${styles.closeBtn} fluid-press`} onClick={onClose}>✕</motion.button>
         </div>
         <div className={styles.body}>
           <section className={styles.section}>

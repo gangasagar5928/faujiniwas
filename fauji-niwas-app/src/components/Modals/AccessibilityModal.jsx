@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 
 export default function AccessibilityModal({ onClose }) {
   const [fontSize, setFontSize] = useState(() => localStorage.getItem('fn_fontsize') || '16px');
@@ -39,7 +40,7 @@ export default function AccessibilityModal({ onClose }) {
   const handleSetLang = (code) => {
     setCurrentLang(code);
     localStorage.setItem('fn_lang', code);
-    
+
     // Set Google Translate cookie
     const domain = window.location.hostname;
     document.cookie = `googtrans=/auto/${code}; path=/; domain=${domain}`;
@@ -59,49 +60,33 @@ export default function AccessibilityModal({ onClose }) {
   };
 
   return (
-    <div 
-      className="modal-backdrop" 
-      onClick={onClose} 
-      style={{
-        position: 'fixed', 
-        inset: 0, 
-        background: 'rgba(0,0,0,0.5)',
-        backdropFilter: 'blur(6px)', 
-        WebkitBackdropFilter: 'blur(6px)',
-        display: 'flex', 
-        alignItems: 'center',
-        justifyContent: 'center', 
-        zIndex: 999999,
-        padding: '16px'
-      }}
+    <div
+      className="modal-backdrop"
+      onClick={e => e.target === e.currentTarget && onClose()}
     >
-      <div 
-        className="bg-white dark:bg-[#0f172a] text-slate-800 dark:text-white"
-        onClick={e => e.stopPropagation()}
+      <div
+        className="mc"
         style={{
-          fontFamily: "'Outfit', sans-serif",
-          width: '320px',
+          width: 320,
           maxWidth: '92vw',
           padding: '18px 20px',
-          borderRadius: '22px',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
-          border: '1px solid rgba(226, 232, 240, 0.8)',
-          boxSizing: 'border-box'
         }}
       >
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-          <div style={{ fontSize: '14px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'inherit', display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+          <div style={{ fontSize: 14, fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: 6 }}>
             ACCESSIBILITY 🎖️
           </div>
-          <button 
-            onClick={onClose} 
+          <motion.button
+            whileTap={{scale:0.97}}
+            onClick={onClose}
+            className="fluid-press"
             style={{
               background: 'none',
               border: 'none',
-              fontSize: '18px',
+              fontSize: 18,
               fontWeight: 700,
-              color: '#94a3b8',
+              color: 'var(--muted)',
               cursor: 'pointer',
               padding: '2px 6px',
               lineHeight: 1
@@ -109,21 +94,21 @@ export default function AccessibilityModal({ onClose }) {
             aria-label="Close modal"
           >
             ✕
-          </button>
+          </motion.button>
         </div>
 
         {/* Divider */}
-        <div style={{ height: '1px', background: '#f1f5f9', marginBottom: '12px' }} />
+        <div style={{ height: 1, background: 'var(--border)', marginBottom: 12 }} />
 
         {/* Controls Container */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-          
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+
           {/* 1. TEXT SIZE / आकार */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#64748b' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <label style={{ fontSize: 10, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--muted)' }}>
               TEXT SIZE / आकार
             </label>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 6 }}>
               {[
                 { label: 'A-', size: '14px' },
                 { label: 'A', size: '16px' },
@@ -132,35 +117,37 @@ export default function AccessibilityModal({ onClose }) {
               ].map(item => {
                 const isActive = fontSize === item.size;
                 return (
-                  <button
+                  <motion.button
                     key={item.size}
+                    whileTap={{scale:0.97}}
                     onClick={() => applyFontSize(item.size)}
+                    className="liquid-glass-chip fluid-press"
                     style={{
                       padding: '8px 0',
-                      fontSize: '12px',
+                      fontSize: 12,
                       fontWeight: isActive ? 900 : 700,
-                      borderRadius: '10px',
+                      borderRadius: 10,
                       border: 'none',
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
-                      background: isActive ? '#f59e0b' : '#f1f5f9',
-                      color: isActive ? '#ffffff' : '#334155',
+                      background: isActive ? 'var(--gold)' : 'var(--card2)',
+                      color: isActive ? 'var(--text)' : 'var(--text)',
                       boxShadow: isActive ? '0 2px 8px rgba(245,158,11,0.3)' : 'none'
                     }}
                   >
                     {item.label}
-                  </button>
+                  </motion.button>
                 );
               })}
             </div>
           </div>
 
           {/* 2. LANGUAGE / भाषा */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#64748b' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <label style={{ fontSize: 10, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--muted)' }}>
               LANGUAGE / भाषा
             </label>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 6 }}>
               {[
                 { code: 'en', label: 'EN' },
                 { code: 'hi', label: 'हिंदी' },
@@ -173,69 +160,75 @@ export default function AccessibilityModal({ onClose }) {
               ].map(lang => {
                 const isActive = currentLang === lang.code;
                 return (
-                  <button
+                  <motion.button
                     key={lang.code}
+                    whileTap={{scale:0.97}}
                     onClick={() => handleSetLang(lang.code)}
+                    className="liquid-glass-chip fluid-press"
                     style={{
                       padding: '8px 0',
-                      fontSize: '12px',
+                      fontSize: 12,
                       fontWeight: isActive ? 900 : 700,
-                      borderRadius: '10px',
+                      borderRadius: 10,
                       border: 'none',
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
-                      background: isActive ? '#f59e0b' : '#f1f5f9',
-                      color: isActive ? '#ffffff' : '#334155',
+                      background: isActive ? 'var(--gold)' : 'var(--card2)',
+                      color: isActive ? 'var(--text)' : 'var(--text)',
                       boxShadow: isActive ? '0 2px 8px rgba(245,158,11,0.3)' : 'none'
                     }}
                   >
                     {lang.label}
-                  </button>
+                  </motion.button>
                 );
               })}
             </div>
           </div>
 
           {/* 3. CONTRAST THEME / थीम */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#64748b' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <label style={{ fontSize: 10, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--muted)' }}>
               CONTRAST THEME / थीम
             </label>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px' }}>
-              <button
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8 }}>
+              <motion.button
+                whileTap={{scale:0.97}}
                 onClick={() => applyTheme('dark')}
+                className="liquid-glass-chip fluid-press"
                 style={{
                   padding: '10px 0',
-                  fontSize: '12px',
+                  fontSize: 12,
                   fontWeight: theme === 'dark' ? 900 : 700,
-                  borderRadius: '10px',
+                  borderRadius: 10,
                   border: 'none',
                   cursor: 'pointer',
                   transition: 'all 0.15s ease',
-                  background: theme === 'dark' ? '#f59e0b' : '#f1f5f9',
-                  color: theme === 'dark' ? '#ffffff' : '#334155',
+                  background: theme === 'dark' ? 'var(--gold)' : 'var(--card2)',
+                  color: theme === 'dark' ? 'var(--text)' : 'var(--text)',
                   boxShadow: theme === 'dark' ? '0 2px 8px rgba(245,158,11,0.3)' : 'none'
                 }}
               >
                 🌙 Dark
-              </button>
-              <button
+              </motion.button>
+              <motion.button
+                whileTap={{scale:0.97}}
                 onClick={() => applyTheme('light')}
+                className="liquid-glass-chip fluid-press"
                 style={{
                   padding: '10px 0',
-                  fontSize: '12px',
+                  fontSize: 12,
                   fontWeight: theme === 'light' ? 900 : 700,
-                  borderRadius: '10px',
+                  borderRadius: 10,
                   border: 'none',
                   cursor: 'pointer',
                   transition: 'all 0.15s ease',
-                  background: theme === 'light' ? '#f59e0b' : '#f1f5f9',
-                  color: theme === 'light' ? '#ffffff' : '#334155',
+                  background: theme === 'light' ? 'var(--gold)' : 'var(--card2)',
+                  color: theme === 'light' ? 'var(--text)' : 'var(--text)',
                   boxShadow: theme === 'light' ? '0 2px 8px rgba(245,158,11,0.3)' : 'none'
                 }}
               >
                 ☀️ Light
-              </button>
+              </motion.button>
             </div>
           </div>
 

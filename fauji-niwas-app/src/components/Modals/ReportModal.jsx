@@ -1,7 +1,10 @@
 import { useContext } from 'react';
+import { motion } from 'framer-motion';
 import { auth, db, doc, updateDoc, increment, collection, addDoc } from '../../firebase';
 import { ModalContext } from '../../App';
 import styles from './ReportModal.module.css';
+
+const springTap = { whileTap: { scale: 0.97 }, transition: { type: 'spring', stiffness: 400, damping: 24 } };
 
 export default function ReportModal({ id, onClose }) {
   const ctx = useContext(ModalContext);
@@ -40,14 +43,14 @@ export default function ReportModal({ id, onClose }) {
         <div className={styles.body}>
           <p style={{color:'var(--muted)',fontSize:13,marginBottom:12}}>Why are you reporting this listing?</p>
           {reasons.map(r => (
-            <label key={r} className={styles.opt}>
+            <motion.label key={r} className={`liquid-glass-chip ${styles.opt}`} style={{display:'flex', alignItems:'flex-start', gap:12, padding:12, borderRadius:10, cursor:'pointer', marginBottom:8}} {...springTap}>
               <input type="radio" name="rr" value={r} />
               <div>
                 <div style={{fontWeight:600,fontSize:14}}>{r}</div>
               </div>
-            </label>
+            </motion.label>
           ))}
-          <button className="bp" style={{marginTop:12}} onClick={submit}>Submit Report</button>
+          <motion.button className="bp fluid-press" style={{marginTop:12}} onClick={submit} {...springTap}>Submit Report</motion.button>
         </div>
       </div>
     </div>

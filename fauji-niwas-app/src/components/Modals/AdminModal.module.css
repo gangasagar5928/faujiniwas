@@ -19,7 +19,7 @@
   display: flex;
   gap: 8px;
   padding: 12px 20px;
-  background: rgba(0,0,0,0.1);
+  background: var(--card2);
   border-bottom: 1px solid var(--border2);
 }
 
@@ -37,7 +37,7 @@
 
 .tabs button.activeTab {
   background: var(--accent);
-  color: white;
+  color: var(--text);
 }
 
 .body {
@@ -60,7 +60,7 @@
 }
 
 .card {
-  background: var(--bg);
+  background: var(--card2);
   border: 1px solid var(--border2);
   border-radius: 12px;
   padding: 16px;
@@ -86,7 +86,7 @@
   overflow: hidden;
   border: 1px solid var(--border2);
   position: relative;
-  background: #000;
+  background: var(--bg);
 }
 
 .imgWrap img {
@@ -125,15 +125,15 @@
   white-space: nowrap;
 }
 
-.btnApprove { background: #22c55e; color: white; }
-.btnReject { background: rgba(244,63,94,0.1); color: #f43f5e; border: 1px solid rgba(244,63,94,0.2) !important; }
+.btnApprove { background: var(--green); color: var(--text); }
+.btnReject { background: rgba(244,63,94,0.1); color: var(--red); border: 1px solid rgba(244,63,94,0.2) !important; }
 
-.btnDismiss { background: #6366f1; color: white; }
-.btnDelete { background: #f43f5e; color: white; }
+.btnDismiss { background: var(--accent); color: var(--text); }
+.btnDelete { background: var(--red); color: var(--text); }
 
 .reportBadge {
-  background: #fef2f2;
-  color: #ef4444;
+  background: rgba(244,63,94,0.1);
+  color: var(--red);
   font-size: 10px;
   font-weight: 800;
   padding: 2px 6px;

@@ -7,6 +7,7 @@ import { ModalContext } from '../../App';
 import { auth, db, collection, addDoc, doc, updateDoc, increment, onSnapshot, query, orderBy } from '../../firebase';
 import styles from './DetailModal.module.css';
 import { FOOD_BY_CITY, ARMY_SCHOOLS, MILITARY_HOSPITALS, CANTEENS, SSB_DORMS } from '../../data';
+import { PITCH_LISTINGS } from '../../pitch_data';
 import { generateNeighborhoodInsight } from '../../aiInsights';
 
 const PHOTO_POOL = [
@@ -44,7 +45,9 @@ export default function DetailModal({ id, onClose }) {
   const comparison = useUserStore(s => s.comparison) || [];
   const toggleComparison = useUserStore(s => s.toggleComparison);
   const isComparing = comparison.includes(id);
-  const currentListing = listings.find((listing) => listing.id === id) || (SSB_DORMS || []).find(d => d.id === id);
+  const currentListing = (listings || []).find((listing) => listing.id === id) 
+    || (PITCH_LISTINGS || []).find(p => p.id === id) 
+    || (SSB_DORMS || []).find(d => d.id === id);
   const isMarketItem = currentListing?._collection === 'market' || currentListing?._collection === 'marketplace';
   const reviewRoot = isMarketItem ? 'marketplace' : 'rentals';
 
@@ -233,7 +236,7 @@ export default function DetailModal({ id, onClose }) {
               <button className={styles.reportBtn} onClick={() => {
                 if ('speechSynthesis' in window) {
                   window.speechSynthesis.cancel();
-                  const speechText = `${displayName}. Rent is ${price ? price.toLocaleString() : ''} rupees per month. Located at ${locationStr}. ${bhkLabel}. ${furnishingLabel}.`;
+                  const speechText = `${displayName}. Rent is ${price ? price.toLocaleString() : ''} rupees per month. Located at ${r.area}, ${r.city}. ${r.bhk ? r.bhk + ' BHK.' : ''} ${r.furnishing ? r.furnishing + ' furnishings.' : ''}`;
                   const msg = new SpeechSynthesisUtterance(speechText);
                   msg.lang = 'en-IN';
                   msg.rate = 1.0;

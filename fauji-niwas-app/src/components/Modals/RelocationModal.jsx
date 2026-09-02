@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
+import { motion } from 'framer-motion';
 import { ModalContext } from '../../App';
 import { ARMY_SCHOOLS, MILITARY_HOSPITALS, CANTEENS } from '../../data';
 import styles from './ProfileModal.module.css'; // Reusing base modal layout and style tokens
@@ -40,8 +41,6 @@ const LUGGAGE_LIMITS = {
 };
 
 // City categories for 7th Pay Commission HRA
-// X Category (30% HRA): Delhi, Bengaluru, Kolkata, Mumbai
-// Y Category (20% HRA): Pune, Lucknow, Secunderabad, Jodhpur, Ambala, Meerut, Jabalpur
 const CITY_HRA_CATEGORIES = {
   'Delhi': { class: 'X', rate: 0.30 },
   'Bengaluru': { class: 'X', rate: 0.30 },
@@ -73,7 +72,7 @@ export default function RelocationModal({ onClose }) {
   const ctx = useContext(ModalContext);
   const [activeTab, setActiveTab] = useState('timeline'); // timeline, budget, vault, ecosystem, poi, movers, bulletin
   const [rank, setRank] = useState('JCO');
-  
+
   // Timeline State
   const [checkedTasks, setCheckedTasks] = useState(() => {
     try {
@@ -102,7 +101,7 @@ export default function RelocationModal({ onClose }) {
 
   const govLimit = LUGGAGE_LIMITS[rank];
   const maxGovWeight = govLimit.weight;
-  
+
   const govReimbursement = Math.round(govLimit.allowance * (distance / 1000) * (Math.min(estimatedLuggageWeight, maxGovWeight) / maxGovWeight));
   const budgetVariance = govReimbursement - packersCost;
 
@@ -110,18 +109,14 @@ export default function RelocationModal({ onClose }) {
   const [estCity, setEstCity] = useState('Pune');
   const [estBhk, setEstBhk] = useState('2BHK');
   const [estFurnishing, setEstFurnishing] = useState('Semi');
-  
+
   // Pricing Calculation details
   const getRentEstimate = () => {
     const baseline = CITY_BASELINES[estCity] || 9000;
-    
-    // BHK multipliers
     const bhkMult = estBhk === '1BHK' ? 0.75 : estBhk === '2BHK' ? 1.0 : estBhk === '3BHK' ? 1.4 : 0.45;
-    // Furnishing multipliers
     const furnMult = estFurnishing === 'Unfurnished' ? 0.85 : estFurnishing === 'Semi' ? 1.0 : 1.25;
-    // Rank multiplier
     const rankMult = rank === 'OR' ? 0.9 : rank === 'JCO' ? 1.0 : 1.15;
-    
+
     const rentVal = baseline * bhkMult * furnMult * rankMult;
     const minVal = Math.round(rentVal * 0.9 / 500) * 500;
     const maxVal = Math.round(rentVal * 1.1 / 500) * 500;
@@ -135,7 +130,7 @@ export default function RelocationModal({ onClose }) {
     const estimate = getRentEstimate();
     const coverage = calculatedHra >= estimate.avg;
     const diff = calculatedHra - estimate.avg;
-    
+
     return {
       basicPay,
       calculatedHra,
@@ -161,27 +156,27 @@ export default function RelocationModal({ onClose }) {
 
     setEncrypting(true);
     addCryptoLog(`Initializing local Web Crypto engine...`);
-    
+
     await new Promise(r => setTimeout(r, 600));
     addCryptoLog(`Generating secure salt & IV bytes (16-byte random)...`);
-    
+
     await new Promise(r => setTimeout(r, 700));
     addCryptoLog(`Deriving PBKDF2 keys using device keychain...`);
-    
+
     await new Promise(r => setTimeout(r, 900));
     const fakeCiphertext = Array.from({length: 32}, () => Math.floor(Math.random()*16).toString(16)).join('');
     addCryptoLog(`AES-GCM-256 local encryption complete! Ciphertext block generated: ${fakeCiphertext.substring(0, 16)}...`);
-    
+
     setVaultFiles(prev => [
-      ...prev, 
-      { 
-        name: file.name, 
-        size: (file.size / 1024).toFixed(1) + ' KB', 
+      ...prev,
+      {
+        name: file.name,
+        size: (file.size / 1024).toFixed(1) + ' KB',
         ciphertext: fakeCiphertext,
         date: new Date().toLocaleDateString()
       }
     ]);
-    
+
     setEncrypting(false);
     ctx.showToast(`${file.name} encrypted and vaulted locally! 🔐`, 'ok');
   };
@@ -250,7 +245,7 @@ export default function RelocationModal({ onClose }) {
     const isEmergency = newNoticeText.toLowerCase().includes('blood') || newNoticeText.toLowerCase().includes('emergency') || newNoticeText.toLowerCase().includes('urgent');
     const type = isEmergency ? 'blood' : newNoticeText.toLowerCase().includes('canteen') || newNoticeText.toLowerCase().includes('card') ? 'lost' : newNoticeText.toLowerCase().includes('school') || newNoticeText.toLowerCase().includes('aps') ? 'school' : 'event';
     const title = type === 'blood' ? '🔴 URGENT: Community Alert' : type === 'lost' ? '🎫 Community Lost & Found' : type === 'school' ? '🏫 Education Announcement' : '📢 Station Notice';
-    
+
     setNoticesList(prev => [
       {
         id: Date.now(),
@@ -271,8 +266,8 @@ export default function RelocationModal({ onClose }) {
 
   return (
     <div className="modal-backdrop" onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="mc glass-tactical" style={{ maxWidth: 840, width: '95%', height: '88vh', background: 'rgba(10, 15, 30, 0.95)', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column' }}>
-        
+      <div className="mc glass-tactical" style={{ maxWidth: 840, width: '95%', height: '88vh', background: 'var(--card)', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column' }}>
+
         {/* Header */}
         <div className={styles.header} style={{ borderBottom: '1px solid var(--border2)', paddingBottom: 16 }}>
           <div>
@@ -283,7 +278,7 @@ export default function RelocationModal({ onClose }) {
               Serving All-India Cantonments — Dynamic Command Center
             </p>
           </div>
-          <button className={styles.closeBtn} onClick={onClose} style={{ top: 16 }}>✕</button>
+          <motion.button whileTap={{scale:0.97}} className={`${styles.closeBtn} fluid-press`} onClick={onClose} style={{ top: 16 }}>✕</motion.button>
         </div>
 
         {/* Tab Row */}
@@ -297,21 +292,22 @@ export default function RelocationModal({ onClose }) {
             { id: 'movers', label: '🚚 Packers & Movers', title: 'Discount Pools' },
             { id: 'bulletin', label: '📢 Cantonment Notice Board', title: 'Notices' }
           ].map(t => (
-            <button
+            <motion.button
               key={t.id}
-              className={`fb ${activeTab === t.id ? 'active' : ''}`}
+              whileTap={{scale:0.97}}
+              className={`fb liquid-glass-chip fluid-press ${activeTab === t.id ? 'active' : ''}`}
               onClick={() => setActiveTab(t.id)}
               style={{ padding: '8px 14px', fontSize: 12, borderRadius: 8 }}
               title={t.title}
             >
               {t.label}
-            </button>
+            </motion.button>
           ))}
         </div>
 
         {/* Content Body */}
         <div style={{ flex: 1, overflowY: 'auto', padding: 20, display: 'flex', flexDirection: 'column' }}>
-          
+
           {/* TAB 1: TIMELINE */}
           {activeTab === 'timeline' && (
             <div>
@@ -322,14 +318,15 @@ export default function RelocationModal({ onClose }) {
                 </div>
                 <div style={{ display: 'flex', gap: 6 }}>
                   {['OR', 'JCO', 'Officer'].map(r => (
-                    <button
+                    <motion.button
                       key={r}
+                      whileTap={{scale:0.97}}
                       onClick={() => setRank(r)}
-                      className={`fb ${rank === r ? 'active' : ''}`}
+                      className={`fb liquid-glass-chip fluid-press ${rank === r ? 'active' : ''}`}
                       style={{ padding: '6px 12px', fontSize: 11 }}
                     >
                       {r} List
-                    </button>
+                    </motion.button>
                   ))}
                 </div>
               </div>
@@ -338,15 +335,16 @@ export default function RelocationModal({ onClose }) {
                 {TIMELINE_DATA[rank].map((t) => {
                   const isChecked = !!checkedTasks[t.id];
                   return (
-                    <div
+                    <motion.div
                       key={t.id}
+                      whileTap={{scale:0.98}}
                       onClick={() => toggleTask(t.id)}
-                      className="hover-scan"
+                      className="hover-scan fluid-press"
                       style={{
                         display: 'flex',
                         gap: 14,
                         alignItems: 'center',
-                        background: isChecked ? 'rgba(34, 197, 94, 0.04)' : 'rgba(255, 255, 255, 0.02)',
+                        background: isChecked ? 'rgba(34, 197, 94, 0.04)' : 'var(--card2)',
                         border: isChecked ? '1px solid rgba(34, 197, 94, 0.3)' : '1px solid var(--border2)',
                         borderRadius: 10,
                         padding: '12px 16px',
@@ -385,7 +383,7 @@ export default function RelocationModal({ onClose }) {
                           {t.task}
                         </div>
                       </div>
-                    </div>
+                    </motion.div>
                   );
                 })}
               </div>
@@ -396,7 +394,7 @@ export default function RelocationModal({ onClose }) {
           {activeTab === 'budget' && (
             <div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 24 }}>
-                
+
                 {/* Section A: Government Allowance Estimator */}
                 <div>
                   <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 12, color: 'var(--accent)' }}>💰 TA/DA Luggage Allowance</h3>
@@ -431,7 +429,7 @@ export default function RelocationModal({ onClose }) {
                       />
                     </div>
 
-                    <div style={{ background: 'rgba(255,255,255,0.02)', padding: 12, borderRadius: 8, marginTop: 4, border: '1px solid var(--border2)' }}>
+                    <div style={{ background: 'var(--card2)', padding: 12, borderRadius: 8, marginTop: 4, border: '1px solid var(--border2)' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11 }}>
                         <span style={{ color: 'var(--muted)' }}>Govt Refund Cap:</span>
                         <span style={{ color: 'var(--text)', fontWeight: 700 }}>₹{govReimbursement.toLocaleString()}</span>
@@ -455,13 +453,13 @@ export default function RelocationModal({ onClose }) {
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                       <div>
                         <label style={{ fontSize: 9, color: 'var(--muted)', textTransform: 'uppercase' }}>Cantonment City</label>
-                        <select className="fi" style={{ fontSize: 11, padding: 6, background: '#0b1222', border: '1px solid var(--border2)', width: '100%' }} value={estCity} onChange={e => setEstCity(e.target.value)}>
+                        <select className="fi" style={{ fontSize: 11, padding: 6, background: 'var(--bg)', border: '1px solid var(--border2)', width: '100%' }} value={estCity} onChange={e => setEstCity(e.target.value)}>
                           {Object.keys(CITY_BASELINES).map(c => <option key={c} value={c}>{c}</option>)}
                         </select>
                       </div>
                       <div>
                         <label style={{ fontSize: 9, color: 'var(--muted)', textTransform: 'uppercase' }}>Configuration</label>
-                        <select className="fi" style={{ fontSize: 11, padding: 6, background: '#0b1222', border: '1px solid var(--border2)', width: '100%' }} value={estBhk} onChange={e => setEstBhk(e.target.value)}>
+                        <select className="fi" style={{ fontSize: 11, padding: 6, background: 'var(--bg)', border: '1px solid var(--border2)', width: '100%' }} value={estBhk} onChange={e => setEstBhk(e.target.value)}>
                           <option value="1BHK">1 BHK</option>
                           <option value="2BHK">2 BHK</option>
                           <option value="3BHK">3 BHK</option>
@@ -473,7 +471,7 @@ export default function RelocationModal({ onClose }) {
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                       <div>
                         <label style={{ fontSize: 9, color: 'var(--muted)', textTransform: 'uppercase' }}>Furnishing</label>
-                        <select className="fi" style={{ fontSize: 11, padding: 6, background: '#0b1222', border: '1px solid var(--border2)', width: '100%' }} value={estFurnishing} onChange={e => setEstFurnishing(e.target.value)}>
+                        <select className="fi" style={{ fontSize: 11, padding: 6, background: 'var(--bg)', border: '1px solid var(--border2)', width: '100%' }} value={estFurnishing} onChange={e => setEstFurnishing(e.target.value)}>
                           <option value="Unfurnished">Unfurnished</option>
                           <option value="Semi">Semi-Furnished</option>
                           <option value="Fully">Fully Furnished</option>
@@ -481,7 +479,7 @@ export default function RelocationModal({ onClose }) {
                       </div>
                       <div>
                         <label style={{ fontSize: 9, color: 'var(--muted)', textTransform: 'uppercase' }}>Relocating Rank</label>
-                        <select className="fi" style={{ fontSize: 11, padding: 6, background: '#0b1222', border: '1px solid var(--border2)', width: '100%' }} value={rank} onChange={e => setRank(e.target.value)}>
+                        <select className="fi" style={{ fontSize: 11, padding: 6, background: 'var(--bg)', border: '1px solid var(--border2)', width: '100%' }} value={rank} onChange={e => setRank(e.target.value)}>
                           <option value="OR">Other Ranks (OR)</option>
                           <option value="JCO">JCOs</option>
                           <option value="Officer">Commissioned Officers</option>
@@ -495,7 +493,7 @@ export default function RelocationModal({ onClose }) {
                       <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text)', margin: '4px 0' }}>
                         ₹{estimateVal.min.toLocaleString()} - ₹{estimateVal.max.toLocaleString()} <span style={{ fontSize: 11, fontWeight: 'normal', color: 'var(--muted)' }}>/ month</span>
                       </div>
-                      
+
                       <div style={{ borderTop: '1px dashed var(--border2)', paddingTop: 8, marginTop: 8 }}>
                         <div style={{ display: 'flex', justifyItems: 'center', justifyContent: 'space-between', fontSize: 10, color: 'var(--muted)', marginBottom: 2 }}>
                           <span>7th Pay Comm HRA ({hraCalc.class}-Class City Rate: {hraCalc.ratePct}%):</span>
@@ -504,7 +502,7 @@ export default function RelocationModal({ onClose }) {
                         <div style={{ display: 'flex', justifyItems: 'center', justifyContent: 'space-between', fontSize: 10, color: 'var(--muted)' }}>
                           <span>Coverage Status:</span>
                           <span style={{ color: hraCalc.coverage ? 'var(--green)' : 'var(--red)', fontWeight: 800 }}>
-                            {hraCalc.coverage 
+                            {hraCalc.coverage
                               ? `✓ Covered (Save ₹${Math.abs(hraCalc.diff).toLocaleString()})`
                               : `⚠️ Gap of ₹${Math.abs(hraCalc.diff).toLocaleString()}`
                             }
@@ -536,14 +534,14 @@ export default function RelocationModal({ onClose }) {
               </p>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 20 }}>
-                
+
                 {/* Upload Section */}
                 <div className="glass-tactical" style={{ padding: 18, borderRadius: 12, border: '1px solid var(--border2)', textAlign: 'center' }}>
                   <div style={{ fontSize: 32, marginBottom: 12 }}>🔒</div>
                   <h4 style={{ fontSize: 14, fontWeight: 700, marginBottom: 6 }}>Drop Posting Orders / Lease Papers</h4>
                   <p style={{ fontSize: 11, color: 'var(--muted)', marginBottom: 16 }}>PDF, PNG or WebP accepted (Max 8 MB)</p>
-                  
-                  <label className="bp" style={{ display: 'inline-block', cursor: 'pointer', background: 'var(--accent)', color: '#000', padding: '10px 20px', borderRadius: 8, fontSize: 13 }}>
+
+                  <label className="bp" style={{ display: 'inline-block', cursor: 'pointer', background: 'var(--accent)', color: 'var(--text)', padding: '10px 20px', borderRadius: 8, fontSize: 13 }}>
                     {encrypting ? '⏳ Encrypting...' : '📂 Choose & Encrypt File'}
                     <input type="file" onChange={handleSimulateVaultUpload} style={{ display: 'none' }} disabled={encrypting} />
                   </label>
@@ -553,7 +551,7 @@ export default function RelocationModal({ onClose }) {
                     <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--muted)', marginBottom: 8 }}>Encrypted Files in Locker ({vaultFiles.length})</div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                       {vaultFiles.map((vf, idx) => (
-                        <div key={idx} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border2)', padding: '8px 10px', borderRadius: 8, display: 'flex', justifyItems: 'center', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div key={idx} style={{ background: 'var(--card2)', border: '1px solid var(--border2)', padding: '8px 10px', borderRadius: 8, display: 'flex', justifyItems: 'center', justifyContent: 'space-between', alignItems: 'center' }}>
                           <div>
                             <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text)' }}>🛡️ {vf.name}</div>
                             <div style={{ fontSize: 9, color: 'var(--muted)' }}>Encrypted block: {vf.ciphertext.substring(0, 12)}... · {vf.size}</div>
@@ -569,18 +567,18 @@ export default function RelocationModal({ onClose }) {
                 </div>
 
                 {/* Browser Cryptography Console Logs */}
-                <div style={{ background: '#070a12', border: '1px solid var(--border2)', borderRadius: 12, padding: 14, fontFamily: 'monospace' }}>
-                  <div style={{ fontSize: 10, color: 'var(--accent)', fontWeight: 800, borderBottom: '1px solid #1e3050', paddingBottom: 6, marginBottom: 10 }}>
+                <div style={{ background: 'var(--bg)', border: '1px solid var(--border2)', borderRadius: 12, padding: 14, fontFamily: 'monospace' }}>
+                  <div style={{ fontSize: 10, color: 'var(--accent)', fontWeight: 800, borderBottom: '1px solid var(--border2)', paddingBottom: 6, marginBottom: 10 }}>
                     📟 ENCRYPTION CONSOLE
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8, minHeight: 180 }}>
                     {cryptoLogs.map((log, idx) => (
-                      <div key={idx} style={{ fontSize: 11, color: '#4ade80', lineHeight: 1.4 }}>
+                      <div key={idx} style={{ fontSize: 11, color: 'var(--green)', lineHeight: 1.4 }}>
                         {log}
                       </div>
                     ))}
                     {cryptoLogs.length === 0 && (
-                      <div style={{ fontSize: 11, color: '#7a8fa8', fontStyle: 'italic', textAlign: 'center', marginTop: 50 }}>
+                      <div style={{ fontSize: 11, color: 'var(--muted)', fontStyle: 'italic', textAlign: 'center', marginTop: 50 }}>
                         Console idle. Upload a file to see local encryption process.
                       </div>
                     )}
@@ -599,7 +597,7 @@ export default function RelocationModal({ onClose }) {
               </p>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
-                
+
                 {/* Roommate Finder Widget */}
                 <div className="glass-tactical" style={{ padding: 16, borderRadius: 12, border: '1px solid var(--border2)' }}>
                   <h4 style={{ fontSize: 13, fontWeight: 800, color: 'var(--accent)', textTransform: 'uppercase', marginBottom: 12 }}>
@@ -618,17 +616,17 @@ export default function RelocationModal({ onClose }) {
                         <option value="OR">Other Ranks</option>
                       </select>
                     </div>
-                    <button className="bp" style={{ padding: 9, fontSize: 12 }} onClick={simulateRoommateMatch} disabled={matching}>
+                    <motion.button whileTap={{scale:0.97}} className="bp fluid-press" style={{ padding: 9, fontSize: 12 }} onClick={simulateRoommateMatch} disabled={matching}>
                       {matching ? '🤖 Scanning Graph...' : '⚡ Scan Match Graph'}
-                    </button>
+                    </motion.button>
                   </div>
 
                   {/* Roommate results list */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 150, overflowY: 'auto' }}>
                     {roommateMatches.map((m, idx) => (
-                      <div key={idx} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)', padding: 8, borderRadius: 8 }}>
+                      <div key={idx} className="liquid-glass-chip" style={{ padding: 8, borderRadius: 8 }}>
                         <div style={{ display: 'flex', justifyItems: 'center', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <span style={{ fontSize: 12, fontWeight: 700 }}>{m.name}</span>
+                          <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text)' }}>{m.name}</span>
                           <span style={{ fontSize: 10, color: 'var(--gold)', fontWeight: 600 }}>🎖️ {m.rank}</span>
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: 'var(--muted)', marginTop: 4 }}>
@@ -645,19 +643,19 @@ export default function RelocationModal({ onClose }) {
 
                 {/* Spouse Jobs & SSB Orientation Guides */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                  
+
                   {/* Spouse Opportunity Dashboard */}
                   <div className="glass-tactical" style={{ padding: 14, borderRadius: 12, border: '1px solid var(--border2)' }}>
                      <h4 style={{ fontSize: 13, fontWeight: 800, color: 'var(--accent)', textTransform: 'uppercase', marginBottom: 10 }}>
                       💼 Spouse Cantonment Job Board
                     </h4>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                      <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border2)', padding: 8, borderRadius: 8 }}>
-                        <div style={{ fontSize: 12, fontWeight: 700 }}>PRT English Teacher</div>
+                      <div className="liquid-glass-chip" style={{ padding: 8, borderRadius: 8 }}>
+                        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text)' }}>PRT English Teacher</div>
                         <div style={{ fontSize: 10, color: 'var(--muted)' }}>Army Public School (APS) · Pune Cantt · ₹35,000/mo</div>
                       </div>
-                      <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border2)', padding: 8, borderRadius: 8 }}>
-                        <div style={{ fontSize: 12, fontWeight: 700 }}>Administrative Assistant</div>
+                      <div className="liquid-glass-chip" style={{ padding: 8, borderRadius: 8 }}>
+                        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text)' }}>Administrative Assistant</div>
                         <div style={{ fontSize: 10, color: 'var(--muted)' }}>Kendriya Vidyalaya (KV) No.1 · Delhi Cantt · ₹28,000/mo</div>
                       </div>
                     </div>
@@ -669,12 +667,12 @@ export default function RelocationModal({ onClose }) {
                       🧭 SSB Candidates Rickshaw Capped Fares
                     </h4>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, fontSize: 11 }}>
-                      <div style={{ background: 'rgba(0,0,0,0.2)', padding: '6px 8px', borderRadius: 6 }}>
-                        <b>Allahabad Station ➡️ SSB:</b>
+                      <div className="liquid-glass-chip" style={{ padding: '6px 8px', borderRadius: 6 }}>
+                        <b style={{ color: 'var(--text)' }}>Allahabad Station ➡️ SSB:</b>
                         <div style={{ color: 'var(--gold)', fontWeight: 700, marginTop: 2 }}>₹50 (Shared Auto)</div>
                       </div>
-                      <div style={{ background: 'rgba(0,0,0,0.2)', padding: '6px 8px', borderRadius: 6 }}>
-                        <b>Bhopal Station ➡️ SSB:</b>
+                      <div className="liquid-glass-chip" style={{ padding: '6px 8px', borderRadius: 6 }}>
+                        <b style={{ color: 'var(--text)' }}>Bhopal Station ➡️ SSB:</b>
                         <div style={{ color: 'var(--gold)', fontWeight: 700, marginTop: 2 }}>₹80 (Direct Auto)</div>
                       </div>
                     </div>
@@ -694,10 +692,10 @@ export default function RelocationModal({ onClose }) {
                   <p style={{ fontSize: 12, color: 'var(--muted)', marginTop: 2 }}>Quick directory of essential military infrastructure and schools.</p>
                 </div>
                 <div style={{ display: 'flex', gap: 6 }}>
-                  <select 
-                    className="fi" 
-                    style={{ marginBottom: 0, fontSize: 12, padding: '4px 10px', background: '#0b1222', color: 'var(--text)', border: '1px solid var(--border2)' }} 
-                    value={poiCity} 
+                  <select
+                    className="fi"
+                    style={{ marginBottom: 0, fontSize: 12, padding: '4px 10px', background: 'var(--bg)', color: 'var(--text)', border: '1px solid var(--border2)' }}
+                    value={poiCity}
                     onChange={e => setPoiCity(e.target.value)}
                   >
                     <option value="Pune">Pune Cantt</option>
@@ -708,11 +706,11 @@ export default function RelocationModal({ onClose }) {
                     <option value="Jodhpur">Jodhpur Cantt</option>
                     <option value="Jabalpur">Jabalpur Cantt</option>
                   </select>
-                  
+
                   <select
-                    className="fi" 
-                    style={{ marginBottom: 0, fontSize: 12, padding: '4px 10px', background: '#0b1222', color: 'var(--text)', border: '1px solid var(--border2)' }} 
-                    value={poiCategory} 
+                    className="fi"
+                    style={{ marginBottom: 0, fontSize: 12, padding: '4px 10px', background: 'var(--bg)', color: 'var(--text)', border: '1px solid var(--border2)' }}
+                    value={poiCategory}
                     onChange={e => setPoiCategory(e.target.value)}
                   >
                     <option value="schools">🏫 APS / KV Schools</option>
@@ -737,15 +735,16 @@ export default function RelocationModal({ onClose }) {
                     </div>
                     <div style={{ display: 'flex', justifyItems: 'center', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px dashed var(--border2)', paddingTop: 8, marginTop: 4 }}>
                       <span style={{ fontSize: 10, color: 'var(--muted)' }}>🚗 Distance: <b>~2-4 km</b></span>
-                      <button 
-                        className="bp" 
+                      <motion.button
+                        whileTap={{scale:0.97}}
+                        className="bp fluid-press"
                         style={{ padding: '3px 8px', fontSize: 10, borderRadius: 4 }}
                         onClick={() => {
                           ctx.showToast(`Coordinates copied: ${poi.lat}, ${poi.lng}. Autoflying engaged on Map View!`, 'ok');
                         }}
                       >
                         Show on Map
-                      </button>
+                      </motion.button>
                     </div>
                   </div>
                 ))}
@@ -770,10 +769,10 @@ export default function RelocationModal({ onClose }) {
                 {/* Booking Console */}
                 <div className="glass-tactical" style={{ padding: 18, borderRadius: 12, border: '1px solid var(--border2)' }}>
                   <h4 style={{ fontSize: 14, fontWeight: 700, marginBottom: 12, color: 'var(--accent)' }}>Book Vetted Movers</h4>
-                  
+
                   <div style={{ marginBottom: 14 }}>
                     <label style={{ fontSize: 11, color: 'var(--muted)', display: 'block', marginBottom: 6 }}>Select Mover Agency</label>
-                    <select className="fi" style={{ fontSize: 12, background: 'rgba(0,0,0,0.4)', color: 'var(--text)', border: '1px solid var(--border)' }} value={selectedMover} onChange={e => setSelectedMover(e.target.value)}>
+                    <select className="fi" style={{ fontSize: 12, background: 'var(--card2)', color: 'var(--text)', border: '1px solid var(--border)' }} value={selectedMover} onChange={e => setSelectedMover(e.target.value)}>
                       <option value="Army Welfare Logistics (AWL)">Welfare Logistics (AWL) - Vetted (15% base disc.)</option>
                       <option value="Agarwal Packers & Movers (Military Division)">Agarwal Packers & Movers (Defence Division)</option>
                       <option value="Gati KWE Defence Cargo">Gati KWE Cargo</option>
@@ -789,7 +788,7 @@ export default function RelocationModal({ onClose }) {
                     <p style={{ fontSize: 11, color: 'var(--muted)', marginBottom: 10 }}>
                       Multiple personnel are moving on this route. Join the pool to save.
                     </p>
-                    
+
                     {/* Pool Progress Meter */}
                     <div style={{ display: 'flex', justifyItems: 'center', justifyContent: 'space-between', fontSize: 11, marginBottom: 4 }}>
                       <span>Current Members: <b>{poolSize}</b> / 10</span>
@@ -797,12 +796,13 @@ export default function RelocationModal({ onClose }) {
                         {poolSize >= 9 ? '🔥 35% Discount Reached!' : poolSize >= 6 ? '✨ 25% Discount Active' : '15% Base'}
                       </span>
                     </div>
-                    <div style={{ width: '100%', height: 8, background: 'rgba(255,255,255,0.08)', borderRadius: 4, overflow: 'hidden', marginBottom: 10 }}>
+                    <div style={{ width: '100%', height: 8, background: 'var(--border2)', borderRadius: 4, overflow: 'hidden', marginBottom: 10 }}>
                       <div style={{ width: `${(poolSize / 10) * 100}%`, height: '100%', background: 'linear-gradient(90deg, var(--gold), var(--green))', borderRadius: 4, transition: 'width 0.3s' }} />
                     </div>
 
-                    <button 
-                      className={`fb ${poolJoined ? 'active' : ''}`} 
+                    <motion.button
+                      whileTap={{scale:0.97}}
+                      className={`fb liquid-glass-chip fluid-press ${poolJoined ? 'active' : ''}`}
                       style={{ width: '100%', padding: '6px 12px', fontSize: 11, background: poolJoined ? 'rgba(34,197,94,0.1)' : 'rgba(255,215,0,0.1)', color: poolJoined ? 'var(--green)' : 'var(--gold)', borderColor: poolJoined ? 'var(--green)' : 'var(--gold)' }}
                       onClick={() => {
                         if (poolJoined) {
@@ -817,16 +817,16 @@ export default function RelocationModal({ onClose }) {
                       }}
                     >
                       {poolJoined ? '✓ Joined Pool (35% Off Applied)' : '🤝 Join Transfer Pool (Boost Discount)'}
-                    </button>
+                    </motion.button>
                   </div>
 
                   {/* Insurance option */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-                    <input 
-                      type="checkbox" 
-                      id="insurance" 
-                      checked={insuranceSelected} 
-                      onChange={e => setInsuranceSelected(e.target.checked)} 
+                    <input
+                      type="checkbox"
+                      id="insurance"
+                      checked={insuranceSelected}
+                      onChange={e => setInsuranceSelected(e.target.checked)}
                       style={{ accentColor: 'var(--accent)', cursor: 'pointer' }}
                     />
                     <label htmlFor="insurance" style={{ fontSize: 11, cursor: 'pointer', color: 'var(--text)' }}>
@@ -834,16 +834,17 @@ export default function RelocationModal({ onClose }) {
                     </label>
                   </div>
 
-                  <button 
-                    className="bp" 
-                    style={{ width: '100%', padding: 10, fontSize: 13, background: bookingConfirmed ? 'var(--green)' : 'var(--accent)', color: '#000' }}
+                  <motion.button
+                    whileTap={{scale:0.97}}
+                    className="bp fluid-press"
+                    style={{ width: '100%', padding: 10, fontSize: 13, background: bookingConfirmed ? 'var(--green)' : 'var(--accent)', color: 'var(--text)' }}
                     onClick={() => {
                       setBookingConfirmed(true);
                       ctx.showToast(`Movers booking request submitted for ${selectedMover}! 🚚`, 'ok');
                     }}
                   >
                     {bookingConfirmed ? '✓ Booking Request Submitted' : '🚚 Book Packers & Movers'}
-                  </button>
+                  </motion.button>
                 </div>
 
                 {/* Estimate & Voucher Details */}
@@ -898,10 +899,10 @@ export default function RelocationModal({ onClose }) {
                   <p style={{ fontSize: 12, color: 'var(--muted)', marginTop: 2 }}>Local announcements and community updates.</p>
                 </div>
                 <div>
-                  <select 
-                    className="fi" 
-                    style={{ marginBottom: 0, fontSize: 12, padding: '4px 10px', background: 'rgba(0,0,0,0.4)', color: 'var(--text)', border: '1px solid var(--border)' }} 
-                    value={canttBoardCity} 
+                  <select
+                    className="fi"
+                    style={{ marginBottom: 0, fontSize: 12, padding: '4px 10px', background: 'var(--card2)', color: 'var(--text)', border: '1px solid var(--border)' }}
+                    value={canttBoardCity}
                     onChange={e => setCanttBoardCity(e.target.value)}
                   >
                     <option value="Delhi Cantt">Delhi Cantt Station</option>
@@ -915,30 +916,31 @@ export default function RelocationModal({ onClose }) {
               {/* Notice creation row */}
               <div className="glass-tactical" style={{ padding: 12, borderRadius: 10, border: '1px solid var(--border2)', marginBottom: 16 }}>
                 <div style={{ display: 'flex', gap: 8 }}>
-                  <input 
-                    type="text" 
-                    className="fi" 
-                    placeholder="Publish urgent notice (e.g. KV Admissions close tomorrow, Lost canteen card...)" 
+                  <input
+                    type="text"
+                    className="fi"
+                    placeholder="Publish urgent notice (e.g. KV Admissions close tomorrow, Lost canteen card...)"
                     style={{ flex: 1, marginBottom: 0, fontSize: 12 }}
                     value={newNoticeText}
                     onChange={e => setNewNoticeText(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && handleAddNotice()}
                   />
-                  <button className="bp" style={{ padding: '6px 16px', fontSize: 12, background: 'var(--accent)', color: '#000' }} onClick={handleAddNotice}>
+                  <motion.button whileTap={{scale:0.97}} className="bp fluid-press" style={{ padding: '6px 16px', fontSize: 12, background: 'var(--accent)', color: 'var(--text)' }} onClick={handleAddNotice}>
                     📢 Post
-                  </button>
+                  </motion.button>
                 </div>
               </div>
 
               {/* Notices List */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxHeight: 300, overflowY: 'auto', paddingRight: 4 }}>
                 {noticesList.map(n => (
-                  <div 
-                    key={n.id} 
-                    style={{ 
-                      background: n.type === 'blood' ? 'rgba(244,63,94,0.04)' : 'rgba(255,255,255,0.02)', 
-                      border: n.type === 'blood' ? '1px solid rgba(244,63,94,0.2)' : '1px solid var(--border2)', 
-                      borderRadius: 10, 
+                  <div
+                    key={n.id}
+                    className="liquid-glass-chip"
+                    style={{
+                      background: n.type === 'blood' ? 'rgba(244,63,94,0.04)' : 'var(--card2)',
+                      border: n.type === 'blood' ? '1px solid rgba(244,63,94,0.2)' : '1px solid var(--border2)',
+                      borderRadius: 10,
                       padding: 12,
                       display: 'flex',
                       gap: 12,
@@ -950,7 +952,7 @@ export default function RelocationModal({ onClose }) {
                     </div>
                     <div style={{ flex: 1 }}>
                       <div style={{ display: 'flex', justifyItems: 'center', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: n.type === 'blood' ? '#f43f5e' : 'var(--text)' }}>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: n.type === 'blood' ? 'var(--red)' : 'var(--text)' }}>
                           {n.title}
                         </span>
                         <span style={{ fontSize: 10, color: 'var(--muted)' }}>{n.date}</span>
@@ -958,15 +960,17 @@ export default function RelocationModal({ onClose }) {
                       <p style={{ fontSize: 12, color: 'var(--muted)', lineHeight: 1.4 }}>{n.body}</p>
                     </div>
                     {/* Upvote score */}
-                    <button 
-                      style={{ 
-                        background: 'rgba(255,255,255,0.03)', 
-                        border: '1px solid var(--border)', 
-                        borderRadius: 6, 
-                        padding: '4px 8px', 
-                        display: 'flex', 
-                        flexDirection: 'column', 
-                        alignItems: 'center', 
+                    <motion.button
+                      whileTap={{scale:0.97}}
+                      className="liquid-glass-chip fluid-press"
+                      style={{
+                        background: 'var(--card2)',
+                        border: '1px solid var(--border)',
+                        borderRadius: 6,
+                        padding: '4px 8px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
                         cursor: 'pointer',
                         color: 'var(--text)'
                       }}
@@ -977,7 +981,7 @@ export default function RelocationModal({ onClose }) {
                     >
                       <span style={{ fontSize: 10 }}>▲</span>
                       <span style={{ fontSize: 10, fontWeight: 800 }}>{n.votes}</span>
-                    </button>
+                    </motion.button>
                   </div>
                 ))}
               </div>
@@ -991,9 +995,9 @@ export default function RelocationModal({ onClose }) {
           <span style={{ fontSize: 11, color: 'var(--muted)', display: 'flex', alignItems: 'center', gap: 6 }}>
             <span className="live-dot" /> Relocation Dashboard Active
           </span>
-          <button className="fb active" onClick={onClose} style={{ padding: '6px 16px', fontSize: 12 }}>
+          <motion.button whileTap={{scale:0.97}} className="fb active fluid-press" onClick={onClose} style={{ padding: '6px 16px', fontSize: 12 }}>
             Acknowledge & Close
-          </button>
+          </motion.button>
         </div>
 
       </div>

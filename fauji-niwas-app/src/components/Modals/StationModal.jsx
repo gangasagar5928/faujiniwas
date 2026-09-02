@@ -1,8 +1,11 @@
 import { useContext, useMemo } from 'react';
+import { motion } from 'framer-motion';
 import { ModalContext } from '../../App';
 import { useFilterStore } from '../../store/filterStore';
 import { ARMY_SCHOOLS, MILITARY_HOSPITALS, CANTEENS } from '../../data';
 import styles from './StationModal.module.css';
+
+const springTap = { whileTap: { scale: 0.97 }, transition: { type: 'spring', stiffness: 400, damping: 24 } };
 
 const STATIONS = [
   { id: 'delhi-cantt', name: 'Delhi Cantonment', city: 'Delhi', lat: 28.5961, lng: 77.1587, banner: '/delhi_cantt_banner.png', desc: 'The heart of military life in the capital, known for its wide boulevards and elite residential areas.' },
@@ -54,38 +57,38 @@ export default function StationModal({ stationId, onClose }) {
 
         <div className={styles.body}>
           <div className={styles.statsGrid}>
-            <div className={styles.statCard}>
+            <motion.div className={`${styles.statCard} liquid-glass-chip`} {...springTap}>
               <div className={styles.statVal}>{stats.count}</div>
               <div className={styles.statLab}>Live Listings</div>
-            </div>
-            <div className={styles.statCard}>
+            </motion.div>
+            <motion.div className={`${styles.statCard} liquid-glass-chip`} {...springTap}>
               <div className={styles.statVal}>₹{((Number(stats.avgRent) || 0)/1000).toFixed(1)}k</div>
               <div className={styles.statLab}>Avg. Monthly Rent</div>
-            </div>
+            </motion.div>
           </div>
 
           <div className={styles.section}>
             <h4>🎖️ Station Overview</h4>
-            <div className={styles.tactical}>
-              <div className={styles.tactItem}>
+            <div className={`${styles.tactical} liquid-glass-chip`}>
+              <motion.div className={styles.tactItem} {...springTap}>
                 <span className={styles.tactIco}>🏥</span>
                 <div>
                   <div className={styles.tactName}>Military Hospital (MH)</div>
                   <div className={styles.tactVal}>{stats.hospitals[0]?.name || 'Nearby in Cantonment'}</div>
                 </div>
-              </div>
-              <div className={styles.tactItem}>
+              </motion.div>
+              <motion.div className={styles.tactItem} {...springTap}>
                 <span className={styles.tactIco}>🏫</span>
                 <div>
                   <div className={styles.tactName}>Army Public School (APS)</div>
                   <div className={styles.tactVal}>{stats.schools[0]?.name || 'Nearby in Cantonment'}</div>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
 
           <div className={styles.actions}>
-            <button className="bp" onClick={() => {
+            <motion.button className="bp fluid-press" onClick={() => {
               // Focus map on station
               if (window.appMap) {
                 window.appMap.setCenter({ lat: station.lat, lng: station.lng });
@@ -93,9 +96,9 @@ export default function StationModal({ stationId, onClose }) {
               }
               onClose();
               ctx.showToast(`Exploring ${station.name} 🗺️`, 'ok');
-            }}>
+            }} {...springTap}>
               Explore Station Map 🚀
-            </button>
+            </motion.button>
           </div>
         </div>
       </div>
