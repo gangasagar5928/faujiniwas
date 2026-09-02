@@ -10,9 +10,9 @@ import ErrorBoundary from './components/UI/ErrorBoundary';
 import SessionGuard from './components/Auth/SessionGuard';
 
 import AccessibilityModal from './components/Modals/AccessibilityModal';
+import DetailModal from './components/Modals/DetailModal';
 
-// Lazy-load heavy modals — off critical path
-const DetailModal    = lazy(() => import('./components/Modals/DetailModal'));
+// Lazy-load secondary modals — off critical path
 const PostModal      = lazy(() => import('./components/Modals/PostModal'));
 const ProfileModal   = lazy(() => import('./components/Modals/ProfileModal'));
 const ReportModal    = lazy(() => import('./components/Modals/ReportModal'));
@@ -71,6 +71,29 @@ export default function App() {
       return () => clearTimeout(timer);
     }
   }, [setActiveView]);
+
+  useEffect(() => {
+    const handleOpenDetailEvent = (e) => {
+      const id = e?.detail?.id;
+      if (id) {
+        window.history.pushState({ modal: 'detail' }, '');
+        setDetailId(id);
+        setOpenModal('detail');
+      }
+    };
+    window.openDetailModal = (id) => {
+      if (id) {
+        window.history.pushState({ modal: 'detail' }, '');
+        setDetailId(id);
+        setOpenModal('detail');
+      }
+    };
+    window.addEventListener('open-detail', handleOpenDetailEvent);
+    return () => {
+      window.removeEventListener('open-detail', handleOpenDetailEvent);
+      delete window.openDetailModal;
+    };
+  }, []);
 
   // Handle hardware back button using History API
   useEffect(() => {

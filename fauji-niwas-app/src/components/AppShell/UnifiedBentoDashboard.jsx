@@ -1,13 +1,43 @@
 import React, { useContext, useMemo, useState, useCallback, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { ModalContext } from '../../App';
 import { useAuth } from '../../hooks/useAuth';
 import { useFilterStore, getFilteredListings } from '../../store/filterStore';
+import { useUserStore } from '../../store/userStore';
 import { SSB_DORMS } from '../../data';
 import MapView from '../Map/MapView';
 import ListingCard from '../Sidebar/ListingCard';
 import MarketCard from '../Sidebar/MarketCard';
 import DormCard from '../Sidebar/DormCard';
 import MobileDashboard from './MobileDashboard';
+import {
+  Home,
+  Building2,
+  ShoppingBag,
+  Heart,
+  MessageSquare,
+  FileText,
+  Bell,
+  Search,
+  SlidersHorizontal,
+  Plus,
+  User,
+  Sun,
+  Moon,
+  MapPin,
+  RotateCcw,
+  Map as MapIcon,
+  List,
+  ShieldCheck,
+  Users,
+  Tag,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  X,
+  Crosshair,
+  ArrowUpRight
+} from 'lucide-react';
 
 export default function UnifiedBentoDashboard() {
   const ctx = useContext(ModalContext);
@@ -22,6 +52,8 @@ export default function UnifiedBentoDashboard() {
     setBhkFilter,
     maxPrice,
     setMaxPrice,
+    sortPref,
+    setSortPref,
     showCommuteZones,
     setShowCommuteZones,
     showSchools,
@@ -29,11 +61,51 @@ export default function UnifiedBentoDashboard() {
     showHospitals,
     setShowHospitals
   } = allState;
+
+  const wishlist = useUserStore(s => s.wishlist) || [];
   
   const listings = getFilteredListings(allState);
-  const [isPanelOpen, setIsPanelOpen] = useState(true);
   const [isFacilitiesOpen, setIsFacilitiesOpen] = useState(true);
   const [visibleIds, setVisibleIds] = useState(null);
+  const [activeTab, setActiveTab] = useState('homes');
+  const [mapMode, setMapMode] = useState('map');
+  const [searchAsMove, setSearchAsMove] = useState(true);
+  const [bhkDropdownOpen, setBhkDropdownOpen] = useState(false);
+  const [budgetDropdownOpen, setBudgetDropdownOpen] = useState(false);
+  const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
+  const [isListCollapsed, setIsListCollapsed] = useState(false);
+
+  // Theme state
+  const [isDark, setIsDark] = useState(() => {
+    return document.documentElement.classList.contains('dark') || localStorage.getItem('fn_theme') === 'dark';
+  });
+
+  const toggleTheme = () => {
+    const nextDark = !isDark;
+    setIsDark(nextDark);
+    const mode = nextDark ? 'dark' : 'light';
+    localStorage.setItem('fn_theme', mode);
+    if (nextDark) {
+      document.documentElement.classList.add('dark', 'dark-theme');
+      document.body.classList.add('dark', 'dark-theme');
+      document.documentElement.classList.remove('light-theme');
+      document.body.classList.remove('light-theme');
+    } else {
+      document.documentElement.classList.remove('dark', 'dark-theme');
+      document.body.classList.remove('dark', 'dark-theme');
+      document.documentElement.classList.add('light-theme');
+      document.body.classList.add('light-theme');
+    }
+    window.dispatchEvent(new CustomEvent('theme-change', { detail: mode }));
+  };
+
+  // Sync activeView with activeTab
+  useEffect(() => {
+    if (activeView === 'dorms') setActiveTab('dorms');
+    else if (activeView === 'market') setActiveTab('market');
+    else if (activeView === 'saved') setActiveTab('saved');
+    else setActiveTab('homes');
+  }, [activeView]);
 
   // Expose listings globally for chatbot
   if (typeof window !== 'undefined') {
@@ -42,7 +114,7 @@ export default function UnifiedBentoDashboard() {
 
   // Filter items based on active tab and search query
   const items = useMemo(() => {
-    if (activeView === 'dorms') {
+    if (activeTab === 'dorms') {
       if (!smartSearchQ) return SSB_DORMS;
       const q = smartSearchQ.toLowerCase();
       return SSB_DORMS.filter(
@@ -52,56 +124,36 @@ export default function UnifiedBentoDashboard() {
              d.area.toLowerCase().includes(q)
       );
     }
+    if (activeTab === 'saved') {
+      return listings.filter(l => wishlist.includes(l.id));
+    }
     return listings;
-  }, [activeView, listings, smartSearchQ]);
+  }, [activeTab, listings, smartSearchQ, wishlist]);
 
   // Live viewport calculations
   const handleBoundsChange = useCallback((ids) => {
-    setVisibleIds(ids);
-  }, []);
+    if (searchAsMove) {
+      setVisibleIds(ids);
+    }
+  }, [searchAsMove]);
 
   const visibleItems = useMemo(() => {
-    if (!visibleIds || !visibleIds.length) return items;
+    if (!searchAsMove || !visibleIds || !visibleIds.length) return items;
     const set = new Set(visibleIds);
     const inView = items.filter(item => set.has(item.id));
     return inView.length > 0 ? inView : items;
-  }, [items, visibleIds]);
-
-  const inViewCount = visibleItems.length;
-  const inViewAvgPrice = useMemo(() => {
-    const priced = visibleItems.filter(l => Number(l.price) > 0);
-    if (!priced.length) return 0;
-    return Math.round(priced.reduce((sum, l) => sum + (Number(l.price) || 0), 0) / priced.length);
-  }, [visibleItems]);
-
-  const formatK = (n) => n >= 1000 ? `₹${Math.round(n / 1000)}K` : `₹${n}`;
-
-  const [bhkDropdownOpen, setBhkDropdownOpen] = useState(false);
-  const [budgetDropdownOpen, setBudgetDropdownOpen] = useState(false);
+  }, [items, visibleIds, searchAsMove]);
 
   // Close dropdowns on window click
   useEffect(() => {
     const handleClose = () => {
       setBhkDropdownOpen(false);
       setBudgetDropdownOpen(false);
+      setSortDropdownOpen(false);
     };
     window.addEventListener('click', handleClose);
     return () => window.removeEventListener('click', handleClose);
   }, []);
-
-  const handleBhkToggle = () => {
-    if (bhkFilter === 'all') setBhkFilter('2');
-    else if (bhkFilter === '2') setBhkFilter('3');
-    else if (bhkFilter === '3') setBhkFilter('1');
-    else setBhkFilter('all');
-  };
-
-  const handleBudgetToggle = () => {
-    if (maxPrice >= 100000) setMaxPrice(15000);
-    else if (maxPrice <= 15000) setMaxPrice(30000);
-    else if (maxPrice <= 30000) setMaxPrice(50000);
-    else setMaxPrice(100000);
-  };
 
   const handleLocateMe = () => {
     if (!navigator.geolocation) {
@@ -124,6 +176,22 @@ export default function UnifiedBentoDashboard() {
     );
   };
 
+  const handleResetMap = () => {
+    window.dispatchEvent(new CustomEvent('map-recenter', { detail: { lat: 18.5204, lng: 73.8567 } }));
+    setVisibleIds(null);
+    ctx?.showToast('Map position reset', 'ok');
+  };
+
+  const navMenuItems = [
+    { id: 'homes', label: 'Homes', icon: Home, action: () => { setActiveView('rentals'); setActiveTab('homes'); } },
+    { id: 'dorms', label: 'SSB Dorms', icon: Building2, action: () => { setActiveView('dorms'); setActiveTab('dorms'); } },
+    { id: 'market', label: 'Marketplace', icon: ShoppingBag, action: () => { setActiveView('market'); setActiveTab('market'); } },
+    { id: 'saved', label: 'Saved', icon: Heart, count: wishlist.length, action: () => { setActiveTab('saved'); } },
+    { id: 'messages', label: 'Messages', icon: MessageSquare, action: () => { ctx.openChat?.(); } },
+    { id: 'myposts', label: 'My Posts', icon: FileText, action: () => { ctx.openPost?.(); } },
+    { id: 'alerts', label: 'Alerts', icon: Bell, action: () => { ctx.openTransfers?.(); } },
+  ];
+
   return (
     <>
       {/* ══ MOBILE UI (< 768px) ══ */}
@@ -132,505 +200,719 @@ export default function UnifiedBentoDashboard() {
       </div>
 
       {/* ══ DESKTOP / LAPTOP UI (>= 768px) ══ */}
-      <div className="bento-desktop hidden md:block relative w-full h-[100dvh] overflow-hidden select-none">
-
-        {/* ══ MAP BACKGROUND ══ */}
-        <div id="map" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 0 }}>
-          <MapView properties={items} onBoundsChange={handleBoundsChange} />
-        </div>
-
-        {/* ══ NAVBAR ══ */}
-        <nav className="navbar">
-          <a className="logo flex items-center gap-2.5" href="/" onClick={(e) => { e.preventDefault(); window.location.href = '/'; }}>
-            <img src="/logo-light.jpg" alt="FaujiNiwas" className="w-8 h-8 rounded-lg object-contain light-logo shadow-xs" />
-            <img src="/logo-dark.jpg" alt="FaujiNiwas" className="w-8 h-8 rounded-lg object-contain dark-logo shadow-xs" />
-            <span className="font-extrabold tracking-tight text-slate-800 dark:text-white text-base">FaujiNiwas</span>
-          </a>
-          <div className="search-wrap">
-            <input 
-              type="text" 
-              placeholder="Search cantonment, area or city…"
-              value={smartSearchQ}
-              onChange={e => setSmartSearchQ(e.target.value)}
+      <div className="hidden md:flex flex-col w-full h-[100dvh] overflow-hidden select-none bg-[#f8fafc] dark:bg-[#080c14] text-slate-800 dark:text-slate-100 font-['Plus_Jakarta_Sans',sans-serif]">
+        
+        {/* ══════════════════════════════════════════
+            1. TOP NAVBAR HEADER
+            ══════════════════════════════════════════ */}
+        <header className="h-[64px] px-6 liquid-glass-nav relative flex items-center justify-between z-50 flex-shrink-0">
+          
+          {/* Left: Brand Logo & Subtitle */}
+          <a 
+            href="/" 
+            onClick={(e) => { e.preventDefault(); window.location.href = '/'; }}
+            className="flex items-center gap-3 no-underline group cursor-pointer"
+          >
+            <img 
+              src="/logo-light.jpg" 
+              alt="FaujiNiwas" 
+              className="w-10 h-10 rounded-full object-contain border border-slate-200 dark:border-slate-700 block dark:hidden" 
             />
-            <svg className="s-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-            </svg>
-          </div>
+            <img 
+              src="/logo-dark.jpg" 
+              alt="FaujiNiwas" 
+              className="w-10 h-10 rounded-full object-contain border border-slate-200 dark:border-slate-700 hidden dark:block" 
+            />
+            <div className="flex flex-col">
+              <span className="text-[18px] font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+                FaujiNiwas
+              </span>
+              <span className="text-[11.5px] font-semibold text-slate-500 dark:text-slate-400 leading-tight">
+                Defence Housing Rentals
+              </span>
+            </div>
+          </a>
 
-          {/* BHK Filter with Dropdown */}
-          <div style={{ position: 'relative' }}>
-            <button 
-              className={`filter-btn ${bhkFilter !== 'all' ? 'active' : ''}`} 
-              onClick={(e) => {
-                e.stopPropagation();
-                setBhkDropdownOpen(!bhkDropdownOpen);
-                setBudgetDropdownOpen(false);
-              }}
-              title="Select BHK filter"
-            >
-              {bhkFilter === 'all' ? 'All BHK' : `${bhkFilter} BHK`}
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="m6 9 6 6 6-6"/></svg>
-            </button>
-            {bhkDropdownOpen && (
-              <div 
-                onClick={e => e.stopPropagation()}
-                style={{
-                  position: 'absolute',
-                  top: 'calc(100% + 6px)',
-                  left: 0,
-                  background: '#ffffff',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '12px',
-                  boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
-                  padding: '6px',
-                  minWidth: '130px',
-                  zIndex: 1200,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '2px'
-                }}
-              >
-                {[
-                  { value: 'all', label: 'All BHK' },
-                  { value: '1', label: '1 BHK' },
-                  { value: '2', label: '2 BHK' },
-                  { value: '3', label: '3 BHK' },
-                  { value: '4', label: '4+ BHK' }
-                ].map(opt => (
-                  <button
-                    key={opt.value}
-                    onClick={() => {
-                      setBhkFilter(opt.value);
-                      setBhkDropdownOpen(false);
-                    }}
-                    style={{
-                      padding: '8px 12px',
-                      borderRadius: '8px',
-                      border: 'none',
-                      background: bhkFilter === opt.value ? '#f59e0b' : 'transparent',
-                      color: bhkFilter === opt.value ? '#ffffff' : '#334155',
-                      fontWeight: bhkFilter === opt.value ? 800 : 600,
-                      fontSize: '12px',
-                      textAlign: 'left',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Budget Filter with Dropdown */}
-          <div style={{ position: 'relative' }}>
-            <button 
-              className={`filter-btn ${maxPrice < 100000 ? 'active' : ''}`} 
-              onClick={(e) => {
-                e.stopPropagation();
-                setBudgetDropdownOpen(!budgetDropdownOpen);
-                setBhkDropdownOpen(false);
-              }}
-              title="Select Budget limit"
-            >
-              {maxPrice >= 100000 ? 'All Budgets' : `≤ ₹${maxPrice.toLocaleString()}`}
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="m6 9 6 6 6-6"/></svg>
-            </button>
-            {budgetDropdownOpen && (
-              <div 
-                onClick={e => e.stopPropagation()}
-                style={{
-                  position: 'absolute',
-                  top: 'calc(100% + 6px)',
-                  left: 0,
-                  background: '#ffffff',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '12px',
-                  boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
-                  padding: '6px',
-                  minWidth: '160px',
-                  zIndex: 1200,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '2px'
-                }}
-              >
-                {[
-                  { value: 100000, label: 'All Budgets' },
-                  { value: 15000, label: 'Under ₹15,000 / mo' },
-                  { value: 25000, label: 'Under ₹25,000 / mo' },
-                  { value: 35000, label: 'Under ₹35,000 / mo' },
-                  { value: 50000, label: 'Under ₹50,000 / mo' },
-                  { value: 75000, label: 'Under ₹75,000 / mo' }
-                ].map(opt => (
-                  <button
-                    key={opt.value}
-                    onClick={() => {
-                      setMaxPrice(opt.value);
-                      setBudgetDropdownOpen(false);
-                    }}
-                    style={{
-                      padding: '8px 12px',
-                      borderRadius: '8px',
-                      border: 'none',
-                      background: maxPrice === opt.value ? '#f59e0b' : 'transparent',
-                      color: maxPrice === opt.value ? '#ffffff' : '#334155',
-                      fontWeight: maxPrice === opt.value ? 800 : 600,
-                      fontSize: '12px',
-                      textAlign: 'left',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <button 
-            id="btn-accessibility"
-            className="filter-btn" 
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              if (ctx?.openAccessibility) {
-                ctx.openAccessibility();
-              } else if (window.openAccessibilityModal) {
-                window.openAccessibilityModal();
-              }
-            }}
-            title="Accessibility & Theme settings"
-          >
-            <span>♿ Contrast &amp; Font</span>
-          </button>
-
-          <div className="nav-gap"></div>
-
-          {/* Top Nav Post Button */}
-          <button 
-            onClick={() => ctx.openPost?.()} 
-            style={{
-              padding: '6px 14px',
-              borderRadius: '10px',
-              background: '#16a34a',
-              color: '#ffffff',
-              border: '1px solid #15803d',
-              fontSize: '12px',
-              fontWeight: 800,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '5px',
-              boxShadow: '0 2px 8px rgba(22,163,74,0.25)',
-              marginRight: '6px',
-              transition: 'background 0.15s'
-            }}
-            onMouseEnter={e => { e.currentTarget.style.background = '#15803d'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = '#16a34a'; }}
-            title="Post a New Property or Marketplace Listing"
-          >
-            <span>✚</span>
-            <span>Post</span>
-          </button>
-
-          {user ? (
-            <button onClick={() => ctx.openProfile?.()} className="sign-btn">
-              Profile
-            </button>
-          ) : (
-            <button onClick={() => ctx.openProfile?.()} className="sign-btn">
-              Sign In / Sign Up
-            </button>
-          )}
-        </nav>
-
-        {/* ══ STATS (Live Viewport Area Stats) ══ */}
-        <div className="stats-bar" style={{
-          left: isPanelOpen ? '376px' : '20px',
-          transition: 'left 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-        }}>
-          <div className="stat-pill">
-            <span className="live-dot"></span>
-            Listings in view <strong style={{marginLeft:'4px'}}>{inViewCount}</strong>
-          </div>
-          <div className="stat-pill">
-            <span className="live-dot" style={{background:'#f59e0b',boxShadow:'0 0 8px #f59e0b'}}></span>
-            Average price <strong style={{marginLeft:'4px'}}>{inViewAvgPrice > 0 ? formatK(inViewAvgPrice) : '—'}</strong>
-          </div>
-        </div>
-
-        {/* ══ PANEL (Sidebar with smooth collapse) ══ */}
-        <div 
-          className="panel" 
-          id="panel"
-          style={{
-            transform: isPanelOpen ? 'translateX(0)' : 'translateX(-100%)',
-            transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-          }}
-        >
-          {/* Tabs Navigation (Homes | SSB Dorms | Marketplace) */}
-          <div className="flex gap-2 mb-4 pb-2 border-b border-black/5 bg-[#0b1325]/5 dark:bg-white/5 p-1.5 rounded-xl">
-            {[
-              { id: 'rentals', label: 'Homes', icon: '🏠' },
-              { id: 'dorms', label: 'SSB Dorms', icon: '🏨' },
-              { id: 'market', label: 'Marketplace', icon: '🏷️' }
-            ].map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveView(tab.id)}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[12px] font-bold transition-all cursor-pointer border ${
-                  activeView === tab.id
-                    ? 'bg-emerald-600 text-white border-emerald-600 shadow-md shadow-emerald-600/20'
-                    : 'bg-white/70 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 border-black/5 hover:bg-white dark:hover:bg-slate-700'
-                }`}
-              >
-                <span>{tab.icon}</span>
-                <span className="whitespace-nowrap">{tab.label}</span>
-              </button>
-            ))}
-          </div>
-
-          {/* Scrolling List */}
-          <div className="flex flex-col gap-3">
-            {items.length > 0 ? (
-              items.slice(0, 25).map(item => {
-                if (activeView === 'dorms') {
-                  return (
-                    <DormCard
-                      key={item.id}
-                      dorm={item}
-                      onFoodClick={(city) => ctx.openFood(item.city)}
-                      onClick={() => ctx.openDetail?.(item.id)}
-                    />
-                  );
-                } else if (activeView === 'market') {
-                  return (
-                    <MarketCard
-                      key={item.id}
-                      item={item}
-                      onClick={() => ctx.openDetail?.(item.id)}
-                    />
-                  );
-                } else {
-                  return (
-                    <ListingCard
-                      key={item.id}
-                      listing={item}
-                      onClick={() => ctx.openDetail?.(item.id)}
-                    />
-                  );
-                }
-              })
-            ) : (
-              <div className="flex flex-col items-center justify-center h-48 text-center px-4">
-                <span className="text-4xl mb-2 opacity-60">🗺️</span>
-                <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">No matches found.<br/>Try adjusting your filters.</p>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* ══ PANEL COLLAPSE TOGGLE BUTTON ══ */}
-        <button
-          onClick={() => setIsPanelOpen(v => !v)}
-          style={{
-            position: 'fixed',
-            top: '50%',
-            left: isPanelOpen ? '362px' : '0px',
-            transform: 'translateY(-50%)',
-            zIndex: 950,
-            width: '24px',
-            height: '48px',
-            background: '#ffffff',
-            border: '1px solid #cbd5e1',
-            borderLeft: isPanelOpen ? 'none' : '1px solid #cbd5e1',
-            borderRadius: '0 10px 10px 0',
-            boxShadow: '3px 0 12px rgba(0,0,0,0.12)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '16px',
-            fontWeight: 900,
-            color: '#475569',
-            cursor: 'pointer',
-            transition: 'left 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.15s, color 0.15s'
-          }}
-          title={isPanelOpen ? 'Collapse listings' : 'Expand listings'}
-          onMouseEnter={e => { e.currentTarget.style.background = '#f8fafc'; e.currentTarget.style.color = '#0f172a'; }}
-          onMouseLeave={e => { e.currentTarget.style.background = '#ffffff'; e.currentTarget.style.color = '#475569'; }}
-        >
-          {isPanelOpen ? '‹' : '›'}
-        </button>
-
-        {/* ══ MAP CONTROLS (Top Right) ══ */}
-        <div className="map-ctrl">
-          <button onClick={() => window.dispatchEvent(new CustomEvent('map-zoom-in'))} className="ctrl-btn" title="Zoom In">+</button>
-          <button onClick={() => window.dispatchEvent(new CustomEvent('map-zoom-out'))} className="ctrl-btn" title="Zoom Out">−</button>
-          <button onClick={handleLocateMe} className="ctrl-btn" title="My Current Location">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-              <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/>
-            </svg>
-          </button>
-        </div>
-
-        {/* ══ NEARBY FACILITIES (Collapsible & Interactive) ══ */}
-        <div className="legend" style={{ zIndex: 850 }}>
-          {!isFacilitiesOpen ? (
-            <button 
-              onClick={() => setIsFacilitiesOpen(true)}
-              style={{
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                fontSize: '12.5px',
-                fontWeight: 800,
-                color: 'inherit',
-                padding: '2px 0'
-              }}
-              title="Expand Nearby Facilities"
-            >
-              <span>📍 Nearby Facilities</span>
-              <span style={{ fontSize: '10px', opacity: 0.6 }}>▼</span>
-            </button>
-          ) : (
-            <>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-                <div className="legend-title font-bold" style={{ margin: 0, fontSize: '13px' }}>
-                  Nearby Facilities
-                </div>
+          {/* Center: Search & Filter Controls */}
+          <div className="flex items-center gap-2 max-w-[360px] lg:max-w-[440px] flex-1 mx-3">
+            
+            {/* Search Pill Input */}
+            <div className="relative flex-1">
+              <input 
+                type="text" 
+                placeholder="Search cantonment, area or city..."
+                value={smartSearchQ}
+                onChange={e => setSmartSearchQ(e.target.value)}
+                className="w-full h-[38px] pl-3.5 pr-9 text-[13px] font-medium bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-full focus:outline-none focus:border-emerald-600 dark:focus:border-emerald-500 transition-all placeholder:text-slate-400 text-slate-800 dark:text-slate-200"
+              />
+              <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+              {smartSearchQ && (
                 <button 
-                  onClick={() => setIsFacilitiesOpen(false)}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    fontSize: '14px',
-                    fontWeight: 700,
-                    color: '#94a3b8',
-                    cursor: 'pointer',
-                    padding: '2px 6px',
-                    lineHeight: 1
-                  }}
-                  title="Collapse Facilities"
+                  onClick={() => setSmartSearchQ('')} 
+                  className="absolute right-8 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs cursor-pointer"
                 >
                   ✕
                 </button>
+              )}
+            </div>
+
+            {/* BHK Filter Pill */}
+            <div className="relative">
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setBhkDropdownOpen(!bhkDropdownOpen);
+                  setBudgetDropdownOpen(false);
+                }}
+                className={`h-[38px] px-3.5 rounded-full text-[12.5px] font-bold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap fluid-press ${
+                  bhkFilter !== 'all'
+                    ? 'liquid-glass-chip border-emerald-500 text-emerald-700 dark:text-emerald-300'
+                    : 'liquid-glass-chip text-slate-700 dark:text-slate-300'
+                }`}
+              >
+                <span>{bhkFilter === 'all' ? 'All BHK' : `${bhkFilter} BHK`}</span>
+                <ChevronDown className="w-3.5 h-3.5 opacity-60" />
+              </button>
+
+              {bhkDropdownOpen && (
+                <div
+                  onClick={e => e.stopPropagation()}
+                  className="absolute top-[calc(100%+6px)] left-0 w-36 liquid-glass rounded-xl p-1.5 z-50 flex flex-col gap-1"
+                >
+                  {[
+                    { value: 'all', label: 'All BHK' },
+                    { value: '1', label: '1 BHK' },
+                    { value: '2', label: '2 BHK' },
+                    { value: '3', label: '3 BHK' },
+                    { value: '4', label: '4+ BHK' }
+                  ].map(opt => (
+                    <button
+                      key={opt.value}
+                      onClick={() => {
+                        setBhkFilter(opt.value);
+                        setBhkDropdownOpen(false);
+                      }}
+                      className={`w-full text-left px-3 py-2 rounded-lg text-xs font-bold cursor-pointer transition-colors ${
+                        bhkFilter === opt.value
+                          ? 'bg-emerald-600 text-white'
+                          : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Budget Filter Pill */}
+            <div className="relative">
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setBudgetDropdownOpen(!budgetDropdownOpen);
+                  setBhkDropdownOpen(false);
+                }}
+                className={`h-[38px] px-3.5 rounded-full text-[12.5px] font-bold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap fluid-press ${
+                  maxPrice < 100000
+                    ? 'liquid-glass-chip border-emerald-500 text-emerald-700 dark:text-emerald-300'
+                    : 'liquid-glass-chip text-slate-700 dark:text-slate-300'
+                }`}
+              >
+                <span>{maxPrice >= 100000 ? 'All Budgets' : `≤ ₹${(maxPrice / 1000).toFixed(0)}K`}</span>
+                <ChevronDown className="w-3.5 h-3.5 opacity-60" />
+              </button>
+
+              {budgetDropdownOpen && (
+                <div
+                  onClick={e => e.stopPropagation()}
+                  className="absolute top-[calc(100%+6px)] left-0 w-44 liquid-glass rounded-xl p-1.5 z-50 flex flex-col gap-1"
+                >
+                  {[
+                    { value: 100000, label: 'All Budgets' },
+                    { value: 15000, label: 'Under ₹15,000 / mo' },
+                    { value: 25000, label: 'Under ₹25,000 / mo' },
+                    { value: 35000, label: 'Under ₹35,000 / mo' },
+                    { value: 50000, label: 'Under ₹50,000 / mo' },
+                    { value: 75000, label: 'Under ₹75,000 / mo' }
+                  ].map(opt => (
+                    <button
+                      key={opt.value}
+                      onClick={() => {
+                        setMaxPrice(opt.value);
+                        setBudgetDropdownOpen(false);
+                      }}
+                      className={`w-full text-left px-3 py-2 rounded-lg text-xs font-bold cursor-pointer transition-colors ${
+                        maxPrice === opt.value
+                          ? 'bg-emerald-600 text-white'
+                          : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* More Filters Pill */}
+            <button 
+              onClick={() => ctx?.openAccessibility?.()}
+              className="h-[38px] px-3.5 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 text-[12.5px] font-bold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap"
+              title="Accessibility, Font and Contrast Settings"
+            >
+              <SlidersHorizontal className="w-3.5 h-3.5" />
+              <span>More Filters</span>
+            </button>
+
+          </div>
+
+          {/* Right Actions: Post Property, Sign In, Theme Switcher */}
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {/* + Post Property Button */}
+            <button 
+              onClick={() => ctx.openPost?.()}
+              className="h-[38px] px-4 rounded-xl text-[13px] font-extrabold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shadow-none hover:opacity-90"
+              style={{ backgroundColor: '#00875a', color: '#ffffff' }}
+            >
+              <Plus className="w-4 h-4 stroke-[3]" style={{ color: '#ffffff' }} />
+              <span style={{ color: '#ffffff', fontWeight: 800 }}>Post Property</span>
+            </button>
+
+            {/* Sign In / Sign Up or Profile */}
+            <button 
+              onClick={() => ctx.openProfile?.()}
+              className="h-[38px] px-3.5 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl text-[13px] font-bold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shadow-none"
+            >
+              <User className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+              <span>{user ? 'Profile' : 'Sign In / Sign Up'}</span>
+            </button>
+
+            {/* Dark / Light Mode Pill Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="w-[38px] h-[38px] rounded-full border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 flex items-center justify-center flex-shrink-0 cursor-pointer text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+              title="Toggle Light / Dark mode"
+            >
+              {isDark ? (
+                <Moon className="w-4 h-4 text-emerald-400 fill-emerald-400/20" />
+              ) : (
+                <Sun className="w-4 h-4 text-amber-500 fill-amber-500/20" />
+              )}
+            </button>
+
+          </div>
+
+        </header>
+
+        {/* ══════════════════════════════════════════
+            2. MAIN 3-COLUMN BODY CONTAINER
+            ══════════════════════════════════════════ */}
+        <div className="flex-1 flex overflow-hidden relative min-h-0">
+
+          {/* ── COLUMN 1: LEFT NAVIGATION SIDEBAR ── */}
+          <aside className="w-[230px] liquid-glass border-r-0 flex flex-col justify-between p-3 flex-shrink-0 z-20 min-h-0 overflow-hidden">
+            
+            {/* Nav Menu */}
+            <div className="flex flex-col gap-1 overflow-y-auto custom-scrollbar-panel pr-0.5">
+              {navMenuItems.map(item => {
+                const IconComponent = item.icon;
+                const isActive = activeTab === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={item.action}
+                    className={`relative w-full h-[40px] flex items-center justify-between px-3 rounded-xl text-[14px] font-bold transition-all cursor-pointer border flex-shrink-0 ${
+                      isActive
+                        ? 'text-[#00875a] dark:text-[#34d399]'
+                        : 'text-[#0f172a] dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-800'
+                    }`}
+                  >
+                    {isActive && (
+                      <motion.div
+                        layoutId="nav-pill"
+                        className="absolute inset-0 rounded-xl border border-[#86efac] dark:border-[#059669] bg-[#ebfbee] dark:bg-[#064e3b]/50"
+                        transition={{ type: 'spring', stiffness: 480, damping: 36, mass: 0.5 }}
+                      />
+                    )}
+                    <div className="relative z-10 flex items-center gap-2.5">
+                      <IconComponent className={`w-4 h-4 ${isActive ? 'text-[#00875a] dark:text-[#34d399]' : 'text-slate-600 dark:text-slate-400'}`} />
+                      <span>{item.label}</span>
+                    </div>
+                    {item.count !== undefined && item.count > 0 && (
+                      <span className="relative z-10 text-[10px] font-extrabold px-1.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300">
+                        {item.count}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Bottom Download & Copyright Section */}
+            <div className="flex flex-col gap-2 pt-3 border-t border-slate-200 dark:border-slate-800 flex-shrink-0">
+              <span className="text-[12px] font-extrabold text-[#0f172a] dark:text-slate-100 uppercase tracking-wider px-0.5">
+                DOWNLOAD APP
+              </span>
+              
+              {/* Google Play Button */}
+              <a 
+                href="/manifest.json" 
+                download
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  backgroundColor: '#000000',
+                  color: '#ffffff',
+                  padding: '6px 14px',
+                  borderRadius: '10px',
+                  textDecoration: 'none',
+                  border: '1px solid #1f2937',
+                  cursor: 'pointer',
+                  height: '42px'
+                }}
+              >
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" style={{ flexShrink: 0 }}>
+                  <path d="M3.609 1.814L13.792 12 3.61 22.186a1.986 1.986 0 01-.61-1.465V3.279c0-.573.23-1.096.609-1.465z" fill="#00D3FF"/>
+                  <path d="M17.202 8.59L13.792 12l3.41 3.41 3.864-2.195c1.102-.626 1.102-1.799 0-2.425L17.202 8.59z" fill="#FFCE00"/>
+                  <path d="M3.609 1.814L13.792 12l3.41-3.41-11.83-6.721c-.493-.28-1.002-.204-1.372.124z" fill="#00F076"/>
+                  <path d="M13.792 12L3.609 22.186c.37.328.879.404 1.372.124l11.83-6.72-3.02-3.59z" fill="#FF3A44"/>
+                </svg>
+                <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left', lineHeight: 1.1 }}>
+                  <span style={{ fontSize: '7.5px', textTransform: 'uppercase', letterSpacing: '0.8px', color: '#ffffff', fontWeight: 700 }}>GET IT ON</span>
+                  <span style={{ fontSize: '13px', fontWeight: 800, color: '#ffffff' }}>Google Play</span>
+                </div>
+              </a>
+
+              {/* App Store Button */}
+              <a 
+                href="/manifest.json" 
+                download
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  backgroundColor: '#000000',
+                  color: '#ffffff',
+                  padding: '6px 14px',
+                  borderRadius: '10px',
+                  textDecoration: 'none',
+                  border: '1px solid #1f2937',
+                  cursor: 'pointer',
+                  height: '42px'
+                }}
+              >
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="#ffffff" style={{ flexShrink: 0 }}>
+                  <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.63-.77 1.06-1.85.94-2.93-.91.04-2.02.61-2.67 1.38-.58.67-1.09 1.76-.95 2.81 1.02.08 2.05-.49 2.68-1.26z"/>
+                </svg>
+                <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left', lineHeight: 1.1 }}>
+                  <span style={{ fontSize: '7.5px', textTransform: 'uppercase', letterSpacing: '0.8px', color: '#ffffff', fontWeight: 700 }}>DOWNLOAD ON THE</span>
+                  <span style={{ fontSize: '13px', fontWeight: 800, color: '#ffffff' }}>App Store</span>
+                </div>
+              </a>
+
+              {/* Copyright */}
+              <div className="text-[11.5px] font-bold text-slate-500 dark:text-slate-400 px-0.5 pt-0.5 pb-1 leading-tight">
+                <div>© 2025 FaujiNiwas</div>
+                <div className="font-semibold text-[10.5px]">All rights reserved.</div>
+              </div>
+            </div>
+
+          </aside>
+
+          {/* ── COLUMN 2: MIDDLE PROPERTY LISTINGS PANEL ── */}
+          <section
+            className={`liquid-glass border-r-0 relative flex flex-col flex-shrink-0 z-10 overflow-hidden h-full min-h-0 transition-all duration-[300ms] ease-[cubic-bezier(0.34,1.15,0.64,1)] ${
+              isListCollapsed ? 'w-0 opacity-0 pointer-events-none' : 'w-[430px] opacity-100'
+            }`}
+          >
+
+            {/* Header: Properties Found & Sort Selector */}
+            <div className="p-3.5 pb-2.5 flex items-center justify-between flex-shrink-0 liquid-glass-chip border-x-0 border-t-0">
+              <span className="text-[14.5px] font-extrabold text-[#0f172a] dark:text-white">
+                {visibleItems.length} Properties Found
+              </span>
+
+              <div className="flex items-center gap-2">
+                {/* Sort By Dropdown */}
+                <div className="relative">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSortDropdownOpen(!sortDropdownOpen);
+                    }}
+                    className="text-[12px] font-semibold text-slate-600 dark:text-slate-400 flex items-center gap-1 hover:text-slate-900 dark:hover:text-white cursor-pointer"
+                  >
+                    <span>Sorted by: <strong className="text-slate-800 dark:text-slate-200">{sortPref === 'priceAsc' ? 'Price: Low to High' : (sortPref === 'priceDesc' ? 'Price: High to Low' : 'Relevance')}</strong></span>
+                    <ChevronDown className="w-3.5 h-3.5" />
+                  </button>
+
+                  {sortDropdownOpen && (
+                    <div
+                      onClick={e => e.stopPropagation()}
+                      className="absolute top-[calc(100%+6px)] right-0 w-44 liquid-glass rounded-xl p-1.5 z-50 flex flex-col gap-1"
+                    >
+                      {[
+                        { value: 'new', label: 'Relevance' },
+                        { value: 'priceAsc', label: 'Price: Low to High' },
+                        { value: 'priceDesc', label: 'Price: High to Low' }
+                      ].map(opt => (
+                        <button
+                          key={opt.value}
+                          onClick={() => {
+                            setSortPref(opt.value);
+                            setSortDropdownOpen(false);
+                          }}
+                          className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-colors ${
+                            sortPref === opt.value
+                              ? 'bg-emerald-600 text-white'
+                              : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Collapse Button */}
+                <button
+                  onClick={() => setIsListCollapsed(true)}
+                  className="w-7 h-7 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center justify-center cursor-pointer transition-colors border border-transparent hover:border-slate-200"
+                  title="Collapse Properties List"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Scrollable Listings Feed */}
+            <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-3 custom-scrollbar min-h-0">
+              {visibleItems.length > 0 ? (
+                visibleItems.map(item => {
+                  if (activeTab === 'dorms') {
+                    return (
+                      <DormCard
+                        key={item.id}
+                        dorm={item}
+                        onFoodClick={(city) => ctx.openFood(item.city)}
+                        onClick={() => ctx.openDetail?.(item.id)}
+                      />
+                    );
+                  } else if (activeTab === 'market') {
+                    return (
+                      <MarketCard
+                        key={item.id}
+                        item={item}
+                        onClick={() => ctx.openDetail?.(item.id)}
+                      />
+                    );
+                  } else {
+                    return (
+                      <ListingCard
+                        key={item.id}
+                        listing={item}
+                        onClick={() => ctx.openDetail?.(item.id)}
+                      />
+                    );
+                  }
+                })
+              ) : (
+                <div className="flex flex-col items-center justify-center h-64 text-center px-4">
+                  <span className="text-3xl mb-2 opacity-50">📍</span>
+                  <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">
+                    No properties match your filters.<br/>Try broadening your search.
+                  </p>
+                </div>
+              )}
+            </div>
+
+          </section>
+
+          {/* ── COLUMN 3: RIGHT TACTICAL INTERACTIVE MAP & OVERLAYS ── */}
+          <main className="flex-1 relative overflow-hidden flex flex-col min-h-0 h-full">
+            
+            {/* Interactive Leaflet Map */}
+            <div className="w-full h-full relative z-0">
+              <MapView properties={items} onBoundsChange={handleBoundsChange} />
+            </div>
+
+            {/* Prominent Expand Tab when List is Collapsed */}
+            {isListCollapsed && (
+              <button
+                onClick={() => setIsListCollapsed(false)}
+                className="absolute top-1/2 -translate-y-1/2 left-0 z-[1000] bg-white/85 dark:bg-[#0d1321]/85 backdrop-blur-md border-l-0 border-[#00875a] shadow-2xl py-6 px-2.5 rounded-r-2xl flex flex-col items-center justify-center text-[#00875a] hover:bg-[#ebfbee] dark:hover:bg-[#064e3b]/30 cursor-pointer transition-all gap-1.5 font-extrabold fluid-press"
+                title="Expand Properties List"
+              >
+                <ChevronRight className="w-5 h-5 stroke-[3]" />
+                <span className="text-[10px] font-extrabold [writing-mode:vertical-lr] tracking-wider uppercase text-slate-800 dark:text-slate-200">
+                  List
+                </span>
+              </button>
+            )}
+
+            {/* Floating Top Map Controls Toolbar */}
+            <div className="absolute top-3 left-3 z-[1000] flex items-center gap-1.5 liquid-glass-float p-1.5 rounded-xl">
+              <span className="sheen-sweep" />
+              
+              {/* Expand List Button when collapsed */}
+              {isListCollapsed && (
+                <>
+                  <button
+                    onClick={() => setIsListCollapsed(false)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-extrabold bg-[#ebfbee] dark:bg-emerald-950 text-[#00875a] dark:text-emerald-400 border border-[#86efac] dark:border-emerald-700 hover:bg-emerald-100 transition-colors cursor-pointer whitespace-nowrap"
+                    title="Expand Properties List"
+                  >
+                    <ChevronRight className="w-3.5 h-3.5 stroke-[2.5]" />
+                    <span>Show Properties ({visibleItems.length})</span>
+                  </button>
+                  <div className="w-[1px] h-5 bg-slate-200 dark:bg-slate-700 mx-0.5" />
+                </>
+              )}
+
+              {/* Segmented View Toggle: Map View | List View */}
+              <div className="flex items-center gap-0.5 bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg">
+                <button
+                  onClick={() => setMapMode('map')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-bold transition-all cursor-pointer ${
+                    mapMode === 'map'
+                      ? 'bg-[#00875a] text-white shadow-xs'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <MapIcon className="w-3.5 h-3.5" />
+                  <span>Map View</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setMapMode('list');
+                    setIsListCollapsed(false);
+                  }}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-bold transition-all cursor-pointer ${
+                    mapMode === 'list'
+                      ? 'bg-[#00875a] text-white shadow-xs'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <List className="w-3.5 h-3.5" />
+                  <span>List View</span>
+                </button>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <button
-                  onClick={() => setShowCommuteZones(!showCommuteZones)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: '10px',
-                    padding: '6px 8px',
-                    borderRadius: '10px',
-                    border: '1px solid',
-                    borderColor: showCommuteZones ? 'rgba(34,197,94,0.4)' : 'rgba(0,0,0,0.06)',
-                    background: showCommuteZones ? 'rgba(34,197,94,0.12)' : 'rgba(0,0,0,0.02)',
-                    cursor: 'pointer',
-                    fontSize: '12px',
-                    fontWeight: showCommuteZones ? 700 : 500,
-                    color: 'inherit',
-                    textAlign: 'left',
-                    transition: 'all 0.15s'
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '14px' }}>🚆</span>
-                    <span>Station Commute Zone</span>
-                  </div>
-                  <span style={{ fontSize: '11px', color: showCommuteZones ? '#16a34a' : '#94a3b8' }}>
-                    {showCommuteZones ? '✓' : '○'}
-                  </span>
-                </button>
+              {/* Divider */}
+              <div className="w-[1px] h-5 bg-slate-200 dark:bg-slate-700 mx-0.5" />
 
-                <button
-                  onClick={() => setShowSchools(!showSchools)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: '10px',
-                    padding: '6px 8px',
-                    borderRadius: '10px',
-                    border: '1px solid',
-                    borderColor: showSchools ? 'rgba(59,130,246,0.4)' : 'rgba(0,0,0,0.06)',
-                    background: showSchools ? 'rgba(59,130,246,0.12)' : 'rgba(0,0,0,0.02)',
-                    cursor: 'pointer',
-                    fontSize: '12px',
-                    fontWeight: showSchools ? 700 : 500,
-                    color: 'inherit',
-                    textAlign: 'left',
-                    transition: 'all 0.15s'
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '14px' }}>🏫</span>
-                    <span>Army School</span>
-                  </div>
-                  <span style={{ fontSize: '11px', color: showSchools ? '#2563eb' : '#94a3b8' }}>
-                    {showSchools ? '✓' : '○'}
-                  </span>
-                </button>
+              {/* Search as I move the map Checkbox Pill */}
+              <button
+                onClick={() => setSearchAsMove(!searchAsMove)}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[12px] font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                <div className={`w-4 h-4 rounded flex items-center justify-center border text-[10px] ${
+                  searchAsMove 
+                    ? 'bg-[#00875a] border-[#00875a] text-white' 
+                    : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900'
+                }`}>
+                  {searchAsMove && '✓'}
+                </div>
+                <span className="whitespace-nowrap">Search as I move the map</span>
+              </button>
 
+              {/* Divider */}
+              <div className="w-[1px] h-5 bg-slate-200 dark:bg-slate-700 mx-0.5" />
+
+              {/* Reset Map Button */}
+              <button
+                onClick={handleResetMap}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[12px] font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer whitespace-nowrap"
+                title="Recenter map"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Reset Map</span>
+              </button>
+
+            </div>
+
+            {/* Floating Top Right Zoom & Recenter Controls */}
+            <div className="absolute top-3 right-3 z-20 flex flex-col gap-1.5">
+              <button
+                onClick={() => window.dispatchEvent(new CustomEvent('map-zoom-in'))}
+                className="w-8 h-8 bg-white/80 dark:bg-[#0d1321]/80 backdrop-blur-md rounded-lg shadow-xs flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 text-base font-bold transition-all cursor-pointer fluid-press"
+                title="Zoom In"
+              >
+                +
+              </button>
+              <button
+                onClick={() => window.dispatchEvent(new CustomEvent('map-zoom-out'))}
+                className="w-8 h-8 bg-white/80 dark:bg-[#0d1321]/80 backdrop-blur-md rounded-lg shadow-xs flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 text-base font-bold transition-all cursor-pointer fluid-press"
+                title="Zoom Out"
+              >
+                −
+              </button>
+              <button
+                onClick={handleLocateMe}
+                className="w-8 h-8 bg-white/80 dark:bg-[#0d1321]/80 backdrop-blur-md rounded-lg shadow-xs flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer fluid-press"
+                title="Locate Me"
+              >
+                <Crosshair className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Floating Bottom Right "Nearby Facilities" Card */}
+            <div className="absolute bottom-4 right-4 z-20 w-[240px]">
+              {!isFacilitiesOpen ? (
                 <button
-                  onClick={() => setShowHospitals(!showHospitals)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: '10px',
-                    padding: '6px 8px',
-                    borderRadius: '10px',
-                    border: '1px solid',
-                    borderColor: showHospitals ? 'rgba(239,68,68,0.4)' : 'rgba(0,0,0,0.06)',
-                    background: showHospitals ? 'rgba(239,68,68,0.12)' : 'rgba(0,0,0,0.02)',
-                    cursor: 'pointer',
-                    fontSize: '12px',
-                    fontWeight: showHospitals ? 700 : 500,
-                    color: 'inherit',
-                    textAlign: 'left',
-                    transition: 'all 0.15s'
-                  }}
+                  onClick={() => setIsFacilitiesOpen(true)}
+                  className="liquid-glass-float rounded-xl px-3.5 py-2 flex items-center gap-2 text-xs font-bold text-slate-800 dark:text-slate-200 cursor-pointer fluid-press"
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '14px' }}>🏥</span>
-                    <span>Military Hospital</span>
-                  </div>
-                  <span style={{ fontSize: '11px', color: showHospitals ? '#dc2626' : '#94a3b8' }}>
-                    {showHospitals ? '✓' : '○'}
-                  </span>
+                  <span>📍 Nearby Facilities</span>
+                  <span className="text-[10px] text-slate-400">▲</span>
                 </button>
-              </div>
-            </>
-          )}
+              ) : (
+                <div className="liquid-glass-float rounded-2xl p-3 flex flex-col gap-2">
+                  
+                  {/* Card Header */}
+                  <div className="flex items-center justify-between pb-1 border-b border-slate-100 dark:border-slate-800">
+                    <span className="text-xs font-extrabold text-slate-900 dark:text-white">
+                      Nearby Facilities
+                    </span>
+                    <button
+                      onClick={() => setIsFacilitiesOpen(false)}
+                      className="text-slate-400 hover:text-slate-600 text-xs p-1 cursor-pointer"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  {/* Facility 1: Station Commute Zone */}
+                  <button
+                    onClick={() => setShowCommuteZones(!showCommuteZones)}
+                    className={`flex items-center justify-between p-2 rounded-xl border text-left transition-all cursor-pointer ${
+                      showCommuteZones
+                        ? 'bg-emerald-50/80 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-700 text-emerald-900 dark:text-emerald-200 font-bold'
+                        : 'bg-slate-50 dark:bg-slate-800/50 border-slate-200/60 dark:border-slate-700/60 text-slate-700 dark:text-slate-300'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-lg bg-emerald-100 dark:bg-emerald-900/60 flex items-center justify-center text-xs">
+                        🚆
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[11.5px] leading-tight">Station Commute Zone</span>
+                        <span className="text-[9.5px] opacity-70">5 - 15 min</span>
+                      </div>
+                    </div>
+                    <ArrowUpRight className={`w-3.5 h-3.5 ${showCommuteZones ? 'text-emerald-600' : 'text-slate-400'}`} />
+                  </button>
+
+                  {/* Facility 2: Army School */}
+                  <button
+                    onClick={() => setShowSchools(!showSchools)}
+                    className={`flex items-center justify-between p-2 rounded-xl border text-left transition-all cursor-pointer ${
+                      showSchools
+                        ? 'bg-blue-50/80 dark:bg-blue-950/40 border-blue-300 dark:border-blue-700 text-blue-900 dark:text-blue-200 font-bold'
+                        : 'bg-slate-50 dark:bg-slate-800/50 border-slate-200/60 dark:border-slate-700/60 text-slate-700 dark:text-slate-300'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-lg bg-blue-100 dark:bg-blue-900/60 flex items-center justify-center text-xs">
+                        🏫
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[11.5px] leading-tight">Army School</span>
+                        <span className="text-[9.5px] opacity-70">5 - 10 min</span>
+                      </div>
+                    </div>
+                    <span className={`text-[11px] font-bold ${showSchools ? 'text-blue-600' : 'text-slate-400'}`}>
+                      {showSchools ? '✓' : '○'}
+                    </span>
+                  </button>
+
+                  {/* Facility 3: Military Hospital */}
+                  <button
+                    onClick={() => setShowHospitals(!showHospitals)}
+                    className={`flex items-center justify-between p-2 rounded-xl border text-left transition-all cursor-pointer ${
+                      showHospitals
+                        ? 'bg-rose-50/80 dark:bg-rose-950/40 border-rose-300 dark:border-rose-700 text-rose-900 dark:text-rose-200 font-bold'
+                        : 'bg-slate-50 dark:bg-slate-800/50 border-slate-200/60 dark:border-slate-700/60 text-slate-700 dark:text-slate-300'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-lg bg-rose-100 dark:bg-rose-900/60 flex items-center justify-center text-xs">
+                        🏥
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[11.5px] leading-tight">Military Hospital</span>
+                        <span className="text-[9.5px] opacity-70">5 - 15 min</span>
+                      </div>
+                    </div>
+                    <span className={`text-[11px] font-bold ${showHospitals ? 'text-rose-600' : 'text-slate-400'}`}>
+                      {showHospitals ? '✓' : '○'}
+                    </span>
+                  </button>
+
+                  {/* Footer Link */}
+                  <button 
+                    onClick={() => ctx?.openAccessibility?.()}
+                    className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 hover:underline pt-1 text-center cursor-pointer"
+                  >
+                    View more facilities →
+                  </button>
+
+                </div>
+              )}
+            </div>
+
+          </main>
+
         </div>
 
-        {/* ══ CHAT FAB (Desktop Bottom Anchor - Toggle open/collapse) ══ */}
-        <button 
-          className="chat-fab" 
-          onClick={() => {
-            if (typeof window.toggleChatbot === 'function') {
-              window.toggleChatbot();
-            } else if (typeof window.openFaujiChatbot === 'function') {
-              window.openFaujiChatbot();
-            } else if (ctx.openChat) {
-              ctx.openChat();
-            }
-          }} 
-          title="Military AI Assistant"
-        >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-          </svg>
-        </button>
+        {/* ══════════════════════════════════════════
+            3. BOTTOM STRIP: LEGEND TAGS & VALUE PROPS
+            ══════════════════════════════════════════ */}
+        <footer className="h-[44px] px-6 liquid-glass-nav relative flex items-center justify-between z-30 flex-shrink-0 font-['Plus_Jakarta_Sans',sans-serif]">
+          
+          {/* Left Legend Tags */}
+          <div className="flex items-center gap-5 flex-shrink-0">
+            <span className="inline-flex items-center gap-1.5 text-[12.5px] font-bold text-[#0f172a] dark:text-slate-100 whitespace-nowrap">
+              <span className="text-base leading-none">🛡️</span>
+              <span>Verified Property</span>
+            </span>
+            <span className="inline-flex items-center gap-1.5 text-[12.5px] font-bold text-[#0f172a] dark:text-slate-100 whitespace-nowrap">
+              <span className="text-base leading-none">🏢</span>
+              <span>BHK Options</span>
+            </span>
+            <span className="inline-flex items-center gap-1.5 text-[12.5px] font-bold text-[#0f172a] dark:text-slate-100 whitespace-nowrap">
+              <span className="text-base leading-none">🛏️</span>
+              <span>PG / Rooms</span>
+            </span>
+            <span className="inline-flex items-center gap-1.5 text-[12.5px] font-bold text-[#0f172a] dark:text-slate-100 whitespace-nowrap">
+              <span className="text-base leading-none">🏥</span>
+              <span>Nearby Facilities</span>
+            </span>
+          </div>
+
+          {/* Right Value Propositions */}
+          <div className="flex items-center gap-5 overflow-hidden flex-shrink-0">
+            <div className="flex items-center gap-1.5">
+              <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+              <span className="text-[12px] font-extrabold text-[#0f172a] dark:text-white whitespace-nowrap">Secure & Verified</span>
+              <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 hidden xl:inline whitespace-nowrap">— 100% Defence Auth</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Users className="w-4 h-4 text-blue-600 flex-shrink-0" />
+              <span className="text-[12px] font-extrabold text-[#0f172a] dark:text-white whitespace-nowrap">For Defence Community</span>
+              <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 hidden xl:inline whitespace-nowrap">— Jawans, JCOs & Officers</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Tag className="w-4 h-4 text-amber-600 flex-shrink-0" />
+              <span className="text-[12px] font-extrabold text-[#0f172a] dark:text-white whitespace-nowrap">Best Prices</span>
+              <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 hidden xl:inline whitespace-nowrap">— Zero Brokerage</span>
+            </div>
+          </div>
+
+        </footer>
 
       </div>
     </>

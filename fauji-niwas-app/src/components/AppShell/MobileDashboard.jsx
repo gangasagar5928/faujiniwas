@@ -1,4 +1,5 @@
 import React, { useState, useContext, useMemo } from 'react';
+import { motion } from 'framer-motion';
 import { ModalContext } from '../../App';
 import { useFilterStore } from '../../store/filterStore';
 import { useUserStore } from '../../store/userStore';
@@ -236,7 +237,7 @@ export default function MobileDashboard({ items = [] }) {
     <div className="w-full h-[100dvh] flex flex-col bg-[#FAF9F6] dark:bg-[#0b1325] text-slate-900 dark:text-slate-100 font-sans overflow-hidden transition-colors duration-200">
 
       {/* ══ TOP HEADER (Unified & Smooth, No Blunt Edges) ══ */}
-      <header className="shrink-0 bg-white/95 dark:bg-[#0b1325]/95 backdrop-blur-md px-4 pt-3.5 pb-2.5 z-[900] border-b border-slate-200/50 dark:border-slate-800/50 shadow-xs">
+      <header className="shrink-0 liquid-glass-nav relative px-4 pt-3.5 pb-2.5 z-[900] rounded-b-2xl">
 
         {/* Row 1: Brand & Notification */}
         <div className="flex items-center justify-between mb-3">
@@ -286,7 +287,7 @@ export default function MobileDashboard({ items = [] }) {
               value={smartSearchQ}
               onChange={(e) => setSmartSearchQ(e.target.value)}
               style={{ paddingLeft: '40px' }}
-              className="w-full bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 rounded-full py-2.5 pr-3 text-[14px] text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none focus:border-[#d97706] dark:focus:border-amber-500 transition-all font-medium"
+              className="w-full bg-slate-100/60 dark:bg-slate-800/60 border border-slate-200/50 dark:border-slate-700/50 rounded-full py-2.5 pr-3 text-[14px] text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none focus:border-[#d97706] dark:focus:border-amber-500 transition-all font-medium backdrop-blur-md"
             />
           </div>
           <button
@@ -310,7 +311,7 @@ export default function MobileDashboard({ items = [] }) {
         </div>
 
         {/* Row 3: Soft Location Bar */}
-        <div className="flex items-center justify-between bg-slate-50/80 dark:bg-slate-800/60 border border-slate-200/70 dark:border-slate-700/60 rounded-xl px-3.5 py-2">
+        <div className="flex items-center justify-between liquid-glass-chip rounded-xl px-3.5 py-2">
           <div className="flex items-center gap-2 text-[14px] font-semibold text-slate-800 dark:text-slate-200">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#15803d" className="dark:stroke-emerald-400" strokeWidth="2.5">
               <circle cx="12" cy="10" r="3"/>
@@ -343,12 +344,14 @@ export default function MobileDashboard({ items = [] }) {
             {categories.map((cat) => {
               const isActive = activeCategory === cat.id;
               return (
-                <button
+                <motion.button
                   key={cat.id}
                   onClick={() => {
                     setActiveCategory(cat.id);
                     if (cat.id === 'bhk') setBhkFilter('2');
                   }}
+                  whileTap={{ scale: 0.9 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 24 }}
                   className="flex flex-col items-center gap-1.5 cursor-pointer shrink-0 min-w-[58px]"
                 >
                   <div
@@ -371,7 +374,7 @@ export default function MobileDashboard({ items = [] }) {
                   >
                     {cat.label}
                   </span>
-                </button>
+                </motion.button>
               );
             })}
           </div>
@@ -396,10 +399,12 @@ export default function MobileDashboard({ items = [] }) {
               const isVerifiedBadge = displayBadge === 'Verified';
 
               return (
-                <div
+                <motion.div
                   key={home.id}
                   onClick={() => handleCardClick(home)}
-                  className="bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 rounded-2xl p-3 flex gap-3.5 relative shadow-xs hover:shadow-md dark:shadow-none transition-all cursor-pointer"
+                  whileTap={{ scale: 0.97 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 24 }}
+                  className="liquid-glass-chip rounded-2xl p-3 flex gap-3.5 relative cursor-pointer"
                   style={{ minHeight: '100px' }}
                 >
                   {/* Thumbnail */}
@@ -446,25 +451,28 @@ export default function MobileDashboard({ items = [] }) {
                   </div>
 
                   {/* Heart Wishlist */}
-                  <button
+                  <motion.button
                     onClick={(e) => {
                       e.stopPropagation();
                       toggleWishlist(home.id);
                     }}
+                    whileTap={{ scale: 1.3 }}
+                    transition={{ type: 'spring', stiffness: 500, damping: 15 }}
                     className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center cursor-pointer"
                     aria-label="Save"
                   >
                     <svg width="20" height="20" viewBox="0 0 24 24" fill={isSaved ? '#e11d48' : 'none'} stroke={isSaved ? '#e11d48' : '#cbd5e1'} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                     </svg>
-                  </button>
-                </div>
+                  </motion.button>
+                </motion.div>
               );
             })}
           </div>
 
           {/* ══ PROMO BANNER ══ */}
-          <div className="mt-5 mb-2 mx-4 bg-gradient-to-r from-[#1b4332] to-[#2d6a4f] dark:from-[#0d281e] dark:to-[#1b4332] rounded-2xl p-4 flex items-center justify-between shadow-md">
+          <div className="mt-5 mb-2 mx-4 relative overflow-hidden bg-gradient-to-r from-[#1b4332] to-[#2d6a4f] dark:from-[#0d281e] dark:to-[#1b4332] rounded-2xl p-4 flex items-center justify-between shadow-md">
+            <span className="sheen-sweep" />
             <div className="flex flex-col pr-2">
               <div className="flex items-center gap-1.5 text-[12px] font-bold text-emerald-300">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" strokeWidth="2.2">
@@ -487,13 +495,13 @@ export default function MobileDashboard({ items = [] }) {
 
       {/* ══ TRANSLUCENT BOTTOM NAVIGATION BAR ══ */}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-[1000] px-2 py-1.5 flex items-center justify-around bg-white/85 dark:bg-[#0b1325]/85 backdrop-blur-xl border-t border-slate-200/70 dark:border-slate-800/70 h-[64px] shadow-lg shadow-black/5"
+        className="fixed bottom-0 left-0 right-0 z-[1000] px-2 py-1.5 flex items-center justify-around liquid-glass-nav border-t-0 h-[64px]"
       >
         {navTabs.map((tab) => {
           const isActive = mobileTab === tab.id;
           const color = isActive ? '#15803d' : '#94a3b8';
           return (
-            <button
+            <motion.button
               key={tab.id}
               onClick={() => {
                 setMobileTab(tab.id);
@@ -503,17 +511,29 @@ export default function MobileDashboard({ items = [] }) {
                 }
                 else if (tab.id === 'profile') ctx.openProfile?.();
               }}
-              className="flex flex-col items-center justify-center flex-1 h-full gap-0.5 cursor-pointer transition-all active:scale-95"
+              whileTap={{ scale: 0.9 }}
+              transition={{ type: 'spring', stiffness: 420, damping: 26 }}
+              className="relative flex flex-col items-center justify-center flex-1 h-full gap-0.5 cursor-pointer"
             >
-              {NavIcons[tab.id](isActive ? '#15803d' : '#94a3b8', wishlist.length > 0 && tab.id === 'saved')}
+              {isActive && (
+                <motion.div
+                  layoutId="mob-tab-pill"
+                  className="absolute top-1 bottom-2 left-1/2 -translate-x-1/2 w-14 rounded-2xl bg-emerald-100/70 dark:bg-emerald-500/15 border border-emerald-200/60 dark:border-emerald-400/20"
+                  style={{ zIndex: 0 }}
+                  transition={{ type: 'spring', stiffness: 460, damping: 34, mass: 0.6 }}
+                />
+              )}
+              <span className="relative z-10">
+                {NavIcons[tab.id](isActive ? '#15803d' : '#94a3b8', wishlist.length > 0 && tab.id === 'saved')}
+              </span>
               <span
-                className={`text-[11.5px] font-bold leading-none mt-1 ${
+                className={`relative z-10 text-[11.5px] font-bold leading-none mt-1 ${
                   isActive ? 'text-[#15803d] dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'
                 }`}
               >
                 {tab.label}
               </span>
-            </button>
+            </motion.button>
           );
         })}
       </nav>

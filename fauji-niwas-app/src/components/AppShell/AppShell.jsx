@@ -1,4 +1,5 @@
 import { useContext, useState, useTransition } from 'react';
+import { motion } from 'framer-motion';
 import { useFilterStore } from '../../store/filterStore';
 import { useUserStore } from '../../store/userStore';
 import { ModalContext } from '../../App';
@@ -78,7 +79,7 @@ export default function AppShell() {
           DESKTOP HEADER — Reference UI (white bar)
           ══════════════════════════════════════════ */}
       {!isNative && (
-        <header className={styles.header}>
+        <header className={`liquid-glass-nav ${styles.header}`}>
           <div className={styles.hdrTop}>
 
             {/* Logo — light.jpg in light mode, dark.jpg in dark mode */}
@@ -88,7 +89,7 @@ export default function AppShell() {
             </a>
 
             {/* Search */}
-            <div className={styles.searchWrap}>
+            <div className={`liquid-glass-chip ${styles.searchWrap}`}>
               <svg className={styles.searchIcon} viewBox="0 0 20 20" fill="none">
                 <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" strokeWidth="1.6"/>
                 <path d="M13 13l3.5 3.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
@@ -136,39 +137,43 @@ export default function AppShell() {
                 </select>
               </div>
 
-              <button
+              <motion.button
                 className={styles.contractBtn}
                 onClick={() => ctx.openAccessibility?.()}
                 title="Accessibility, Font & Contrast"
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 22 }}
               >
                 <span style={{ fontSize: '13px' }}>♿</span>
                 Contrast &amp; Font
-              </button>
+              </motion.button>
 
-              <button
+              <motion.button
                 className={`${styles.filterIconBtn} ${showAdvanced ? styles.filterIconActive : ''}`}
                 onClick={() => setShowAdvanced(v => !v)}
                 title="More filters"
+                whileTap={{ scale: 0.92 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 22 }}
               >
                 <svg width="15" height="15" viewBox="0 0 20 20" fill="none">
                   <path d="M3 5h14M6 10h8M9 15h2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
                 </svg>
-              </button>
+              </motion.button>
             </div>
 
             {/* Auth / Admin */}
             <div className={styles.authGroup}>
               {authLoading === false && user && (isAdmin || ctx.isAdmin) && (
-                <button className={styles.adminBtn} onClick={() => ctx.openAdmin()}>
+                <motion.button className={styles.adminBtn} onClick={() => ctx.openAdmin()} whileTap={{ scale: 0.95 }} transition={{ type: 'spring', stiffness: 400, damping: 22 }}>
                   🛡️ Admin
-                </button>
+                </motion.button>
               )}
-              <button className={styles.signInBtn} onClick={() => ctx.openProfile()}>
+              <motion.button className={styles.signInBtn} onClick={() => ctx.openProfile()} whileTap={{ scale: 0.95 }} transition={{ type: 'spring', stiffness: 400, damping: 22 }}>
                 {user ? '👤 Profile' : 'Sign In / Sign Up'}
-              </button>
-              <button className={styles.postBtnHdr} onClick={() => ctx.openPost()}>
+              </motion.button>
+              <motion.button className={styles.postBtnHdr} onClick={() => ctx.openPost()} whileTap={{ scale: 0.95 }} transition={{ type: 'spring', stiffness: 400, damping: 22 }}>
                 + Post
-              </button>
+              </motion.button>
             </div>
           </div>
         </header>
@@ -181,18 +186,20 @@ export default function AppShell() {
 
         {/* Desktop Sidebar — collapsible */}
         {!isNative && (
-          <aside className={`${styles.desktopSidebar} ${sidebarCollapsed ? styles.desktopSidebarCollapsed : ''}`}>
+          <aside className={`liquid-glass-deep ${styles.desktopSidebar} ${sidebarCollapsed ? styles.desktopSidebarCollapsed : ''}`}>
             {/* Nav tabs (Homes | SSB Dorms | Marketplace | Saved) */}
-            <div className={styles.navTabsBar}>
+            <div className={`liquid-glass-chip ${styles.navTabsBar}`}>
               {navTabs.map(tab => (
-                <button
+                <motion.button
                   key={tab.id}
                   className={activeView === tab.id ? styles.navTabActive : styles.navTab}
                   onClick={() => setActiveView(tab.id)}
+                  whileTap={{ scale: 0.94 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 22 }}
                 >
                   <span className={styles.navTabIcon}>{tab.icon}</span>
                   {tab.label}
-                </button>
+                </motion.button>
               ))}
             </div>
             {/* Listing cards */}
@@ -201,13 +208,15 @@ export default function AppShell() {
             </div>
 
             {/* Collapse toggle — right edge of sidebar */}
-            <button
-              className={styles.collapseBtn}
+            <motion.button
+              className={`liquid-glass-chip ${styles.collapseBtn}`}
               onClick={() => setSidebarCollapsed(v => !v)}
               title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              whileTap={{ scale: 0.9 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 22 }}
             >
               {sidebarCollapsed ? '›' : '‹'}
-            </button>
+            </motion.button>
           </aside>
         )}
 
@@ -215,7 +224,7 @@ export default function AppShell() {
         <div id="map-wrapper" className={styles.mapWrapper}>
           {/* Stats bar — desktop, top of map */}
           {!isNative && (
-            <div className={styles.mapStatsBar}>
+            <div className={`liquid-glass-float ${styles.mapStatsBar}`}>
               <div className={styles.mapStat}>
                 <span className={styles.mapStatIcon}>🏠</span>
                 <div>
@@ -236,7 +245,7 @@ export default function AppShell() {
 
           {/* Chat FAB — bottom right of map (toggle on click) */}
           {!isNative && (
-            <button
+            <motion.button
               className={styles.chatFab}
               onClick={() => {
                 if (typeof window.toggleChatbot === 'function') {
@@ -248,11 +257,14 @@ export default function AppShell() {
                 }
               }}
               title="Military AI Assistant"
+              whileHover={{ scale: 1.08, y: -2 }}
+              whileTap={{ scale: 0.92 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 22 }}
             >
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2">
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
               </svg>
-            </button>
+            </motion.button>
           )}
 
           <MapView />
@@ -261,16 +273,18 @@ export default function AppShell() {
 
       {/* Mobile bottom nav */}
       {!isNative && (
-        <nav className={styles.bottomNav}>
+        <nav className={`liquid-glass-nav ${styles.bottomNav}`}>
           {mobileNavItems.map(item => (
-            <button
+            <motion.button
               key={item.id}
               className={activeView === item.id ? styles.bnBtnActive : styles.bnBtn}
               onClick={() => item.action ? item.action() : setActiveView(item.id)}
+              whileTap={{ scale: 0.9 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 22 }}
             >
               <span>{item.icon}</span>
               <span>{item.label}</span>
-            </button>
+            </motion.button>
           ))}
         </nav>
       )}
@@ -278,15 +292,15 @@ export default function AppShell() {
       {isNative && <TacticalFAB />}
 
       {!isNative && comparison.length === 2 && (
-        <button className={styles.compareFab} onClick={() => ctx.openCompare()}>
+        <motion.button className={styles.compareFab} onClick={() => ctx.openCompare()} whileTap={{ scale: 0.95 }} transition={{ type: 'spring', stiffness: 400, damping: 22 }}>
           🔁 Compare Selected (2)
-        </button>
+        </motion.button>
       )}
 
       {!isNative && (
-        <button className={styles.fab} onClick={() => ctx.openPost()}>
+        <motion.button className={styles.fab} onClick={() => ctx.openPost()} whileHover={{ y: -3, scale: 1.03 }} whileTap={{ scale: 0.95 }} transition={{ type: 'spring', stiffness: 400, damping: 22 }}>
           ✚ Post Listing
-        </button>
+        </motion.button>
       )}
     </div>
   );
