@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 @variant dark (&:where(.dark-theme, .dark-theme *));
 /* ─────────────────────────────────────────────────────────
@@ -86,6 +86,25 @@ body {
   --z-panel:    2000;
   --z-modal:    999999;
   --z-toast:    1000000;
+
+  /* ── Fluid Fusion Spring Curves (ColorOS 17 / iOS 26) ── */
+  --spring-overshoot:  cubic-bezier(0.34, 1.3, 0.64, 1);   /* enter: overshoot & settle */
+  --spring-snappy:     cubic-bezier(0.2, 0.9, 0.3, 1.4);   /* press-down / tap */
+  --spring-gentle:     cubic-bezier(0.25, 1, 0.5, 1);      /* hover / drift */
+  --ease-fluid:        cubic-bezier(0.4, 0.2, 0.2, 1);     /* subtle settle */
+  --motion-enter: 480ms;  --motion-hover: 160ms;
+  --motion-press:  90ms;  --motion-settle: 300ms;
+
+  /* ── Liquid Acrylic / Glass material tokens (dark defaults) ── */
+  --lg-top:     rgba(255,255,255,.10);  /* upper fill catches light */
+  --lg-bottom:  rgba(255,255,255,.03);  /* lower fill is deeper */
+  --lg-border:  rgba(255,255,255,.14);  /* 1px rim */
+  --lg-rim-top: rgba(255,255,255,.32);  /* inner top edge highlight */
+  --lg-sheen:   rgba(255,255,255,.14);  /* diagonal glint */
+  --lg-shadow:  rgba(2,6,16,.45);
+  --lg-blur:    blur(24px) saturate(180%);
+  --lg-blur-lg: blur(36px) saturate(200%);
+  --lg-fallback: rgba(15, 23, 42, 0.82); /* behind the blur */
 }
 
 /* Premium Hybrid App Theme Overrides */
@@ -208,43 +227,46 @@ select.fb option { background: var(--card); color: var(--text); }
   transition: transform .15s ease;
 }
 
-/* Modal backdrop */
+/* Modal backdrop — deep frosted scrim with a soft radial light */
 .modal-backdrop {
   position: fixed; inset: 0; z-index: var(--z-modal);
-  background: rgba(6, 10, 20, 0.65); 
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgba(255,255,255,.06), transparent 60%),
+    rgba(6, 10, 20, 0.65);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
   display: flex; align-items: center; justify-content: center;
   animation: mfade .22s ease;
 }
 @media (max-width: 768px) {
   .modal-backdrop {
     align-items: flex-end;
-    background: rgba(0, 0, 0, 0.65) !important;
+    background: rgba(0, 0, 0, 0.6) !important;
   }
 }
 @keyframes mfade { from { opacity: 0; } to { opacity: 1; } }
 
-/* Modal card */
+/* Modal card — liquid acrylic sheet */
 .mc {
-  background: rgba(19, 31, 53, 0.88);
-  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border2);
+  background: linear-gradient(180deg, var(--lg-top), var(--lg-bottom)), var(--lg-fallback);
+  backdrop-filter: var(--lg-blur-lg); -webkit-backdrop-filter: var(--lg-blur-lg);
+  border: 1px solid var(--lg-border);
   border-radius: var(--radius-lg); width: 92%; max-width: 560px;
-  max-height: 90vh; position: relative; box-shadow: var(--shadow-lg);
-  animation: mcSpring .32s cubic-bezier(0.34,1.22,0.64,1) both;
+  max-height: 90vh; position: relative;
+  box-shadow: inset 0 1px 0 var(--lg-rim-top), var(--shadow-lg);
+  animation: mcSpring .42s var(--spring-overshoot) both;
   display: flex; flex-direction: column; overflow: hidden;
   min-height: 0; /* Important for flex child scrolling */
 }
 .light-theme .mc {
-  background: rgba(255, 255, 255, 0.9);
   border-color: rgba(0, 0, 0, 0.08);
 }
 @media (max-width: 768px) {
   .mc, .glass-tactical {
-    background: #ffffff !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
+    background: linear-gradient(180deg, var(--lg-top), var(--lg-bottom)), var(--lg-fallback) !important;
+    backdrop-filter: var(--lg-blur-lg) !important;
+    -webkit-backdrop-filter: var(--lg-blur-lg) !important;
     border-radius: 24px 24px 0 0 !important;
+    border-left: none; border-right: none; border-bottom: none;
     width: 100% !important;
     max-width: 100% !important;
     max-height: 92vh !important;
@@ -254,14 +276,142 @@ select.fb option { background: var(--card); color: var(--text); }
   .dark-theme .glass-tactical,
   .dark .mc,
   .dark .glass-tactical {
-    background: #0f172a !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
+    background: linear-gradient(180deg, var(--lg-top), var(--lg-bottom)), var(--lg-fallback) !important;
+    backdrop-filter: var(--lg-blur-lg) !important;
+    -webkit-backdrop-filter: var(--lg-blur-lg) !important;
+  }
+  /* iOS grab-handle pill on bottom sheets */
+  .mc::before, .glass-tactical::before {
+    content:''; position:absolute; top:8px; left:50%; transform:translateX(-50%);
+    width:36px; height:4px; border-radius:99px;
+    background: var(--lg-sheen);
+    z-index: 5; pointer-events:none;
   }
 }
 @keyframes mcSpring {
   from { transform: translateY(28px) scale(.96); opacity: 0; }
   to   { transform: translateY(0) scale(1);      opacity: 1; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   FLUID FUSION + LIQUID ACRYLIC/GLASS  (iOS 26 / ColorOS 17)
+   CSS owns the material; Framer Motion owns the physics.
+   ══════════════════════════════════════════════════════════════ */
+
+/* Base liquid-glass surface — translucent, blurred, lit from above */
+.liquid-glass {
+  position: relative;
+  background: linear-gradient(180deg, var(--lg-top), var(--lg-bottom)), var(--lg-fallback);
+  backdrop-filter: var(--lg-blur); -webkit-backdrop-filter: var(--lg-blur);
+  border: 1px solid var(--lg-border);
+  box-shadow: inset 0 1px 0 var(--lg-rim-top), 0 1px 2px rgba(0,0,0,.12), 0 24px 48px var(--lg-shadow);
+}
+/* Top edge light: a fine inset highlight along the upper rim */
+.liquid-glass::before {
+  content:''; position:absolute; inset:0 0 auto 0; height:1px;
+  background: linear-gradient(90deg, transparent, var(--lg-sheen), transparent);
+  pointer-events:none;
+}
+/* Hover glint: a soft light sweep that drifts down the surface */
+.liquid-glass::after {
+  content:''; position:absolute; top:-120%; left:0; width:100%; height:60%;
+  background: linear-gradient(180deg, transparent, var(--lg-sheen), transparent);
+  pointer-events:none; opacity:0; transition: opacity .4s var(--spring-gentle);
+}
+.liquid-glass:hover::after { opacity:1; }
+
+/* Nav/header glass — stronger fill + deeper blur for legibility */
+.liquid-glass-nav {
+  background: linear-gradient(180deg, var(--lg-top), var(--lg-bottom)), var(--lg-fallback);
+  backdrop-filter: var(--lg-blur-lg); -webkit-backdrop-filter: var(--lg-blur-lg);
+  border: 1px solid var(--lg-border);
+  box-shadow: inset 0 1px 0 var(--lg-rim-top), 0 12px 32px var(--lg-shadow);
+}
+
+/* Deep glass — modal sheets & large floating surfaces */
+.liquid-glass-deep {
+  background: linear-gradient(180deg, var(--lg-top), var(--lg-bottom)), var(--lg-fallback);
+  backdrop-filter: var(--lg-blur-lg); -webkit-backdrop-filter: var(--lg-blur-lg);
+  border: 1px solid var(--lg-border);
+  box-shadow: inset 0 1px 0 var(--lg-rim-top), 0 24px 64px var(--lg-shadow);
+}
+
+/* Chip glass — small buttons/chips: NO backdrop-filter (perf), solid tint + rim highlight */
+.liquid-glass-chip {
+  background: linear-gradient(180deg, var(--lg-top), var(--lg-bottom)), var(--lg-fallback);
+  border: 1px solid var(--lg-border);
+  box-shadow: inset 0 1px 0 var(--lg-rim-top), 0 1px 2px rgba(0,0,0,.08), 0 6px 16px var(--lg-shadow);
+}
+
+/* Floating map cards — translucent so the map tiles glow through slightly */
+.liquid-glass-float {
+  position: relative;
+  background: linear-gradient(180deg, var(--lg-top), var(--lg-bottom)), var(--lg-fallback);
+  backdrop-filter: var(--lg-blur); -webkit-backdrop-filter: var(--lg-blur);
+  border: 1px solid var(--lg-border);
+  box-shadow: inset 0 1px 0 var(--lg-rim-top), 0 8px 24px var(--lg-shadow);
+}
+.liquid-glass-float::before {
+  content:''; position:absolute; inset:0 0 auto 0; height:1px;
+  background: linear-gradient(90deg, transparent, var(--lg-sheen), transparent);
+  pointer-events:none;
+}
+
+/* Keep Tailwind's absolute/fixed positioning intact on glass surfaces */
+.liquid-glass.absolute,
+.liquid-glass-nav.absolute,
+.liquid-glass-deep.absolute,
+.liquid-glass-float.absolute,
+.liquid-glass-chip.absolute { position: absolute; }
+.liquid-glass.fixed,
+.liquid-glass-nav.fixed,
+.liquid-glass-deep.fixed,
+.liquid-glass-float.fixed,
+.liquid-glass-chip.fixed { position: fixed; }
+
+/* Continuous light sweep (map toolbar & promo surfaces) */
+.sheen-sweep { position:absolute; inset:0; overflow:hidden; border-radius:inherit; pointer-events:none; }
+.sheen-sweep::before {
+  content:''; position:absolute; top:0; bottom:0; left:0; width:40%;
+  background: linear-gradient(100deg, transparent, var(--lg-sheen, rgba(255,255,255,.16)), transparent);
+  animation: sheenSweep 4.5s ease-in-out infinite;
+}
+@keyframes sheenSweep {
+  0%      { transform: translateX(-100%); }
+  55%,100%{ transform: translateX(400%); }
+}
+
+/* Fluid interaction utilities */
+.fluid-press {
+  transition: transform var(--motion-press) var(--spring-snappy), box-shadow var(--motion-press) var(--spring-snappy);
+}
+.fluid-press:active { transform: scale(.96); }
+
+.fluid-lift {
+  transition: transform var(--motion-hover) var(--spring-overshoot), box-shadow var(--motion-hover);
+}
+.fluid-lift:hover { transform: translateY(-2px); }
+
+@keyframes fluidPopIn {
+  from { opacity:0; transform: scale(.9) translateY(6px); }
+  to   { opacity:1; transform: scale(1) translateY(0); }
+}
+@keyframes glassSheen {
+  0%,100% { transform: translateX(-100%); }
+  50%     { transform: translateX(100%); }
+}
+
+/* Respect reduced-motion: springs become near-instant */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-enter: .01ms; --motion-hover: .01ms;
+    --motion-press: .01ms; --motion-settle: .01ms;
+    --spring-overshoot: linear; --spring-snappy: linear;
+    --spring-gentle: linear; --ease-fluid: linear;
+  }
+  .liquid-glass::after, .liquid-glass-float::before { display:none; }
+  .mc, .fluid-press, .fluid-lift { transition-duration: .01ms !important; }
+  * { animation-duration: .01ms !important; }
 }
 
 @keyframes tacticalPulse {
@@ -316,12 +466,38 @@ select.fb option { background: var(--card); color: var(--text); }
   border-top-color: inherit;
 }
 
+/* Custom Price Marker */
+.custom-price-marker {
+  background: transparent !important;
+  border: none !important;
+}
+.custom-price-marker > div:hover {
+  transform: scale(1.12);
+  border-color: #22c55e !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45) !important;
+  z-index: 1000 !important;
+}
+
 /* Cluster */
 .mc-cluster {
-  background: var(--accent); color: #000; font-weight: 800; font-size: 13px;
-  width: 36px; height: 36px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 12px rgba(255,153,51,.4); font-family: 'Outfit', sans-serif;
+  background: #16a34a;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 13px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #ffffff;
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.45);
+  font-family: 'Outfit', sans-serif;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.mc-cluster:hover {
+  transform: scale(1.1);
 }
 
 /* Skeleton */
@@ -799,20 +975,22 @@ select.fb option { background: var(--card); color: var(--text); }
 .marker-cluster-medium div,
 .marker-cluster-large div,
 .mc-cluster {
-  background: rgba(124, 92, 252, 0.9) !important;
-  color: white !important;
-  font-weight: 700 !important;
-  font-size: 12px !important;
+  background: #16a34a !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  font-size: 13px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   border-radius: 50% !important;
+  border: 2px solid #ffffff !important;
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.45) !important;
 }
 
 .marker-cluster-small,
 .marker-cluster-medium,
 .marker-cluster-large {
-  background: rgba(124, 92, 252, 0.4) !important;
+  background: rgba(22, 163, 74, 0.35) !important;
   border-radius: 50% !important;
 }
 
@@ -871,6 +1049,15 @@ html.light-theme, body.light-theme, .light-theme {
   --glass-tactical-bg: rgba(255, 255, 255, 0.7);
   --glass-tactical-border: rgba(15, 23, 42, 0.08);
   --glass-tactical-shadow: rgba(15, 23, 42, 0.08);
+
+  /* Liquid Acrylic — light theme (white glass) */
+  --lg-top:     rgba(255,255,255,.72);
+  --lg-bottom:  rgba(255,255,255,.38);
+  --lg-border:  rgba(255,255,255,.6);
+  --lg-rim-top: rgba(255,255,255,.95);
+  --lg-sheen:   rgba(255,255,255,.6);
+  --lg-shadow:  rgba(15,23,42,.14);
+  --lg-fallback: rgba(255, 255, 255, 0.78);
   background-color: #f8fafc !important;
   color: #0f172a !important;
 }
