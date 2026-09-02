@@ -1222,10 +1222,8 @@ html.dark .light-logo, body.dark .light-logo,
   display: none !important;
 }
 
-/* Landing Page Dark Theme Overrides */
+/* Landing Page Dark Theme Overrides (background removed — app-shell.aurora-bg owns it) */
 html.dark-theme, body.dark-theme {
-  background: #080c14 !important;
-  background-color: #080c14 !important;
   color: #f8fafc !important;
 }
 

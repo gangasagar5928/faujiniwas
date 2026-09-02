@@ -61,17 +61,21 @@ window.dispatchEvent(new Event('app-ready'));
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js').then((reg) => {
-      // Auto-update: the moment a newer service worker installs (skipWaiting),
-      // reload so users get the freshly built bundles instead of a stale
-      // cached shell. Guarded against reload loops via a session flag.
+      // Auto-update: when a newer SW activates, force a full reload
+      // so the user always sees the latest build — no stale cache.
       reg.addEventListener('updatefound', () => {
         const newWorker = reg.installing;
         if (!newWorker) return;
         newWorker.addEventListener('statechange', () => {
-          if (newWorker.state === 'activated' && !sessionStorage.getItem('_fn_sw_reloaded')) {
-            sessionStorage.setItem('_fn_sw_reloaded', '1');
-            console.info('[PWA] New version ready — reloading to apply updates.');
-            window.location.reload();
+          if (newWorker.state === 'activated') {
+            const last = Number(localStorage.getItem('_fn_sw_ts') || 0);
+            const now = Date.now();
+            // Only reload if >10s since last reload (avoids infinite loop)
+            if (now - last > 10000) {
+              localStorage.setItem('_fn_sw_ts', now);
+              console.info('[PWA] New version activated — reloading.');
+              window.location.reload();
+            }
           }
         });
       });
