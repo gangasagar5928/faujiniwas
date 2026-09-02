@@ -96,15 +96,17 @@ body {
   --motion-press:  90ms;  --motion-settle: 300ms;
 
   /* ── Liquid Acrylic / Glass material tokens (dark defaults) ── */
-  --lg-top:     rgba(255,255,255,.10);  /* upper fill catches light */
-  --lg-bottom:  rgba(255,255,255,.03);  /* lower fill is deeper */
-  --lg-border:  rgba(255,255,255,.14);  /* 1px rim */
-  --lg-rim-top: rgba(255,255,255,.32);  /* inner top edge highlight */
-  --lg-sheen:   rgba(255,255,255,.14);  /* diagonal glint */
-  --lg-shadow:  rgba(2,6,16,.45);
-  --lg-blur:    blur(24px) saturate(180%);
-  --lg-blur-lg: blur(36px) saturate(200%);
-  --lg-fallback: rgba(15, 23, 42, 0.82); /* behind the blur */
+  /* High-translucency fills + strong blur/saturation so the colorful
+     aurora backdrop visibly frosts through the panels (iOS 26 look). */
+  --lg-top:     rgba(255,255,255,.16);  /* upper fill catches light */
+  --lg-bottom:  rgba(255,255,255,.05);  /* lower fill is deeper */
+  --lg-border:  rgba(255,255,255,.24);  /* 1px rim */
+  --lg-rim-top: rgba(255,255,255,.55);  /* inner top edge highlight */
+  --lg-sheen:   rgba(255,255,255,.26);  /* diagonal glint */
+  --lg-shadow:  rgba(2,6,16,.5);
+  --lg-blur:    blur(44px) saturate(220%);
+  --lg-blur-lg: blur(60px) saturate(240%);
+  --lg-fallback: rgba(13, 18, 34, 0.52); /* behind the blur — translucent! */
 }
 
 /* Premium Hybrid App Theme Overrides */
@@ -127,12 +129,54 @@ html.app-shell, body.app-shell {
   overflow-x: hidden;
   max-width: 100vw;
   font-family: 'Outfit', sans-serif;
-  background: #0b1325 !important;
-  background-color: #0b1325 !important;
+  background:
+    radial-gradient(90% 60% at 20% -10%, rgba(255,153,51,.20), transparent 55%),
+    radial-gradient(70% 55% at 90% 15%, rgba(34,197,94,.14), transparent 55%),
+    #070b15 !important;
+  background-color: #070b15 !important;
   color: var(--text);
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
   overscroll-behavior: none;
+}
+
+/* ── Aurora / gradient-mesh backdrop ─────────────────────────
+   The colorful, slowly-drifting light field behind the glass.
+   Translucent panels use backdrop-filter to frost THIS, which is
+   what makes the glassmorphism unmistakable (iOS 26 / ColorOS 17).
+   Drop inside the app shell: <div className="aurora-bg" />. */
+.aurora-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(52% 48% at 12% 6%,  rgba(255,153,51,.42),  transparent 60%),
+    radial-gradient(46% 44% at 88% 10%, rgba(34,197,94,.38),  transparent 60%),
+    radial-gradient(58% 54% at 82% 88%, rgba(99,102,241,.44), transparent 62%),
+    radial-gradient(48% 42% at 14% 92%, rgba(212,175,55,.34), transparent 62%),
+    radial-gradient(36% 36% at 50% 48%, rgba(244,63,94,.16),  transparent 60%),
+    linear-gradient(180deg, #0a1120 0%, #070b15 55%, #0a1120 100%);
+  background-size: 170% 170%;
+  animation: auroraDrift 26s ease-in-out infinite alternate;
+  will-change: transform, background-position;
+}
+.light-theme .aurora-bg {
+  background:
+    radial-gradient(52% 48% at 12% 6%,  rgba(255,153,51,.34),  transparent 60%),
+    radial-gradient(46% 44% at 88% 10%, rgba(34,197,94,.30),  transparent 60%),
+    radial-gradient(58% 54% at 82% 88%, rgba(99,102,241,.34), transparent 62%),
+    radial-gradient(48% 42% at 14% 92%, rgba(212,175,55,.28), transparent 62%),
+    linear-gradient(180deg, #eef2f8 0%, #f8fafc 55%, #eef2f8 100%);
+}
+@keyframes auroraDrift {
+  0%   { background-position: 0% 0%;    transform: scale(1);    }
+  50%  { background-position: 100% 55%; transform: scale(1.14); }
+  100% { background-position: 35% 100%; transform: scale(1);    }
+}
+@media (prefers-reduced-motion: reduce) {
+  .aurora-bg { animation: none; }
 }
 
 /* Disable text selection across all devices in the app */
@@ -1051,14 +1095,14 @@ html.light-theme, body.light-theme, .light-theme {
   --glass-tactical-shadow: rgba(15, 23, 42, 0.08);
 
   /* Liquid Acrylic — light theme (white glass) */
-  --lg-top:     rgba(255,255,255,.72);
-  --lg-bottom:  rgba(255,255,255,.38);
-  --lg-border:  rgba(255,255,255,.6);
-  --lg-rim-top: rgba(255,255,255,.95);
-  --lg-sheen:   rgba(255,255,255,.6);
-  --lg-shadow:  rgba(15,23,42,.14);
-  --lg-fallback: rgba(255, 255, 255, 0.78);
-  background-color: #f8fafc !important;
+  --lg-top:     rgba(255,255,255,.62);
+  --lg-bottom:  rgba(255,255,255,.30);
+  --lg-border:  rgba(255,255,255,.7);
+  --lg-rim-top: rgba(255,255,255,.98);
+  --lg-sheen:   rgba(255,255,255,.75);
+  --lg-shadow:  rgba(15,23,42,.16);
+  --lg-fallback: rgba(255,255,255,.42);
+  background-color: #eef2f8 !important;
   color: #0f172a !important;
 }
 
@@ -1075,9 +1119,12 @@ html.light-theme, body.light-theme, .light-theme {
 .light-theme .bg-\[\#0b1325\],
 .light-theme .bg-\[\#090d16\],
 .light-theme .bg-\[\#030712\] {
-  background: #ffffff !important;
-  background-color: #ffffff !important;
+  background: linear-gradient(180deg, var(--lg-top), var(--lg-bottom)) !important;
+  background-color: rgba(255,255,255,.45) !important;
+  backdrop-filter: blur(34px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(34px) saturate(190%) !important;
   color: #0f172a !important;
+  border-color: rgba(255,255,255,.6) !important;
 }
 
 .light-theme .border-\[\#1e293b\],

@@ -234,7 +234,9 @@ export default function MobileDashboard({ items = [] }) {
   ];
 
   return (
-    <div className="w-full h-[100dvh] flex flex-col bg-[#FAF9F6] dark:bg-[#0b1325] text-slate-900 dark:text-slate-100 font-sans overflow-hidden transition-colors duration-200">
+    <div className="w-full h-[100dvh] relative flex flex-col font-sans overflow-hidden transition-colors duration-200" style={{color:'var(--text)'}}>
+      {/* Colorful aurora backdrop — the blur source behind every glass panel */}
+      <div className="aurora-bg" aria-hidden="true" />
 
       {/* ══ TOP HEADER (Unified & Smooth, No Blunt Edges) ══ */}
       <header className="shrink-0 liquid-glass-nav relative px-4 pt-3.5 pb-2.5 z-[900] rounded-b-2xl">
@@ -243,7 +245,7 @@ export default function MobileDashboard({ items = [] }) {
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2.5">
             {/* New Official 2nd June Logo */}
-            <div className="w-10 h-10 rounded-xl overflow-hidden shadow-sm flex items-center justify-center bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-700/60">
+            <div className="w-10 h-10 rounded-xl overflow-hidden shadow-sm flex items-center justify-center bg-white/50 dark:bg-white/[0.06] backdrop-blur-xl border border-slate-200/40 dark:border-white/10">
               <img 
                 src="/logo-light.jpg" 
                 alt="FaujiNiwas" 
@@ -264,7 +266,7 @@ export default function MobileDashboard({ items = [] }) {
           {/* Bell Notification */}
           <button
             onClick={() => ctx.openTransfers?.()}
-            className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer relative hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors"
+            className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer relative hover:bg-white/40 dark:hover:bg-white/10 backdrop-blur-xl transition-colors"
             aria-label="Notifications"
           >
             <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-[#1b4332] dark:text-[#52b788]" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -278,7 +280,7 @@ export default function MobileDashboard({ items = [] }) {
         {/* Row 2: Search + Amber/Bronze Filter Accessibility Trigger */}
         <div className="flex items-center gap-2 mb-2.5">
           <div className="relative flex-1">
-            <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 pointer-events-none" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{color:'var(--muted)'}} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
             </svg>
             <input
@@ -286,13 +288,13 @@ export default function MobileDashboard({ items = [] }) {
               placeholder="Search city, cantt or academy"
               value={smartSearchQ}
               onChange={(e) => setSmartSearchQ(e.target.value)}
-              style={{ paddingLeft: '40px' }}
-              className="w-full bg-slate-100/60 dark:bg-slate-800/60 border border-slate-200/50 dark:border-slate-700/50 rounded-full py-2.5 pr-3 text-[14px] text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none focus:border-[#d97706] dark:focus:border-amber-500 transition-all font-medium backdrop-blur-md"
+              style={{ paddingLeft: '40px', color: 'var(--text)' }}
+              className="w-full bg-white/40 dark:bg-white/10 border border-slate-200/50 dark:border-white/15 rounded-full py-2.5 pr-3 text-[14px] placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none focus:border-[#d97706] dark:focus:border-amber-500 transition-all font-medium backdrop-blur-xl"
             />
           </div>
           <button
             onClick={() => ctx.openAccessibility?.()}
-            className="w-11 h-11 rounded-full bg-gradient-to-br from-[#d97706] to-[#b45309] hover:from-[#b45309] hover:to-[#92400e] text-white flex items-center justify-center shadow-md shadow-amber-950/20 cursor-pointer shrink-0 transition-transform active:scale-95 border border-amber-500/30"
+            className="w-11 h-11 rounded-full liquid-glass-chip flex items-center justify-center shadow-md shadow-amber-950/20 cursor-pointer shrink-0 transition-transform active:scale-95 text-[#d97706] dark:text-amber-400"
             aria-label="Accessibility and Filters"
             title="Accessibility & Filters"
           >
@@ -312,7 +314,7 @@ export default function MobileDashboard({ items = [] }) {
 
         {/* Row 3: Soft Location Bar */}
         <div className="flex items-center justify-between liquid-glass-chip rounded-xl px-3.5 py-2">
-          <div className="flex items-center gap-2 text-[14px] font-semibold text-slate-800 dark:text-slate-200">
+          <div className="flex items-center gap-2 text-[14px] font-semibold" style={{color:'var(--text)'}}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#15803d" className="dark:stroke-emerald-400" strokeWidth="2.5">
               <circle cx="12" cy="10" r="3"/>
               <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z"/>
@@ -321,7 +323,7 @@ export default function MobileDashboard({ items = [] }) {
           </div>
           <button
             onClick={handleLocationChange}
-            className="flex items-center gap-1.5 text-[13px] font-bold text-slate-600 dark:text-slate-300 hover:text-emerald-700 dark:hover:text-emerald-400 cursor-pointer"
+            className="flex items-center gap-1.5 text-[13px] font-bold hover:text-emerald-700 dark:hover:text-emerald-400 cursor-pointer" style={{color:'var(--muted)'}}
           >
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/>
@@ -358,7 +360,7 @@ export default function MobileDashboard({ items = [] }) {
                     className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${
                       isActive
                         ? 'bg-[#1b4332] dark:bg-emerald-600 text-white shadow-md shadow-[#1b4332]/30 dark:shadow-emerald-950/40 border border-transparent'
-                        : 'bg-white dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 text-slate-600 dark:text-slate-300 shadow-xs'
+                        : 'liquid-glass-chip border border-slate-200/60 dark:border-white/10 shadow-xs'
                     }`}
                   >
                     {React.cloneElement(CategoryIcons[cat.id], {
@@ -369,8 +371,9 @@ export default function MobileDashboard({ items = [] }) {
                   </div>
                   <span
                     className={`text-[11.5px] text-center leading-tight whitespace-nowrap ${
-                      isActive ? 'text-[#1b4332] dark:text-emerald-400 font-bold' : 'text-slate-600 dark:text-slate-400 font-medium'
+                      isActive ? 'text-[#1b4332] dark:text-emerald-400 font-bold' : 'font-medium'
                     }`}
+                    style={!isActive ? { color: 'var(--muted)' } : undefined}
                   >
                     {cat.label}
                   </span>
@@ -381,7 +384,7 @@ export default function MobileDashboard({ items = [] }) {
 
           {/* ══ SECTION HEADER ══ */}
           <div className="flex items-center justify-between mb-3 px-4 mt-2">
-            <h2 className="text-[18px] font-black text-slate-900 dark:text-slate-100 tracking-tight">Popular Homes Near You</h2>
+            <h2 className="text-[18px] font-black tracking-tight" style={{color:'var(--text)'}}>Popular Homes Near You</h2>
             <button
               onClick={() => setActiveCategory('all')}
               className="text-[14px] font-bold text-[#b45309] dark:text-amber-400 cursor-pointer hover:underline"
@@ -408,7 +411,7 @@ export default function MobileDashboard({ items = [] }) {
                   style={{ minHeight: '100px' }}
                 >
                   {/* Thumbnail */}
-                  <div className="w-28 rounded-xl overflow-hidden shrink-0 relative bg-slate-100 dark:bg-slate-800" style={{ aspectRatio: '4/3' }}>
+                  <div className="w-28 rounded-xl overflow-hidden shrink-0 relative bg-white/40 dark:bg-white/[0.06] backdrop-blur-xl" style={{ aspectRatio: '4/3' }}>
                     <img
                       src={home.image || home.mediaUrls?.[0] || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80'}
                       alt={home.name || 'Property'}
@@ -429,10 +432,10 @@ export default function MobileDashboard({ items = [] }) {
                   {/* Details */}
                   <div className="flex-1 flex flex-col justify-between py-0.5 min-w-0 pr-6">
                     <div>
-                      <h3 className="text-[15.5px] font-bold text-slate-900 dark:text-slate-100 leading-snug">
+                      <h3 className="text-[15.5px] font-bold leading-snug" style={{color:'var(--text)'}}>
                         {home.name || 'Property'}
                       </h3>
-                      <div className="flex items-center gap-1 mt-0.5 text-[13px] text-slate-600 dark:text-slate-400 font-medium">
+                      <div className="flex items-center gap-1 mt-0.5 text-[13px] font-medium" style={{color:'var(--muted)'}}>
                         <span className="text-amber-500">★</span>
                         <span>{home.rating || '4.8 (128)'}</span>
                       </div>
@@ -441,11 +444,11 @@ export default function MobileDashboard({ items = [] }) {
                       <span className="text-[17.5px] font-black text-[#15803d] dark:text-emerald-400">
                         ₹{priceVal.toLocaleString()}
                       </span>
-                      <span className="text-[12px] text-slate-500 dark:text-slate-400 ml-1 font-normal">/month</span>
+                      <span className="text-[12px] ml-1 font-normal" style={{color:'var(--muted)'}}>/month</span>
                     </div>
-                    <div className="flex items-center gap-2 text-[12.5px] text-slate-600 dark:text-slate-400 mt-1 font-medium">
+                    <div className="flex items-center gap-2 text-[12.5px] mt-1 font-medium" style={{color:'var(--muted)'}}>
                       <span>🛏 {home.bhk || '2BHK'}</span>
-                      <span className="text-slate-300 dark:text-slate-600">•</span>
+                      <span className="opacity-40">•</span>
                       <span>📍 {home.distance || '2.7 km'}</span>
                     </div>
                   </div>
@@ -471,7 +474,7 @@ export default function MobileDashboard({ items = [] }) {
           </div>
 
           {/* ══ PROMO BANNER ══ */}
-          <div className="mt-5 mb-2 mx-4 relative overflow-hidden bg-gradient-to-r from-[#1b4332] to-[#2d6a4f] dark:from-[#0d281e] dark:to-[#1b4332] rounded-2xl p-4 flex items-center justify-between shadow-md">
+          <div className="mt-5 mb-2 mx-4 relative overflow-hidden bg-gradient-to-r from-[#1b4332]/70 to-[#2d6a4f]/50 dark:from-[#0d281e]/70 dark:to-[#1b4332]/50 backdrop-blur-xl border border-white/10 dark:border-white/5 rounded-2xl p-4 flex items-center justify-between shadow-md">
             <span className="sheen-sweep" />
             <div className="flex flex-col pr-2">
               <div className="flex items-center gap-1.5 text-[12px] font-bold text-emerald-300">
@@ -528,8 +531,9 @@ export default function MobileDashboard({ items = [] }) {
               </span>
               <span
                 className={`relative z-10 text-[11.5px] font-bold leading-none mt-1 ${
-                  isActive ? 'text-[#15803d] dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'
+                  isActive ? 'text-[#15803d] dark:text-emerald-400' : ''
                 }`}
+                style={!isActive ? { color: 'var(--muted)' } : undefined}
               >
                 {tab.label}
               </span>
