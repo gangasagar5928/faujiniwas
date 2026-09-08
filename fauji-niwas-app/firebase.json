@@ -1,0 +1,22 @@
+{
+  "hosting": {
+    "site": "faujiniwas",
+    "public": "dist",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      { "source": "/app", "destination": "/app.html" },
+      { "source": "/app/**", "destination": "/app.html" },
+      { "source": "**", "destination": "/index.html" }
+    ],
+    "headers": [
+      {
+        "source": "/sw.js",
+        "headers": [
+          { "key": "Cache-Control", "value": "no-cache" },
+          { "key": "Service-Worker-Allowed", "value": "/" }
+        ]
+      }
+    ],
+    "cleanUrls": true
+  }
+}
