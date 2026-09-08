@@ -55,8 +55,15 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   </React.StrictMode>
 );
 
-window.__APP_READY__ = true;
-window.dispatchEvent(new Event('app-ready'));
+// Landing page hides its own loader in landing.jsx. For the app shell, the
+// index.html tactical loader stays visible until App.jsx signals real
+// readiness (auth resolved) — this avoids the double-loader flicker.
+if (window.location.pathname === '/' || window.location.pathname === '') {
+  window.__APP_READY__ = true;
+  window.dispatchEvent(new Event('app-ready'));
+} else {
+  window.__FN_HOLD_APP_LOADER__ = true;
+}
 
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {

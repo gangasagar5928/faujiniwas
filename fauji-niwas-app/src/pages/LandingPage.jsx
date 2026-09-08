@@ -35,7 +35,6 @@ export default function LandingPage() {
   
   // High-tech secure redirection sequence states
   const [isRedirecting, setIsRedirecting] = useState(false);
-  const [redirectStep, setRedirectStep] = useState(0);
 
   const [showTicker, setShowTicker] = useState(false);
   const tickerRef = useRef(null);
@@ -66,38 +65,24 @@ export default function LandingPage() {
   const handleLaunchApp = (e) => {
     if (e) e.preventDefault();
     setIsRedirecting(true);
-    setRedirectStep(0);
-    
-    // Simulate step progress intervals — shortened for snappier transition
-    setTimeout(() => {
-      setRedirectStep(1);
-    }, 350);
+
+    // Single quick fade — no multi-step boot screens.
+    // The app has its own single professional loader, so we navigate fast.
+    try { sessionStorage.setItem('fn_redirect', 'true'); } catch { /* noop */ }
+
+    // Darken page to match app theme (prevents white flash)
+    document.documentElement.style.backgroundColor = '#030712';
+    document.documentElement.style.colorScheme = 'dark';
+    var themeMeta = document.querySelector('meta[name="theme-color"]');
+    if (themeMeta) themeMeta.content = '#030712';
+
+    // Smoothly fade the body out, then go
+    document.body.style.transition = 'opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1)';
+    document.body.style.opacity = '0';
 
     setTimeout(() => {
-      setRedirectStep(2);
-    }, 700);
-
-    setTimeout(() => {
-      setRedirectStep(3);
-      
-      // Signal app.html to fast-forward its loader
-      try { sessionStorage.setItem('fn_redirect', 'true'); } catch { /* noop */ }
-      
-      // Step 1: Darken the page theme to match app.html (prevents white flash)
-      document.documentElement.style.backgroundColor = '#030712';
-      document.documentElement.style.colorScheme = 'dark';
-      // Update theme-color meta so browser chrome also goes dark
-      var themeMeta = document.querySelector('meta[name="theme-color"]');
-      if (themeMeta) themeMeta.content = '#030712';
-      
-      // Step 2: Smoothly fade the body into the dark app theme
-      document.body.style.transition = 'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-      document.body.style.opacity = '0';
-      
-      setTimeout(() => {
-        window.location.href = '/app';
-      }, 300);
-    }, 1050);
+      window.location.href = '/app';
+    }, 250);
   };
 
   return (
@@ -801,70 +786,18 @@ export default function LandingPage() {
         </React.Suspense>
       )}
 
-      {/* 🚀 Futuristic Glassmorphic Boot/Routing Transition Screen Overlay */}
+      {/* Launch transition — a single clean glass loader (no multi-step boot) */}
       {isRedirecting && (
-        <div className="fixed inset-0 z-[9999] bg-[#0b1120]/95 backdrop-blur-2xl flex flex-col items-center justify-center text-left p-6 select-none font-mono">
-          <div className="w-full max-w-md liquid-glass-morph p-8 rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.8)] relative overflow-hidden flex flex-col gap-6">
-            
-            {/* Pulsing Tactical radar animation */}
-            <div className="flex items-center gap-3">
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping"></span>
-              <h3 className="text-xs font-black uppercase tracking-widest text-[#fbbf24]">System Boot & Routing</h3>
+        <div className="fixed inset-0 z-[9999] bg-[#0b1120]/85 backdrop-blur-xl flex flex-col items-center justify-center select-none">
+          <div className="liquid-glass-morph w-[280px] p-8 rounded-[28px] shadow-[0_0_60px_rgba(0,0,0,0.6)] relative overflow-hidden flex flex-col items-center gap-5">
+            <span className="w-3 h-3 rounded-full bg-emerald-400 animate-ping" />
+            <div className="flex flex-col items-center gap-1.5">
+              <h3 className="text-[13px] font-black uppercase tracking-[0.2em] text-[#fbbf24]">FaujiNiwas</h3>
+              <p className="text-[10px] text-slate-400 tracking-widest font-medium">SECURE HOUSING GATEWAY</p>
             </div>
-
-            {/* Steps List */}
-            <div className="flex flex-col gap-4 text-[10px] text-slate-450 font-medium">
-              
-              {/* Step 1 */}
-              <div className={`flex items-center justify-between p-3 rounded-lg border transition-all duration-300 ${
-                redirectStep >= 0 ? 'bg-[#18233c]/40 border-amber-500/20 text-slate-200' : 'bg-transparent border-transparent opacity-40'
-              }`}>
-                <span>📡 CONNECTING: Establishing secure E2EE tunnel...</span>
-                {redirectStep === 0 ? (
-                  <span className="text-amber-500 animate-spin">🌀</span>
-                ) : redirectStep > 0 ? (
-                  <span className="text-emerald-500 font-bold">✓ DONE</span>
-                ) : null}
-              </div>
-
-              {/* Step 2 */}
-              <div className={`flex items-center justify-between p-3 rounded-lg border transition-all duration-300 ${
-                redirectStep >= 1 ? 'bg-[#18233c]/40 border-amber-500/20 text-slate-200' : 'bg-transparent border-transparent opacity-40'
-              }`}>
-                <span>🔑 AUTHENTICATING: Verifying military credentials...</span>
-                {redirectStep === 1 ? (
-                  <span className="text-amber-500 animate-spin">🌀</span>
-                ) : redirectStep > 1 ? (
-                  <span className="text-emerald-500 font-bold">✓ DONE</span>
-                ) : null}
-              </div>
-
-              {/* Step 3 */}
-              <div className={`flex items-center justify-between p-3 rounded-lg border transition-all duration-300 ${
-                redirectStep >= 2 ? 'bg-[#18233c]/40 border-amber-500/20 text-slate-200' : 'bg-transparent border-transparent opacity-40'
-              }`}>
-                <span>🗺️ SYNCHRONIZING: Fetching local station beacons...</span>
-                {redirectStep === 2 ? (
-                  <span className="text-amber-500 animate-spin">🌀</span>
-                ) : redirectStep > 2 ? (
-                  <span className="text-emerald-500 font-bold">✓ DONE</span>
-                ) : null}
-              </div>
-
+            <div className="w-40 h-1 rounded-full bg-white/10 overflow-hidden">
+              <div className="h-full w-1/2 rounded-full bg-gradient-to-r from-amber-400 to-emerald-400 animate-[loaderSlide_1s_ease-in-out_infinite]" />
             </div>
-
-            {/* Loading progress bar */}
-            <div className="w-full bg-[#090d16] h-1.5 rounded-full overflow-hidden border border-[#1e293b]">
-              <div 
-                className="bg-gradient-to-r from-amber-500 to-amber-600 h-full rounded-full transition-all duration-500" 
-                style={{ width: `${(redirectStep + 1) * 33.3}%` }}
-              />
-            </div>
-
-            <span className="text-[8px] text-slate-500 uppercase tracking-widest text-center mt-2">
-              SECURE GATEWAY · NO BROKERAGE NETWORK
-            </span>
-
           </div>
         </div>
       )}

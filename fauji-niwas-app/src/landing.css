@@ -725,6 +725,13 @@ body > .skiptranslate {
   .landing-page button[class*="from-amber-500"] { animation: none; }
 }
 
+/* Launch transition loader bar */
+@keyframes loaderSlide {
+  0%   { transform: translateX(-60%); }
+  50%  { transform: translateX(20%); }
+  100% { transform: translateX(120%); }
+}
+
 /* Ground the page above the aurora */
 .landing-page > div {
   position: relative;

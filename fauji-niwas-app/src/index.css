@@ -565,6 +565,19 @@ select.fb option { background: var(--card); color: var(--text); }
    text gains the iOS top-light. No forced z-index here so Tailwind
    `absolute` children keep their positioning. */
 
+/* Mobile top header — clean glass, no diagonal refraction lines.
+   The thin header reads badly with the wide 120deg refraction band and
+   inner-depth undershadow, so neutralise them here (keep the specular
+   top rim for the iOS look). */
+.mob-header.liquid-glass-morph::before {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.28), transparent 55%);
+  opacity: .5;
+}
+.mob-header.liquid-glass-morph::after {
+  background: none;
+}
+
 /* ── Glossy icon tile (ColorOS themed-icon x iOS glass) ── */
 /* Set --tile-glow to the tile's brand colour for a bottom bloom. */
 .glossy-tile {

@@ -633,9 +633,14 @@
         if (typeof animFrame !== 'undefined') cancelAnimationFrame(animFrame);
       }
       window.addEventListener('app-ready', hideLoader);
-      window.addEventListener('DOMContentLoaded', function() {
-        setTimeout(hideLoader, 1500);
-      });
+      /* For the app shell we hold the loader until React dispatches
+         app-ready (auth resolved) so there is exactly ONE loading screen.
+         Delay the DOMContentLoaded fallback to match the slow-path retry. */
+      if (!window.__FN_HOLD_APP_LOADER__) {
+        window.addEventListener('DOMContentLoaded', function() {
+          setTimeout(hideLoader, 1500);
+        });
+      }
       if (window.__APP_READY__) {
         hideLoader();
       }

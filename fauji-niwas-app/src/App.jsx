@@ -23,6 +23,7 @@ const LegalModal     = lazy(() => import('./components/Modals/LegalModal'));
 const ChatModal      = lazy(() => import('./components/Modals/ChatModal'));
 const AdminModal     = lazy(() => import('./components/Modals/AdminModal'));
 const RelocationModal = lazy(() => import('./components/Modals/RelocationModal'));
+const AiHelperModal  = lazy(() => import('./components/Modals/AiHelperModal'));
 
 export const ModalContext = React.createContext(null);
 
@@ -149,6 +150,7 @@ export default function App() {
   const openAdmin = useCallback(() => { window.history.pushState({ modal: 'admin' }, ''); setOpenModal('admin'); }, []);
   const openRelocation = useCallback(() => { window.history.pushState({ modal: 'relocation' }, ''); setOpenModal('relocation'); }, []);
   const openAccessibility = useCallback(() => { window.history.pushState({ modal: 'accessibility' }, ''); setOpenModal('accessibility'); }, []);
+  const openAiHelper = useCallback(() => { window.history.pushState({ modal: 'ai' }, ''); setOpenModal('ai'); }, []);
 
   const ctxValue = useMemo(() => ({
     showToast,
@@ -164,10 +166,11 @@ export default function App() {
     openAdmin,
     openRelocation,
     openAccessibility,
+    openAiHelper,
     closeFood: closeFoodOnly,
     closeAll: closeModal,
     isAdmin,
-  }), [showToast, openDetail, openPost, openProfile, openReport, openTransfers, openCompare, openFood, openLegal, openChat, openAdmin, openRelocation, openAccessibility, closeFoodOnly, closeModal, isAdmin]);
+  }), [showToast, openDetail, openPost, openProfile, openReport, openTransfers, openCompare, openFood, openLegal, openChat, openAdmin, openRelocation, openAccessibility, openAiHelper, closeFoodOnly, closeModal, isAdmin]);
 
   // Expose API for external widgets (like chatbot.js)
   useEffect(() => {
@@ -175,13 +178,25 @@ export default function App() {
     window.openFoodModal = ctxValue.openFood;
     window.openRelocationModal = ctxValue.openRelocation;
     window.openAccessibilityModal = ctxValue.openAccessibility;
+    window.openFaujiChatbot = ctxValue.openAiHelper;
     return () => {
       delete window.openDetailModal;
       delete window.openFoodModal;
       delete window.openRelocationModal;
       delete window.openAccessibilityModal;
+      delete window.openFaujiChatbot;
     };
-  }, [ctxValue.openDetail, ctxValue.openFood, ctxValue.openRelocation, ctxValue.openAccessibility]);
+  }, [ctxValue.openDetail, ctxValue.openFood, ctxValue.openRelocation, ctxValue.openAccessibility, ctxValue.openAiHelper]);
+
+  // Signal the index.html tactical loader that the app is truly ready —
+  // keeps a single loading screen instead of a loader-then-loader flicker.
+  useEffect(() => {
+    if (!(authLoading && !isInitTimedOut)) {
+      window.__APP_READY__ = true;
+      window.dispatchEvent(new Event('app-ready'));
+      delete window.__FN_HOLD_APP_LOADER__;
+    }
+  }, [authLoading, isInitTimedOut]);
 
   if (authLoading && !isInitTimedOut) return <Loader />;
 
@@ -227,6 +242,9 @@ export default function App() {
               {openModal === 'relocation' && <RelocationModal onClose={closeModal} />}
             </Suspense>
             {openModal === 'accessibility' && <AccessibilityModal onClose={closeModal} />}
+            <Suspense fallback={null}>
+              {openModal === 'ai' && <AiHelperModal onClose={closeModal} />}
+            </Suspense>
 
             {toast && <Toast msg={toast.msg} type={toast.type} />}
           </ErrorBoundary>
