@@ -107,6 +107,20 @@ body {
   --lg-blur:    blur(44px) saturate(220%);
   --lg-blur-lg: blur(60px) saturate(240%);
   --lg-fallback: rgba(13, 18, 34, 0.52); /* behind the blur — translucent! */
+
+  /* ── Liquid Glass Morph 2.0 (iOS 26) ──
+     Layered glass with specular top-light + refraction glint. Brighter
+     stops than the base glass so the panels read as "liquid" even on
+     desktop / at rest — not flat translucent cards. */
+  --lgm-1:       rgba(255,255,255,.27);   /* top catch-light        */
+  --lgm-2:       rgba(255,255,255,.10);   /* mid frosted            */
+  --lgm-3:       rgba(255,255,255,.045);  /* lower depth            */
+  --lgm-border:  rgba(255,255,255,.32);
+  --lgm-rim:     rgba(255,255,255,.62);   /* inner top edge light   */
+  --lgm-glint:   rgba(255,255,255,.6);    /* refraction hotspot     */
+  --lgm-tint:    rgba(16,185,129,.10);    /* subtle brand refraction*/
+  --lgm-shadow:  rgba(2,6,16,.55);
+  --lgm-fallback: rgba(13,18,34,.48);
 }
 
 /* Premium Hybrid App Theme Overrides */
@@ -144,39 +158,85 @@ html.app-shell, body.app-shell {
    The colorful, slowly-drifting light field behind the glass.
    Translucent panels use backdrop-filter to frost THIS, which is
    what makes the glassmorphism unmistakable (iOS 26 / ColorOS 17).
-   Drop inside the app shell: <div className="aurora-bg" />. */
+   Drop inside the app shell: <div className="aurora-bg" />.
+   Gloaming Blend (ColorOS 17): the base plane drifts while two
+   blurred pseudo-orb planes ride on crossing wave paths — giving
+   the frosted glass a multi-plane parallax depth behind it. */
 .aurora-bg {
   position: absolute;
   inset: 0;
   z-index: -1;
   overflow: hidden;
   pointer-events: none;
-  background:
-    radial-gradient(52% 48% at 12% 6%,  rgba(255,153,51,.42),  transparent 60%),
-    radial-gradient(46% 44% at 88% 10%, rgba(34,197,94,.38),  transparent 60%),
-    radial-gradient(58% 54% at 82% 88%, rgba(99,102,241,.44), transparent 62%),
-    radial-gradient(48% 42% at 14% 92%, rgba(212,175,55,.34), transparent 62%),
-    radial-gradient(36% 36% at 50% 48%, rgba(244,63,94,.16),  transparent 60%),
-    linear-gradient(180deg, #0a1120 0%, #070b15 55%, #0a1120 100%);
-  background-size: 170% 170%;
+  background-color: #060a14;
+  background-image:
+    radial-gradient(58% 52% at 10% 4%,   rgba(255,159,64,.52),  transparent 62%),
+    radial-gradient(50% 48% at 92% 6%,   rgba(45,212,191,.48),  transparent 62%),
+    radial-gradient(62% 58% at 84% 92%,  rgba(99,102,241,.52),  transparent 64%),
+    radial-gradient(46% 44% at 12% 90%,  rgba(212,175,55,.42),  transparent 62%),
+    radial-gradient(30% 34% at 48% 46%,  rgba(244,63,94,.20),   transparent 60%);
+  background-size: 180% 180%;
   animation: auroraDrift 26s ease-in-out infinite alternate;
   will-change: transform, background-position;
 }
-.light-theme .aurora-bg {
+/* Wave plane 1 — teal / azure / violet set, slow cross-drift */
+.aurora-bg::before {
+  content:''; position:absolute; inset:-22%;
   background:
-    radial-gradient(52% 48% at 12% 6%,  rgba(255,153,51,.34),  transparent 60%),
-    radial-gradient(46% 44% at 88% 10%, rgba(34,197,94,.30),  transparent 60%),
-    radial-gradient(58% 54% at 82% 88%, rgba(99,102,241,.34), transparent 62%),
-    radial-gradient(48% 42% at 14% 92%, rgba(212,175,55,.28), transparent 62%),
+    radial-gradient(34% 30% at 30% 72%, rgba(16,185,129,.30), transparent 60%),
+    radial-gradient(28% 26% at 76% 28%, rgba(56,189,248,.28), transparent 60%),
+    radial-gradient(24% 22% at 58% 82%, rgba(167,139,250,.28), transparent 60%);
+  filter: blur(42px);
+  animation: auroraWave1 34s ease-in-out infinite alternate;
+  will-change: transform;
+}
+/* Wave plane 2 — warm amber / rose, deeper blur for far parallax */
+.aurora-bg::after {
+  content:''; position:absolute; inset:-14%;
+  background:
+    radial-gradient(30% 26% at 22% 34%, rgba(255,167,38,.18), transparent 62%),
+    radial-gradient(26% 22% at 68% 64%, rgba(232,121,249,.16), transparent 62%);
+  filter: blur(60px);
+  animation: auroraWave2 40s ease-in-out infinite alternate;
+  will-change: transform;
+}
+.light-theme .aurora-bg {
+  background-color: #eef2f8;
+  background-image:
+    radial-gradient(58% 52% at 10% 4%,   rgba(255,153,51,.30),  transparent 62%),
+    radial-gradient(50% 48% at 92% 6%,   rgba(20,184,166,.26),  transparent 62%),
+    radial-gradient(62% 58% at 84% 92%,  rgba(99,102,241,.30),  transparent 64%),
+    radial-gradient(46% 44% at 12% 90%,  rgba(212,175,55,.26),  transparent 62%),
     linear-gradient(180deg, #eef2f8 0%, #f8fafc 55%, #eef2f8 100%);
+}
+.light-theme .aurora-bg::before {
+  background:
+    radial-gradient(34% 30% at 30% 72%, rgba(16,185,129,.20), transparent 60%),
+    radial-gradient(28% 26% at 76% 28%, rgba(56,189,248,.18), transparent 60%),
+    radial-gradient(24% 22% at 58% 82%, rgba(167,139,250,.18), transparent 60%);
+}
+.light-theme .aurora-bg::after {
+  background:
+    radial-gradient(30% 26% at 22% 34%, rgba(245,158,11,.14), transparent 62%),
+    radial-gradient(26% 22% at 68% 64%, rgba(217,70,239,.12), transparent 62%);
 }
 @keyframes auroraDrift {
   0%   { background-position: 0% 0%;    transform: scale(1);    }
   50%  { background-position: 100% 55%; transform: scale(1.14); }
   100% { background-position: 35% 100%; transform: scale(1);    }
 }
+@keyframes auroraWave1 {
+  0%   { transform: translate3d(-4%, -2%, 0) rotate(0deg)  scale(1); }
+  50%  { transform: translate3d(4%,  3%,  0) rotate(4deg)  scale(1.08); }
+  100% { transform: translate3d(-2%, 4%,  0) rotate(-3deg) scale(1); }
+}
+@keyframes auroraWave2 {
+  0%   { transform: translate3d(3%, 4%,  0) rotate(0deg)  scale(1); }
+  50%  { transform: translate3d(-4%, -3%, 0) rotate(-4deg) scale(1.1); }
+  100% { transform: translate3d(2%, -2%, 0) rotate(3deg)  scale(1); }
+}
 @media (prefers-reduced-motion: reduce) {
-  .aurora-bg { animation: none; }
+  .aurora-bg, .aurora-bg::before, .aurora-bg::after { animation: none; }
 }
 
 /* Disable text selection across all devices in the app */
@@ -457,6 +517,131 @@ select.fb option { background: var(--card); color: var(--text); }
   .mc, .fluid-press, .fluid-lift { transition-duration: .01ms !important; }
   * { animation-duration: .01ms !important; }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   FLUID FUSION II — LIQUID GLASS MORPH  (iOS 26 · ColorOS 17)
+   The elevated material: layered glass + specular top-light +
+   refraction glint. Translucent enough to frost the gloaming
+   backdrop, bright enough to read as liquid at rest.
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Primary Morph surface ── */
+.liquid-glass-morph {
+  position: relative;
+  isolation: isolate;
+  background:
+    linear-gradient(160deg, var(--lgm-1), var(--lgm-2) 38%, var(--lgm-3) 64%, var(--lgm-2)),
+    var(--lgm-fallback);
+  backdrop-filter: var(--lg-blur-lg);
+  -webkit-backdrop-filter: var(--lg-blur-lg);
+  border: 1px solid var(--lgm-border);
+  box-shadow:
+    inset 0 1px 0 var(--lgm-rim),
+    inset 0 -1px 0 rgba(255,255,255,.07),
+    inset 1px 0 0 rgba(255,255,255,.05),
+    inset -1px 0 0 rgba(255,255,255,.05),
+    0 1px 2px rgba(0,0,0,.10),
+    0 22px 60px var(--lgm-shadow);
+}
+/* Specular top-light + diagonal refraction band + corner glint */
+.liquid-glass-morph::before {
+  content:''; position:absolute; inset:0; border-radius:inherit;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.30), transparent 26%),
+    linear-gradient(120deg, transparent 6%, rgba(255,255,255,.12) 20%, transparent 36%),
+    radial-gradient(120% 80% at 14% -18%, var(--lgm-glint), transparent 42%),
+    radial-gradient(70% 50% at 88% 100%, rgba(255,255,255,.06), transparent 60%);
+  opacity:.55; pointer-events:none; z-index:1;
+}
+/* Inner depth: soft underside shadow so the sheet looks suspended */
+.liquid-glass-morph::after {
+  content:''; position:absolute; inset:0; border-radius:inherit;
+  background:
+    radial-gradient(150% 60% at 50% 120%, rgba(2,6,16,.20), transparent 55%);
+  pointer-events:none; z-index:1;
+}
+/* Washes are illuminated-lens style: positioned children (buttons,
+   sheens) still paint above them naturally per painting order; static
+   text gains the iOS top-light. No forced z-index here so Tailwind
+   `absolute` children keep their positioning. */
+
+/* ── Glossy icon tile (ColorOS themed-icon x iOS glass) ── */
+/* Set --tile-glow to the tile's brand colour for a bottom bloom. */
+.glossy-tile {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(150deg, rgba(255,255,255,.20), rgba(255,255,255,.045) 55%, rgba(255,255,255,.02));
+  border: 1px solid var(--lgm-border);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 1px 2px rgba(0,0,0,.08), 0 8px 20px var(--lgm-shadow);
+}
+.glossy-tile::before {           /* specular micro-bubble */
+  content:''; position:absolute; top:8%; left:12%;
+  width:46%; height:36%; border-radius:50%;
+  background: radial-gradient(circle, rgba(255,255,255,.4), transparent 68%);
+  filter: blur(1px); pointer-events:none; z-index:1;
+}
+.glossy-tile::after {            /* bottom colour bloom */
+  content:''; position:absolute; left:16%; bottom:-34%; width:72%; height:58%;
+  border-radius:50%; filter: blur(14px); opacity:.5; pointer-events:none; z-index:1;
+  background: var(--tile-glow, rgba(16,185,129,.5));
+}
+.light-theme .glossy-tile {
+  background: linear-gradient(150deg, rgba(255,255,255,.85), rgba(255,255,255,.4) 60%, rgba(255,255,255,.25));
+}
+
+/* ── iOS floating glass dock / tab bar ── */
+.lg-dock {
+  background: linear-gradient(180deg, var(--lg-top), var(--lg-bottom)), var(--lg-fallback);
+  backdrop-filter: var(--lg-blur-lg);
+  -webkit-backdrop-filter: var(--lg-blur-lg);
+  border: 1px solid var(--lg-border);
+  box-shadow: inset 0 1px 0 var(--lgm-rim), 0 18px 40px var(--lg-shadow), 0 6px 18px rgba(0,0,0,.28);
+}
+
+/* ── ColorOS "Breathe" idle life ── */
+@keyframes breathe {
+  0%,100% { transform: scale(1); }
+  50%     { transform: scale(1.012); }
+}
+.breathe { animation: breathe 4.5s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .breathe { animation: none; }
+}
+
+/* ── Fluid entry (spring-loaded panel appear) ── */
+@keyframes fluidEnter {
+  from { opacity:0; transform: translateY(16px) scale(.98); }
+  to   { opacity:1; transform: translateY(0)  scale(1); }
+}
+.fluid-enter { animation: fluidEnter .52s var(--spring-overshoot) both; }
+
+/* ── Gradient accent hairline (CTA edges) ── */
+.lg-hairline { position: relative; }
+.lg-hairline::after {
+  content:''; position:absolute; left:16%; right:16%; bottom:-1px; height:1px;
+  background: linear-gradient(90deg, transparent, rgba(251,191,36,.65), rgba(45,212,191,.65), transparent);
+  opacity:.75; pointer-events:none;
+}
+
+/* ── Aurora gradient text ── */
+.text-aurora {
+  background: linear-gradient(120deg, #34d399, #38bdf8 45%, #f59e0b 90%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+}
+
+/* ── Liquid-glass primary action pill ── */
+.lgm-btn {
+  position: relative; overflow: hidden;
+  border: 1px solid var(--lgm-border);
+  background: linear-gradient(180deg, var(--lgm-1), var(--lgm-2) 55%, var(--lgm-3));
+  backdrop-filter: var(--lg-blur);
+  -webkit-backdrop-filter: var(--lg-blur);
+  box-shadow: inset 0 1px 0 var(--lgm-rim), 0 8px 22px var(--lgm-shadow);
+  transition: transform .18s var(--spring-snappy), box-shadow .18s var(--spring-snappy);
+}
+.lgm-btn:hover { transform: translateY(-1px); }
+.lgm-btn:active { transform: scale(.96); }
 
 @keyframes tacticalPulse {
   0%   { transform: scale(1);   box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
@@ -1102,6 +1287,17 @@ html.light-theme, body.light-theme, .light-theme {
   --lg-sheen:   rgba(255,255,255,.75);
   --lg-shadow:  rgba(15,23,42,.16);
   --lg-fallback: rgba(255,255,255,.42);
+
+  /* Liquid Glass Morph — light theme (white glass) */
+  --lgm-1:       rgba(255,255,255,.92);
+  --lgm-2:       rgba(255,255,255,.56);
+  --lgm-3:       rgba(255,255,255,.28);
+  --lgm-border:  rgba(255,255,255,.92);
+  --lgm-rim:     rgba(255,255,255,1);
+  --lgm-glint:   rgba(255,255,255,.95);
+  --lgm-tint:    rgba(16,185,129,.08);
+  --lgm-shadow:  rgba(15,23,42,.16);
+  --lgm-fallback: rgba(248,250,252,.55);
   background-color: #eef2f8 !important;
   color: #0f172a !important;
 }

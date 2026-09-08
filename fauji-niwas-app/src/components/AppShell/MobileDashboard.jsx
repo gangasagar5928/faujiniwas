@@ -132,6 +132,15 @@ const NavIcons = {
   ),
 };
 
+// Per-category brand accents → feed the ColorOS glossy tile glows.
+const CAT_ACCENT = {
+  all:          ['#f59e0b', '#fcd34d'], // amber
+  bhk:          ['#0284c7', '#38bdf8'], // sky
+  rank:         ['#7c3aed', '#a78bfa'], // violet
+  budget:       ['#059669', '#34d399'], // emerald
+  near_academy: ['#e11d48', '#fb7185'], // rose
+};
+
 export default function MobileDashboard({ items = [] }) {
   const ctx = useContext(ModalContext);
   const [mobileTab, setMobileTab] = useState('home');
@@ -238,22 +247,25 @@ export default function MobileDashboard({ items = [] }) {
       {/* Colorful aurora backdrop — the blur source behind every glass panel */}
       <div className="aurora-bg" aria-hidden="true" />
 
-      {/* ══ TOP HEADER (Unified & Smooth, No Blunt Edges) ══ */}
-      <header className="shrink-0 liquid-glass-nav relative px-4 pt-3.5 pb-2.5 z-[900] rounded-b-2xl">
+      {/* ══ TOP HEADER — floating Liquid Glass sheet (iOS 26) ══ */}
+      <header className="liquid-glass-morph shrink-0 relative px-4 pt-[max(env(safe-area-inset-top),12px)] pb-2.5 z-[900] rounded-b-[28px]">
 
         {/* Row 1: Brand & Notification */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2.5">
-            {/* New Official 2nd June Logo */}
-            <div className="w-10 h-10 rounded-xl overflow-hidden shadow-sm flex items-center justify-center bg-white/50 dark:bg-white/[0.06] backdrop-blur-xl border border-slate-200/40 dark:border-white/10">
-              <img 
-                src="/logo-light.jpg" 
-                alt="FaujiNiwas" 
+            {/* Glossy official logo tile (ColorOS themed-icon ) */}
+            <div
+              className="glossy-tile w-10 h-10 rounded-[14px] overflow-hidden flex items-center justify-center"
+              style={{ '--tile-glow': 'rgba(16,185,129,.6)' }}
+            >
+              <img
+                src="/logo-light.jpg"
+                alt="FaujiNiwas"
                 className="w-full h-full object-contain light-logo"
               />
-              <img 
-                src="/logo-dark.jpg" 
-                alt="FaujiNiwas" 
+              <img
+                src="/logo-dark.jpg"
+                alt="FaujiNiwas"
                 className="w-full h-full object-contain dark-logo"
               />
             </div>
@@ -266,10 +278,11 @@ export default function MobileDashboard({ items = [] }) {
           {/* Bell Notification */}
           <button
             onClick={() => ctx.openTransfers?.()}
-            className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer relative hover:bg-white/40 dark:hover:bg-white/10 backdrop-blur-xl transition-colors"
+            className="glossy-tile w-10 h-10 rounded-full flex items-center justify-center cursor-pointer relative"
+            style={{ '--tile-glow': 'rgba(251,191,36,.55)' }}
             aria-label="Notifications"
           >
-            <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-[#1b4332] dark:text-[#52b788]" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-[#1b4332] dark:text-[#52b788]" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
               <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
             </svg>
@@ -277,7 +290,7 @@ export default function MobileDashboard({ items = [] }) {
           </button>
         </div>
 
-        {/* Row 2: Search + Amber/Bronze Filter Accessibility Trigger */}
+        {/* Row 2: Search + Accessibility Trigger */}
         <div className="flex items-center gap-2 mb-2.5">
           <div className="relative flex-1">
             <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{color:'var(--muted)'}} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -289,12 +302,13 @@ export default function MobileDashboard({ items = [] }) {
               value={smartSearchQ}
               onChange={(e) => setSmartSearchQ(e.target.value)}
               style={{ paddingLeft: '40px', color: 'var(--text)' }}
-              className="w-full bg-white/40 dark:bg-white/10 border border-slate-200/50 dark:border-white/15 rounded-full py-2.5 pr-3 text-[14px] placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none focus:border-[#d97706] dark:focus:border-amber-500 transition-all font-medium backdrop-blur-xl"
+              className="w-full bg-white/40 dark:bg-white/10 border border-slate-200/50 dark:border-white/15 rounded-full py-2.5 pr-3 text-[14px] placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none focus:border-emerald-500 dark:focus:border-emerald-400 focus:shadow-[0_0_0_3px_rgba(16,185,129,.15)] transition-all font-medium backdrop-blur-xl"
             />
           </div>
           <button
             onClick={() => ctx.openAccessibility?.()}
-            className="w-11 h-11 rounded-full liquid-glass-chip flex items-center justify-center shadow-md shadow-amber-950/20 cursor-pointer shrink-0 transition-transform active:scale-95 text-[#d97706] dark:text-amber-400"
+            className="glossy-tile w-11 h-11 rounded-full flex items-center justify-center cursor-pointer shrink-0 active:scale-95 transition-transform text-[#d97706] dark:text-amber-400"
+            style={{ '--tile-glow': 'rgba(251,191,36,.5)' }}
             aria-label="Accessibility and Filters"
             title="Accessibility & Filters"
           >
@@ -313,7 +327,7 @@ export default function MobileDashboard({ items = [] }) {
         </div>
 
         {/* Row 3: Soft Location Bar */}
-        <div className="flex items-center justify-between liquid-glass-chip rounded-xl px-3.5 py-2">
+        <div className="flex items-center justify-between liquid-glass-morph rounded-[16px] px-3.5 py-2">
           <div className="flex items-center gap-2 text-[14px] font-semibold" style={{color:'var(--text)'}}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#15803d" className="dark:stroke-emerald-400" strokeWidth="2.5">
               <circle cx="12" cy="10" r="3"/>
@@ -339,12 +353,13 @@ export default function MobileDashboard({ items = [] }) {
           <MapView />
         </div>
       ) : (
-        <main className="flex-1 overflow-y-auto min-h-0 pb-28">
+        <main className="flex-1 overflow-y-auto min-h-0 pb-36">
 
-          {/* ══ CATEGORY ICONS (Smooth, Seamless, No Harsh Double Lines) ══ */}
+          {/* ══ CATEGORY ICONS — Glossy ColorOS tiles ══ */}
           <div className="px-4 pt-3 pb-2 flex items-start justify-between gap-2 overflow-x-auto no-scrollbar">
             {categories.map((cat) => {
               const isActive = activeCategory === cat.id;
+              const [cA, cB] = CAT_ACCENT[cat.id] || CAT_ACCENT.all;
               return (
                 <motion.button
                   key={cat.id}
@@ -354,24 +369,27 @@ export default function MobileDashboard({ items = [] }) {
                   }}
                   whileTap={{ scale: 0.9 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 24 }}
-                  className="flex flex-col items-center gap-1.5 cursor-pointer shrink-0 min-w-[58px]"
+                  className="flex flex-col items-center gap-1.5 cursor-pointer shrink-0 min-w-[60px]"
                 >
                   <div
-                    className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${
-                      isActive
-                        ? 'bg-[#1b4332] dark:bg-emerald-600 text-white shadow-md shadow-[#1b4332]/30 dark:shadow-emerald-950/40 border border-transparent'
-                        : 'liquid-glass-chip border border-slate-200/60 dark:border-white/10 shadow-xs'
+                    className={`glossy-tile w-[52px] h-[52px] rounded-[18px] flex items-center justify-center transition-all duration-300 ${
+                      isActive ? 'breathe' : ''
                     }`}
+                    style={
+                      isActive
+                        ? { background: `linear-gradient(150deg, ${cA}, ${cB})`, color: '#ffffff', borderColor: 'rgba(255,255,255,.55)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,.5), 0 12px 28px rgba(2,6,16,.4)' }
+                        : { '--tile-glow': cB, color: 'var(--muted)' }
+                    }
                   >
                     {React.cloneElement(CategoryIcons[cat.id], {
-                      stroke: isActive ? 'white' : 'currentColor',
-                      width: 20,
-                      height: 20,
+                      stroke: isActive ? '#ffffff' : 'currentColor',
+                      width: 21,
+                      height: 21,
                     })}
                   </div>
                   <span
                     className={`text-[11.5px] text-center leading-tight whitespace-nowrap ${
-                      isActive ? 'text-[#1b4332] dark:text-emerald-400 font-bold' : 'font-medium'
+                      isActive ? 'font-bold text-emerald-700 dark:text-emerald-400' : 'font-medium'
                     }`}
                     style={!isActive ? { color: 'var(--muted)' } : undefined}
                   >
@@ -382,8 +400,27 @@ export default function MobileDashboard({ items = [] }) {
             })}
           </div>
 
+          {/* ══ GREETING HERO STRIP (ColorOS "breathe" glass) ══ */}
+          <section className="fluid-enter mx-4 mt-3 liquid-glass-morph rounded-[22px] px-4 py-3.5 relative overflow-hidden">
+            <span className="sheen-sweep" />
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-[9.5px] uppercase tracking-[0.18em] font-extrabold" style={{ color: 'var(--muted)' }}>FaujiNiwas · Defence Housing</p>
+                <h1 className="text-[20px] font-black leading-tight mt-0.5 truncate" style={{ color: 'var(--text)' }}>
+                  {selectedLocation === 'Current Location' ? 'Homes near you' : `Cantonment: ${selectedLocation}`}
+                </h1>
+                <p className="text-[12px] font-medium mt-0.5" style={{ color: 'var(--muted)' }}>
+                  {displayHomes.length} verified listings · zero brokerage
+                </p>
+              </div>
+              <div className="glossy-tile w-14 h-14 rounded-2xl flex items-center justify-center shrink-0" style={{ '--tile-glow': 'rgba(251,191,36,.6)' }}>
+                <span className="text-[26px] leading-none">🛡️</span>
+              </div>
+            </div>
+          </section>
+
           {/* ══ SECTION HEADER ══ */}
-          <div className="flex items-center justify-between mb-3 px-4 mt-2">
+          <div className="flex items-center justify-between mb-3 px-4 mt-3">
             <h2 className="text-[18px] font-black tracking-tight" style={{color:'var(--text)'}}>Popular Homes Near You</h2>
             <button
               onClick={() => setActiveCategory('all')}
@@ -407,11 +444,11 @@ export default function MobileDashboard({ items = [] }) {
                   onClick={() => handleCardClick(home)}
                   whileTap={{ scale: 0.97 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 24 }}
-                  className="liquid-glass-chip rounded-2xl p-3 flex gap-3.5 relative cursor-pointer"
-                  style={{ minHeight: '100px' }}
+                  className="liquid-glass-morph rounded-[22px] p-3 flex gap-3.5 relative cursor-pointer fluid-lift"
+                  style={{ minHeight: '104px' }}
                 >
-                  {/* Thumbnail */}
-                  <div className="w-28 rounded-xl overflow-hidden shrink-0 relative bg-white/40 dark:bg-white/[0.06] backdrop-blur-xl" style={{ aspectRatio: '4/3' }}>
+                  {/* Thumbnail — glass-framed */}
+                  <div className="w-28 rounded-[16px] overflow-hidden shrink-0 relative bg-white/40 dark:bg-white/[0.06] backdrop-blur-xl border border-white/25 dark:border-white/10" style={{ aspectRatio: '4/3' }}>
                     <img
                       src={home.image || home.mediaUrls?.[0] || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80'}
                       alt={home.name || 'Property'}
@@ -441,7 +478,7 @@ export default function MobileDashboard({ items = [] }) {
                       </div>
                     </div>
                     <div className="mt-1">
-                      <span className="text-[17.5px] font-black text-[#15803d] dark:text-emerald-400">
+                      <span className="text-[17.5px] font-black text-[#15803d] dark:text-emerald-300 drop-shadow-[0_0_14px_rgba(16,185,129,.35)]">
                         ₹{priceVal.toLocaleString()}
                       </span>
                       <span className="text-[12px] ml-1 font-normal" style={{color:'var(--muted)'}}>/month</span>
@@ -473,36 +510,40 @@ export default function MobileDashboard({ items = [] }) {
             })}
           </div>
 
-          {/* ══ PROMO BANNER ══ */}
-          <div className="mt-5 mb-2 mx-4 relative overflow-hidden bg-gradient-to-r from-[#1b4332]/70 to-[#2d6a4f]/50 dark:from-[#0d281e]/70 dark:to-[#1b4332]/50 backdrop-blur-xl border border-white/10 dark:border-white/5 rounded-2xl p-4 flex items-center justify-between shadow-md">
+          {/* ══ PROMO BANNER — breathing glass ══ */}
+          <div className="mt-5 mb-2 mx-4 relative overflow-hidden liquid-glass-morph rounded-[22px] p-4 flex items-center justify-between shadow-lg breathe"
+            style={{ borderColor: 'rgba(251,191,36,.3)' }}>
             <span className="sheen-sweep" />
             <div className="flex flex-col pr-2">
-              <div className="flex items-center gap-1.5 text-[12px] font-bold text-emerald-300">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" strokeWidth="2.2">
+              <div className="flex items-center gap-1.5 text-[12.5px] font-extrabold text-[#065f46] dark:text-emerald-300">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                 </svg>
                 <span>Verified Defence Listings</span>
               </div>
-              <p className="text-[11px] text-slate-200 mt-1">Direct from defence personnel & verified owners</p>
+              <p className="text-[11px] mt-1 opacity-80" style={{ color: 'var(--muted)' }}>
+                Direct from defence personnel & verified owners
+              </p>
             </div>
             <button
               onClick={() => ctx.openPost?.()}
-              className="bg-[#b45309] hover:bg-[#92400e] text-white text-[12px] font-bold px-3.5 py-2.5 rounded-xl cursor-pointer shrink-0 whitespace-nowrap active:scale-95 transition-all shadow-sm"
+              className="flex items-center gap-1.5 bg-gradient-to-br from-[#fbbf24] to-[#d97706] text-[#1c1917] text-[12px] font-black px-4 py-2.5 rounded-[14px] cursor-pointer shrink-0 whitespace-nowrap active:scale-95 transition-all shadow-[0_8px_24px_rgba(251,191,36,.4)]"
             >
-              List Property
+              <span>+</span> List Property
             </button>
           </div>
 
         </main>
       )}
 
-      {/* ══ TRANSLUCENT BOTTOM NAVIGATION BAR ══ */}
+      {/* ══ iOS FLOATING GLASS DOCK ══ */}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-[1000] px-2 py-1.5 flex items-center justify-around liquid-glass-nav border-t-0 h-[64px]"
+        className="lg-dock fixed z-[1000] px-2 h-[66px] flex items-center justify-around rounded-[26px]"
+        style={{ left: '12px', right: '12px', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 10px)' }}
       >
         {navTabs.map((tab) => {
           const isActive = mobileTab === tab.id;
-          const color = isActive ? '#15803d' : '#94a3b8';
+          const color = isActive ? '#059669' : '#94a3b8';
           return (
             <motion.button
               key={tab.id}
@@ -516,22 +557,22 @@ export default function MobileDashboard({ items = [] }) {
               }}
               whileTap={{ scale: 0.9 }}
               transition={{ type: 'spring', stiffness: 420, damping: 26 }}
-              className="relative flex flex-col items-center justify-center flex-1 h-full gap-0.5 cursor-pointer"
+              className="relative flex flex-col items-center justify-center flex-1 h-full gap-0.5 cursor-pointer rounded-2xl"
             >
               {isActive && (
                 <motion.div
                   layoutId="mob-tab-pill"
-                  className="absolute top-1 bottom-2 left-1/2 -translate-x-1/2 w-14 rounded-2xl bg-emerald-100/70 dark:bg-emerald-500/15 border border-emerald-200/60 dark:border-emerald-400/20"
+                  className="absolute top-1 bottom-1 left-1 right-1 rounded-[18px] bg-emerald-500/15 dark:bg-emerald-400/15 ring-1 ring-emerald-500/40 dark:ring-emerald-300/30"
                   style={{ zIndex: 0 }}
                   transition={{ type: 'spring', stiffness: 460, damping: 34, mass: 0.6 }}
                 />
               )}
               <span className="relative z-10">
-                {NavIcons[tab.id](isActive ? '#15803d' : '#94a3b8', wishlist.length > 0 && tab.id === 'saved')}
+                {NavIcons[tab.id](color, wishlist.length > 0 && tab.id === 'saved')}
               </span>
               <span
                 className={`relative z-10 text-[11.5px] font-bold leading-none mt-1 ${
-                  isActive ? 'text-[#15803d] dark:text-emerald-400' : ''
+                  isActive ? 'text-emerald-700 dark:text-emerald-400' : ''
                 }`}
                 style={!isActive ? { color: 'var(--muted)' } : undefined}
               >

@@ -582,3 +582,151 @@ body > .skiptranslate {
 .dark-theme .text-slate-400 {
   color: #94a3b8 !important;
 }
+
+/* ════════════════════════════════════════════════════════════
+   iOS 26 / ColorOS 17 — LIQUID GLASS landing revamp
+   ════════════════════════════════════════════════════════════ */
+
+/* Gloaming Blend aurora backdrop (fixed → parallax while scrolling).
+   Colour field behind every translucent glass panel. */
+.landing-aurora {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background-color: #eef2f8;
+  background-image:
+    radial-gradient(52% 46% at 8% 2%,   rgba(255,153,51,.30), transparent 60%),
+    radial-gradient(44% 42% at 96% 6%,  rgba(20,184,166,.26), transparent 60%),
+    radial-gradient(56% 52% at 88% 92%, rgba(99,102,241,.30), transparent 62%),
+    radial-gradient(42% 40% at 10% 94%, rgba(212,175,55,.26), transparent 62%);
+  background-size: 180% 180%;
+  animation: auroraDrift 32s ease-in-out infinite alternate;
+  will-change: transform, background-position;
+}
+.landing-aurora::before {
+  content:''; position:absolute; inset:-22%;
+  background:
+    radial-gradient(34% 30% at 30% 72%, rgba(16,185,129,.18), transparent 60%),
+    radial-gradient(28% 26% at 76% 28%, rgba(56,189,248,.16), transparent 60%),
+    radial-gradient(24% 22% at 58% 82%, rgba(167,139,250,.16), transparent 60%);
+  filter: blur(42px);
+  animation: auroraWave1 34s ease-in-out infinite alternate;
+  will-change: transform;
+}
+.landing-aurora::after {
+  content:''; position:absolute; inset:-14%;
+  background:
+    radial-gradient(30% 26% at 22% 34%, rgba(245,158,11,.12), transparent 62%),
+    radial-gradient(26% 22% at 68% 64%, rgba(217,70,239,.10), transparent 62%);
+  filter: blur(60px);
+  animation: auroraWave2 40s ease-in-out infinite alternate;
+  will-change: transform;
+}
+.dark-theme.landing-page .landing-aurora,
+.landing-page.dark .landing-aurora,
+.dark .landing-aurora {
+  background-color: #060a14;
+  background-image:
+    radial-gradient(58% 52% at 10% 4%,  rgba(255,159,64,.50), transparent 62%),
+    radial-gradient(50% 48% at 92% 6%,  rgba(45,212,191,.44), transparent 62%),
+    radial-gradient(62% 58% at 84% 92%, rgba(99,102,241,.50), transparent 64%),
+    radial-gradient(46% 44% at 12% 90%, rgba(212,175,55,.40), transparent 62%);
+}
+.dark-theme.landing-page .landing-aurora::before,
+.landing-page.dark .landing-aurora::before,
+.dark .landing-aurora::before {
+  background:
+    radial-gradient(34% 30% at 30% 72%, rgba(16,185,129,.30), transparent 60%),
+    radial-gradient(28% 26% at 76% 28%, rgba(56,189,248,.26), transparent 60%),
+    radial-gradient(24% 22% at 58% 82%, rgba(167,139,250,.26), transparent 60%);
+}
+.dark-theme.landing-page .landing-aurora::after,
+.landing-page.dark .landing-aurora::after,
+.dark .landing-aurora::after {
+  background:
+    radial-gradient(30% 26% at 22% 34%, rgba(255,167,38,.16), transparent 62%),
+    radial-gradient(26% 22% at 68% 64%, rgba(232,121,249,.14), transparent 62%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-aurora, .landing-aurora::before, .landing-aurora::after { animation: none; }
+}
+
+/* Floating glass navigation (beats the solid !important rules above) */
+.landing-page nav.liquid-glass-morph,
+.landing-page nav.liquid-glass-morph.lg-hairline {
+  background: linear-gradient(165deg, var(--lgm-1), var(--lgm-2) 55%, var(--lgm-3)) !important;
+  background-color: var(--lgm-fallback) !important;
+  backdrop-filter: blur(26px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(26px) saturate(180%) !important;
+  border: 1px solid var(--lgm-border) !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: none !important;
+  box-shadow: inset 0 1px 0 var(--lgm-rim) !important, 0 14px 34px var(--lgm-shadow) !important;
+}
+.dark-theme.landing-page nav.liquid-glass-morph {
+  border-color: rgba(255,255,255,.14) !important;
+  border-bottom: none !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.16) !important, 0 14px 34px rgba(2,6,16,.5) !important;
+}
+/* Gradient hairline on the nav (kept explicit since border-bottom is none) */
+.landing-page nav.lg-hairline::after {
+  bottom: -1px !important;
+}
+
+/* Feature cards → liquid glass */
+.landing-page .feature-card {
+  background: linear-gradient(165deg, rgba(255,255,255,.88), rgba(255,255,255,.52) 52%, rgba(255,255,255,.30));
+  -webkit-backdrop-filter: blur(18px) saturate(170%);
+  backdrop-filter: blur(18px) saturate(170%);
+  border: 1px solid rgba(255,255,255,.85);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.95), 0 2px 6px rgba(15,23,42,.05), 0 20px 46px rgba(15,23,42,.10);
+}
+.dark-theme.landing-page .feature-card,
+.dark .landing-page .feature-card {
+  background: linear-gradient(165deg, rgba(255,255,255,.12), rgba(255,255,255,.045) 55%, rgba(255,255,255,.02)) !important;
+  background-color: rgba(13,18,34,.5) !important;
+  border: 1px solid rgba(255,255,255,.12) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.14), 0 20px 46px rgba(0,0,0,.35) !important;
+}
+
+/* Converted liquid-glass sections stay glass in dark mode
+   (beats the old ".dark-theme .landing-page #why-us { background:#111827 !important }"). */
+.dark-theme.landing-page section.liquid-glass-morph {
+  background: linear-gradient(165deg, var(--lgm-1), var(--lgm-2) 55%, var(--lgm-3)), var(--lgm-fallback) !important;
+  background-color: var(--lgm-fallback) !important;
+  backdrop-filter: blur(30px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(190%) !important;
+  border: 1px solid rgba(255,255,255,.14) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 24px 60px rgba(2,6,16,.5) !important;
+}
+.dark-theme.landing-page section.liquid-glass-morph h2,
+.dark-theme.landing-page section.liquid-glass-morph h3,
+.dark-theme.landing-page section.liquid-glass-morph td,
+.dark-theme.landing-page section.liquid-glass-morph th {
+  color: #ffffff !important;
+}
+.dark-theme.landing-page section.liquid-glass-morph p {
+  color: #cbd5e1 !important;
+}
+
+/* Breathing glow for the hero CTA */
+@keyframes ctaPulse {
+  0%,100% { box-shadow: 0 4px 24px rgba(245,158,11,.40), 0 0 0 0 rgba(245,158,11,.35); }
+  50%     { box-shadow: 0 4px 34px rgba(245,158,11,.55), 0 0 0 10px rgba(245,158,11,0); }
+}
+.landing-page button[class*="from-amber-500"] {
+  animation: ctaPulse 2.6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-page button[class*="from-amber-500"] { animation: none; }
+}
+
+/* Ground the page above the aurora */
+.landing-page > div {
+  position: relative;
+  z-index: 1;
+}

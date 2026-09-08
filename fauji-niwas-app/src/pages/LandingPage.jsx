@@ -102,13 +102,15 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-[#FAF9F6] dark:bg-[#0b1325] text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-amber-500/20 relative">
-      
+
+      {/* ColorOS Gloaming aurora backdrop — colour field behind every glass panel */}
+      <div className="landing-aurora" aria-hidden="true" />
 
       {/* Grid Background Overlay */}
       <div className="grid-bg-overlay" aria-hidden="true" />
 
-      {/* Navigation Header */}
-      <nav className="fixed top-0 left-0 right-0 z-[1000] border-b border-slate-200/60 bg-[#FAF9F6]/80 backdrop-blur-xl transition-all duration-300">
+      {/* Navigation Header — floating liquid glass sheet */}
+      <nav className="fixed top-0 left-0 right-0 z-[1000] liquid-glass-morph lg-hairline border-0 transition-all duration-300">
         <div className="max-w-[1250px] mx-auto px-6 h-16 flex items-center justify-between">
           <a href="#" className="logo flex items-center gap-2 text-lg font-black tracking-tight text-slate-900 font-heading min-h-[48px] px-2">
             <img 
@@ -162,7 +164,7 @@ export default function LandingPage() {
 
       {/* Mobile Menu Drawer */}
       {mobMenuOpen && (
-        <div className="fixed top-16 left-0 right-0 z-[999] bg-[#FAF9F6]/95 backdrop-blur-2xl border-b border-slate-200/80 p-4 flex flex-col text-left shadow-lg md:hidden">
+        <div className="fixed top-16 left-0 right-0 z-[999] liquid-glass-morph rounded-b-3xl border-0 p-4 flex flex-col text-left shadow-2xl md:hidden">
           <a href="#" onClick={() => setMobMenuOpen(false)} className="text-sm font-black uppercase tracking-widest text-slate-800 hover:text-amber-700 py-4 block">Home</a>
           <button onClick={(e) => { setMobMenuOpen(false); handleLaunchApp(e); }} className="text-sm font-black uppercase tracking-widest text-slate-800 hover:text-amber-700 text-left cursor-pointer py-4 block w-full border-none bg-transparent">Listings</button>
           <button onClick={(e) => { setMobMenuOpen(false); handleLaunchApp(e); }} className="text-sm font-black uppercase tracking-widest text-slate-800 hover:text-amber-700 text-left cursor-pointer py-4 block w-full border-none bg-transparent">Post Room</button>
@@ -210,7 +212,7 @@ export default function LandingPage() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-          className="relative rounded-[2rem] overflow-hidden w-full h-[450px] sm:h-[500px] md:h-[540px] shadow-[0_20px_50px_rgba(15,23,42,0.06)] border border-slate-200/50"
+          className="relative rounded-[2rem] overflow-hidden w-full h-[450px] sm:h-[500px] md:h-[540px] liquid-glass-morph shadow-[0_24px_70px_rgba(15,23,42,0.18)]"
         >
           <picture>
             <source media="(max-width: 640px)" srcSet="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=450&q=25&fm=webp" />
@@ -476,7 +478,7 @@ export default function LandingPage() {
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.5 }}
           id="why-us" 
-          className="bg-white border border-slate-200/80 rounded-3xl p-6 md:p-8 mt-2 text-left flex flex-col md:flex-row gap-6 items-start justify-between shadow-sm"
+          className="liquid-glass-morph rounded-3xl p-6 md:p-8 mt-2 text-left flex flex-col md:flex-row gap-6 items-start justify-between"
         >
           <div className="max-w-xl flex flex-col gap-2">
             <span className="text-[10px] font-extrabold text-[#b45309] uppercase tracking-widest font-mono">Exclusive Platform Overview</span>
@@ -522,7 +524,7 @@ export default function LandingPage() {
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.5 }}
           id="comparison" 
-          className="bg-white border border-slate-200/80 rounded-3xl p-6 md:p-8 mt-2 text-left shadow-sm"
+          className="liquid-glass-morph rounded-3xl p-6 md:p-8 mt-2 text-left"
         >
           <div className="flex flex-col gap-2 mb-6">
             <span className="text-[10px] font-extrabold text-[#b45309] uppercase tracking-widest font-mono">Compare The Tactical Edge</span>
@@ -599,7 +601,7 @@ export default function LandingPage() {
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.5, delay: 0.1 }}
             onClick={() => setShowLeaseModal(true)}
-            className="bg-white border border-slate-200/60 p-6 rounded-2xl flex gap-4 cursor-pointer hover:border-amber-500/50 hover:bg-amber-500/5 transition-all text-left shadow-sm items-start"
+            className="liquid-glass-morph p-6 rounded-2xl flex gap-4 cursor-pointer hover:border-amber-500/60 transition-all text-left items-start"
           >
             <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-800 shrink-0">
               <FileText size={20} />
@@ -620,7 +622,7 @@ export default function LandingPage() {
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.5, delay: 0.2 }}
             onClick={() => setShowWasmModal(true)}
-            className="bg-white border border-slate-200/60 p-6 rounded-2xl flex gap-4 cursor-pointer hover:border-amber-500/50 hover:bg-amber-500/5 transition-all text-left shadow-sm items-start"
+            className="liquid-glass-morph p-6 rounded-2xl flex gap-4 cursor-pointer hover:border-amber-500/60 transition-all text-left items-start"
           >
             <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-700 shrink-0">
               <Lock size={20} />
@@ -678,7 +680,7 @@ export default function LandingPage() {
         transition={{ duration: 0.6 }}
         className="max-w-[1250px] mx-auto px-6 mt-8 mb-4 relative z-10 text-left"
       >
-        <div className="bg-white/45 border border-slate-200/60 rounded-3xl p-8 backdrop-blur-md shadow-sm">
+        <div className="liquid-glass-morph rounded-3xl p-8">
           <span className="text-[10px] font-black uppercase text-amber-700 tracking-wider font-mono">Founding Team</span>
           <h2 className="text-xl font-extrabold text-slate-900 mt-1 mb-6 font-heading">Meet the Minds Behind Fauji Niwas</h2>
           
@@ -802,7 +804,7 @@ export default function LandingPage() {
       {/* 🚀 Futuristic Glassmorphic Boot/Routing Transition Screen Overlay */}
       {isRedirecting && (
         <div className="fixed inset-0 z-[9999] bg-[#0b1120]/95 backdrop-blur-2xl flex flex-col items-center justify-center text-left p-6 select-none font-mono">
-          <div className="w-full max-w-md bg-[#10192e] border border-[#1e293b] p-8 rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.8)] relative overflow-hidden flex flex-col gap-6">
+          <div className="w-full max-w-md liquid-glass-morph p-8 rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.8)] relative overflow-hidden flex flex-col gap-6">
             
             {/* Pulsing Tactical radar animation */}
             <div className="flex items-center gap-3">
