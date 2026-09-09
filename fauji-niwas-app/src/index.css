@@ -346,6 +346,10 @@ select.fb option { background: var(--card); color: var(--text); }
     align-items: flex-end;
     background: rgba(0, 0, 0, 0.6) !important;
   }
+  /* AI Helper stays centered on mobile instead of bottom-sheet */
+  .modal-backdrop.ai-helper-center {
+    align-items: center;
+  }
 }
 @keyframes mfade { from { opacity: 0; } to { opacity: 1; } }
 
@@ -1601,7 +1605,7 @@ html.is-native {  overscroll-behavior-y: none; }
 body { scroll-behavior: auto !important; -webkit-overflow-scrolling: touch !important; }
 
 /* ── USER GLASSMORPHIC LIGHT THEME OVERRIDES ── */
-:root {
+:root[data-theme="light"] {
   --glass:       rgba(255,255,255,0.62);
   --glass-light: rgba(255,255,255,0.45);
   --glass-ultra: rgba(255,255,255,0.80);
@@ -1629,8 +1633,6 @@ body { scroll-behavior: auto !important; -webkit-overflow-scrolling: touch !impo
 
 html.app-shell, body.app-shell {
   font-family: 'Inter', sans-serif !important;
-  background: #e8f0e9 !important;
-  background-color: #e8f0e9 !important;
   color: var(--text) !important;
 }
 
