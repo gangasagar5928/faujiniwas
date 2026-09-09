@@ -1,0 +1,53 @@
+rules_version = '2';
+
+// ── FaujiNiwas Firebase Storage Rules ──────────────────────────────
+//   • listings/{...}  → public read (photos on map/cards), owner writes
+//   • chats/{...}     → participants only (media shared inside a chat)
+//   • verifications/  → owner writes encrypted docs, admin reads only
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    // ── Listing photos: publicly viewable, owner uploads ───────────
+    // Path: listings/{ownerUid}_{timestamp}_{index}.webp
+    match /listings/{fileName} {
+      allow read: if true;                                     // shown on map/cards
+      allow write: if signedIn()
+        && fileName.matches('^' + request.auth.uid + '_.*$');  // filename starts with owner's uid
+    }
+
+    // ── Chat media: visible only to the chat's participants ────────
+    // Path: chats/{chatId}/{file}
+    // chatId pattern: <listingId>_<uid1>_<uid2> — membership is deduced
+    // from the id itself so the first image in a brand-new chat works
+    // (the Firestore chat doc isn't created until after upload).
+    match /chats/{chatId}/{file} {
+      function isChatMember() {
+        return signedIn()
+          && chatId.matches('.*_' + request.auth.uid + '(_.*)?$');
+      }
+      allow read: if isChatMember();
+      allow write: if isChatMember();
+    }
+
+    // ── Verification documents: encrypted military IDs ─────────────
+    // Path: verifications/{ownerUid}_{timestamp}.enc
+    match /verifications/{fileName} {
+      allow write: if signedIn()
+        && fileName.matches('^' + request.auth.uid + '_');
+      allow read: if signedIn() && (
+        request.auth.uid != null
+        && fileName.matches('^' + request.auth.uid + '_')       // owner of the doc
+        || firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
+    }
+
+    // ── default deny ───────────────────────────────────────────────
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

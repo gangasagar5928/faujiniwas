@@ -239,27 +239,13 @@ export default function ProfileModal({ onClose }) {
           if (signUpError.code === 'auth/email-already-in-use') {
             ctx.showToast('Incorrect password for this email.', 'err');
           } else {
-            console.warn("Sign up failed, using mock bypass:", signUpError);
-            ctx.showToast('Auth error. Auto-logging in via Offline Demo! 👤', 'ok');
-            localStorage.setItem('fn_mock_user', JSON.stringify({ 
-              uid: 'mock_user_email', 
-              phoneNumber: '+919999999999', 
-              displayName: email.split('@')[0],
-              email: email 
-            }));
-            setTimeout(() => window.location.reload(), 1200);
+            console.warn("Sign up failed:", signUpError);
+            ctx.showToast('Sign up failed. Please try again.', 'err');
           }
         }
       } else {
-        console.warn("Login failed, using mock bypass:", e);
-        ctx.showToast('Firebase connection error. Auto-logging in via Offline Demo! 👤', 'ok');
-        localStorage.setItem('fn_mock_user', JSON.stringify({ 
-          uid: 'mock_user_email', 
-          phoneNumber: '+919999999999', 
-          displayName: email.split('@')[0],
-          email: email 
-        }));
-        setTimeout(() => window.location.reload(), 1200);
+        console.warn("Login failed:", e);
+        ctx.showToast('Login failed: ' + (e.message || 'Please try again.'), 'err');
       }
     }
     setLoading(false);
@@ -291,15 +277,8 @@ export default function ProfileModal({ onClose }) {
       ctx.showToast('OTP sent to +91' + phone + ' 💬', 'ok');
     } catch (e) {
       cleanupRecaptcha();
-      console.warn("SMS OTP Failed, falling back to mock login:", e);
-      ctx.showToast('SMS limit reached. Auto-logging in via Offline Demo! 👤', 'ok');
-      localStorage.setItem('fn_mock_user', JSON.stringify({ 
-        uid: 'mock_user_' + phone, 
-        phoneNumber: '+91' + phone, 
-        displayName: 'Officer ' + phone.slice(-4),
-        email: 'demo@faujiniwas.com' 
-      }));
-      setTimeout(() => window.location.reload(), 1200);
+      console.warn("SMS OTP Failed:", e);
+      ctx.showToast('Could not send OTP: ' + (e.message || 'Please try again.'), 'err');
     }
     setLoading(false);
   };

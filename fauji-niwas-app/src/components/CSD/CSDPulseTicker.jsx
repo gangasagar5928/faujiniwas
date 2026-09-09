@@ -58,7 +58,7 @@ export default function CSDPulseTicker() {
   ) || pulseData[0];
 
   const requireAuth = (action) => {
-    if (!user && !localStorage.getItem('fn_mock_user')) {
+    if (!user) {
       alert('Sign in to vote and contribute to URC Pulse.');
       return false;
     }
@@ -111,7 +111,7 @@ export default function CSDPulseTicker() {
     );
   }
 
-  const isAuthenticated = !!(user || localStorage.getItem('fn_mock_user'));
+  const isAuthenticated = !!user;
   const speedVoted = voted[`${pulse.id}_speed`];
   const stockVoted = voted[`${pulse.id}_stock`];
 
