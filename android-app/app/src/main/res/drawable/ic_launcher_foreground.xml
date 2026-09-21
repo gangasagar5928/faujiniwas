@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Glass home glyph + rising star — gold on deep slate. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:scaleX="2.1"
+        android:scaleY="2.1"
+        android:translateX="28.8"
+        android:translateY="28.8">
+        <path
+            android:fillColor="#F59E0B"
+            android:pathData="M12,3L2,12h3v9h6v-6h2v6h6v-9h3L12,3z" />
+        <path
+            android:fillColor="#FBBF24"
+            android:pathData="M21.5,5.5l1.1,2.6 2.8,0.2 -2.2,1.9 0.7,2.8 -2.4,-1.5 -2.4,1.5 0.7,-2.8 -2.2,-1.9 2.8,-0.2z" />
+    </group>
+</vector>
