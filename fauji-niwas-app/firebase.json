@@ -25,7 +25,7 @@
           { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
           { "key": "Permissions-Policy", "value": "camera=(), microphone=(), fullscreen=(self), geolocation=(self), payment=()" },
           { "key": "Cross-Origin-Opener-Policy", "value": "same-origin" },
-          { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://maps.googleapis.com https://translate.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' blob: data: https:; connect-src 'self' https: wss:; media-src 'self' blob: data: https:; frame-src https://www.google.com https://translate.google.com; worker-src 'self' blob:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https:; frame-ancestors 'self'" }
+          { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://maps.googleapis.com https://translate.google.com https://unpkg.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com https://cdnjs.cloudflare.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' blob: data: https: https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://*.google.com; connect-src 'self' https: wss:; media-src 'self' blob: data: https:; frame-src https://www.google.com https://translate.google.com; worker-src 'self' blob:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https:; frame-ancestors 'self'" }
         ]
       }
     ],
