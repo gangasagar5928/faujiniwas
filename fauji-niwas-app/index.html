@@ -35,10 +35,13 @@
     <meta name="msvalidate.01" content="778CA68065E0BE981FDDBCCB663A3C33" />
     <meta name="keywords" content="defence housing, military relocation, cantonment rentals, military quarters, KV schools, CSD canteen, Indian Armed Forces, Fauji Niwas, Aman Kumar Singh, Anurag Kumar Singh" />
     <meta name="author" content="Aman Kumar Singh (Founder), Anurag Kumar Singh (Co-Founder)" />
-    <link rel="canonical" href="https://faujiniwas.web.app/" />
     <link rel="preconnect" href="https://mt1.google.com" crossorigin />
     <link rel="preconnect" href="https://firebaseapp.com" crossorigin />
     <link rel="dns-prefetch" href="https://translate.google.com" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.gridlayer.googlemutant@0.14.0/dist/Leaflet.GoogleMutant.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=%VITE_GOOGLE_MAPS_API_KEY%&libraries=places"></script>
 
     <!-- Geographic Location Meta Tags (GEO) -->
     <meta name="geo.region" content="IN" />
@@ -663,7 +666,7 @@
     })();
     </script>
 
-    <script type="module" src="/src/landing.jsx"></script>
+    <script type="module" src="/src/main.jsx"></script>
     <script>
     (function() {
       var savedSize = localStorage.getItem('fn_fontsize') || '16px';
