@@ -45,10 +45,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <ErrorBoundary>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<LandingPage />} />
+          <Route path="/" element={<App />} />
           <Route path="/app" element={<App />} />
           <Route path="/app.html" element={<App />} />
-          <Route path="*" element={<LandingPage />} />
+          <Route path="/landing" element={<LandingPage />} />
+          <Route path="*" element={<App />} />
         </Routes>
       </BrowserRouter>
     </ErrorBoundary>
