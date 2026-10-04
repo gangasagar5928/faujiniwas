@@ -21,20 +21,15 @@ fauji-niwas-app/.env
 fauji-niwas-app/.env.local
 fauji-niwas-app/.env.*.local
 
-# Flutter & Dart Artifacts & Packages
-.dart_tool/
-.flutter-plugins
-.flutter-plugins-dependencies
-.packages
-.pub-cache/
-.pub/
-fauji-niwas_app/build/
-fauji-niwas_app/.dart_tool/
-fauji-niwas_app/.flutter-plugins
-fauji-niwas_app/.flutter-plugins-dependencies
-fauji-niwas_app/.packages
-fauji-niwas_app/.pub-cache/
-fauji-niwas_app/.pub/
+# Android / Gradle
+android-app/.gradle/
+android-app/build/
+android-app/app/build/
+android-app/local.properties
+android-app/.kotlin/
+android-app/captures/
+android-app/keystore.properties
+android-app/release-key.jks
 
 # Mobile Binaries (Never commit heavy packages or builds to git)
 *.apk
