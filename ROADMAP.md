@@ -21,8 +21,7 @@
    - 2.2 Global State Architecture (Zustand Slices)
    - 2.3 Map Engine (Leaflet.js, OpenStreetMap, & Marker Clustering)
    - 2.4 Progressive Web App (PWA) Offline Strategy
-   - 2.5 Native Android Flutter Shell Integration
-   - 2.6 Asset Optimization & Image Delivery Strategy
+   - 2.5 Asset Optimization & Image Delivery Strategy
 3. [System Architecture & Precise Data Flows](#3-system-architecture--precise-data-flows)
    - 3.1 High-Level Hybrid Cloud Architecture
    - 3.2 Live Database Synchronisation Data Flow
@@ -44,12 +43,6 @@
    - 5.3 CSD Home Tiffin Matching & Diet Algorithms
    - 5.4 Rank-Based HRA Allowance & Out-of-Pocket Expense Heuristic
    - 5.5 Client-Side Canvas Document Masking Engine
-6. [Native Android Shell & Bridge Configuration](#6-native-android-shell--bridge-configuration)
-   - 6.1 `InAppWebView` JavaScript Bridge Overrides
-   - 6.2 Native Geolocation & File Selection Handling
-   - 6.3 Gradle Build Target Specifications
-   - 6.4 `AndroidManifest.xml` Security Permissions Configuration
-   - 6.5 Web-to-Native Message Exchange Protocol
 7. [Comprehensive Privacy Policy & DPDP Act Principles](#7-comprehensive-privacy-policy--dpdp-act-principles)
    - 7.1 Data Protection Principles & Indian Context
    - 7.2 Strict Personal Identifiable Information (PII) Isolation
@@ -81,7 +74,7 @@
     - 11.4 Audit Review Cadence
 12. [Firebase App Check (Abuse Prevention & Integrity)](#12-firebase-app-check-abuse-prevention--integrity)
     - 12.1 Threats this mitigates
-    - 12.2 Deployment Strategy (Web + Android)
+    - 12.2 Deployment Strategy (Web)
     - 12.3 Enforcement Rollout Plan
     - 12.4 Failure Handling & Observability
 13. [Incident Response (IR) & Postmortems](#13-incident-response-ir--postmortems)
@@ -116,7 +109,7 @@
     - 16.7 Phase 27: Indian Spacing Overhaul, Mobile Drawer Fixes & Live CSD Pulse Backend
     - 16.8 Phase 28: Interactive Gateway Steppers, Accessibility Contrast Upgrades & Simplified Dashboard Footer
     - 16.9 Phase 29: AI Matcher & Smart Rent Estimator Suite
-    - 16.10 Phase 30: Hardened Security, Real Decryption & Native APK Compilation
+    - 16.10 Phase 30: Hardened Security & Real Decryption
 17. [Next-Generation Strategic Expansion (Phases 31–40)](#17-next-generation-strategic-expansion-phases-31-40)
     - 17.1 Phase 31: Advanced ECHS Medical Appointments & OPD Queue Estimations
     - 17.2 Phase 32: Inter-Cantonment Peer-to-Peer Logistics Routing Protocols
@@ -140,8 +133,7 @@
 27. [Appendix D: UI Modals Component Mapping and Architecture](#appendix-d-ui-modals-component-mapping-and-architecture)
 28. [Appendix E: Cantonment Proximity Index Map Coordinates Database Reference](#appendix-e-cantonment-proximity-index-map-coordinates-database-reference)
 29. [Appendix F: Complete Security Testing Script Boilerplate](#appendix-f-complete-security-testing-script-boilerplate)
-30. [Appendix G: Android Release Build and Signature Key Management Protocol](#appendix-g-android-release-build-and-signature-key-management-protocol)
-31. [Appendix H: ECHS Medical Polyclinics Matrix](#appendix-h-echs-medical-polyclinics-matrix)
+30. [Appendix H: ECHS Medical Polyclinics Matrix](#appendix-h-echs-medical-polyclinics-matrix)
 32. [Appendix I: Progressive Web App Service Worker Implementation Blueprint (`sw.js`)](#appendix-i-progressive-web-app-service-worker-implementation-blueprint-swjs)
 33. [Appendix J: CI/CD Pipeline Automation Architecture (`deploy.yml`)](#appendix-j-cicd-pipeline-automation-architecture-deployyml)
 
@@ -254,10 +246,7 @@ export const useFilterStore = create(
 * **Service Workers**: Aggressive caching assets store map scripts, application shells, and previous housing queries.
 * **Offline Fallbacks**: When internet connection drops, the PWA displays cached properties and switches the mapping screen to the offline vector navigation compass.
 
-### 2.5 Native Android Flutter Shell Integration
-* **Flutter InAppWebView**: Leverages an optimized native Flutter WebView shell that injects custom headers, bypasses web engine rendering latency, and bridges the device camera and file system securely.
-
-### 2.6 Asset Optimization & Image Delivery Strategy
+### 2.5 Asset Optimization & Image Delivery Strategy
 To maximize performance on poor mobile networks, all listings images undergo aggressive optimization:
 * **WebP Conversion**: All uploaded files are compressed client-side to lightweight WebP files before database ingestion.
 * **Max Dimension Restrictions**: Client scripts resize uploaded media to a maximum width of 800px.
@@ -271,15 +260,13 @@ To maximize performance on poor mobile networks, all listings images undergo agg
 ```mermaid
 graph TD
     User((Defence User))
-    AndroidShell[Android Native App - Target SDK 34]
-    ReactApp[React 18 / Vite Frontend]
+    ReactApp[React 19 / Vite Frontend]
     FirebaseBaaS[Firebase Backend as a Service]
     CryptoEngine[Web Crypto API Core]
     LocalDB[(IndexedDB / LocalStorage)]
     OSM[OpenStreetMap Tile Server]
 
-    User --> AndroidShell
-    AndroidShell -->|Bridges Geolocation & Files| ReactApp
+    User --> ReactApp
     ReactApp -->|Calculates Haversine Proximity| OSM
     ReactApp -->|Decrypts Client-Side| CryptoEngine
     CryptoEngine -->|Stores E2EE Session Keys| LocalDB
@@ -580,91 +567,7 @@ export function applyDocumentMasking(canvas, redactZones) {
 
 ---
 
-## 6. NATIVE ANDROID SHELL & BRIDGE CONFIGURATION
-
-### 6.1 `InAppWebView` JavaScript Bridge Overrides
-The Flutter shell overrides native WebView user agents to communicate features like GPS lookups:
-```dart
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-
-class WebAppController {
-  InAppWebViewController? _controller;
-
-  void setupJsBridge(InAppWebViewController controller) {
-    _controller = controller;
-    _controller?.addJavaScriptHandler(
-      handlerName: 'triggerNativeShare',
-      callback: (args) {
-        // Native Share Implementation
-        return {'status': 'success'};
-      },
-    );
-  }
-}
-```
-
-### 6.2 Native Geolocation & File Selection Handling
-To request device permissions, the app uses standard OS prompts. Upon granting permission, the GPS coordinates are pushed to the PWA runtime interface, bypassing raw browser geolocation timeouts.
-
-### 6.3 Gradle Build Target Specifications
-```groovy
-android {
-    compileSdkVersion 34
-    defaultConfig {
-        applicationId "com.faujiniwas.app"
-        minSdkVersion 23
-        targetSdkVersion 34
-        versionCode 12
-        versionName "1.2.0"
-    }
-}
-```
-
-### 6.4 `AndroidManifest.xml` Security Permissions Configuration
-```xml
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.faujiniwas.app">
-    
-    <!-- GPS Location Access -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    
-    <!-- Camera for credential scan -->
-    <uses-permission android:name="android.permission.CAMERA" />
-    
-    <!-- Storage access for uploading document artifacts -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    
-    <application
-        android:label="Fauji Niwas"
-        android:icon="@mipmap/ic_launcher">
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
-    </application>
-</manifest>
-```
-
-### 6.5 Web-to-Native Message Exchange Protocol
-The WebView bridge exchanges structured JSON envelopes:
-```typescript
-interface WebViewMessage<T = any> {
-  type: 'GET_LOCATION' | 'STORE_KEY' | 'OPEN_CAMERA' | 'COMPASS_ORIENTATION';
-  payload?: T;
-  callbackId: string; // Maps to JS Promise resolvers
-}
-```
-
----
-
-## 7. COMPREHENSIVE PRIVACY POLICY & DPDP Act PRINCIPLES
+## 7. COMPREHENSIVE PRIVACY POLICY & DPDP ACT PRINCIPLES
 
 ### 7.1 Data Protection Principles & Indian Context
 Fauji Niwas operates on strict compliance with the **Digital Personal Data Protection (DPDP) Act 2023** of India, ensuring all user data is treated as private.
@@ -826,9 +729,8 @@ Logs are stored as append-only records with a unique identifier mapping `uid_tim
 * **Automated Scrapers**: Blocks bots scraping local rent data.
 * **API Tampering**: Prevents external clients from querying databases.
 
-### 12.2 Deployment Strategy (Web + Android)
+### 12.2 Deployment Strategy (Web)
 * **Web**: Uses reCAPTCHA Enterprise.
-* **Android**: Uses Play Integrity.
 
 ---
 
@@ -885,11 +787,11 @@ Logs are stored as append-only records with a unique identifier mapping `uid_tim
 * **Security & Verification**: Verified that user inputs are sanitized and cleaned before parsing.
 * **User Feedback & Tests**: Tested pay estimators against major Class X and Class Y Indian cities.
 
-### 14.7 Phase 7: Native Stability (✅ Completed)
-* **Strategic Intent**: Package the application inside a Flutter WebView wrapper to support direct Android application installs.
-* **Architecture Implementation**: Built the first Flutter wrapper files and established InAppWebView controllers.
-* **Security & Verification**: Configured native system alert handlers for GPS permissions.
-* **User Feedback & Tests**: Validated Android APK compilation states locally.
+### 14.7 Phase 7: Native Stability (✅ Completed — Superseded by Native Kotlin Rebuild)
+* **Strategic Intent**: Deliver Fauji Niwas as an installable native Android application.
+* **Architecture Implementation**: The original Flutter WebView wrapper was fully removed and replaced by a native **Kotlin + Jetpack Compose** application with a glassmorphic Material 3 UI backed by Firestore.
+* **Security & Verification**: Configured native permission handlers for GPS and storage.
+* **User Feedback & Tests**: Validated native Android APK compilation and installation on target devices.
 
 ### 14.8 Phase 8: Hardened Security (✅ Completed)
 * **Strategic Intent**: Ensure the database is completely locked down against structural access attempts by external actors or malicious scripts.
@@ -997,7 +899,7 @@ Logs are stored as append-only records with a unique identifier mapping `uid_tim
 
 ### 16.10 Phase 30: Hardened Security, Real Decryption & Native APK Compilation (✅ Completed)
 * **Strategic Intent**: Lock down Firestore security rules and compile Android production-ready signed APK files.
-* **Architecture Implementation**: Patched rules for `/csd_pulse` and `/users`, enabled client-side AES-GCM decryption, and compiled the Flutter project to APK.
+* **Architecture Implementation**: Patched rules for `/csd_pulse` and `/users`, enabled client-side AES-GCM decryption, and compiled the native Android project (Kotlin + Jetpack Compose) to APK.
 * **Security & Verification**: Enforced moderator-only access to verification keys.
 * **User Feedback & Tests**: Verified APK installation on target mobile devices.
 
@@ -1031,7 +933,7 @@ Logs are stored as append-only records with a unique identifier mapping `uid_tim
 
 ### 17.5 Phase 35: Offline Radio Mesh Emergency Network Protocols
 * **Strategic Intent**: Establish backup communication channels during national emergencies or local telecom blackouts.
-* **Architecture Implementation**: Implement Flutter integration with Bluetooth meshtastic radio hardware.
+* **Architecture Implementation**: Implement Bluetooth meshtastic radio hardware integration into the native Android app (Kotlin + Jetpack Compose).
 * **Security & Verification**: Encrypt mesh transmissions locally.
 * **User Feedback & Tests**: Test range limitations in simulated field environments.
 
@@ -1248,14 +1150,14 @@ The platform utilizes automated dependency auditing scans checking package versi
 
 ## 21. PLATFORM COMPLETION ASSESSMENT
 
-The current implementation achieves full production readiness across core housing search pipelines, data protection rules, E2E chat controls, and the Native Android Flutter APK builds.
+The current implementation achieves full production readiness across core housing search pipelines, data protection rules, E2E chat controls, and the native Android app (Kotlin + Jetpack Compose) builds.
 
 | Subsystem | Verified State | Completion Metric |
 |---|---|---|
 | Core Map Engine | Fully Functional | 100% |
 | Security Gating (Rules) | Deployed & Enforced | 100% |
 | E2EE Chat Engine | Fully Operational | 100% |
-| Native Android APK | Release Signed | 100% |
+| Native Android App (Kotlin/Compose) | Release Signed | 100% |
 | Technical SEO | Structured Data (JSON-LD) | 100% |
 | Audit Pipelines | Append-only Logs | 100% |
 
@@ -1288,7 +1190,7 @@ The platform sustainability metrics are evaluated based on three potential conve
 * **v4.0.0 (Phase 21–25)**: Configured simulated security consoles and ECHS lockers.
 * **v4.5.0 (Phase 26–28)**: Upgraded glassmorphic visual indicators, sitemaps, and mobile drawers.
 * **v5.0.0 (Phase 29)**: AI matches, local saved searches, notifications, and pay matrix updates.
-* **v5.1.0 (Phase 30)**: Enforced security rules, compiled native production APK releases, client-side decryption, and structured GEO JSON-LD FAQ integrations.
+* **v5.1.0 (Phase 30)**: Enforced security rules, compiled native production APK releases (Kotlin + Jetpack Compose), client-side decryption, and structured GEO JSON-LD FAQ integrations.
 * **v5.2.0**: Implemented zero-brokerage enforcement, moderator segregation, and initial DPDP Act 2023 audit.
 * **v5.3.0 (2026-08-21 — Production Hardening & Compliance Release)**:
   - **Admin RSA Key Vault**: Added PBKDF2 (100,000 iterations, SHA-256) + AES-GCM (256-bit) password-encrypted backup (`.fnkey`) export and import flows in `documentEncrypt.js` and `AdminPanel.jsx` for cross-device key persistence.
@@ -1811,22 +1713,23 @@ export async function runSecurityTests() {
 The process of compiling release APK builds targets Android 14/SDK 34 environments:
 1. **Keystore Generation**: Use Java tool configurations:
    ```bash
-   keytool -genkey -v -keystore android/app/release-key.jks \
+   keytool -genkey -v -keystore android-app/release-key.jks \
      -keyalg RSA -keysize 2048 -validity 10000 \
-     -alias key -storetype JKS
+     -alias faujiniwas -storetype JKS
    ```
-2. **Properties Mapping**: Save credentials to `android/key.properties`:
+2. **Properties Mapping**: Save credentials to `android-app/keystore.properties` (git-ignored):
    ```properties
    storePassword=your_keystore_password
    keyPassword=your_key_password
-   keyAlias=key
+   keyAlias=faujiniwas
    storeFile=release-key.jks
    ```
-3. **Build Scripting**: Run release steps inside native shell setups:
+3. **Build Scripting**: Compile the native Kotlin + Jetpack Compose app:
    ```bash
-   flutter build apk --release --split-per-abi
+   cd android-app
+   ./gradlew assembleRelease
    ```
-   This generates compiled artifacts targeted per device chipset architecture, reducing install file footprints cleanly.
+   Release builds are signed from `keystore.properties` when present; debug builds are auto-signed with the debug keystore.
 
 ---
 
@@ -2020,41 +1923,29 @@ jobs:
 
   compile-android-apk:
     needs: lint-and-validate
-    runs-on: macos-13
+    runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Setup Java Development Kit (JDK 17)
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
+          distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Flutter Toolchain
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.19.0'
-          channel: 'stable'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
-      - name: Decode Android Keystore Files
-        env:
-          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-          ANDROID_PROPERTIES_BASE64: ${{ secrets.ANDROID_PROPERTIES_BASE64 }}
+      - name: Compile Native APK (Debug)
         run: |
-          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > fauji-niwas_app/android/app/release-key.jks
-          echo "$ANDROID_PROPERTIES_BASE64" | base64 --decode > fauji-niwas_app/android/key.properties
-
-      - name: Compile Native Standalone APK Release
-        run: |
-          cd fauji-niwas_app
-          flutter pub get
-          flutter build apk --release
+          cd android-app
+          ./gradlew assembleDebug --stacktrace
 
       - name: Archive Released Compilation Artifact
         uses: actions/upload-artifact@v4
         with:
           name: fauji-niwas-apk
-          path: fauji-niwas_app/build/app/outputs/flutter-apk/app-release.apk
+          path: android-app/app/build/outputs/apk/debug/app-debug.apk
 ```
