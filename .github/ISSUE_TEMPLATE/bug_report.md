@@ -11,7 +11,7 @@ A clear and concise description of what the bug is.
 
 **Platform Affected**
 - [ ] Web Application (React/Vite)
-- [ ] Mobile Application (Flutter/Android)
+- [ ] Mobile-Web PWA
 - [ ] Backend / Firestore Rules
 - [ ] SEO / Static Pages
 
