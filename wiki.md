@@ -1,6 +1,6 @@
 ﻿# Fauji Niwas Technical Wiki & Architecture Reference
 
-> **Version:** 2.0 Production | **Stack:** React 19 / Vite / Tailwind CSS 4 / Firebase / Flutter | **Deployment:** Firebase Hosting & Android APK
+> **Version:** 2.0 Production | **Stack:** React 19 / Vite / Tailwind CSS 4 / Firebase / Native Android (Kotlin + Jetpack Compose) | **Deployment:** Firebase Hosting & Android APK
 >
 > Fauji Niwas is a zero-brokerage housing, relocation, and SSB transit accommodation network purpose-built for Indian Armed Forces personnel, Veterans, and defence families across 62+ military cantonments.
 
@@ -10,7 +10,7 @@
 
 1. [System Architecture Overview](#1-system-architecture-overview)
 2. [Web Application Architecture (React 19 & Vite)](#2-web-application-architecture-react-19--vite)
-3. [Mobile Application Architecture (Flutter)](#3-mobile-application-architecture-flutter)
+3. [Android Application Architecture (Kotlin + Jetpack Compose)](#3-android-application-architecture-kotlin--jetpack-compose)
 4. [Firebase Backend & Security Model](#4-firebase-backend--security-model)
 5. [Cantonment & Geographic Coverage Engine](#5-cantonment--geographic-coverage-engine)
 6. [Army Public School (APS) Proximity Mapping](#6-army-public-school-aps-proximity-mapping)
@@ -26,7 +26,8 @@ Fauji Niwas operates a unified multi-client architecture backed by Firebase serv
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                       Client Tier                           │
-│   Web SPA (React 19 / Tailwind 4)  │ Flutter Mobile App     │
+│   Web SPA (React 19 / Tailwind 4)  │ Native Android (Kotlin │
+│                                    │   + Jetpack Compose)   │
 ├─────────────────────────────────────────────────────────────┤
 │                    Routing & SEO Static Engine              │
 │   62+ Static City Portals │ Manifest │ Structured Data JSON │
@@ -52,12 +53,13 @@ Located in `fauji-niwas-app/`:
 
 ---
 
-## 3. Mobile Application Architecture (Flutter)
+## 3. Android Application Architecture (Kotlin + Jetpack Compose)
 
-Located in `fauji-niwas_app/`:
-- **Framework:** Flutter 3.x with Material 3 responsive layouts.
-- **State Management:** Reactive streams for verified accommodation listings.
-- **Offline Cache:** Offline-first caching of verified station listings and emergency military welfare contacts.
+Located in `android-app/`:
+- **Framework:** Native Kotlin with Jetpack Compose + Material 3.
+- **Design System:** iOS 26 Liquid-Glass / ColorOS 17 inspired glassmorphic theme — translucent cards, fluid Spring animations, aurora gradients, and dynamic Material You theming.
+- **Data Layer:** Firestore-backed verified accommodation listings using the same rules and schema as the web app.
+- **Features:** Glass home dashboard, listing browse/search, station proximity picker, and settings.
 
 ---
 
@@ -99,6 +101,6 @@ Engineered in `src/apsSchools.ts`:
 ## 8. Automated CI/CD & Deployment Workflows
 
 Managed via `.github/workflows/`:
-1. `ci.yml`: Automated validation of React build (`npm run build`) and Flutter static analysis.
+1. `ci.yml`: Automated validation of the React build (`npm run build`).
 2. `deploy.yml`: Direct automated deployment to Firebase Hosting upon merges to `main`.
-3. `release-apk.yml`: Automated compilation and release of signed Android APKs on version tags.
+3. `release-apk.yml`: Automated compilation and release of the native Android APK (Kotlin + Gradle) on version tags.
