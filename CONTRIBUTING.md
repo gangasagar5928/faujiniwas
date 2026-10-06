@@ -7,11 +7,11 @@ Thank you for your interest in contributing to **Fauji Niwas**, the peer-to-peer
 ## 🧭 Monorepo Structure
 
 ```text
-├── fauji-niwas-app/    # React 18 + Vite Web Application & Static SEO Pages
-├── fauji-niwas_app/    # Native Flutter Mobile Application (Android/iOS)
+├── fauji-niwas-app/    # React 19 + Vite Web Application & Static SEO Pages
+├── android-app/        # Native Android App (Kotlin + Jetpack Compose)
 ├── firestore.rules     # Production Firestore Security Rules
 ├── firebase.json       # Firebase Hosting & Header Configuration
-├── scripts/            # Utility and SDK setup scripts
+├── scripts/            # Utility scripts
 └── .github/            # CI/CD Workflows, PR & Issue Templates
 ```
 
@@ -34,14 +34,13 @@ Thank you for your interest in contributing to **Fauji Niwas**, the peer-to-peer
      npm run dev
      npm run build  # Ensure production bundle passes
      ```
-   - For mobile changes:
+   - For native Android changes:
      ```bash
-     cd fauji-niwas_app
-     flutter pub get
-     flutter analyze
+     cd android-app
+     ./gradlew assembleDebug  # Requires JDK 17 + Android SDK
      ```
 4. **Clean Commits:**
-   - Keep commits atomic and informative (e.g. `feat(web): add cantonment distance filter`, `fix(mobile): resolve HRA calculation rounding`).
+   - Keep commits atomic and informative (e.g. `feat(web): add cantonment distance filter`, `feat(android): add glass HRA card`).
    - **Never commit `.apk`, `.diff`, `.log`, `.tmp`, or credential files.**
 5. **Open a Pull Request:**
    - Submit PR against `main`. Fill in the PR template thoroughly.
