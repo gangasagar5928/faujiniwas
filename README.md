@@ -44,16 +44,17 @@ Over **1.4 million active Indian Armed Forces personnel** and their families rel
 
 ## ⚡ Key Platform Capabilities
 
-| Feature | React Web App (`/fauji-niwas-app`) | Flutter Native App (`/fauji-niwas_app`) |
+| Feature | React Web App (`/fauji-niwas-app`) | Native Android App (`/android-app`) |
 | :--- | :---: | :---: |
-| **Interactive Station Map** | ✅ Leaflet Geo-clustering | ✅ Native Map Views |
-| **Cantonment & Gate Search** | ✅ 62+ Stations indexed | ✅ Offline Station Cache |
-| **Verified Defence Listings** | ✅ P2P direct handover | ✅ Native Card Feed |
-| **SSB Transit Candidate Dorms** | ✅ Transit stays & ratings | ✅ Quick Gate Distance Finder |
-| **7th CPC HRA Calculator** | ✅ Live City Tier Filter (X/Y/Z) | ✅ Rank-based HRA estimator |
-| **Luggage TA/DA Matrix** | ✅ Relocation reimbursement | ✅ Slider Allowance Calculator |
-| **Offline Checklists** | ✅ Web Checklist UI | ✅ SQLite / Native Checklist |
-| **Military Identity Badging** | ✅ Verified Member Badge | ✅ Secure Defence Verification |
+| **Interactive Station Map** | ✅ Leaflet Geo-clustering | 🚧 Coming in v2 |
+| **Cantonment & Gate Search** | ✅ 62+ Stations indexed | ✅ Station proximity picker |
+| **Verified Defence Listings** | ✅ P2P direct handover | ✅ Firestore-backed feed |
+| **SSB Transit Candidate Dorms** | ✅ Transit stays & ratings | 🚧 Coming in v2 |
+| **7th CPC HRA Calculator** | ✅ Live City Tier Filter (X/Y/Z) | ✅ In-app HRA estimator |
+| **Luggage TA/DA Matrix** | ✅ Relocation reimbursement | 🚧 Coming in v2 |
+| **Offline Checklists** | ✅ Web Checklist UI | 🚧 Coming in v2 |
+| **Military Identity Badging** | ✅ Verified Member Badge | ✅ Verification gate |
+| **Glassmorphic UI (iOS 26 / ColorOS 17)** | ✅ Liquid Glass theme | ✅ Liquid Glass Compose theme |
 
 ---
 
@@ -61,7 +62,7 @@ Over **1.4 million active Indian Armed Forces personnel** and their families rel
 
 ```text
 Faujiniwas/
-├── fauji-niwas-app/             # 🌐 React 18 + Vite Web Application
+├── fauji-niwas-app/             # 🌐 React 19 + Vite Web Application
 │   ├── public/                  # SEO landing templates, static assets & icons
 │   ├── src/
 │   │   ├── components/          # Bento dashboard, Modals, Leaflet Map engine
@@ -70,18 +71,18 @@ Faujiniwas/
 │   │   └── index.css            # Responsive styles & design system
 │   └── package.json             # Web dependencies (React, Leaflet, Framer Motion)
 │
-├── fauji-niwas_app/             # 📱 Standalone Flutter Mobile Application
-│   ├── lib/                     # Native Dart UI widgets, models & offline stores
-│   ├── android/                 # Android native gradle config & permissions
-│   └── pubspec.yaml             # Flutter dependencies & assets
+├── android-app/                 # 📱 Native Android Application (Kotlin + Compose)
+│   ├── app/src/main/java/       # Kotlin glass design system, screens & ViewModels
+│   ├── app/build.gradle.kts     # Android Gradle build (AGP + Compose + Firebase BoM)
+│   └── gradlew                  # Gradle wrapper
 │
 ├── .github/                     # ⚙️ Automation & Community Standards
-│   ├── workflows/               # CI/CD pipelines, release builders & Firebase deploy
+│   ├── workflows/               # CI/CD pipelines & Firebase deploy
 │   └── ISSUE_TEMPLATE/          # Standardized bug & feature request templates
 │
 ├── firestore.rules              # 🛡️ Military-grade Firestore security rules
 ├── firebase.json                # 🚀 Fast zero-downtime routing & security headers
-└── scripts/                     # 🔧 Development, SDK setup & maintenance scripts
+└── scripts/                     # 🔧 Development & maintenance scripts
 ```
 
 ---
@@ -108,32 +109,28 @@ The web app will run locally at `http://localhost:5173`.
 
 ---
 
-### 2. Flutter Mobile Application
+### 2. Native Android Application
 
 ```bash
-# Navigate to mobile application directory
-cd fauji-niwas_app
+# Navigate to the native Android app directory
+cd android-app
 
-# Fetch Flutter packages
-flutter pub get
+# Build a debug APK (requires JDK 17 + Android SDK)
+./gradlew assembleDebug
 
-# Run on connected Android / iOS device or emulator
-flutter run
-
-# Compile production release APK
-flutter build apk --release
+# Production release APK (sign automatically via keystore.properties when present)
+./gradlew assembleRelease
 ```
 
-*Generated APK location:* `fauji-niwas_app/build/app/outputs/flutter-apk/app-release.apk`
+*Generated APK:* `android-app/app/build/outputs/apk/debug/app-debug.apk`
+*Mobile-web alternative:* open `https://faujiniwas.web.app` on any phone and use **"Add to Home Screen"** to install the PWA.
 
 ---
 
 ## 📦 Automated Releases & CI/CD
 
-To ensure high repository hygiene, **binary APK files are never committed directly into git history.** 
-
-- **Pull Requests & Commits:** Continuous Integration (`.github/workflows/ci.yml`) runs automated builds and static analysis for both Web and Mobile apps.
-- **Production APK Releases:** Every tagged release (`git tag v1.0.0 && git push --tags`) triggers `.github/workflows/release-apk.yml`, which automatically builds and publishes the optimized release APK to [GitHub Releases](https://github.com/gangasagar5928/Faujiniwas/releases).
+- **Pull Requests & Commits:** Continuous Integration (`.github/workflows/ci.yml`) builds and validates the React web app on every push/PR to `main`.
+- **Android APK Releases:** Every tagged release (`git tag v1.0.0 && git push --tags`) triggers `.github/workflows/release-apk.yml`, which builds the native Android app with Gradle and publishes the APK to [GitHub Releases](https://github.com/gangasagar5928/Faujiniwas/releases).
 - **Web Continuous Deployment:** Merges to `main` automatically deploy to [Firebase Hosting](https://faujiniwas.web.app) via `.github/workflows/deploy.yml`.
 
 ---
@@ -154,7 +151,7 @@ Contributions from the developer and defence community are warmly welcome. Pleas
 
 1. Fork the repo.
 2. Create your branch (`git checkout -b feat/station-enhancement`).
-3. Verify your changes (`npm run build` / `flutter analyze`).
+3. Verify your changes (`npm run build` in `fauji-niwas-app` or `./gradlew assembleDebug` in `android-app`).
 4. Commit your changes (`git commit -m 'feat: add ECHS polyclinic distance filter'`).
 5. Push to branch and open a Pull Request.
 
