@@ -9,7 +9,8 @@ Fauji Niwas is dedicated to serving Indian Armed Forces personnel, JCOs, and Off
 | Version / Component | Supported |
 | ------------------- | --------- |
 | Web Application (`fauji-niwas-app`) | ✅ Yes |
-| Flutter Mobile (`fauji-niwas_app`) | ✅ Yes |
+| Mobile-Web PWA (same codebase) | ✅ Yes |
+| Native Android App (`android-app`) | ✅ Yes |
 | Firestore Rules & Backend API | ✅ Yes |
 
 ## Reporting a Vulnerability
