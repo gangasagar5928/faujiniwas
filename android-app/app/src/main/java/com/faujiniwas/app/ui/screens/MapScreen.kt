@@ -138,15 +138,24 @@ fun MapScreen(
             factory = { ctx ->
                 WebView(ctx).apply {
                     webViewRef = this
+                    layoutParams = android.view.ViewGroup.LayoutParams(
+                        android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                        android.view.ViewGroup.LayoutParams.MATCH_PARENT
+                    )
+                    setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null)
                     settings.javaScriptEnabled = true
                     settings.domStorageEnabled = true
                     settings.databaseEnabled = true
                     settings.cacheMode = WebSettings.LOAD_DEFAULT
                     settings.allowFileAccess = true
                     settings.allowContentAccess = true
+                    @Suppress("DEPRECATION")
+                    settings.allowFileAccessFromFileURLs = true
+                    @Suppress("DEPRECATION")
+                    settings.allowUniversalAccessFromFileURLs = true
                     settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
                     settings.userAgentString = "Mozilla/5.0 (Linux; Android 14; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36 FaujiNiwas/1.0"
-                    setBackgroundColor(0xFF060A14.toInt())
+                    setBackgroundColor(0xFFE5E7EB.toInt())
 
                     class MapBridge {
                         @JavascriptInterface
@@ -180,7 +189,7 @@ fun MapScreen(
 
                     webViewClient = object : WebViewClient() {
                         override fun onPageFinished(view: WebView?, url: String?) {
-                            view?.postDelayed({ isMapLoading = false }, 800)
+                            view?.postDelayed({ isMapLoading = false }, 500)
                         }
                         override fun onReceivedError(
                             view: WebView?,
@@ -191,8 +200,8 @@ fun MapScreen(
                         }
                     }
 
-                    val html = buildTacticalMapHtml(displayListings, selectedStation)
-                    loadDataWithBaseURL("https://tactical-map.faujiniwas.local", html, "text/html", "UTF-8", null)
+                    val html = buildTacticalMapHtml(ctx, displayListings, selectedStation)
+                    loadDataWithBaseURL("https://faujiniwas.web.app/", html, "text/html", "UTF-8", null)
                 }
             },
             update = { wv ->
@@ -486,7 +495,17 @@ fun MapScreen(
     }
 }
 
-private fun buildTacticalMapHtml(listings: List<Listing>, initialStation: StationCoord): String {
+private fun buildTacticalMapHtml(context: android.content.Context, listings: List<Listing>, initialStation: StationCoord): String {
+    val leafletCss = try {
+        context.assets.open("leaflet.css").bufferedReader().use { it.readText() }
+    } catch (e: Exception) {
+        ""
+    }
+    val leafletJs = try {
+        context.assets.open("leaflet.js").bufferedReader().use { it.readText() }
+    } catch (e: Exception) {
+        ""
+    }
     val listingsArray = JSONArray()
     listings.forEach { l ->
         val obj = JSONObject().apply {
@@ -522,27 +541,19 @@ private fun buildTacticalMapHtml(listings: List<Listing>, initialStation: Statio
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <!-- Leaflet CSS via Cloudflare CDN with unpkg fallback -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
-    <!-- Leaflet JS via Cloudflare CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-    <script>
-        if (typeof L === 'undefined') {
-            document.write('<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />');
-            document.write('<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"><\/script>');
-        }
-    </script>
     <style>
+        $leafletCss
         html, body, #map {
             width: 100%;
             height: 100%;
             margin: 0;
             padding: 0;
-            background-color: #060a14;
+            background-color: #f1f5f9;
             overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
         .leaflet-container {
-            background: #060a14 !important;
+            background: #f1f5f9 !important;
         }
         /* Custom Price Marker Chip */
         .price-chip {
@@ -585,6 +596,9 @@ private fun buildTacticalMapHtml(listings: List<Listing>, initialStation: Statio
             cursor: pointer;
         }
     </style>
+    <script>
+        $leafletJs
+    </script>
 </head>
 <body>
     <div id="map"></div>
