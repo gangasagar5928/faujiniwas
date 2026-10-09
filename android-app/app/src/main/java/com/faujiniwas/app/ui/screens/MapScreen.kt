@@ -506,6 +506,7 @@ private fun buildTacticalMapHtml(context: android.content.Context, listings: Lis
     } catch (e: Exception) {
         ""
     }
+
     val listingsArray = JSONArray()
     listings.forEach { l ->
         val obj = JSONObject().apply {
@@ -540,12 +541,11 @@ private fun buildTacticalMapHtml(context: android.content.Context, listings: Lis
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <!-- Leaflet CSS via Cloudflare CDN with unpkg fallback -->
     <style>
         $leafletCss
         html, body, #map {
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             margin: 0;
             padding: 0;
             background-color: #f1f5f9;
@@ -713,19 +713,20 @@ private fun buildTacticalMapHtml(context: android.content.Context, listings: Lis
                     attributionControl: false
                 }).setView([${initialStation.lat}, ${initialStation.lng}], 13);
 
-                // High-performance tactical dark tiles via CartoDB
-                var primaryTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                    maxZoom: 19,
-                    subdomains: 'abcd'
+                // High-performance standard Google Maps tiles (Normal Road Map)
+                var primaryTiles = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                    maxZoom: 20,
+                    subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
                 }).addTo(map);
 
-                // Safe fallback to Google tiles if CartoDB experiences network errors
+                // Safe fallback to CartoDB voyager if Google tiles fail
                 primaryTiles.on('tileerror', function() {
                     if (!window._switchedTiles) {
                         window._switchedTiles = true;
                         map.removeLayer(primaryTiles);
-                        L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-                            maxZoom: 19
+                        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                            maxZoom: 19,
+                            subdomains: 'abcd'
                         }).addTo(map);
                     }
                 });
@@ -737,9 +738,11 @@ private fun buildTacticalMapHtml(context: android.content.Context, listings: Lis
                 drawPerimeter(${initialStation.lat}, ${initialStation.lng}, '${initialStation.name}');
                 renderPins();
 
-                setTimeout(function() {
-                    try { map.invalidateSize(); } catch(e) {}
-                }, 300);
+                [50, 150, 300, 600, 1200].forEach(function(t) {
+                    setTimeout(function() {
+                        try { if (map) map.invalidateSize(true); } catch(e) {}
+                    }, t);
+                });
 
                 if (window.AndroidMap && window.AndroidMap.onMapReady) {
                     window.AndroidMap.onMapReady();
