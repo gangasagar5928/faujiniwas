@@ -384,6 +384,7 @@ export default function MapView({
     return null;
   });
 
+  const [tileError, setTileError] = useState(false);
   const activeView = useFilterStore((s) => s.activeView);
   const { listings, showCommuteZones, showHospitals, showSchools, showCanteens, isPending } = useFilterStore();
   const allState = useFilterStore((s) => s);
@@ -470,11 +471,16 @@ export default function MapView({
           style={{ width: '100%', height: '100%' }}
         >
           <TileLayer
-            url="https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
-            subdomains={['mt0', 'mt1', 'mt2', 'mt3']}
+            url={tileError ? "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" : "https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"}
+            subdomains={tileError ? ['a', 'b', 'c', 'd'] : ['mt0', 'mt1', 'mt2', 'mt3']}
             maxZoom={20}
             minZoom={3}
             noWrap={true}
+            eventHandlers={{
+              tileerror: () => {
+                if (!tileError) setTileError(true);
+              }
+            }}
             attribution="&copy; Google Maps"
           />
           <UserLocationInitializer userLoc={userLoc} setUserLoc={setUserLoc} hasExplicitSearch={Boolean(searchCity)} />
