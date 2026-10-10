@@ -69,9 +69,15 @@ function MapController({ activeCantt }) {
     window.addEventListener('map-zoom-out', zoomOut);
     window.addEventListener('map-recenter', recenter);
     
+    const onTabMap = () => {
+      [50, 150, 400, 800].forEach(t => setTimeout(() => { try { map.invalidateSize(); } catch(e) {} }, t));
+    };
+    window.addEventListener('mobile-tab-map', onTabMap);
+    
     return () => {
       ids.forEach(clearTimeout);
       window.removeEventListener('resize', onResize);
+      window.removeEventListener('mobile-tab-map', onTabMap);
       window.removeEventListener('map-zoom-in', zoomIn);
       window.removeEventListener('map-zoom-out', zoomOut);
       window.removeEventListener('map-recenter', recenter);
