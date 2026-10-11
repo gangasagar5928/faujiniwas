@@ -335,7 +335,7 @@
       <div class="absolute inset-0 pointer-events-none opacity-20 z-5" style="background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.03) 3px, rgba(0,0,0,0.03) 4px);" aria-hidden="true"></div>
 
       <!-- Main glass card -->
-      <div class="relative z-10 flex flex-col items-center p-10 bg-white/90 backdrop-blur-3xl border border-amber-500/20 rounded-3xl shadow-[0_24px_64px_rgba(15,23,42,0.08)] min-w-[300px] max-w-[360px] text-center animate-cardFloat" id="loader-card">
+      <div class="relative z-10 flex flex-col items-center p-10 bg-white/90 backdrop-blur-3xl border border-amber-500/20 rounded-3xl shadow-[0_24px_64px_rgba(15,23,42,0.08)] min-w-[300px] max-w-[360px] text-center animate-cardFloat transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_28px_80px_rgba(245,158,11,0.22)] hover:border-amber-500/40 cursor-default" id="loader-card">
         <!-- Brand -->
         <div class="text-2xl font-extrabold tracking-wide text-slate-800 uppercase mb-8">🪖 Fauji <span class="italic text-amber-600 bg-gradient-to-r from-amber-600 to-amber-700 bg-clip-text text-transparent">Niwas</span></div>
 
@@ -659,7 +659,7 @@
             '<div class="flex flex-col items-center gap-4 text-[#f0f6ff]">' +
             '<div class="text-[2.2rem]">📡</div>' +
             '<div class="text-[0.85rem] text-gray-400/90 leading-relaxed">Slow connection detected.<br/>Map data is still loading…</div>' +
-            '<button class="bg-gradient-to-r from-amber-400 to-amber-500 hover:scale-105 active:scale-95 text-[#030712] font-bold text-xs px-7 py-2.5 rounded-full shadow-[0_4px_20px_rgba(245,158,11,0.4)] transition-all" onclick="location.reload()">Retry Connection</button>' +
+            '<button class="bg-gradient-to-r from-amber-400 to-amber-500 hover:scale-105 active:scale-95 text-[#030712] font-bold text-xs px-7 py-2.5 rounded-full shadow-[0_4px_20px_rgba(245,158,11,0.4)] hover:shadow-[0_6px_28px_rgba(245,158,11,0.6)] cursor-pointer transition-all duration-200" onclick="location.reload()">Retry Connection</button>' +
             '</div>';
         }
       }, 14000);
@@ -691,11 +691,11 @@
       <p style="margin: 0 0 8px 0; font-weight: bold; color: #3b5323;">🪖 Fauji Niwas — Verified Defence Housing Platform</p>
       <p style="margin: 0 0 8px 0;">
         Fauji Niwas is India's verified, zero-brokerage housing and relocation portal built for the Indian Armed Forces.
-        Founded by <strong><a href="/aman-kumar-singh.html" style="color: #3b5323; text-decoration: underline;">Aman Kumar Singh</a></strong> (B.Tech EEE, Galgotias College of Engineering and Technology, GCET AKTU)
+        Founded by <strong><a href="/aman-kumar-singh.html" class="footer-link" style="color: #3b5323; text-decoration: underline; transition: color 0.15s ease;">Aman Kumar Singh</a></strong> (B.Tech EEE, Galgotias College of Engineering and Technology, GCET AKTU)
         and co-founded by <strong>Anurag Kumar Singh</strong>.
       </p>
       <p style="margin: 0;">
-        © 2026 Fauji Niwas · <a href="/about" style="color: #f59e0b; text-decoration: underline;">About the Founders</a> · <a href="mailto:faujiniwashq@gmail.com" style="color: #f59e0b; text-decoration: underline;">Contact Support</a>
+        © 2026 Fauji Niwas · <a href="/about" class="footer-link" style="color: #f59e0b; text-decoration: underline; transition: color 0.15s ease;">About the Founders</a> · <a href="mailto:faujiniwashq@gmail.com" class="footer-link" style="color: #f59e0b; text-decoration: underline; transition: color 0.15s ease;">Contact Support</a>
       </p>
     </footer>
     <!-- Global Recaptcha Containers for Phone Auth -->
