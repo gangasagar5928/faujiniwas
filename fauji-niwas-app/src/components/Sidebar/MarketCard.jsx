@@ -27,9 +27,17 @@ export default function MarketCard({ item, onClick }) {
       role="button"
       tabIndex={0}
       onKeyDown={e => e.key === 'Enter' && onClick?.()}
-      whileTap={{ scale: 0.97 }}
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      whileHover={{ 
+        y: -4, 
+        scale: 1.012,
+        transition: { type: 'spring', stiffness: 450, damping: 25 }
+      }}
+      whileTap={{ scale: 0.98 }}
       transition={{ type: 'spring', stiffness: 400, damping: 24 }}
-      className="liquid-glass-chip fluid-press"
+      className="group liquid-glass-chip fluid-press transition-shadow duration-300 hover:shadow-[0_12px_32px_rgba(0,0,0,0.18)] hover:border-amber-500/40"
       style={{
         display: 'flex',
         flexDirection: 'row',
@@ -46,7 +54,8 @@ export default function MarketCard({ item, onClick }) {
           src={thumb}
           loading="lazy"
           alt={item?.name || 'Market Item'}
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.35s ease' }}
+          className="group-hover:scale-108"
           onError={e => {
             e.currentTarget.onerror = null;
             e.currentTarget.src = MARKET_SAMPLE_PHOTOS[photoIndex];
@@ -63,8 +72,11 @@ export default function MarketCard({ item, onClick }) {
           Defence Item
         </div>
         {/* Bookmark */}
-        <button
+        <motion.button
           onClick={e => { e.stopPropagation(); toggleWishlist(item?.id); }}
+          whileHover={{ scale: 1.25 }}
+          whileTap={{ scale: 0.85 }}
+          transition={{ type: 'spring', stiffness: 500, damping: 15 }}
           style={{ position: 'absolute', top: 6, right: 6, width: 26, height: 26, borderRadius: 8,
             display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13,
             background: 'rgba(255,255,255,0.88)', border: '1px solid rgba(255,255,255,0.5)',
@@ -72,7 +84,7 @@ export default function MarketCard({ item, onClick }) {
             color: isSaved ? '#f43f5e' : '#94a3b8' }}
         >
           {isSaved ? '♥' : '♡'}
-        </button>
+        </motion.button>
       </div>
 
       {/* ── Details (Right) ── */}
