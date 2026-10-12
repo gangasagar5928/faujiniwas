@@ -72,9 +72,17 @@ export default function ListingCard({ listing, item, onClick }) {
       role="button"
       tabIndex={0}
       onKeyDown={e => e.key === 'Enter' && onClick?.()}
-      whileTap={{ scale: 0.97 }}
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      whileHover={{ 
+        y: -4, 
+        scale: 1.012,
+        transition: { type: 'spring', stiffness: 450, damping: 25 }
+      }}
+      whileTap={{ scale: 0.98 }}
       transition={{ type: 'spring', stiffness: 400, damping: 24 }}
-      className="group liquid-glass-chip fluid-press"
+      className="group liquid-glass-chip fluid-press transition-shadow duration-300 hover:shadow-[0_12px_32px_rgba(0,0,0,0.18)] hover:border-amber-500/40"
       style={{
         display: 'flex',
         flexDirection: 'row',
@@ -166,8 +174,11 @@ export default function ListingCard({ listing, item, onClick }) {
             {titleText}
           </div>
           
-          <button
+          <motion.button
             onClick={e => { e.stopPropagation(); toggleWishlist(r.id); }}
+            whileHover={{ scale: 1.35 }}
+            whileTap={{ scale: 0.85 }}
+            transition={{ type: 'spring', stiffness: 500, damping: 15 }}
             style={{
               background: 'transparent',
               border: 'none',
@@ -184,7 +195,7 @@ export default function ListingCard({ listing, item, onClick }) {
             title={isSaved ? 'Remove from saved' : 'Save property'}
           >
             {isSaved ? '♥' : '♡'}
-          </button>
+          </motion.button>
         </div>
 
         {/* Row 2: Location */}
