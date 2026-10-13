@@ -239,19 +239,19 @@ export default function UnifiedBentoDashboard() {
           <div className="flex items-center gap-2 flex-1 mx-3 min-w-0">
 
             {/* Search Pill Input */}
-            <div className="relative flex-1 min-w-[180px]">
+            <div className="relative flex-1 min-w-[180px] group">
               <input
                 type="text"
                 placeholder="Search cantonment, area or city..."
                 value={smartSearchQ}
                 onChange={e => setSmartSearchQ(e.target.value)}
-                className="w-full h-[38px] pl-4 pr-10 text-[13px] font-medium bg-white/40 dark:bg-white/10 backdrop-blur-xl border border-slate-200/70 dark:border-white/20 rounded-full focus:outline-none focus:border-emerald-600 dark:focus:border-emerald-500 transition-all placeholder:text-slate-400" style={{color:'var(--text)'}}
+                className="w-full h-[38px] pl-4 pr-10 text-[13px] font-medium bg-white/40 dark:bg-white/10 backdrop-blur-xl border border-slate-200/70 dark:border-white/20 rounded-full focus:outline-none focus:border-emerald-600 dark:focus:border-emerald-500 hover:border-emerald-500/40 focus:shadow-[0_0_16px_rgba(16,185,129,0.2)] transition-all placeholder:text-slate-400" style={{color:'var(--text)'}}
               />
-              <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: 'var(--muted)' }} />
+              <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none group-hover:text-emerald-500 transition-colors" style={{ color: 'var(--muted)' }} />
               {smartSearchQ && (
                 <button
                   onClick={() => setSmartSearchQ('')}
-                  className="absolute right-8 top-1/2 -translate-y-1/2 text-xs cursor-pointer" style={{ color: 'var(--muted)' }}
+                  className="absolute right-8 top-1/2 -translate-y-1/2 text-xs cursor-pointer hover:scale-125 transition-transform" style={{ color: 'var(--muted)' }}
                 >
                   ✕
                 </button>
@@ -260,27 +260,30 @@ export default function UnifiedBentoDashboard() {
 
             {/* BHK Filter Pill */}
             <div className="relative">
-              <button 
+              <motion.button 
                 onClick={(e) => {
                   e.stopPropagation();
                   setBhkDropdownOpen(!bhkDropdownOpen);
                   setBudgetDropdownOpen(false);
                 }}
+                whileHover={{ scale: 1.04, y: -1 }}
+                whileTap={{ scale: 0.96 }}
+                transition={{ type: 'spring', stiffness: 450, damping: 20 }}
                 className={`h-[38px] px-3.5 rounded-full text-[12.5px] font-bold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap fluid-press ${
                   bhkFilter !== 'all'
-                    ? 'liquid-glass-chip border-emerald-500 text-emerald-700 dark:text-emerald-300'
-                    : 'liquid-glass-chip'
+                    ? 'liquid-glass-chip border-emerald-500 text-emerald-700 dark:text-emerald-300 shadow-xs'
+                    : 'liquid-glass-chip hover:border-emerald-500/40'
                 }`}
                 style={bhkFilter !== 'all' ? undefined : { color: 'var(--text)' }}
               >
                 <span>{bhkFilter === 'all' ? 'All BHK' : `${bhkFilter} BHK`}</span>
-                <ChevronDown className="w-3.5 h-3.5 opacity-60" />
-              </button>
+                <ChevronDown className={`w-3.5 h-3.5 opacity-60 transition-transform duration-200 ${bhkDropdownOpen ? 'rotate-180' : ''}`} />
+              </motion.button>
 
               {bhkDropdownOpen && (
                 <div
                   onClick={e => e.stopPropagation()}
-                  className="absolute top-[calc(100%+6px)] left-0 w-36 liquid-glass rounded-xl p-1.5 z-50 flex flex-col gap-1"
+                  className="absolute top-[calc(100%+6px)] left-0 w-36 liquid-glass rounded-xl p-1.5 z-50 flex flex-col gap-1 shadow-xl animate-cardFloat"
                 >
                   {[
                     { value: 'all', label: 'All BHK' },
@@ -311,27 +314,30 @@ export default function UnifiedBentoDashboard() {
 
             {/* Budget Filter Pill */}
             <div className="relative">
-              <button 
+              <motion.button 
                 onClick={(e) => {
                   e.stopPropagation();
                   setBudgetDropdownOpen(!budgetDropdownOpen);
                   setBhkDropdownOpen(false);
                 }}
+                whileHover={{ scale: 1.04, y: -1 }}
+                whileTap={{ scale: 0.96 }}
+                transition={{ type: 'spring', stiffness: 450, damping: 20 }}
                 className={`h-[38px] px-3.5 rounded-full text-[12.5px] font-bold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap fluid-press ${
                   maxPrice < 100000
-                    ? 'liquid-glass-chip border-emerald-500 text-emerald-700 dark:text-emerald-300'
-                    : 'liquid-glass-chip'
+                    ? 'liquid-glass-chip border-emerald-500 text-emerald-700 dark:text-emerald-300 shadow-xs'
+                    : 'liquid-glass-chip hover:border-emerald-500/40'
                 }`}
                 style={maxPrice < 100000 ? undefined : { color: 'var(--text)' }}
               >
                 <span>{maxPrice >= 100000 ? 'All Budgets' : `≤ ₹${(maxPrice / 1000).toFixed(0)}K`}</span>
-                <ChevronDown className="w-3.5 h-3.5 opacity-60" />
-              </button>
+                <ChevronDown className={`w-3.5 h-3.5 opacity-60 transition-transform duration-200 ${budgetDropdownOpen ? 'rotate-180' : ''}`} />
+              </motion.button>
 
               {budgetDropdownOpen && (
                 <div
                   onClick={e => e.stopPropagation()}
-                  className="absolute top-[calc(100%+6px)] left-0 w-44 liquid-glass rounded-xl p-1.5 z-50 flex flex-col gap-1"
+                  className="absolute top-[calc(100%+6px)] left-0 w-44 liquid-glass rounded-xl p-1.5 z-50 flex flex-col gap-1 shadow-xl animate-cardFloat"
                 >
                   {[
                     { value: 100000, label: 'All Budgets' },
@@ -362,42 +368,54 @@ export default function UnifiedBentoDashboard() {
             </div>
 
             {/* More Filters Pill */}
-            <button 
+            <motion.button 
               onClick={() => ctx?.openAccessibility?.()}
-              className="h-[38px] px-3.5 rounded-full border border-slate-200/70 dark:border-white/20 bg-white/40 dark:bg-white/10 backdrop-blur-xl text-[12.5px] font-bold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap hover:bg-white/60 dark:hover:bg-white/20" style={{ color: 'var(--text)' }}
+              whileHover={{ scale: 1.04, y: -1 }}
+              whileTap={{ scale: 0.96 }}
+              transition={{ type: 'spring', stiffness: 450, damping: 20 }}
+              className="h-[38px] px-3.5 rounded-full border border-slate-200/70 dark:border-white/20 bg-white/40 dark:bg-white/10 backdrop-blur-xl text-[12.5px] font-bold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap hover:bg-white/60 dark:hover:bg-white/20 hover:border-amber-500/40" style={{ color: 'var(--text)' }}
               title="Accessibility, Font and Contrast Settings"
             >
               <SlidersHorizontal className="w-3.5 h-3.5" />
               <span>More Filters</span>
-            </button>
+            </motion.button>
 
           </div>
 
           {/* Right Actions: Post Property, Sign In, Theme Switcher */}
           <div className="flex items-center gap-2 flex-shrink-0">
             {/* + Post Property Button */}
-            <button 
+            <motion.button 
               onClick={() => ctx.openPost?.()}
-              className="h-[38px] px-4 rounded-xl text-[13px] font-extrabold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shadow-none hover:opacity-90"
+              whileHover={{ scale: 1.04, y: -1, boxShadow: '0 6px 20px rgba(0, 135, 90, 0.45)' }}
+              whileTap={{ scale: 0.96 }}
+              transition={{ type: 'spring', stiffness: 450, damping: 20 }}
+              className="h-[38px] px-4 rounded-xl text-[13px] font-extrabold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shadow-none hover:opacity-95"
               style={{ backgroundColor: '#00875a', color: '#ffffff' }}
             >
               <Plus className="w-4 h-4 stroke-[3]" style={{ color: '#ffffff' }} />
               <span style={{ color: '#ffffff', fontWeight: 800 }}>Post Property</span>
-            </button>
+            </motion.button>
 
             {/* Sign In / Sign Up or Profile */}
-            <button 
+            <motion.button 
               onClick={() => ctx.openProfile?.()}
-              className="h-[38px] px-3.5 border border-slate-200/70 dark:border-white/20 bg-white/40 dark:bg-white/10 backdrop-blur-xl rounded-xl text-[13px] font-bold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shadow-none hover:bg-white/60 dark:hover:bg-white/20" style={{ color: 'var(--text)' }}
+              whileHover={{ scale: 1.04, y: -1 }}
+              whileTap={{ scale: 0.96 }}
+              transition={{ type: 'spring', stiffness: 450, damping: 20 }}
+              className="h-[38px] px-3.5 border border-slate-200/70 dark:border-white/20 bg-white/40 dark:bg-white/10 backdrop-blur-xl rounded-xl text-[13px] font-bold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shadow-none hover:bg-white/60 dark:hover:bg-white/20 hover:border-emerald-500/40" style={{ color: 'var(--text)' }}
             >
               <User className="w-4 h-4" style={{ color: 'var(--muted)' }} />
               <span>{user ? 'Profile' : 'Sign In / Sign Up'}</span>
-            </button>
+            </motion.button>
 
             {/* Dark / Light Mode Pill Toggle */}
-            <button
+            <motion.button
               onClick={toggleTheme}
-              className="w-[38px] h-[38px] rounded-full border border-slate-200/70 dark:border-white/20 bg-white/40 dark:bg-white/10 backdrop-blur-xl flex items-center justify-center flex-shrink-0 cursor-pointer transition-colors hover:bg-white/60 dark:hover:bg-white/20" style={{ color: 'var(--text)' }}
+              whileHover={{ scale: 1.15, rotate: 20 }}
+              whileTap={{ scale: 0.9, rotate: -25 }}
+              transition={{ type: 'spring', stiffness: 450, damping: 18 }}
+              className="w-[38px] h-[38px] rounded-full border border-slate-200/70 dark:border-white/20 bg-white/40 dark:bg-white/10 backdrop-blur-xl flex items-center justify-center flex-shrink-0 cursor-pointer transition-colors hover:bg-white/60 dark:hover:bg-white/20 hover:border-amber-500/40" style={{ color: 'var(--text)' }}
               title="Toggle Light / Dark mode"
             >
               {isDark ? (
@@ -405,7 +423,7 @@ export default function UnifiedBentoDashboard() {
               ) : (
                 <Sun className="w-4 h-4 text-amber-500 fill-amber-500/20" />
               )}
-            </button>
+            </motion.button>
 
           </div>
 
@@ -425,13 +443,16 @@ export default function UnifiedBentoDashboard() {
                 const IconComponent = item.icon;
                 const isActive = activeTab === item.id;
                 return (
-                  <button
+                  <motion.button
                     key={item.id}
                     onClick={item.action}
+                    whileHover={{ x: 4, scale: 1.01 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ type: 'spring', stiffness: 450, damping: 24 }}
                     className={`relative w-full h-[42px] flex items-center justify-between px-3.5 rounded-2xl text-[14px] font-bold transition-all cursor-pointer flex-shrink-0 ${
                       isActive
                         ? 'text-[#00875a] dark:text-[#34d399]'
-                        : 'text-transparent hover:bg-white/[0.06]'
+                        : 'text-transparent hover:bg-white/[0.08]'
                     }`}
                     style={isActive ? undefined : { color: 'var(--text)' }}
                   >
@@ -443,15 +464,15 @@ export default function UnifiedBentoDashboard() {
                       />
                     )}
                     <div className="relative z-10 flex items-center gap-2.5">
-                      <IconComponent className={`w-[18px] h-[18px] ${isActive ? 'text-[#00875a] dark:text-[#34d399]' : ''}`} style={isActive ? undefined : { color: 'var(--muted)' }} />
+                      <IconComponent className={`w-[18px] h-[18px] transition-transform duration-200 group-hover:scale-110 ${isActive ? 'text-[#00875a] dark:text-[#34d399]' : ''}`} style={isActive ? undefined : { color: 'var(--muted)' }} />
                       <span>{item.label}</span>
                     </div>
                     {item.count !== undefined && item.count > 0 && (
-                      <span className="relative z-10 text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100/80 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 backdrop-blur-sm">
+                      <span className="relative z-10 text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100/80 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 backdrop-blur-sm animate-pulse">
                         {item.count}
                       </span>
                     )}
-                  </button>
+                  </motion.button>
                 );
               })}
             </div>
@@ -463,9 +484,12 @@ export default function UnifiedBentoDashboard() {
               </span>
               
               {/* Google Play Button */}
-              <a 
+              <motion.a 
                 href="/manifest.json" 
                 download
+                whileHover={{ scale: 1.03, y: -2, boxShadow: '0 8px 24px rgba(0,0,0,0.4)' }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ type: 'spring', stiffness: 450, damping: 20 }}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -490,12 +514,15 @@ export default function UnifiedBentoDashboard() {
                   <span style={{ fontSize: '7.5px', textTransform: 'uppercase', letterSpacing: '0.8px', color: '#ffffff', fontWeight: 700 }}>GET IT ON</span>
                   <span style={{ fontSize: '13px', fontWeight: 800, color: '#ffffff' }}>Google Play</span>
                 </div>
-              </a>
+              </motion.a>
 
               {/* App Store Button */}
-              <a 
+              <motion.a 
                 href="/manifest.json" 
                 download
+                whileHover={{ scale: 1.03, y: -2, boxShadow: '0 8px 24px rgba(0,0,0,0.4)' }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ type: 'spring', stiffness: 450, damping: 20 }}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -517,7 +544,7 @@ export default function UnifiedBentoDashboard() {
                   <span style={{ fontSize: '7.5px', textTransform: 'uppercase', letterSpacing: '0.8px', color: '#ffffff', fontWeight: 700 }}>DOWNLOAD ON THE</span>
                   <span style={{ fontSize: '13px', fontWeight: 800, color: '#ffffff' }}>App Store</span>
                 </div>
-              </a>
+              </motion.a>
 
               {/* Copyright */}
               <div className="text-[11.5px] font-bold px-0.5 pt-0.5 pb-1 leading-tight" style={{ color: 'var(--muted)' }}>
@@ -649,8 +676,11 @@ export default function UnifiedBentoDashboard() {
 
             {/* Prominent Expand Tab when List is Collapsed */}
             {isListCollapsed && (
-              <button
+              <motion.button
                 onClick={() => setIsListCollapsed(false)}
+                whileHover={{ scale: 1.06, x: 2 }}
+                whileTap={{ scale: 0.96 }}
+                transition={{ type: 'spring', stiffness: 450, damping: 20 }}
                 className="absolute top-1/2 -translate-y-1/2 left-0 z-[1000] bg-white/85 dark:bg-[#0d1321]/85 backdrop-blur-md border-l-0 border-[#00875a] shadow-2xl py-6 px-2.5 rounded-r-2xl flex flex-col items-center justify-center text-[#00875a] hover:bg-[#ebfbee] dark:hover:bg-[#064e3b]/30 cursor-pointer transition-all gap-1.5 font-extrabold fluid-press"
                 title="Expand Properties List"
               >
@@ -658,32 +688,36 @@ export default function UnifiedBentoDashboard() {
                 <span className="text-[10px] font-extrabold [writing-mode:vertical-lr] tracking-wider uppercase" style={{ color: 'var(--text)' }}>
                   List
                 </span>
-              </button>
+              </motion.button>
             )}
 
             {/* Floating Top Map Controls Toolbar */}
-            <div className="absolute top-3 left-3 z-[1000] flex items-center gap-1.5 liquid-glass-float p-1.5 rounded-xl">
+            <div className="absolute top-3 left-3 z-[1000] flex items-center gap-1.5 liquid-glass-float p-1.5 rounded-xl shadow-lg">
               <span className="sheen-sweep" />
               
               {/* Expand List Button when collapsed */}
               {isListCollapsed && (
                 <>
-                  <button
+                  <motion.button
                     onClick={() => setIsListCollapsed(false)}
+                    whileHover={{ scale: 1.04 }}
+                    whileTap={{ scale: 0.96 }}
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-extrabold bg-[#ebfbee] dark:bg-emerald-950 text-[#00875a] dark:text-emerald-400 border border-[#86efac] dark:border-emerald-700 hover:bg-emerald-100 transition-colors cursor-pointer whitespace-nowrap"
                     title="Expand Properties List"
                   >
                     <ChevronRight className="w-3.5 h-3.5 stroke-[2.5]" />
                     <span>Show Properties ({visibleItems.length})</span>
-                  </button>
+                  </motion.button>
                   <div className="w-[1px] h-5 bg-white/40 dark:bg-white/20 mx-0.5" />
                 </>
               )}
 
               {/* Segmented View Toggle: Map View | List View */}
               <div className="flex items-center gap-0.5 bg-white/40 dark:bg-white/10 backdrop-blur-md p-0.5 rounded-lg">
-                <button
+                <motion.button
                   onClick={() => setMapMode('map')}
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-bold transition-all cursor-pointer ${
                     mapMode === 'map'
                       ? 'bg-[#00875a] text-white shadow-xs'
@@ -693,12 +727,14 @@ export default function UnifiedBentoDashboard() {
                 >
                   <MapIcon className="w-3.5 h-3.5" />
                   <span>Map View</span>
-                </button>
-                <button
+                </motion.button>
+                <motion.button
                   onClick={() => {
                     setMapMode('list');
                     setIsListCollapsed(false);
                   }}
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-bold transition-all cursor-pointer ${
                     mapMode === 'list'
                       ? 'bg-[#00875a] text-white shadow-xs'
@@ -708,15 +744,17 @@ export default function UnifiedBentoDashboard() {
                 >
                   <List className="w-3.5 h-3.5" />
                   <span>List View</span>
-                </button>
+                </motion.button>
               </div>
 
               {/* Divider */}
               <div className="w-[1px] h-5 bg-white/40 dark:bg-white/20 mx-0.5" />
 
               {/* Search as I move the map Checkbox Pill */}
-              <button
+              <motion.button
                 onClick={() => setSearchAsMove(!searchAsMove)}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[12px] font-bold hover:bg-white/10 dark:hover:bg-white/10 transition-colors cursor-pointer" style={{ color: 'var(--text)' }}
               >
                 <div className={`w-4 h-4 rounded flex items-center justify-center border text-[10px] ${
@@ -727,81 +765,95 @@ export default function UnifiedBentoDashboard() {
                   {searchAsMove && '✓'}
                 </div>
                 <span className="whitespace-nowrap">Search as I move the map</span>
-              </button>
+              </motion.button>
 
               {/* Divider */}
               <div className="w-[1px] h-5 bg-white/40 dark:bg-white/20 mx-0.5" />
 
               {/* Reset Map Button */}
-              <button
+              <motion.button
                 onClick={handleResetMap}
+                whileHover={{ scale: 1.04, rotate: -25 }}
+                whileTap={{ scale: 0.96 }}
                 className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[12px] font-bold hover:bg-white/10 dark:hover:bg-white/10 transition-colors cursor-pointer whitespace-nowrap" style={{ color: 'var(--text)' }}
                 title="Recenter map"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>Reset Map</span>
-              </button>
+              </motion.button>
 
             </div>
 
             {/* Floating Top Right Zoom & Recenter Controls */}
             <div className="absolute top-3 right-3 z-20 flex flex-col gap-1.5">
-              <button
+              <motion.button
                 onClick={() => window.dispatchEvent(new CustomEvent('map-zoom-in'))}
-                className="w-8 h-8 bg-white/80 dark:bg-[#0d1321]/80 backdrop-blur-md rounded-lg shadow-xs flex items-center justify-center hover:bg-white/10 dark:hover:bg-white/10 text-base font-bold transition-all cursor-pointer fluid-press" style={{ color: 'var(--text)' }}
+                whileHover={{ scale: 1.15, y: -1 }}
+                whileTap={{ scale: 0.9 }}
+                className="w-8 h-8 bg-white/80 dark:bg-[#0d1321]/80 backdrop-blur-md rounded-lg shadow-xs flex items-center justify-center hover:bg-white/20 dark:hover:bg-white/20 text-base font-bold transition-all cursor-pointer fluid-press" style={{ color: 'var(--text)' }}
                 title="Zoom In"
               >
                 +
-              </button>
-              <button
+              </motion.button>
+              <motion.button
                 onClick={() => window.dispatchEvent(new CustomEvent('map-zoom-out'))}
-                className="w-8 h-8 bg-white/80 dark:bg-[#0d1321]/80 backdrop-blur-md rounded-lg shadow-xs flex items-center justify-center hover:bg-white/10 dark:hover:bg-white/10 text-base font-bold transition-all cursor-pointer fluid-press" style={{ color: 'var(--text)' }}
+                whileHover={{ scale: 1.15, y: -1 }}
+                whileTap={{ scale: 0.9 }}
+                className="w-8 h-8 bg-white/80 dark:bg-[#0d1321]/80 backdrop-blur-md rounded-lg shadow-xs flex items-center justify-center hover:bg-white/20 dark:hover:bg-white/20 text-base font-bold transition-all cursor-pointer fluid-press" style={{ color: 'var(--text)' }}
                 title="Zoom Out"
               >
                 −
-              </button>
-              <button
+              </motion.button>
+              <motion.button
                 onClick={handleLocateMe}
-                className="w-8 h-8 bg-white/80 dark:bg-[#0d1321]/80 backdrop-blur-md rounded-lg shadow-xs flex items-center justify-center hover:bg-white/10 dark:hover:bg-white/10 transition-all cursor-pointer fluid-press" style={{ color: 'var(--text)' }}
+                whileHover={{ scale: 1.15, y: -1 }}
+                whileTap={{ scale: 0.9 }}
+                className="w-8 h-8 bg-white/80 dark:bg-[#0d1321]/80 backdrop-blur-md rounded-lg shadow-xs flex items-center justify-center hover:bg-white/20 dark:hover:bg-white/20 transition-all cursor-pointer fluid-press" style={{ color: 'var(--text)' }}
                 title="Locate Me"
               >
                 <Crosshair className="w-4 h-4" />
-              </button>
+              </motion.button>
             </div>
 
             {/* Floating Bottom Right "Nearby Facilities" Card */}
             <div className="absolute bottom-4 right-4 z-20 w-[240px]">
               {!isFacilitiesOpen ? (
-                <button
+                <motion.button
                   onClick={() => setIsFacilitiesOpen(true)}
-                  className="liquid-glass-float rounded-xl px-3.5 py-2 flex items-center gap-2 text-xs font-bold cursor-pointer fluid-press" style={{ color: 'var(--text)' }}
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="liquid-glass-float rounded-xl px-3.5 py-2 flex items-center gap-2 text-xs font-bold cursor-pointer fluid-press shadow-md hover:border-emerald-500/40" style={{ color: 'var(--text)' }}
                 >
                   <span>📍 Nearby Facilities</span>
                   <span className="text-[10px]" style={{ color: 'var(--muted)' }}>▲</span>
-                </button>
+                </motion.button>
               ) : (
-                <div className="liquid-glass-float rounded-2xl p-3 flex flex-col gap-2">
+                <div className="liquid-glass-float rounded-2xl p-3 flex flex-col gap-2 shadow-xl animate-cardFloat">
                   
                   {/* Card Header */}
                   <div className="flex items-center justify-between pb-1 border-b" style={{ borderColor: 'var(--border)' }}>
                     <span className="text-xs font-extrabold" style={{ color: 'var(--text)' }}>
                       Nearby Facilities
                     </span>
-                    <button
+                    <motion.button
                       onClick={() => setIsFacilitiesOpen(false)}
+                      whileHover={{ scale: 1.2, rotate: 90 }}
+                      whileTap={{ scale: 0.9 }}
                       className="text-xs p-1 cursor-pointer" style={{ color: 'var(--muted)' }}
                     >
                       <X className="w-3.5 h-3.5" />
-                    </button>
+                    </motion.button>
                   </div>
 
                   {/* Facility 1: Station Commute Zone */}
-                  <button
+                  <motion.button
                     onClick={() => setShowCommuteZones(!showCommuteZones)}
+                    whileHover={{ scale: 1.02, x: 2 }}
+                    whileTap={{ scale: 0.98 }}
                     className={`flex items-center justify-between p-2 rounded-xl border text-left transition-all cursor-pointer ${
                       showCommuteZones
-                        ? 'bg-emerald-50/80 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-700 text-emerald-900 dark:text-emerald-200 font-bold'
-                        : 'bg-white/40 dark:bg-white/10 border-white/30 dark:border-white/20'
+                        ? 'bg-emerald-50/80 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-700 text-emerald-900 dark:text-emerald-200 font-bold shadow-xs'
+                        : 'bg-white/40 dark:bg-white/10 border-white/30 dark:border-white/20 hover:border-emerald-500/30'
                     }`}
                     style={showCommuteZones ? undefined : { color: 'var(--text)' }}
                   >
@@ -815,15 +867,17 @@ export default function UnifiedBentoDashboard() {
                       </div>
                     </div>
                     <ArrowUpRight className={`w-3.5 h-3.5 ${showCommuteZones ? 'text-emerald-600' : ''}`} style={showCommuteZones ? undefined : { color: 'var(--muted)' }} />
-                  </button>
+                  </motion.button>
 
                   {/* Facility 2: Army School */}
-                  <button
+                  <motion.button
                     onClick={() => setShowSchools(!showSchools)}
+                    whileHover={{ scale: 1.02, x: 2 }}
+                    whileTap={{ scale: 0.98 }}
                     className={`flex items-center justify-between p-2 rounded-xl border text-left transition-all cursor-pointer ${
                       showSchools
-                        ? 'bg-blue-50/80 dark:bg-blue-950/40 border-blue-300 dark:border-blue-700 text-blue-900 dark:text-blue-200 font-bold'
-                        : 'bg-white/40 dark:bg-white/10 border-white/30 dark:border-white/20'
+                        ? 'bg-blue-50/80 dark:bg-blue-950/40 border-blue-300 dark:border-blue-700 text-blue-900 dark:text-blue-200 font-bold shadow-xs'
+                        : 'bg-white/40 dark:bg-white/10 border-white/30 dark:border-white/20 hover:border-blue-500/30'
                     }`}
                     style={showSchools ? undefined : { color: 'var(--text)' }}
                   >
@@ -839,15 +893,17 @@ export default function UnifiedBentoDashboard() {
                     <span className={`text-[11px] font-bold ${showSchools ? 'text-blue-600' : ''}`} style={showSchools ? undefined : { color: 'var(--muted)' }}>
                       {showSchools ? '✓' : '○'}
                     </span>
-                  </button>
+                  </motion.button>
 
                   {/* Facility 3: Military Hospital */}
-                  <button
+                  <motion.button
                     onClick={() => setShowHospitals(!showHospitals)}
+                    whileHover={{ scale: 1.02, x: 2 }}
+                    whileTap={{ scale: 0.98 }}
                     className={`flex items-center justify-between p-2 rounded-xl border text-left transition-all cursor-pointer ${
                       showHospitals
-                        ? 'bg-rose-50/80 dark:bg-rose-950/40 border-rose-300 dark:border-rose-700 text-rose-900 dark:text-rose-200 font-bold'
-                        : 'bg-white/40 dark:bg-white/10 border-white/30 dark:border-white/20'
+                        ? 'bg-rose-50/80 dark:bg-rose-950/40 border-rose-300 dark:border-rose-700 text-rose-900 dark:text-rose-200 font-bold shadow-xs'
+                        : 'bg-white/40 dark:bg-white/10 border-white/30 dark:border-white/20 hover:border-rose-500/30'
                     }`}
                     style={showHospitals ? undefined : { color: 'var(--text)' }}
                   >
@@ -863,15 +919,17 @@ export default function UnifiedBentoDashboard() {
                     <span className={`text-[11px] font-bold ${showHospitals ? 'text-rose-600' : ''}`} style={showHospitals ? undefined : { color: 'var(--muted)' }}>
                       {showHospitals ? '✓' : '○'}
                     </span>
-                  </button>
+                  </motion.button>
 
                   {/* Footer Link */}
-                  <button 
+                  <motion.button 
                     onClick={() => ctx?.openAccessibility?.()}
+                    whileHover={{ scale: 1.04 }}
+                    whileTap={{ scale: 0.96 }}
                     className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 hover:underline pt-1 text-center cursor-pointer"
                   >
                     View more facilities →
-                  </button>
+                  </motion.button>
 
                 </div>
               )}
@@ -931,3 +989,4 @@ export default function UnifiedBentoDashboard() {
     </>
   );
 }
+{/* Desktop Left Navigation Rail */}undefined
