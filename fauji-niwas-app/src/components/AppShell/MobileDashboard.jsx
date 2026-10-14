@@ -349,8 +349,8 @@ export default function MobileDashboard({ items = [] }) {
 
       {/* ══ MAIN CONTENT ══ */}
       {mobileTab === 'map' ? (
-        <div className="w-full flex-1 relative min-h-0">
-          <MapView />
+        <div className="w-full flex-1 relative min-h-0" style={{ marginBottom: '76px' }}>
+          <MapView properties={items} />
         </div>
       ) : (
         <main className="flex-1 overflow-y-auto min-h-0 pb-36">
@@ -418,6 +418,34 @@ export default function MobileDashboard({ items = [] }) {
               </div>
             </div>
           </section>
+
+          {/* ══ TACTICAL CANTONMENT MAP BANNER ══ */}
+          <motion.div 
+            onClick={() => {
+              setMobileTab('map');
+              setTimeout(() => window.dispatchEvent(new Event('mobile-tab-map')), 60);
+            }}
+            whileHover={{ scale: 1.015, y: -2 }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ type: 'spring', stiffness: 450, damping: 25 }}
+            className="mx-4 mt-3 liquid-glass-morph rounded-[20px] p-3.5 flex items-center justify-between cursor-pointer border border-emerald-600/30 dark:border-emerald-400/30 bg-gradient-to-r from-emerald-950/20 via-slate-900/40 to-amber-950/20 transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-xl bg-emerald-600/20 border border-emerald-500/30 flex items-center justify-center text-xl shrink-0">
+                🗺️
+              </div>
+              <div className="flex flex-col">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[14px] font-black tracking-tight" style={{ color: 'var(--text)' }}>Tactical Cantonment Map</span>
+                  <span className="text-[9.5px] font-extrabold uppercase px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400">Live</span>
+                </div>
+                <span className="text-[11.5px] font-medium" style={{ color: 'var(--muted)' }}>
+                  3km/5km Security Rings · CSD · Military Hospitals
+                </span>
+              </div>
+            </div>
+            <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400 shrink-0">Explore →</span>
+          </motion.div>
 
           {/* ══ SECTION HEADER ══ */}
           <div className="flex items-center justify-between mb-3 px-4 mt-3">
@@ -519,8 +547,12 @@ export default function MobileDashboard({ items = [] }) {
           </div>
 
           {/* ══ PROMO BANNER — breathing glass ══ */}
-          <div className="mt-5 mb-2 mx-4 relative overflow-hidden liquid-glass-morph rounded-[22px] p-4 flex items-center justify-between shadow-lg breathe"
-            style={{ borderColor: 'rgba(251,191,36,.3)' }}>
+          <motion.div 
+            whileHover={{ scale: 1.015, y: -2 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+            className="mt-5 mb-2 mx-4 relative overflow-hidden liquid-glass-morph rounded-[22px] p-4 flex items-center justify-between shadow-lg breathe"
+            style={{ borderColor: 'rgba(251,191,36,.3)' }}
+          >
             <span className="sheen-sweep" />
             <div className="flex flex-col pr-2">
               <div className="flex items-center gap-1.5 text-[13.5px] font-extrabold text-[#065f46] dark:text-emerald-300">
@@ -533,13 +565,15 @@ export default function MobileDashboard({ items = [] }) {
                 Direct from defence personnel & verified owners
               </p>
             </div>
-            <button
+            <motion.button
               onClick={() => ctx.openPost?.()}
-              className="flex items-center gap-1.5 bg-gradient-to-br from-[#fbbf24] to-[#d97706] text-[#1c1917] text-[12.5px] font-black px-4 py-2.5 rounded-[14px] cursor-pointer shrink-0 whitespace-nowrap active:scale-95 transition-all shadow-[0_8px_24px_rgba(251,191,36,.4)]"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="flex items-center gap-1.5 bg-gradient-to-br from-[#fbbf24] to-[#d97706] text-[#1c1917] text-[12.5px] font-black px-4 py-2.5 rounded-[14px] cursor-pointer shrink-0 whitespace-nowrap shadow-[0_8px_24px_rgba(251,191,36,.4)]"
             >
               <span>+</span> List Property
-            </button>
-          </div>
+            </motion.button>
+          </motion.div>
 
         </main>
       )}
@@ -557,7 +591,10 @@ export default function MobileDashboard({ items = [] }) {
               key={tab.id}
               onClick={() => {
                 setMobileTab(tab.id);
-                if (tab.id === 'ai') {
+                if (tab.id === 'map') {
+                  setTimeout(() => window.dispatchEvent(new Event('mobile-tab-map')), 60);
+                }
+                else if (tab.id === 'ai') {
                   if (window.openFaujiChatbot) window.openFaujiChatbot();
                   else if (ctx.openAiHelper) ctx.openAiHelper();
                   else if (ctx.openChat) ctx.openChat();
