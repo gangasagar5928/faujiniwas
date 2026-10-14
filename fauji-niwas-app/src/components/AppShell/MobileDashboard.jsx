@@ -470,9 +470,13 @@ export default function MobileDashboard({ items = [] }) {
                 <motion.div
                   key={home.id}
                   onClick={() => handleCardClick(home)}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.15 }}
+                  whileHover={{ scale: 1.015, y: -2 }}
                   whileTap={{ scale: 0.97 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 24 }}
-                  className="liquid-glass-morph rounded-[22px] p-3 flex gap-3.5 relative cursor-pointer fluid-lift"
+                  className="liquid-glass-morph rounded-[22px] p-3 flex gap-3.5 relative cursor-pointer fluid-lift group"
                   style={{ minHeight: '104px' }}
                 >
                   {/* Thumbnail — glass-framed */}
@@ -480,7 +484,7 @@ export default function MobileDashboard({ items = [] }) {
                     <img
                       src={home.image || home.mediaUrls?.[0] || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80'}
                       alt={home.name || 'Property'}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       loading="lazy"
                     />
                     <span
