@@ -298,21 +298,22 @@ export default function LandingPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
+            whileHover={{ y: -6, scale: 1.02, boxShadow: '0 20px 40px -15px rgba(245, 158, 11, 0.2)' }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.4, delay: 0.05 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
             onClick={handleLaunchApp}
-            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-amber-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
+            className="feature-card group relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:border-amber-600/60 transition-colors duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
           >
             <div className="flex justify-between items-start">
               <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-800 bg-amber-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
                 <Navigation size={12} /> #01 Map Search
               </span>
-              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-amber-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={15} />
+              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-amber-600 group-hover:text-white transition-colors duration-200">
+                <ArrowUpRight size={15} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" />
               </div>
             </div>
             <div>
-              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">Cantonment Proximity</h3>
+              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug group-hover:text-amber-900 transition-colors">Cantonment Proximity</h3>
               <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Exact gate distance routing, Army Schools, and Military Hospitals mapped in real-time.</p>
             </div>
             <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
@@ -324,21 +325,22 @@ export default function LandingPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
+            whileHover={{ y: -6, scale: 1.02, boxShadow: '0 20px 40px -15px rgba(245, 158, 11, 0.2)' }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
             onClick={handleLaunchApp}
-            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-amber-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
+            className="feature-card group relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:border-amber-600/60 transition-colors duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
           >
             <div className="flex justify-between items-start">
               <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-800 bg-amber-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
                 <ShoppingBag size={12} /> #02 Defence Market
               </span>
-              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-amber-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={15} />
+              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-amber-600 group-hover:text-white transition-colors duration-200">
+                <ArrowUpRight size={15} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" />
               </div>
             </div>
             <div>
-              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">Defence Marketplace</h3>
+              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug group-hover:text-amber-900 transition-colors">Defence Marketplace</h3>
               <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Direct peer-to-peer household transfers & verified postings without middleman brokers.</p>
             </div>
             <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
@@ -350,21 +352,22 @@ export default function LandingPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
+            whileHover={{ y: -6, scale: 1.02, boxShadow: '0 20px 40px -15px rgba(245, 158, 11, 0.2)' }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.4, delay: 0.15 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
             onClick={handleLaunchApp}
-            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-amber-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
+            className="feature-card group relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:border-amber-600/60 transition-colors duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
           >
             <div className="flex justify-between items-start">
               <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-800 bg-amber-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
                 <Award size={12} /> #03 7th CPC HRA
               </span>
-              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-amber-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={15} />
+              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-amber-600 group-hover:text-white transition-colors duration-200">
+                <ArrowUpRight size={15} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" />
               </div>
             </div>
             <div>
-              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">Rank-Based HRA Matching</h3>
+              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug group-hover:text-amber-900 transition-colors">Rank-Based HRA Matching</h3>
               <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Automatic allowance filters calibrated for Jawans, JCOs, and Commissioned Officers.</p>
             </div>
             <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
@@ -376,21 +379,22 @@ export default function LandingPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
+            whileHover={{ y: -6, scale: 1.02, boxShadow: '0 20px 40px -15px rgba(59, 130, 246, 0.2)' }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.4, delay: 0.2 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
             onClick={handleLaunchApp}
-            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-blue-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
+            className="feature-card group relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:border-blue-600/60 transition-colors duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
           >
             <div className="flex justify-between items-start">
               <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-blue-800 bg-blue-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
                 <Star size={12} /> #04 SSB Dorms
               </span>
-              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={15} />
+              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-200">
+                <ArrowUpRight size={15} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" />
               </div>
             </div>
             <div>
-              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">SSB Candidate Stays</h3>
+              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug group-hover:text-blue-900 transition-colors">SSB Candidate Stays</h3>
               <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Affordable budget stays and mess food guides minutes away from Selection Centres.</p>
             </div>
             <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
@@ -402,21 +406,22 @@ export default function LandingPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
+            whileHover={{ y: -6, scale: 1.02, boxShadow: '0 20px 40px -15px rgba(16, 185, 129, 0.2)' }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.4, delay: 0.25 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
             onClick={handleLaunchApp}
-            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-emerald-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
+            className="feature-card group relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:border-emerald-600/60 transition-colors duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
           >
             <div className="flex justify-between items-start">
               <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-800 bg-emerald-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
                 <Sparkles size={12} /> #05 AI Assistant
               </span>
-              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={15} />
+              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-200">
+                <ArrowUpRight size={15} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" />
               </div>
             </div>
             <div>
-              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">Military AI Assistant</h3>
+              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug group-hover:text-emerald-900 transition-colors">Military AI Assistant</h3>
               <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Instant station relocation advisory, HRA calculations, and automatic housing matches.</p>
             </div>
             <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
@@ -428,21 +433,22 @@ export default function LandingPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
+            whileHover={{ y: -6, scale: 1.02, boxShadow: '0 20px 40px -15px rgba(245, 158, 11, 0.2)' }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.4, delay: 0.3 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
             onClick={() => setShowLeaseModal(true)}
-            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-amber-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
+            className="feature-card group relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:border-amber-600/60 transition-colors duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
           >
             <div className="flex justify-between items-start">
               <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-800 bg-amber-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
                 <FileText size={12} /> #06 Lease Generator
               </span>
-              <button onClick={(e) => { e.stopPropagation(); setShowLeaseModal(true); }} aria-label="Open Lease Generator" className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-amber-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={15} />
+              <button onClick={(e) => { e.stopPropagation(); setShowLeaseModal(true); }} aria-label="Open Lease Generator" className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-amber-600 group-hover:text-white transition-colors duration-200">
+                <ArrowUpRight size={15} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" />
               </button>
             </div>
             <div>
-              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">Military Lease Agreements</h3>
+              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug group-hover:text-amber-900 transition-colors">Military Lease Agreements</h3>
               <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Official rent agreements embedded with standard 15-day military posting break clause.</p>
             </div>
             <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
@@ -454,21 +460,22 @@ export default function LandingPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
+            whileHover={{ y: -6, scale: 1.02, boxShadow: '0 20px 40px -15px rgba(168, 85, 247, 0.2)' }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.4, delay: 0.35 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
             onClick={handleLaunchApp}
-            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-purple-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
+            className="feature-card group relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:border-purple-600/60 transition-colors duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
           >
             <div className="flex justify-between items-start">
               <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-purple-800 bg-purple-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
                 <Zap size={12} /> #07 CSD Pulse
               </span>
-              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-purple-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={15} />
+              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-purple-600 group-hover:text-white transition-colors duration-200">
+                <ArrowUpRight size={15} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" />
               </div>
             </div>
             <div>
-              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">Live CSD &amp; URC Pulse</h3>
+              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug group-hover:text-purple-900 transition-colors">Live CSD &amp; URC Pulse</h3>
               <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Real-time canteen token queues, grocery stock updates, and AFD tracking.</p>
             </div>
             <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
@@ -480,21 +487,22 @@ export default function LandingPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
+            whileHover={{ y: -6, scale: 1.02, boxShadow: '0 20px 40px -15px rgba(244, 63, 94, 0.2)' }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.4, delay: 0.4 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
             onClick={() => setShowWasmModal(true)}
-            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-rose-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
+            className="feature-card group relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:border-rose-600/60 transition-colors duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
           >
             <div className="flex justify-between items-start">
               <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-rose-800 bg-rose-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
                 <ShieldCheck size={12} /> #08 Client Privacy
               </span>
-              <button onClick={(e) => { e.stopPropagation(); setShowWasmModal(true); }} aria-label="Open Wasm Masking" className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-rose-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={15} />
+              <button onClick={(e) => { e.stopPropagation(); setShowWasmModal(true); }} aria-label="Open Wasm Masking" className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-rose-600 group-hover:text-white transition-colors duration-200">
+                <ArrowUpRight size={15} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" />
               </button>
             </div>
             <div>
-              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">Wasm ID Masking</h3>
+              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug group-hover:text-rose-900 transition-colors">Wasm ID Masking</h3>
               <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Offline client-side redaction ensuring zero personal military data leaves your browser.</p>
             </div>
             <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
