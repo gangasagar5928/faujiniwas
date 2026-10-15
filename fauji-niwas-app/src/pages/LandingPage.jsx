@@ -35,6 +35,18 @@ export default function LandingPage() {
   
   // High-tech secure redirection sequence states
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      if (total > 0) {
+        setScrollProgress((window.scrollY / total) * 100);
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const [showTicker, setShowTicker] = useState(false);
   const tickerRef = useRef(null);
@@ -88,6 +100,14 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[#FAF9F6] dark:bg-[#0b1325] text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-amber-500/20 relative">
 
+      {/* Live Interactive Scroll Progress Indicator */}
+      <div className="fixed top-0 left-0 right-0 h-[3.5px] z-[10001] bg-slate-200/20 dark:bg-slate-800/20 pointer-events-none">
+        <div 
+          className="h-full bg-gradient-to-r from-amber-500 via-emerald-500 to-amber-500 transition-[width] duration-75 ease-out shadow-[0_0_12px_rgba(245,158,11,0.8)]"
+          style={{ width: `${scrollProgress}%` }}
+        />
+      </div>
+
       {/* ColorOS Gloaming aurora backdrop — colour field behind every glass panel */}
       <div className="landing-aurora" aria-hidden="true" />
 
@@ -108,41 +128,53 @@ export default function LandingPage() {
 
           {/* Center Links - text contrast upgrades */}
           <div className="hidden md:flex items-center gap-2 text-[11px] font-black uppercase tracking-wider text-slate-800 dark:text-slate-200">
-            <a href="#" className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors min-h-[48px] px-3 flex items-center">Home</a>
-            <button onClick={handleLaunchApp} className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors font-black uppercase cursor-pointer bg-transparent border-none min-h-[48px] px-3 flex items-center">Listings</button>
-            <button onClick={handleLaunchApp} className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors font-black uppercase cursor-pointer bg-transparent border-none min-h-[48px] px-3 flex items-center">Post Room</button>
-            <a href="/about.html" className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors min-h-[48px] px-3 flex items-center">About</a>
-            <a href="#comparison" className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors min-h-[48px] px-3 flex items-center">Compare</a>
-            <a href="#footer" className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors min-h-[48px] px-3 flex items-center">Contact</a>
+            <motion.a whileHover={{ y: -1, scale: 1.05 }} transition={{ type: 'spring', stiffness: 500, damping: 20 }} href="#" className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors min-h-[48px] px-3 flex items-center">Home</motion.a>
+            <motion.button whileHover={{ y: -1, scale: 1.05 }} transition={{ type: 'spring', stiffness: 500, damping: 20 }} onClick={handleLaunchApp} className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors font-black uppercase cursor-pointer bg-transparent border-none min-h-[48px] px-3 flex items-center">Listings</motion.button>
+            <motion.button whileHover={{ y: -1, scale: 1.05 }} transition={{ type: 'spring', stiffness: 500, damping: 20 }} onClick={handleLaunchApp} className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors font-black uppercase cursor-pointer bg-transparent border-none min-h-[48px] px-3 flex items-center">Post Room</motion.button>
+            <motion.a whileHover={{ y: -1, scale: 1.05 }} transition={{ type: 'spring', stiffness: 500, damping: 20 }} href="/about.html" className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors min-h-[48px] px-3 flex items-center">About</motion.a>
+            <motion.a whileHover={{ y: -1, scale: 1.05 }} transition={{ type: 'spring', stiffness: 500, damping: 20 }} href="#comparison" className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors min-h-[48px] px-3 flex items-center">Compare</motion.a>
+            <motion.a whileHover={{ y: -1, scale: 1.05 }} transition={{ type: 'spring', stiffness: 500, damping: 20 }} href="#footer" className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors min-h-[48px] px-3 flex items-center">Contact</motion.a>
           </div>
 
           {/* Action buttons */}
           <div className="flex items-center gap-2">
-            <button 
+            <motion.button 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => setShowAccessibilityModal(true)}
               className="px-3.5 py-2 min-h-[40px] rounded-xl text-[11px] font-extrabold uppercase tracking-wider border border-slate-300 dark:border-slate-700 bg-white/90 dark:bg-slate-800/90 text-slate-800 dark:text-white shadow-xs hover:border-amber-600 transition-all cursor-pointer flex items-center gap-1.5"
               title="Accessibility, Contrast & Font"
             >
               <span>♿</span>
               <span className="hidden sm:inline">Contrast &amp; Font</span>
-            </button>
-            <button onClick={handleLaunchApp} className="text-slate-800 dark:text-slate-200 hover:text-amber-800 transition-colors cursor-pointer w-10 h-10 flex items-center justify-center" title="Search Listings" aria-label="Search">
+            </motion.button>
+            <motion.button 
+              whileHover={{ scale: 1.1, rotate: 10 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={handleLaunchApp} 
+              className="text-slate-800 dark:text-slate-200 hover:text-amber-800 transition-colors cursor-pointer w-10 h-10 flex items-center justify-center" 
+              title="Search Listings" 
+              aria-label="Search"
+            >
               <Search size={18} />
-            </button>
-            <button 
+            </motion.button>
+            <motion.button 
+              whileHover={{ scale: 1.05, y: -1, boxShadow: '0 4px 16px rgba(245,158,11,0.25)' }}
+              whileTap={{ scale: 0.95 }}
               onClick={handleLaunchApp}
               className="px-5 py-2.5 min-h-[40px] rounded-full text-[10px] font-black uppercase tracking-widest border border-amber-700/40 text-amber-900 dark:text-amber-400 bg-amber-500/5 hover:bg-amber-500/10 transition-all cursor-pointer flex items-center"
             >
               Sign In
-            </button>
+            </motion.button>
             {/* Hamburger Toggle (Mobile) */}
-            <button 
+            <motion.button 
+              whileTap={{ scale: 0.9 }}
               onClick={() => setMobMenuOpen(!mobMenuOpen)}
               className="md:hidden w-10 h-10 text-slate-800 dark:text-slate-200 hover:text-amber-800 transition-colors cursor-pointer flex items-center justify-center"
               aria-label="Toggle Menu"
             >
               {mobMenuOpen ? <X size={22} /> : <Menu size={22} />}
-            </button>
+            </motion.button>
           </div>
         </div>
       </nav>
@@ -177,18 +209,30 @@ export default function LandingPage() {
 
           {/* Stat metrics */}
           <div className="flex flex-wrap sm:flex-nowrap gap-8 border-t border-slate-200 lg:border-t-0 pt-6 lg:pt-0">
-            <div className="flex flex-col border-l-2 border-slate-900 pl-4 min-w-[100px]">
+            <motion.div 
+              whileHover={{ scale: 1.08, y: -2 }}
+              transition={{ type: 'spring', stiffness: 450, damping: 20 }}
+              className="flex flex-col border-l-2 border-slate-900 pl-4 min-w-[100px] cursor-pointer"
+            >
               <span className="text-3xl font-black text-slate-900 leading-none">300+</span>
               <span className="text-[9px] uppercase tracking-widest text-slate-600 font-bold mt-1">Listings</span>
-            </div>
-            <div className="flex flex-col border-l-2 border-slate-900 pl-4 min-w-[100px]">
+            </motion.div>
+            <motion.div 
+              whileHover={{ scale: 1.08, y: -2 }}
+              transition={{ type: 'spring', stiffness: 450, damping: 20 }}
+              className="flex flex-col border-l-2 border-slate-900 pl-4 min-w-[100px] cursor-pointer"
+            >
               <span className="text-3xl font-black text-slate-900 leading-none">15+</span>
               <span className="text-[9px] uppercase tracking-widest text-slate-600 font-bold mt-1">Stations</span>
-            </div>
-            <div className="flex flex-col border-l-2 border-slate-900 pl-4 min-w-[100px]">
+            </motion.div>
+            <motion.div 
+              whileHover={{ scale: 1.08, y: -2 }}
+              transition={{ type: 'spring', stiffness: 450, damping: 20 }}
+              className="flex flex-col border-l-2 border-slate-900 pl-4 min-w-[100px] cursor-pointer"
+            >
               <span className="text-3xl font-black text-slate-900 leading-none">0</span>
               <span className="text-[9px] uppercase tracking-widest text-slate-600 font-bold mt-1">Brokerage</span>
-            </div>
+            </motion.div>
           </div>
         </motion.div>
 
@@ -196,15 +240,16 @@ export default function LandingPage() {
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
+          whileHover={{ scale: 1.008, transition: { duration: 0.3 } }}
           transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-          className="relative rounded-[2rem] overflow-hidden w-full h-[450px] sm:h-[500px] md:h-[540px] liquid-glass-morph shadow-[0_24px_70px_rgba(15,23,42,0.18)]"
+          className="relative rounded-[2rem] overflow-hidden w-full h-[450px] sm:h-[500px] md:h-[540px] liquid-glass-morph shadow-[0_24px_70px_rgba(15,23,42,0.18)] group"
         >
           <picture>
             <source media="(max-width: 640px)" srcSet="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=450&q=25&fm=webp" />
             <img 
               src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=50&fm=webp" 
               alt="Premium Defence Housing Villa" 
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               fetchpriority="high"
               loading="eager"
               decoding="sync"
@@ -233,12 +278,15 @@ export default function LandingPage() {
             </p>
             
             {/* Big Redirect CTA Button */}
-            <button 
+            <motion.button 
               onClick={handleLaunchApp}
-              className="mt-2 w-fit bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-heading font-black text-[10px] sm:text-xs uppercase tracking-widest px-8 py-5 min-h-[48px] rounded-xl shadow-[0_4px_24px_rgba(245,158,11,0.4)] hover:shadow-[0_4px_32px_rgba(245,158,11,0.6)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 cursor-pointer flex items-center justify-center gap-2"
+              whileHover={{ scale: 1.04, y: -2, boxShadow: '0 8px 36px rgba(245,158,11,0.6)' }}
+              whileTap={{ scale: 0.96 }}
+              transition={{ type: 'spring', stiffness: 450, damping: 20 }}
+              className="mt-2 w-fit bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-heading font-black text-[10px] sm:text-xs uppercase tracking-widest px-8 py-5 min-h-[48px] rounded-xl shadow-[0_4px_24px_rgba(245,158,11,0.4)] cursor-pointer flex items-center justify-center gap-2"
             >
               <span>🚀</span> Enter Secure Command Center
-            </button>
+            </motion.button>
           </div>
         </motion.div>
 
