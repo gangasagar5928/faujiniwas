@@ -530,32 +530,16 @@ export default function LandingPage() {
               Designed entirely to remove the friction of sudden military posting cycles. Built securely for jawans, JCOs, and officers to share postings and rent homes without civilian classified noise.
             </p>
           </div>
-          <button 
+          <motion.button 
             onClick={handleLaunchApp} 
-            style={{
-              backgroundColor: '#b45309',
-              color: '#ffffff',
-              fontWeight: 900,
-              padding: '14px 26px',
-              borderRadius: '14px',
-              border: 'none',
-              boxShadow: '0 4px 18px rgba(180, 83, 9, 0.35)',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              fontSize: '12px',
-              textTransform: 'uppercase',
-              letterSpacing: '0.08em',
-              whiteSpace: 'nowrap',
-              transition: 'transform 0.15s, background-color 0.15s'
-            }}
-            onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#92400e'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-            onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#b45309'; e.currentTarget.style.transform = 'translateY(0)'; }}
+            whileHover={{ scale: 1.04, y: -2, boxShadow: '0 8px 24px rgba(180, 83, 9, 0.45)' }}
+            whileTap={{ scale: 0.96 }}
+            transition={{ type: 'spring', stiffness: 450, damping: 20 }}
+            className="cursor-pointer flex items-center gap-2 text-xs uppercase tracking-wider font-black py-3.5 px-6 rounded-2xl bg-[#b45309] hover:bg-[#92400e] text-white shadow-[0_4px_18px_rgba(180,83,9,0.35)] whitespace-nowrap transition-colors"
           >
             <span>Launch Relocation OS</span>
             <span style={{ fontSize: '15px' }}>↗</span>
-          </button>
+          </motion.button>
         </motion.section>
 
         {/* Updated Military vs Civilian Comparison Table */}
@@ -587,42 +571,42 @@ export default function LandingPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-slate-800 font-medium">
-                <tr>
+                <tr className="hover:bg-amber-500/10 transition-colors duration-150 cursor-default">
                   <td className="py-3 font-bold">Military ID Vetting &amp; Privacy</td>
                   <td className="py-3 text-emerald-700 font-bold">🟢 100% Client-Side Wasm Masking (Zero Data Leak)</td>
                   <td className="py-3 text-rose-600">🔴 None (Civilian logins, high risk of spam &amp; fraud)</td>
                 </tr>
-                <tr>
+                <tr className="hover:bg-amber-500/10 transition-colors duration-150 cursor-default">
                   <td className="py-3 font-bold">7th CPC HRA Rank Budgets</td>
                   <td className="py-3 text-emerald-700 font-bold">🟢 Automatic (Officer / JCO / OR limits matched)</td>
                   <td className="py-3 text-rose-600">🔴 None (Generic price sliders with no rank context)</td>
                 </tr>
-                <tr>
+                <tr className="hover:bg-amber-500/10 transition-colors duration-150 cursor-default">
                   <td className="py-3 font-bold">Cantonment &amp; Gate Distance</td>
                   <td className="py-3 text-emerald-700 font-bold">🟢 Exact Gate &amp; Military Unit Proximity Routing</td>
                   <td className="py-3 text-rose-600">🔴 None (Civilian postal codes only)</td>
                 </tr>
-                <tr>
+                <tr className="hover:bg-amber-500/10 transition-colors duration-150 cursor-default">
                   <td className="py-3 font-bold">SSB Candidate Dorms</td>
                   <td className="py-3 text-emerald-700 font-bold">🟢 Dedicated SSB Selection Centre Stays + Food Guide</td>
                   <td className="py-3 text-rose-600">🔴 None (Expensive civilian hotels only)</td>
                 </tr>
-                <tr>
+                <tr className="hover:bg-amber-500/10 transition-colors duration-150 cursor-default">
                   <td className="py-3 font-bold">Military Break Clause Leases</td>
                   <td className="py-3 text-emerald-700 font-bold">🟢 Official 15-Day Posting Transfer Break Clause</td>
                   <td className="py-3 text-rose-600">🔴 None (Rigid 11-month civilian lock-in contracts)</td>
                 </tr>
-                <tr>
+                <tr className="hover:bg-amber-500/10 transition-colors duration-150 cursor-default">
                   <td className="py-3 font-bold">Defence Marketplace</td>
                   <td className="py-3 text-emerald-700 font-bold">🟢 Direct Peer-to-Peer Relocation Transfers</td>
                   <td className="py-3 text-rose-600">🔴 Open classifieds filled with commercial dealers</td>
                 </tr>
-                <tr>
+                <tr className="hover:bg-amber-500/10 transition-colors duration-150 cursor-default">
                   <td className="py-3 font-bold">CSD Canteen &amp; Base Facilities</td>
                   <td className="py-3 text-emerald-700 font-bold">🟢 Live CSD Pulse, Army Schools &amp; Military Hospitals</td>
                   <td className="py-3 text-rose-600">🔴 None (Zero military infrastructure data)</td>
                 </tr>
-                <tr>
+                <tr className="hover:bg-amber-500/10 transition-colors duration-150 cursor-default">
                   <td className="py-3 font-bold">Brokerage Commission</td>
                   <td className="py-3 text-emerald-700 font-bold">🟢 ₹0 (Strict Zero-Brokerage Policy)</td>
                   <td className="py-3 text-rose-600">🔴 High (1–2 Months Rent Commission + Hidden Fees)</td>
@@ -639,10 +623,12 @@ export default function LandingPage() {
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
+            whileHover={{ y: -4, scale: 1.015, boxShadow: '0 16px 36px rgba(245, 158, 11, 0.15)' }}
+            whileTap={{ scale: 0.98 }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
+            transition={{ type: 'spring', stiffness: 450, damping: 25 }}
             onClick={() => setShowLeaseModal(true)}
-            className="liquid-glass-morph p-6 rounded-2xl flex gap-4 cursor-pointer hover:border-amber-500/60 transition-all text-left items-start"
+            className="liquid-glass-morph p-6 rounded-2xl flex gap-4 cursor-pointer hover:border-amber-500/60 transition-colors text-left items-start"
           >
             <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-800 shrink-0">
               <FileText size={20} />
@@ -660,10 +646,12 @@ export default function LandingPage() {
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
+            whileHover={{ y: -4, scale: 1.015, boxShadow: '0 16px 36px rgba(245, 158, 11, 0.15)' }}
+            whileTap={{ scale: 0.98 }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            transition={{ type: 'spring', stiffness: 450, damping: 25 }}
             onClick={() => setShowWasmModal(true)}
-            className="liquid-glass-morph p-6 rounded-2xl flex gap-4 cursor-pointer hover:border-amber-500/60 transition-all text-left items-start"
+            className="liquid-glass-morph p-6 rounded-2xl flex gap-4 cursor-pointer hover:border-amber-500/60 transition-colors text-left items-start"
           >
             <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-700 shrink-0">
               <Lock size={20} />
