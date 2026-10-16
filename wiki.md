@@ -1,6 +1,6 @@
 ﻿# Fauji Niwas Technical Wiki & Architecture Reference
 
-> **Version:** 2.0 Production | **Stack:** React 19 / Vite / Tailwind CSS 4 / Firebase / Native Android (Kotlin + Jetpack Compose) | **Deployment:** Firebase Hosting & Android APK
+> **Version:** 2.1 Interactive Motion Edition | **Stack:** React 19 / Vite / Tailwind CSS 4 / Firebase / Native Android (Kotlin + Jetpack Compose) | **Deployment:** Firebase Hosting & Android APK
 >
 > Fauji Niwas is a zero-brokerage housing, relocation, and SSB transit accommodation network purpose-built for Indian Armed Forces personnel, Veterans, and defence families across 62+ military cantonments.
 
