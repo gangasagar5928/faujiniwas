@@ -1,7 +1,8 @@
 # 🪖 Fauji Niwas — Product Roadmap, Security, and Architecture
 > **Incubator-Grade Technical Blueprint, Security Controls, and Strategic Roadmap for India's Privacy-First Military Relocation Platform.**
 > Live Web Platform: [faujiniwas.web.app](https://faujiniwas.web.app)
-> Document Version: v5.3.0 (Security Hardening, Admin Key Vault, DPDP 2023 Compliance & Zero-Broker Enforcement)
+> Document Version: v5.4.0 (Live Interactive Motion Architecture, Leaflet Failover & GPU Spring Polish)
+> Release Milestone: 2026-10-16T19:00:00+05:30
 > Last Updated: 2026-08-21T18:55:00+05:30
 
 ---
