@@ -715,12 +715,16 @@ export default function LandingPage() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Founder 1 */}
-            <div className="flex gap-4 items-start">
-              <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-amber-500/30 shrink-0">
+            <motion.div 
+              whileHover={{ y: -4, scale: 1.015 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+              className="flex gap-4 items-start p-4 rounded-2xl transition-colors hover:bg-slate-50/80 group"
+            >
+              <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-amber-500/30 shrink-0 group-hover:border-amber-500 group-hover:shadow-[0_0_15px_rgba(245,158,11,0.3)] transition-all duration-300">
                 <img 
                   src="/aman-kumar-singh-small.jpg" 
                   alt="Aman Kumar Singh" 
-                  className="w-full h-full object-cover object-top"
+                  className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300"
                   width="64"
                   height="64"
                   loading="lazy"
@@ -728,25 +732,29 @@ export default function LandingPage() {
                 />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-slate-900 font-heading">Aman Kumar Singh</h3>
+                <h3 className="text-sm font-bold text-slate-900 font-heading group-hover:text-amber-800 transition-colors">Aman Kumar Singh</h3>
                 <span className="text-[9px] font-bold text-amber-755 uppercase tracking-wide block mt-0.5">Founder & Developer</span>
                 <p className="text-slate-650 text-[11px] leading-relaxed font-light mt-1.5">
                   B.Tech EEE Student at Galgotias College of Engineering and Technology (GCET, AKTU), Security Researcher, and NCC Air Wing 'A' Certificate holder. Aman built Fauji Niwas to solve verified relocation lodging for military families.
                 </p>
                 <div className="flex gap-3 mt-2.5 text-[10px] font-semibold text-slate-800">
-                  <a href="https://linkedin.com/in/gangasagar5928" target="_blank" rel="noopener noreferrer" className="hover:text-amber-800">LinkedIn</a>
-                  <a href="https://github.com/gangasagar5928" target="_blank" rel="noopener noreferrer" className="hover:text-amber-800">GitHub</a>
+                  <a href="https://linkedin.com/in/gangasagar5928" target="_blank" rel="noopener noreferrer" className="hover:text-amber-800 hover:underline">LinkedIn</a>
+                  <a href="https://github.com/gangasagar5928" target="_blank" rel="noopener noreferrer" className="hover:text-amber-800 hover:underline">GitHub</a>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Founder 2 */}
-            <div className="flex gap-4 items-start">
-              <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-indigo-500/30 shrink-0">
+            <motion.div 
+              whileHover={{ y: -4, scale: 1.015 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+              className="flex gap-4 items-start p-4 rounded-2xl transition-colors hover:bg-slate-50/80 group"
+            >
+              <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-indigo-500/30 shrink-0 group-hover:border-indigo-500 group-hover:shadow-[0_0_15px_rgba(99,102,241,0.3)] transition-all duration-300">
                 <img 
                   src="/anurag.jpg" 
                   alt="Anurag Kumar Singh" 
-                  className="w-full h-full object-cover object-top"
+                  className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300"
                   width="64"
                   height="64"
                   loading="lazy"
@@ -754,17 +762,17 @@ export default function LandingPage() {
                 />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-slate-900 font-heading">Anurag Kumar Singh</h3>
+                <h3 className="text-sm font-bold text-slate-900 font-heading group-hover:text-indigo-800 transition-colors">Anurag Kumar Singh</h3>
                 <span className="text-[9px] font-bold text-indigo-755 uppercase tracking-wide block mt-0.5">Co-Founder</span>
                 <p className="text-slate-650 text-[11px] leading-relaxed font-light mt-1.5">
                   JEE Aspirant, YouTuber, Content Creator, and passionate gamer. Co-founded the platform to design community engagement channels and streamline communication guides for serving families.
                 </p>
                 <div className="flex gap-3 mt-2.5 text-[10px] font-semibold text-slate-800">
-                  <a href="https://www.linkedin.com/in/anurag-singh-a126843a3" target="_blank" rel="noopener noreferrer" className="hover:text-amber-800">LinkedIn</a>
-                  <a href="https://youtube.com/@aks_vlogs_edits" target="_blank" rel="noopener noreferrer" className="hover:text-amber-800">YouTube</a>
+                  <a href="https://www.linkedin.com/in/anurag-singh-a126843a3" target="_blank" rel="noopener noreferrer" className="hover:text-amber-800 hover:underline">LinkedIn</a>
+                  <a href="https://youtube.com/@aks_vlogs_edits" target="_blank" rel="noopener noreferrer" className="hover:text-amber-800 hover:underline">YouTube</a>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </motion.section>
@@ -780,10 +788,10 @@ export default function LandingPage() {
           </div>
           
           <div className="flex flex-wrap justify-center gap-6 text-[10px] font-bold uppercase tracking-wider text-slate-800">
-            <a href="/about" className="hover:text-amber-800 transition-colors">About the Founders</a>
-            <a href="/privacy" className="hover:text-amber-800 transition-colors">Privacy Policy</a>
-            <a href="/terms" className="hover:text-amber-800 transition-colors">Terms of Service</a>
-            <a href="mailto:faujiniwashq@gmail.com" className="hover:text-amber-800 transition-colors">Contact Support</a>
+            <a href="/about" className="hover:text-amber-800 hover:underline transition-colors">About the Founders</a>
+            <a href="/privacy" className="hover:text-amber-800 hover:underline transition-colors">Privacy Policy</a>
+            <a href="/terms" className="hover:text-amber-800 hover:underline transition-colors">Terms of Service</a>
+            <a href="mailto:faujiniwashq@gmail.com" className="hover:text-amber-800 hover:underline transition-colors">Contact Support</a>
           </div>
           
           <div className="text-[9px] text-slate-700 font-medium">
@@ -797,23 +805,23 @@ export default function LandingPage() {
             🎖️ Popular Relocation Cities / लोकप्रिय सैन्य स्टेशन:
           </span>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] font-bold text-slate-750">
-            <a href="/pune" className="hover:text-amber-800 transition-colors">Pune Cantt</a>
+            <a href="/pune" className="hover:text-amber-800 hover:scale-105 inline-block transition-transform duration-150">Pune Cantt</a>
             <span className="text-slate-300">•</span>
-            <a href="/delhi" className="hover:text-amber-800 transition-colors">Delhi Cantt</a>
+            <a href="/delhi" className="hover:text-amber-800 hover:scale-105 inline-block transition-transform duration-150">Delhi Cantt</a>
             <span className="text-slate-300">•</span>
-            <a href="/ambala" className="hover:text-amber-800 transition-colors">Ambala Cantt</a>
+            <a href="/ambala" className="hover:text-amber-800 hover:scale-105 inline-block transition-transform duration-150">Ambala Cantt</a>
             <span className="text-slate-300">•</span>
-            <a href="/secunderabad" className="hover:text-amber-800 transition-colors">Secunderabad Cantt</a>
+            <a href="/secunderabad" className="hover:text-amber-800 hover:scale-105 inline-block transition-transform duration-150">Secunderabad Cantt</a>
             <span className="text-slate-300">•</span>
-            <a href="/bhopal" className="hover:text-amber-800 transition-colors">Bhopal Cantt</a>
+            <a href="/bhopal" className="hover:text-amber-800 hover:scale-105 inline-block transition-transform duration-150">Bhopal Cantt</a>
             <span className="text-slate-300">•</span>
-            <a href="/kapurthala" className="hover:text-amber-800 transition-colors">Kapurthala SSB</a>
+            <a href="/kapurthala" className="hover:text-amber-800 hover:scale-105 inline-block transition-transform duration-150">Kapurthala SSB</a>
             <span className="text-slate-300">•</span>
-            <a href="/prayagraj" className="hover:text-amber-800 transition-colors">Prayagraj SSB</a>
+            <a href="/prayagraj" className="hover:text-amber-800 hover:scale-105 inline-block transition-transform duration-150">Prayagraj SSB</a>
             <span className="text-slate-300">•</span>
-            <a href="/coimbatore" className="hover:text-amber-800 transition-colors">Coimbatore Cantt</a>
+            <a href="/coimbatore" className="hover:text-amber-800 hover:scale-105 inline-block transition-transform duration-150">Coimbatore Cantt</a>
             <span className="text-slate-300">•</span>
-            <a href="/bangalore" className="hover:text-amber-800 transition-colors">Bangalore Cantt</a>
+            <a href="/bangalore" className="hover:text-amber-800 hover:scale-105 inline-block transition-transform duration-150">Bangalore Cantt</a>
           </div>
         </div>
       </footer>
