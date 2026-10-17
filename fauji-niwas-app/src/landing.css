@@ -737,3 +737,9 @@ body > .skiptranslate {
   position: relative;
   z-index: 1;
 }
+
+/* Hide pre-rendered static SEO footer when dynamic LandingPage mounts */
+body.landing-page .static-footer {
+  display: none !important;
+}
+

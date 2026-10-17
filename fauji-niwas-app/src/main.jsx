@@ -40,16 +40,23 @@ class ErrorBoundary extends React.Component {
   }
 }
 
+const isNative = typeof window !== 'undefined' && (
+  Boolean(window.faujiApp) ||
+  Boolean(window.Android) ||
+  (typeof navigator !== 'undefined' && /FaujiNiwas\/1\.0/i.test(navigator.userAgent))
+);
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ErrorBoundary>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<App />} />
+          <Route path="/" element={isNative ? <App /> : <LandingPage />} />
+          <Route path="/home" element={<LandingPage />} />
+          <Route path="/landing" element={<LandingPage />} />
           <Route path="/app" element={<App />} />
           <Route path="/app.html" element={<App />} />
-          <Route path="/landing" element={<LandingPage />} />
-          <Route path="*" element={<App />} />
+          <Route path="*" element={isNative ? <App /> : <LandingPage />} />
         </Routes>
       </BrowserRouter>
     </ErrorBoundary>
@@ -59,7 +66,14 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 // Landing page hides its own loader in landing.jsx. For the app shell, the
 // index.html tactical loader stays visible until App.jsx signals real
 // readiness (auth resolved) — this avoids the double-loader flicker.
-if (window.location.pathname === '/' || window.location.pathname === '') {
+const isLanding = !isNative && (
+  window.location.pathname === '/' ||
+  window.location.pathname === '' ||
+  window.location.pathname === '/landing' ||
+  window.location.pathname === '/home'
+);
+
+if (isLanding) {
   window.__APP_READY__ = true;
   window.dispatchEvent(new Event('app-ready'));
 } else {
