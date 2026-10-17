@@ -13,14 +13,14 @@ body {
   height: auto !important;
   min-height: 100vh !important;
   overflow: visible !important;
-  background: #FAF9F6;
-  color: #1e293b;
+  background: #F8FAFC;
+  color: #0F172A;
   font-family: "Inter", sans-serif;
 }
 html.dark-theme body,
 body.dark-theme {
-  background: #0b1325 !important;
-  color: #f3f4f6 !important;
+  background: #080D1A !important;
+  color: #F8FAFC !important;
 }
 
 #root {
@@ -33,13 +33,54 @@ h1, h2, h3, h4, h5, h6 {
   font-family: "Outfit", sans-serif;
 }
 
-/* Premium Glassmorphic panels - light theme */
+/* GSAP ScrollSmoother & Lenis Smooth Scroll Engine */
+#smooth-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: visible;
+}
+
+#smooth-content {
+  position: relative;
+  width: 100%;
+  will-change: transform;
+}
+
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Premium Modern Glass Panels */
+.keep-white {
+  color: #ffffff !important;
+}
+
 .glass-card {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  box-shadow: 0 12px 40px 0 rgba(15, 23, 42, 0.06), inset 0 1px 1px 0 rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.02);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark .glass-card,
+.dark-theme .glass-card {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.4);
 }
 
 .glass-card-olive {
