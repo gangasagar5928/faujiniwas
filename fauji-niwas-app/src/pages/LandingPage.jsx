@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, Search, ArrowUpRight, Check, FileText, Lock, Globe, Phone, Mail, Award, Navigation, Star, Menu, X, Sparkles, Building, ShoppingBag, MapPin, Calculator, ShieldCheck, Zap } from 'lucide-react';
+import { Shield, Search, ArrowUpRight, Check, FileText, Lock, Globe, Phone, Mail, Award, Navigation, Star, Menu, X, Sparkles, Building, ShoppingBag, MapPin, Calculator, ShieldCheck, Zap, CheckCircle2, XCircle, ArrowRight } from 'lucide-react';
 const LeaseGeneratorModal = React.lazy(() => import('../components/Modals/LeaseGeneratorModal'));
 const WasmMaskingModal = React.lazy(() => import('../components/Modals/WasmMaskingModal'));
 const CSDPulseTicker = React.lazy(() => import('../components/CSD/CSDPulseTicker'));
@@ -221,61 +221,77 @@ export default function LandingPage() {
       {/* Main Container */}
       <main className="relative z-10 max-w-[1250px] mx-auto px-6 pt-28 pb-16 flex flex-col gap-10">
         
-        {/* Title and Metrics Grid */}
+        {/* Modern Centered Hero Title & Protocol Header */}
         <motion.div 
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 25 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pt-4"
+          className="flex flex-col items-center text-center gap-4 pt-4 max-w-4xl mx-auto"
         >
-          <div className="text-left flex flex-col gap-2">
-            <div className="flex items-center gap-2.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
-              <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-emerald-700 dark:text-emerald-400">
-                Live Defence Housing Protocol
-              </span>
-            </div>
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-black tracking-tighter leading-none text-slate-900 dark:text-white font-heading">
-              FAUJI<br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 via-amber-500 to-amber-700">NIWAS</span>
-            </h1>
+          {/* Live Protocol Pill */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-xs font-bold font-mono uppercase tracking-wider shadow-xs">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping shrink-0" />
+            <span>Live Defence Housing Protocol · 15+ Military Stations Active</span>
           </div>
 
-          {/* Stat metrics */}
-          <div className="flex flex-wrap sm:flex-nowrap gap-3.5 pt-4 lg:pt-0">
+          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight leading-none text-slate-900 dark:text-white font-heading">
+            FAUJI <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 via-amber-500 to-amber-700 dark:from-amber-400 dark:via-amber-300 dark:to-amber-500">NIWAS</span>
+          </h1>
+
+          <p className="text-base sm:text-lg md:text-xl text-slate-650 dark:text-slate-300 max-w-2xl font-normal leading-relaxed">
+            India's verified, zero-brokerage housing and relocation portal built exclusively for Indian Armed Forces personnel, veterans, and families.
+          </p>
+
+          {/* Centered Stat Badges */}
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
             <motion.div 
-              whileHover={{ scale: 1.05, y: -3 }}
+              whileHover={{ scale: 1.05, y: -2 }}
               transition={{ type: 'spring', stiffness: 450, damping: 20 }}
-              className="feature-card glass-card px-5 py-3.5 rounded-2xl flex flex-col border-l-4 border-l-amber-500 min-w-[110px] cursor-pointer shadow-sm text-left"
+              className="feature-card glass-card px-6 py-3 rounded-2xl flex items-center gap-3 border border-amber-500/30 shadow-xs cursor-pointer"
+              onClick={handleLaunchApp}
             >
-              <span className="text-3xl font-black text-slate-900 dark:text-white leading-none font-heading">300+</span>
-              <span className="text-[9px] uppercase tracking-widest text-slate-600 dark:text-slate-400 font-bold mt-1 font-mono">Listings</span>
+              <span className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white leading-none font-heading">300+</span>
+              <div className="flex flex-col text-left">
+                <span className="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold font-mono">Verified</span>
+                <span className="text-xs font-bold text-amber-600 dark:text-amber-400">Listings</span>
+              </div>
             </motion.div>
+
             <motion.div 
-              whileHover={{ scale: 1.05, y: -3 }}
+              whileHover={{ scale: 1.05, y: -2 }}
               transition={{ type: 'spring', stiffness: 450, damping: 20 }}
-              className="feature-card glass-card px-5 py-3.5 rounded-2xl flex flex-col border-l-4 border-l-emerald-500 min-w-[110px] cursor-pointer shadow-sm text-left"
+              className="feature-card glass-card px-6 py-3 rounded-2xl flex items-center gap-3 border border-emerald-500/30 shadow-xs cursor-pointer"
+              onClick={handleLaunchApp}
             >
-              <span className="text-3xl font-black text-slate-900 dark:text-white leading-none font-heading">15+</span>
-              <span className="text-[9px] uppercase tracking-widest text-slate-600 dark:text-slate-400 font-bold mt-1 font-mono">Stations</span>
+              <span className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white leading-none font-heading">15+</span>
+              <div className="flex flex-col text-left">
+                <span className="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold font-mono">Military</span>
+                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">Stations</span>
+              </div>
             </motion.div>
+
             <motion.div 
-              whileHover={{ scale: 1.05, y: -3 }}
+              whileHover={{ scale: 1.05, y: -2 }}
               transition={{ type: 'spring', stiffness: 450, damping: 20 }}
-              className="feature-card glass-card px-5 py-3.5 rounded-2xl flex flex-col border-l-4 border-l-amber-500 min-w-[110px] cursor-pointer shadow-sm text-left"
+              className="feature-card glass-card px-6 py-3 rounded-2xl flex items-center gap-3 border border-amber-500/30 shadow-xs cursor-pointer"
+              onClick={handleLaunchApp}
             >
-              <span className="text-3xl font-black text-slate-900 dark:text-white leading-none font-heading">0</span>
-              <span className="text-[9px] uppercase tracking-widest text-slate-600 dark:text-slate-400 font-bold mt-1 font-mono">Brokerage</span>
+              <span className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white leading-none font-heading">₹0</span>
+              <div className="flex flex-col text-left">
+                <span className="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold font-mono">Strict Zero</span>
+                <span className="text-xs font-bold text-amber-600 dark:text-amber-400">Brokerage</span>
+              </div>
             </motion.div>
           </div>
         </motion.div>
 
         {/* Hero Image Section */}
         <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
+          initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
-          whileHover={{ scale: 1.008, transition: { duration: 0.3 } }}
-          transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-          className="relative rounded-[2rem] overflow-hidden w-full h-[450px] sm:h-[500px] md:h-[540px] liquid-glass-morph shadow-[0_24px_70px_rgba(15,23,42,0.18)] group"
+          whileHover={{ scale: 1.006, transition: { duration: 0.3 } }}
+          transition={{ duration: 0.7, delay: 0.15, ease: "easeOut" }}
+          className="relative rounded-[2.5rem] overflow-hidden w-full h-[460px] sm:h-[500px] md:h-[540px] liquid-glass-morph shadow-[0_24px_70px_rgba(15,23,42,0.18)] group border border-white/50 dark:border-white/10"
         >
           <picture>
             <source media="(max-width: 640px)" srcSet="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=450&q=25&fm=webp" />
@@ -290,41 +306,68 @@ export default function LandingPage() {
               height="800"
             />
           </picture>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-black/15" />
           
           {/* Top Right Live Badge */}
-          <div className="absolute top-6 right-6 bg-emerald-500/10 backdrop-blur-md border border-emerald-500/30 px-3 py-1.5 rounded-full flex items-center gap-2 shadow-lg">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
-            <span className="text-[9px] font-black uppercase tracking-widest text-emerald-100 font-mono">Live Station Link Active</span>
+          <div className="absolute top-6 right-6 bg-emerald-500/20 backdrop-blur-md border border-emerald-500/40 px-3.5 py-1.5 rounded-full flex items-center gap-2 shadow-lg">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.9)]" />
+            <span className="text-[10px] font-black uppercase tracking-widest text-emerald-100 font-mono">Live Station Link Active</span>
           </div>
 
-          {/* Bottom Left Info Overlay */}
-          <div className="absolute bottom-8 left-8 md:bottom-12 md:left-12 max-w-2xl text-left flex flex-col gap-4">
-            <div className="w-fit bg-[#0f172a]/60 backdrop-blur-md border border-amber-500/40 px-3.5 py-1.5 rounded-full text-amber-400 text-[9px] font-black uppercase tracking-widest shadow-lg">
-              Premium Real Estate For Defence
+          {/* Hero Banner Content Overlay */}
+          <div className="absolute inset-0 flex flex-col justify-end p-8 sm:p-12 md:p-16 text-center items-center">
+            <div className="max-w-3xl flex flex-col items-center gap-4">
+              <div className="inline-flex items-center gap-2 bg-[#0f172a]/70 backdrop-blur-md border border-amber-500/40 px-4 py-1.5 rounded-full text-amber-400 text-[10px] font-black uppercase tracking-widest shadow-lg">
+                <Shield size={12} className="text-amber-400" />
+                <span>Verified Defence Relocation OS</span>
+              </div>
+              <h2 className="text-3xl sm:text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-amber-100 to-amber-400 leading-tight font-heading drop-shadow-xl">
+                Relocate Safely, Trust Implicitly
+              </h2>
+              <p className="text-slate-200 text-xs sm:text-base leading-relaxed font-normal max-w-2xl drop-shadow-md">
+                Connecting Indian Armed Forces personnel, JCOs, and Officers with verified residential accommodations near military stations across India.
+              </p>
+              
+              {/* Centered CTA */}
+              <div className="flex flex-wrap items-center justify-center gap-3 mt-3">
+                <motion.button 
+                  onClick={handleLaunchApp}
+                  whileHover={{ scale: 1.05, y: -2, boxShadow: '0 12px 40px rgba(245,158,11,0.6)' }}
+                  whileTap={{ scale: 0.96 }}
+                  transition={{ type: 'spring', stiffness: 450, damping: 20 }}
+                  className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-heading font-black text-xs sm:text-sm uppercase tracking-wider px-8 py-4 rounded-2xl shadow-[0_4px_24px_rgba(245,158,11,0.4)] cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <span>🚀</span> Enter Secure Command Center
+                </motion.button>
+                <motion.button 
+                  onClick={() => setShowLeaseModal(true)}
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.96 }}
+                  transition={{ type: 'spring', stiffness: 450, damping: 20 }}
+                  className="bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-white font-heading font-black text-xs sm:text-sm uppercase tracking-wider px-6 py-4 rounded-2xl cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <FileText size={16} /> Military Lease Generator
+                </motion.button>
+              </div>
             </div>
-            <h2 className="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-amber-100 to-amber-500 leading-tight font-heading drop-shadow-xl hero-title">
-              Relocate Safely, Trust Implicitly
-            </h2>
-            <p className="text-slate-300 text-xs sm:text-sm leading-relaxed font-medium hero-desc">
-              The premier housing network connecting Indian Armed Forces personnel, JCOs, and Officers with secure residential outliving areas across military stations.
-            </p>
-            
-            {/* Big Redirect CTA Button */}
-            <motion.button 
-              onClick={handleLaunchApp}
-              whileHover={{ scale: 1.04, y: -2, boxShadow: '0 8px 36px rgba(245,158,11,0.6)' }}
-              whileTap={{ scale: 0.96 }}
-              transition={{ type: 'spring', stiffness: 450, damping: 20 }}
-              className="mt-2 w-fit bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-heading font-black text-[10px] sm:text-xs uppercase tracking-widest px-8 py-5 min-h-[48px] rounded-xl shadow-[0_4px_24px_rgba(245,158,11,0.4)] cursor-pointer flex items-center justify-center gap-2"
-            >
-              <span>🚀</span> Enter Secure Command Center
-            </motion.button>
           </div>
         </motion.div>
 
-        {/* Features 2x3 Bento Grid */}
-        {/* Compact 4-col / 2-col Feature Cards Grid with fluid glassmorphic design */}
+        {/* Bento Grid Header */}
+        <div className="flex flex-col items-center text-center gap-3 max-w-3xl mx-auto mt-6">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-400 text-xs font-semibold tracking-wide shadow-xs">
+            <Sparkles size={13} className="text-amber-500" />
+            <span>Tactical Capabilities</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight font-heading">
+            Engineered For Military Life
+          </h2>
+          <p className="text-slate-650 dark:text-slate-300 text-sm sm:text-base leading-relaxed">
+            Every capability is calibrated specifically for the real mobility hurdles faced by Indian Armed Forces families during relocation.
+          </p>
+        </div>
+
+        {/* Features 2x4 Bento Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-2">
 
           {/* Feature 1: Cantonment Map */}
@@ -545,175 +588,477 @@ export default function LandingPage() {
 
         </div>
 
-        {/* Why FaujiNiwas Section */}
+        {/* Why FaujiNiwas Section - Modern 3-Column Feature Showcase */}
         <motion.section 
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.15 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           id="why-us" 
-          className="liquid-glass-morph rounded-3xl p-7 md:p-10 mt-4 text-left flex flex-col md:flex-row gap-8 items-start justify-between border border-white/40 dark:border-white/10 shadow-xl backdrop-blur-2xl"
+          className="liquid-glass-morph rounded-[2.5rem] p-8 sm:p-12 md:p-14 mt-6 border border-white/50 dark:border-white/10 shadow-2xl backdrop-blur-2xl flex flex-col gap-10"
         >
-          <div className="max-w-xl flex flex-col gap-3">
-            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 bg-amber-500/10 dark:bg-amber-500/20 border border-amber-500/20 px-3 py-1 rounded-xl w-fit">
-              Exclusive Platform Overview
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white leading-tight font-heading">
-              WHY FAUJI NIWAS?
+          {/* Centered Header */}
+          <div className="flex flex-col items-center text-center gap-3 max-w-3xl mx-auto">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400 text-xs font-bold uppercase tracking-wider shadow-xs">
+              <Shield size={13} className="text-amber-500" />
+              <span>Sovereign Military Network</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight font-heading leading-tight">
+              Why Defence Families Choose <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 via-amber-500 to-amber-700 dark:from-amber-400 dark:via-amber-300 dark:to-amber-500">Fauji Niwas</span>
             </h2>
-            <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed">
-              Designed entirely to remove the friction of sudden military posting cycles. Built securely for jawans, JCOs, and officers to share postings and rent homes without civilian classified noise.
+            <p className="text-slate-650 dark:text-slate-300 text-sm sm:text-base leading-relaxed font-normal">
+              Designed entirely to eliminate the friction of sudden military posting cycles. Built securely for jawans, JCOs, and officers to share postings and rent homes without commercial brokerage noise.
             </p>
           </div>
-          <motion.button 
-            onClick={handleLaunchApp} 
-            whileHover={{ scale: 1.05, y: -2, boxShadow: '0 12px 30px rgba(245, 158, 11, 0.4)' }}
-            whileTap={{ scale: 0.96 }}
-            transition={{ type: 'spring', stiffness: 450, damping: 20 }}
-            className="cursor-pointer flex items-center gap-2 text-xs uppercase tracking-wider font-black py-4 px-8 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black shadow-lg whitespace-nowrap"
-          >
-            <span>Launch Relocation OS</span>
-            <span className="text-base font-bold">↗</span>
-          </motion.button>
+
+          {/* 3 High-Impact Value Pillars */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Pillar 1 */}
+            <motion.div 
+              whileHover={{ y: -6, scale: 1.02 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+              className="feature-card glass-card glass-shine p-7 rounded-3xl flex flex-col justify-between text-left gap-5 border border-slate-200/80 dark:border-white/10"
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 dark:bg-emerald-500/25 border border-emerald-500/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-sm">
+                  <ShieldCheck size={26} />
+                </div>
+                <span className="text-[10px] font-mono font-bold uppercase px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+                  Zero Civilian Fraud
+                </span>
+              </div>
+              <div>
+                <h3 className="text-xl font-black text-slate-900 dark:text-white font-heading">
+                  100% Vetted Community
+                </h3>
+                <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed mt-2 font-normal">
+                  No civilian brokers, commercial spammers, or fake landlord deposits. Direct peer-to-peer connection between serving defence personnel and veterans.
+                </p>
+              </div>
+              <div className="text-[11px] font-medium text-slate-700 dark:text-slate-300 bg-slate-900/5 dark:bg-white/5 px-3 py-2 rounded-xl border border-black/5 dark:border-white/10">
+                🔒 Service ID Verified · 🚫 Zero Brokerage · 🤝 Peer Handover
+              </div>
+            </motion.div>
+
+            {/* Pillar 2 */}
+            <motion.div 
+              whileHover={{ y: -6, scale: 1.02 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+              className="feature-card glass-card glass-shine p-7 rounded-3xl flex flex-col justify-between text-left gap-5 border border-slate-200/80 dark:border-white/10"
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-12 h-12 rounded-2xl bg-amber-500/15 dark:bg-amber-500/25 border border-amber-500/30 flex items-center justify-center text-amber-600 dark:text-amber-400 shadow-sm">
+                  <FileText size={26} />
+                </div>
+                <span className="text-[10px] font-mono font-bold uppercase px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
+                  Legal Break Clause
+                </span>
+              </div>
+              <div>
+                <h3 className="text-xl font-black text-slate-900 dark:text-white font-heading">
+                  15-Day Posting Clause
+                </h3>
+                <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed mt-2 font-normal">
+                  Civilian 11-month lock-in contracts forfeit deposits on sudden transfers. Our agreements mandate full security deposit refund upon 15-day military posting notice.
+                </p>
+              </div>
+              <div className="text-[11px] font-medium text-slate-700 dark:text-slate-300 bg-slate-900/5 dark:bg-white/5 px-3 py-2 rounded-xl border border-black/5 dark:border-white/10">
+                📄 Official Break Clause · ⏱️ 15-Day Notice · ⚖️ DPDPA Aligned
+              </div>
+            </motion.div>
+
+            {/* Pillar 3 */}
+            <motion.div 
+              whileHover={{ y: -6, scale: 1.02 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+              className="feature-card glass-card glass-shine p-7 rounded-3xl flex flex-col justify-between text-left gap-5 border border-slate-200/80 dark:border-white/10"
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-12 h-12 rounded-2xl bg-blue-500/15 dark:bg-blue-500/25 border border-blue-500/30 flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-sm">
+                  <Navigation size={26} />
+                </div>
+                <span className="text-[10px] font-mono font-bold uppercase px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-500/20">
+                  Base Gate Distance
+                </span>
+              </div>
+              <div>
+                <h3 className="text-xl font-black text-slate-900 dark:text-white font-heading">
+                  Cantonment Precision
+                </h3>
+                <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed mt-2 font-normal">
+                  Pinpoint listings by exact distance to military gates, Kendriya Vidyalayas, Military Hospitals, and live CSD canteen token queues.
+                </p>
+              </div>
+              <div className="text-[11px] font-medium text-slate-700 dark:text-slate-300 bg-slate-900/5 dark:bg-white/5 px-3 py-2 rounded-xl border border-black/5 dark:border-white/10">
+                📍 Gate Proximity · 🏫 KV Schools · 🛒 Live CSD Pulse
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Centered Modern Action Banner */}
+          <div className="liquid-glass-morph rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 border border-amber-500/30 bg-gradient-to-r from-amber-500/[0.08] via-transparent to-emerald-500/[0.08]">
+            <div className="text-center sm:text-left">
+              <h4 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white font-heading">
+                Ready to find or post military quarters?
+              </h4>
+              <p className="text-slate-650 dark:text-slate-400 text-xs sm:text-sm mt-1">
+                Access over 300+ verified listings across 15+ cantonments with zero brokerage.
+              </p>
+            </div>
+            <motion.button 
+              onClick={handleLaunchApp} 
+              whileHover={{ scale: 1.05, y: -2, boxShadow: '0 12px 35px rgba(245, 158, 11, 0.45)' }}
+              whileTap={{ scale: 0.96 }}
+              transition={{ type: 'spring', stiffness: 450, damping: 20 }}
+              className="cursor-pointer flex items-center gap-2.5 text-xs sm:text-sm uppercase tracking-wider font-black py-4 px-8 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black shadow-lg whitespace-nowrap shrink-0"
+            >
+              <span>Launch Relocation OS</span>
+              <span className="text-base font-bold">↗</span>
+            </motion.button>
+          </div>
         </motion.section>
 
-        {/* Updated Military vs Civilian Comparison Table */}
+        {/* Updated Military vs Civilian Comparison Table - Ultra Modern Matrix */}
         <motion.section 
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.15 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           id="comparison" 
-          className="liquid-glass-morph rounded-3xl p-7 md:p-10 mt-4 text-left border border-white/40 dark:border-white/10 shadow-xl backdrop-blur-2xl"
+          className="liquid-glass-morph rounded-[2.5rem] p-8 sm:p-12 md:p-14 mt-6 border border-white/50 dark:border-white/10 shadow-2xl backdrop-blur-2xl flex flex-col gap-8"
         >
-          <div className="flex flex-col gap-2.5 mb-8">
-            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 bg-amber-500/10 dark:bg-amber-500/20 border border-amber-500/20 px-3 py-1 rounded-xl w-fit">
-              Compare The Tactical Edge
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white leading-tight font-heading">
-              MILITARY VS CIVILIAN PLATFORMS
+          {/* Centered Header */}
+          <div className="flex flex-col items-center text-center gap-3 max-w-3xl mx-auto">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-xs font-bold uppercase tracking-wider shadow-xs">
+              <Zap size={13} className="text-emerald-500" />
+              <span>Tactical Advantage</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight font-heading leading-tight">
+              Military Standard vs Civilian Portals
             </h2>
-            <p className="text-slate-600 dark:text-slate-300 text-sm max-w-2xl font-light">
-              See why defence families across 30+ military stations prefer Fauji Niwas over general civilian rental portals.
+            <p className="text-slate-650 dark:text-slate-300 text-sm sm:text-base leading-relaxed font-normal">
+              See why defence families across 30+ military stations prefer Fauji Niwas over general commercial rental portals like 99acres and NoBroker.
             </p>
           </div>
 
-          <div className="overflow-x-auto rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/40 dark:bg-black/20 backdrop-blur-md p-2">
-            <table className="w-full text-left text-xs sm:text-sm">
+          {/* Elevated Modern Matrix Table */}
+          <div className="overflow-x-auto rounded-3xl border border-slate-200/90 dark:border-white/10 bg-white/60 dark:bg-black/30 backdrop-blur-xl shadow-lg">
+            <table className="w-full text-left border-collapse min-w-[700px]">
               <thead>
-                <tr className="border-b border-slate-200 dark:border-white/10 text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                  <th className="p-4 font-black">Platform Capability</th>
-                  <th className="p-4 text-emerald-700 dark:text-emerald-400 font-black">FaujiNiwas 🎖️</th>
-                  <th className="p-4 text-slate-500 dark:text-slate-400 font-normal">Civilian Portals (99acres, NoBroker)</th>
+                <tr className="border-b border-slate-200 dark:border-white/10 text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  <th className="p-5 font-black w-[32%]">Platform Capability</th>
+                  <th className="p-5 w-[38%] bg-amber-500/[0.08] dark:bg-amber-500/[0.12] border-x border-amber-500/20 text-amber-800 dark:text-amber-300 font-black">
+                    <div className="flex items-center justify-between">
+                      <span className="flex items-center gap-1.5">
+                        <span>FaujiNiwas</span> <span>🎖️</span>
+                      </span>
+                      <span className="text-[9px] font-mono uppercase tracking-widest px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-900 dark:text-amber-300 border border-amber-500/30">
+                        Military Standard
+                      </span>
+                    </div>
+                  </th>
+                  <th className="p-5 w-[30%] text-slate-500 dark:text-slate-400 font-normal">
+                    Civilian Portals (99acres, NoBroker)
+                  </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-white/5 text-slate-800 dark:text-slate-200 font-medium">
-                <tr className="hover:bg-amber-500/10 transition-colors duration-150 cursor-default">
-                  <td className="p-4 font-bold">Military ID Vetting &amp; Privacy</td>
-                  <td className="p-4 text-emerald-700 dark:text-emerald-400 font-bold">🟢 100% Client-Side Wasm Masking (Zero Data Leak)</td>
-                  <td className="p-4 text-rose-600 dark:text-rose-400">🔴 None (Civilian logins, high risk of spam &amp; fraud)</td>
+              <tbody className="divide-y divide-slate-100 dark:divide-white/5 text-xs sm:text-sm">
+                
+                {/* Row 1 */}
+                <tr className="hover:bg-slate-500/5 transition-colors">
+                  <td className="p-5 font-bold text-slate-900 dark:text-white">
+                    Military ID Vetting &amp; Privacy
+                  </td>
+                  <td className="p-5 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
+                    <div className="flex items-start gap-2.5">
+                      <CheckCircle2 size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                      <span className="text-emerald-800 dark:text-emerald-300 font-bold">
+                        100% Client-Side Wasm Masking (Zero Data Leak)
+                      </span>
+                    </div>
+                  </td>
+                  <td className="p-5">
+                    <div className="flex items-start gap-2.5">
+                      <XCircle size={18} className="text-rose-500/80 shrink-0 mt-0.5" />
+                      <span className="text-slate-500 dark:text-slate-400">
+                        Civilian logins, high risk of commercial spam &amp; fraud
+                      </span>
+                    </div>
+                  </td>
                 </tr>
-                <tr className="hover:bg-amber-500/10 transition-colors duration-150 cursor-default">
-                  <td className="p-4 font-bold">7th CPC HRA Rank Budgets</td>
-                  <td className="p-4 text-emerald-700 dark:text-emerald-400 font-bold">🟢 Automatic (Officer / JCO / OR limits matched)</td>
-                  <td className="p-4 text-rose-600 dark:text-rose-400">🔴 None (Generic price sliders with no rank context)</td>
+
+                {/* Row 2 */}
+                <tr className="hover:bg-slate-500/5 transition-colors">
+                  <td className="p-5 font-bold text-slate-900 dark:text-white">
+                    7th CPC HRA Rank Budgets
+                  </td>
+                  <td className="p-5 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
+                    <div className="flex items-start gap-2.5">
+                      <CheckCircle2 size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                      <span className="text-emerald-800 dark:text-emerald-300 font-bold">
+                        Automatic allowance match (Officer / JCO / OR limits)
+                      </span>
+                    </div>
+                  </td>
+                  <td className="p-5">
+                    <div className="flex items-start gap-2.5">
+                      <XCircle size={18} className="text-rose-500/80 shrink-0 mt-0.5" />
+                      <span className="text-slate-500 dark:text-slate-400">
+                        Generic price sliders with no rank calibration
+                      </span>
+                    </div>
+                  </td>
                 </tr>
-                <tr className="hover:bg-amber-500/10 transition-colors duration-150 cursor-default">
-                  <td className="p-4 font-bold">Cantonment &amp; Gate Distance</td>
-                  <td className="p-4 text-emerald-700 dark:text-emerald-400 font-bold">🟢 Exact Gate &amp; Military Unit Proximity Routing</td>
-                  <td className="p-4 text-rose-600 dark:text-rose-400">🔴 None (Civilian postal codes only)</td>
+
+                {/* Row 3 */}
+                <tr className="hover:bg-slate-500/5 transition-colors">
+                  <td className="p-5 font-bold text-slate-900 dark:text-white">
+                    Cantonment &amp; Gate Distance
+                  </td>
+                  <td className="p-5 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
+                    <div className="flex items-start gap-2.5">
+                      <CheckCircle2 size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                      <span className="text-emerald-800 dark:text-emerald-300 font-bold">
+                        Exact military gate &amp; unit proximity routing
+                      </span>
+                    </div>
+                  </td>
+                  <td className="p-5">
+                    <div className="flex items-start gap-2.5">
+                      <XCircle size={18} className="text-rose-500/80 shrink-0 mt-0.5" />
+                      <span className="text-slate-500 dark:text-slate-400">
+                        Civilian postal codes only, far away from cantt gates
+                      </span>
+                    </div>
+                  </td>
                 </tr>
-                <tr className="hover:bg-amber-500/10 transition-colors duration-150 cursor-default">
-                  <td className="p-4 font-bold">SSB Candidate Dorms</td>
-                  <td className="p-4 text-emerald-700 dark:text-emerald-400 font-bold">🟢 Dedicated SSB Selection Centre Stays + Food Guide</td>
-                  <td className="p-4 text-rose-600 dark:text-rose-400">🔴 None (Expensive civilian hotels only)</td>
+
+                {/* Row 4 */}
+                <tr className="hover:bg-slate-500/5 transition-colors">
+                  <td className="p-5 font-bold text-slate-900 dark:text-white">
+                    SSB Candidate Dorms
+                  </td>
+                  <td className="p-5 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
+                    <div className="flex items-start gap-2.5">
+                      <CheckCircle2 size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                      <span className="text-emerald-800 dark:text-emerald-300 font-bold">
+                        Dedicated Selection Centre stays + Mess food guide
+                      </span>
+                    </div>
+                  </td>
+                  <td className="p-5">
+                    <div className="flex items-start gap-2.5">
+                      <XCircle size={18} className="text-rose-500/80 shrink-0 mt-0.5" />
+                      <span className="text-slate-500 dark:text-slate-400">
+                        Expensive civilian hotels with no candidate facilities
+                      </span>
+                    </div>
+                  </td>
                 </tr>
-                <tr className="hover:bg-amber-500/10 transition-colors duration-150 cursor-default">
-                  <td className="p-4 font-bold">Military Break Clause Leases</td>
-                  <td className="p-4 text-emerald-700 dark:text-emerald-400 font-bold">🟢 Official 15-Day Posting Transfer Break Clause</td>
-                  <td className="p-4 text-rose-600 dark:text-rose-400">🔴 None (Rigid 11-month civilian lock-in contracts)</td>
+
+                {/* Row 5 */}
+                <tr className="hover:bg-slate-500/5 transition-colors">
+                  <td className="p-5 font-bold text-slate-900 dark:text-white">
+                    Military Break Clause Leases
+                  </td>
+                  <td className="p-5 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
+                    <div className="flex items-start gap-2.5">
+                      <CheckCircle2 size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                      <span className="text-emerald-800 dark:text-emerald-300 font-bold">
+                        Official 15-Day Posting Transfer Break Clause
+                      </span>
+                    </div>
+                  </td>
+                  <td className="p-5">
+                    <div className="flex items-start gap-2.5">
+                      <XCircle size={18} className="text-rose-500/80 shrink-0 mt-0.5" />
+                      <span className="text-slate-500 dark:text-slate-400">
+                        Rigid 11-month civilian lock-in contracts
+                      </span>
+                    </div>
+                  </td>
                 </tr>
-                <tr className="hover:bg-amber-500/10 transition-colors duration-150 cursor-default">
-                  <td className="p-4 font-bold">Defence Marketplace</td>
-                  <td className="p-4 text-emerald-700 dark:text-emerald-400 font-bold">🟢 Direct Peer-to-Peer Relocation Transfers</td>
-                  <td className="p-4 text-rose-600 dark:text-rose-400">🔴 Open classifieds filled with commercial dealers</td>
+
+                {/* Row 6 */}
+                <tr className="hover:bg-slate-500/5 transition-colors">
+                  <td className="p-5 font-bold text-slate-900 dark:text-white">
+                    Defence Peer Transfers
+                  </td>
+                  <td className="p-5 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
+                    <div className="flex items-start gap-2.5">
+                      <CheckCircle2 size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                      <span className="text-emerald-800 dark:text-emerald-300 font-bold">
+                        Direct Peer-to-Peer relocation quarters handover
+                      </span>
+                    </div>
+                  </td>
+                  <td className="p-5">
+                    <div className="flex items-start gap-2.5">
+                      <XCircle size={18} className="text-rose-500/80 shrink-0 mt-0.5" />
+                      <span className="text-slate-500 dark:text-slate-400">
+                        Open classifieds saturated with commercial dealers
+                      </span>
+                    </div>
+                  </td>
                 </tr>
-                <tr className="hover:bg-amber-500/10 transition-colors duration-150 cursor-default">
-                  <td className="p-4 font-bold">CSD Canteen &amp; Base Facilities</td>
-                  <td className="p-4 text-emerald-700 dark:text-emerald-400 font-bold">🟢 Live CSD Pulse, Army Schools &amp; Military Hospitals</td>
-                  <td className="p-4 text-rose-600 dark:text-rose-400">🔴 None (Zero military infrastructure data)</td>
+
+                {/* Row 7 */}
+                <tr className="hover:bg-slate-500/5 transition-colors">
+                  <td className="p-5 font-bold text-slate-900 dark:text-white">
+                    CSD Canteen &amp; Base Facilities
+                  </td>
+                  <td className="p-5 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
+                    <div className="flex items-start gap-2.5">
+                      <CheckCircle2 size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                      <span className="text-emerald-800 dark:text-emerald-300 font-bold">
+                        Live CSD pulse, Army Schools &amp; Military Hospitals
+                      </span>
+                    </div>
+                  </td>
+                  <td className="p-5">
+                    <div className="flex items-start gap-2.5">
+                      <XCircle size={18} className="text-rose-500/80 shrink-0 mt-0.5" />
+                      <span className="text-slate-500 dark:text-slate-400">
+                        Zero military infrastructure or canteen data
+                      </span>
+                    </div>
+                  </td>
                 </tr>
-                <tr className="hover:bg-amber-500/10 transition-colors duration-150 cursor-default">
-                  <td className="p-4 font-bold">Brokerage Commission</td>
-                  <td className="p-4 text-emerald-700 dark:text-emerald-400 font-bold">🟢 ₹0 (Strict Zero-Brokerage Policy)</td>
-                  <td className="p-4 text-rose-600 dark:text-rose-400">🔴 High (1–2 Months Rent Commission + Hidden Fees)</td>
+
+                {/* Row 8 */}
+                <tr className="hover:bg-slate-500/5 transition-colors">
+                  <td className="p-5 font-bold text-slate-900 dark:text-white">
+                    Brokerage Commission
+                  </td>
+                  <td className="p-5 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
+                    <div className="flex items-start gap-2.5">
+                      <CheckCircle2 size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                      <span className="text-emerald-800 dark:text-emerald-300 font-bold">
+                        ₹0 Forever (Strict Zero-Brokerage Policy)
+                      </span>
+                    </div>
+                  </td>
+                  <td className="p-5">
+                    <div className="flex items-start gap-2.5">
+                      <XCircle size={18} className="text-rose-500/80 shrink-0 mt-0.5" />
+                      <span className="text-slate-500 dark:text-slate-400">
+                        1–2 Months rent commission + excessive hidden fees
+                      </span>
+                    </div>
+                  </td>
                 </tr>
+
               </tbody>
             </table>
           </div>
         </motion.section>
 
-        {/* Tactical Tools list */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-          
-          {/* Card 1: Lease Generator */}
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            whileHover={{ y: -5, scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            viewport={{ once: true, amount: 0.15 }}
-            transition={{ type: 'spring', stiffness: 450, damping: 25 }}
-            onClick={() => setShowLeaseModal(true)}
-            className="feature-card glass-card glass-shine p-7 rounded-3xl flex gap-5 cursor-pointer text-left items-start"
-          >
-            <div className="w-12 h-12 rounded-2xl bg-amber-500/10 dark:bg-amber-500/20 border border-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0 shadow-xs">
-              <FileText size={24} />
+        {/* Tactical Legal & Security Tools */}
+        <div className="mt-8 flex flex-col gap-8">
+          <div className="flex flex-col items-center text-center gap-3 max-w-3xl mx-auto">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400 text-xs font-bold uppercase tracking-wider shadow-xs">
+              <FileText size={13} className="text-amber-500" />
+              <span>Sovereign Utilities</span>
             </div>
-            <div>
-              <span className="text-[10px] font-mono font-bold uppercase text-amber-700 dark:text-amber-400 tracking-wider">Free Legal Tool</span>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white mt-1 mb-1.5 font-heading">Military Lease Generator</h3>
-              <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed font-light">
-                Draft a rental agreement equipped with the Indian Military Break Clause. Landlords must agree to refund deposits within a 15-day notice upon official posting orders.
-              </p>
-            </div>
-          </motion.div>
-
-          {/* Card 2: WASM Masking */}
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            whileHover={{ y: -5, scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            viewport={{ once: true, amount: 0.15 }}
-            transition={{ type: 'spring', stiffness: 450, damping: 25 }}
-            onClick={() => setShowWasmModal(true)}
-            className="feature-card glass-card glass-shine p-7 rounded-3xl flex gap-5 cursor-pointer text-left items-start"
-          >
-            <div className="w-12 h-12 rounded-2xl bg-amber-500/10 dark:bg-amber-500/20 border border-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0 shadow-xs">
-              <Lock size={24} />
-            </div>
-            <div>
-              <span className="text-[10px] font-mono font-bold uppercase text-amber-700 dark:text-amber-400 tracking-wider">Zero-Trust Security</span>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white mt-1 mb-1.5 font-heading">WASM Edge Document Masking</h3>
-              <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed font-light">
-                Protect your privacy in line with DPDPA Act 2023. Our client-side WebAssembly script processes documents directly on your browser, automatically redacting personal identification cards and numbers before upload.
-              </p>
-            </div>
-          </motion.div>
-
-        </div>
-
-        {/* 7th CPC HRA Calculator Section */}
-        <div className="flex flex-col gap-4 text-left mb-6">
-          <div>
-            <span className="text-[10px] font-black uppercase text-amber-700 tracking-wider font-mono">Allowance Optimization</span>
-            <h2 className="text-xl font-extrabold text-slate-900 mt-1 mb-2 font-heading">7th CPC HRA Coverage Calculator</h2>
-            <p className="text-slate-650 text-xs leading-relaxed font-light">
-              Check your exact house rent allowance entitlements based on rank and basic pay under the 7th Pay Commission for Y-class cities.
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight font-heading leading-tight">
+              Built-In Tools for Defence Protection
+            </h2>
+            <p className="text-slate-650 dark:text-slate-300 text-sm sm:text-base leading-relaxed font-normal">
+              Complimentary legal and privacy automation engineered specifically for military families.
             </p>
           </div>
-          <div className="max-w-xl">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            {/* Card 1: Lease Generator */}
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{ y: -6, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              viewport={{ once: true, amount: 0.15 }}
+              transition={{ type: 'spring', stiffness: 450, damping: 25 }}
+              onClick={() => setShowLeaseModal(true)}
+              className="feature-card glass-card glass-shine p-8 rounded-3xl flex flex-col justify-between cursor-pointer text-left gap-6 border border-slate-200/80 dark:border-white/10"
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-14 h-14 rounded-2xl bg-amber-500/15 dark:bg-amber-500/25 border border-amber-500/30 flex items-center justify-center text-amber-600 dark:text-amber-400 shadow-sm">
+                  <FileText size={28} />
+                </div>
+                <span className="text-[10px] font-mono font-bold uppercase px-3 py-1 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
+                  Free Legal Tool
+                </span>
+              </div>
+              <div>
+                <h3 className="text-xl font-black text-slate-900 dark:text-white font-heading">
+                  Military Lease Generator
+                </h3>
+                <p className="text-slate-650 dark:text-slate-300 text-sm leading-relaxed font-normal mt-2">
+                  Draft a legally binding rental agreement equipped with the Indian Armed Forces Posting Break Clause. Landlords must agree to refund security deposits within a 15-day notice upon official transfer orders.
+                </p>
+              </div>
+              <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-white/5">
+                <span className="text-xs font-bold text-amber-700 dark:text-amber-400 flex items-center gap-1.5">
+                  Generate Free Agreement <ArrowRight size={15} />
+                </span>
+                <span className="text-[10px] text-slate-400 font-mono">15-Day Posting Clause</span>
+              </div>
+            </motion.div>
+
+            {/* Card 2: WASM Masking */}
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{ y: -6, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              viewport={{ once: true, amount: 0.15 }}
+              transition={{ type: 'spring', stiffness: 450, damping: 25 }}
+              onClick={() => setShowWasmModal(true)}
+              className="feature-card glass-card glass-shine p-8 rounded-3xl flex flex-col justify-between cursor-pointer text-left gap-6 border border-slate-200/80 dark:border-white/10"
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-14 h-14 rounded-2xl bg-indigo-500/15 dark:bg-indigo-500/25 border border-indigo-500/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shadow-sm">
+                  <Lock size={28} />
+                </div>
+                <span className="text-[10px] font-mono font-bold uppercase px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20">
+                  Zero-Trust Security
+                </span>
+              </div>
+              <div>
+                <h3 className="text-xl font-black text-slate-900 dark:text-white font-heading">
+                  WASM Edge Document Masking
+                </h3>
+                <p className="text-slate-650 dark:text-slate-300 text-sm leading-relaxed font-normal mt-2">
+                  Protect military ID privacy in line with DPDPA Act 2023. Our client-side WebAssembly engine runs directly in your browser with zero server uploads, redacting personal numbers before sharing with landlords.
+                </p>
+              </div>
+              <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-white/5">
+                <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5">
+                  Launch Offline Masking <ArrowRight size={15} />
+                </span>
+                <span className="text-[10px] text-slate-400 font-mono">100% Offline Wasm</span>
+              </div>
+            </motion.div>
+
+          </div>
+        </div>
+
+        {/* 7th CPC HRA Calculator Section - Centered */}
+        <div className="mt-8 flex flex-col items-center text-center gap-6">
+          <div className="flex flex-col items-center text-center gap-3 max-w-3xl mx-auto">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400 text-xs font-bold uppercase tracking-wider shadow-xs">
+              <Calculator size={13} className="text-amber-500" />
+              <span>Allowance Intelligence</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight font-heading leading-tight">
+              7th CPC HRA Coverage Calculator
+            </h2>
+            <p className="text-slate-650 dark:text-slate-300 text-sm sm:text-base leading-relaxed font-normal max-w-2xl">
+              Calculate your exact house rent allowance entitlements based on rank and basic pay under the 7th Pay Commission for X, Y, and Z class cities.
+            </p>
+          </div>
+          
+          <div className="max-w-2xl w-full mx-auto">
             <HRACalculator
               selectedRank={calcRank}
               onRankSelect={setCalcRank}
@@ -724,10 +1069,10 @@ export default function LandingPage() {
         </div>
 
         {/* Live CSD Pulse Section */}
-        <div ref={tickerRef} className="min-h-[170px]">
+        <div ref={tickerRef} className="min-h-[170px] mt-4">
           {showTicker && (
             <React.Suspense fallback={
-              <div className="bg-white border border-slate-200/80 rounded-[2rem] p-8 flex flex-col justify-center items-center h-44 shadow-sm animate-pulse">
+              <div className="bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-white/10 rounded-[2rem] p-8 flex flex-col justify-center items-center h-44 shadow-sm animate-pulse">
                 <span className="text-xs text-slate-400 font-mono tracking-wider">Syncing Live URC Ledger...</span>
               </div>
             }>
@@ -744,20 +1089,30 @@ export default function LandingPage() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.15 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="max-w-[1250px] mx-auto px-6 mt-10 mb-6 relative z-10 text-left"
+        className="max-w-[1250px] mx-auto px-6 mt-12 mb-8 relative z-10"
       >
-        <div className="liquid-glass-morph rounded-3xl p-7 md:p-10 border border-white/40 dark:border-white/10 shadow-xl backdrop-blur-2xl">
-          <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 bg-amber-500/10 dark:bg-amber-500/20 border border-amber-500/20 px-3 py-1 rounded-xl w-fit">
-            Founding Team
-          </span>
-          <h2 className="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white mt-2 mb-8 font-heading">Meet the Minds Behind Fauji Niwas</h2>
+        <div className="liquid-glass-morph rounded-[2.5rem] p-8 sm:p-12 md:p-14 border border-white/50 dark:border-white/10 shadow-2xl backdrop-blur-2xl flex flex-col gap-10">
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Centered Header */}
+          <div className="flex flex-col items-center text-center gap-3 max-w-3xl mx-auto">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400 text-xs font-bold uppercase tracking-wider shadow-xs">
+              <Award size={13} className="text-amber-500" />
+              <span>Leadership &amp; Vision</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight font-heading leading-tight">
+              Meet the Minds Behind <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 via-amber-500 to-amber-700 dark:from-amber-400 dark:via-amber-300 dark:to-amber-500">Fauji Niwas</span>
+            </h2>
+            <p className="text-slate-650 dark:text-slate-300 text-sm sm:text-base leading-relaxed font-normal">
+              Built with dedication by defence wards to ensure secure, zero-brokerage housing for the Indian Armed Forces community.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto w-full">
             {/* Founder 1 */}
             <motion.div 
-              whileHover={{ y: -5, scale: 1.02 }}
+              whileHover={{ y: -6, scale: 1.02 }}
               transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-              className="feature-card glass-card glass-shine flex gap-5 items-start p-6 rounded-3xl group"
+              className="feature-card glass-card glass-shine flex gap-5 items-start p-7 rounded-3xl group border border-slate-200/80 dark:border-white/10 text-left"
             >
               <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-amber-500/40 shrink-0 group-hover:border-amber-500 group-hover:shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all duration-300">
                 <img 
@@ -770,24 +1125,37 @@ export default function LandingPage() {
                   onError={(e) => { e.target.style.display = 'none'; }}
                 />
               </div>
-              <div>
-                <h3 className="text-base font-bold text-slate-900 dark:text-white font-heading group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">Aman Kumar Singh</h3>
-                <span className="text-[10px] font-mono font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wide block mt-0.5">Founder &amp; Developer</span>
-                <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed font-light mt-2">
+              <div className="flex-1">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-black text-slate-900 dark:text-white font-heading group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                    Aman Kumar Singh
+                  </h3>
+                  <span className="text-[10px] font-mono font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-500/10">
+                    Founder
+                  </span>
+                </div>
+                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mt-0.5">
+                  Lead Developer &amp; Security Researcher
+                </span>
+                <p className="text-slate-650 dark:text-slate-300 text-xs sm:text-sm leading-relaxed font-normal mt-2.5">
                   B.Tech EEE Student at Galgotias College of Engineering and Technology (GCET, AKTU), Security Researcher, and NCC Air Wing 'A' Certificate holder. Aman built Fauji Niwas to solve verified relocation lodging for military families.
                 </p>
-                <div className="flex gap-4 mt-3 text-xs font-semibold text-slate-800 dark:text-slate-200">
-                  <a href="https://linkedin.com/in/gangasagar5928" target="_blank" rel="noopener noreferrer" className="text-amber-700 dark:text-amber-400 hover:underline">LinkedIn ↗</a>
-                  <a href="https://github.com/gangasagar5928" target="_blank" rel="noopener noreferrer" className="text-slate-700 dark:text-slate-300 hover:text-amber-500 hover:underline">GitHub ↗</a>
+                <div className="flex gap-4 mt-4 text-xs font-bold text-slate-800 dark:text-slate-200">
+                  <a href="https://linkedin.com/in/gangasagar5928" target="_blank" rel="noopener noreferrer" className="text-amber-700 dark:text-amber-400 hover:underline flex items-center gap-1">
+                    LinkedIn ↗
+                  </a>
+                  <a href="https://github.com/gangasagar5928" target="_blank" rel="noopener noreferrer" className="text-slate-700 dark:text-slate-300 hover:text-amber-500 hover:underline flex items-center gap-1">
+                    GitHub ↗
+                  </a>
                 </div>
               </div>
             </motion.div>
 
             {/* Founder 2 */}
             <motion.div 
-              whileHover={{ y: -5, scale: 1.02 }}
+              whileHover={{ y: -6, scale: 1.02 }}
               transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-              className="feature-card glass-card glass-shine flex gap-5 items-start p-6 rounded-3xl group"
+              className="feature-card glass-card glass-shine flex gap-5 items-start p-7 rounded-3xl group border border-slate-200/80 dark:border-white/10 text-left"
             >
               <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-indigo-500/40 shrink-0 group-hover:border-indigo-500 group-hover:shadow-[0_0_20px_rgba(99,102,241,0.4)] transition-all duration-300">
                 <img 
@@ -800,15 +1168,28 @@ export default function LandingPage() {
                   onError={(e) => { e.target.style.display = 'none'; }}
                 />
               </div>
-              <div>
-                <h3 className="text-base font-bold text-slate-900 dark:text-white font-heading group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">Anurag Kumar Singh</h3>
-                <span className="text-[10px] font-mono font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wide block mt-0.5">Co-Founder</span>
-                <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed font-light mt-2">
+              <div className="flex-1">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-black text-slate-900 dark:text-white font-heading group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                    Anurag Kumar Singh
+                  </h3>
+                  <span className="text-[10px] font-mono font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wide px-2 py-0.5 rounded-full bg-indigo-500/10">
+                    Co-Founder
+                  </span>
+                </div>
+                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mt-0.5">
+                  Community &amp; Media Strategy
+                </span>
+                <p className="text-slate-650 dark:text-slate-300 text-xs sm:text-sm leading-relaxed font-normal mt-2.5">
                   JEE Aspirant, YouTuber, Content Creator, and passionate gamer. Co-founded the platform to design community engagement channels and streamline communication guides for serving families.
                 </p>
-                <div className="flex gap-4 mt-3 text-xs font-semibold text-slate-800 dark:text-slate-200">
-                  <a href="https://www.linkedin.com/in/anurag-singh-a126843a3" target="_blank" rel="noopener noreferrer" className="text-indigo-600 dark:text-indigo-400 hover:underline">LinkedIn ↗</a>
-                  <a href="https://youtube.com/@aks_vlogs_edits" target="_blank" rel="noopener noreferrer" className="text-rose-600 dark:text-rose-400 hover:underline">YouTube ↗</a>
+                <div className="flex gap-4 mt-4 text-xs font-bold text-slate-800 dark:text-slate-200">
+                  <a href="https://www.linkedin.com/in/anurag-singh-a126843a3" target="_blank" rel="noopener noreferrer" className="text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1">
+                    LinkedIn ↗
+                  </a>
+                  <a href="https://youtube.com/@aks_vlogs_edits" target="_blank" rel="noopener noreferrer" className="text-rose-600 dark:text-rose-400 hover:underline flex items-center gap-1">
+                    YouTube ↗
+                  </a>
                 </div>
               </div>
             </motion.div>
@@ -817,50 +1198,50 @@ export default function LandingPage() {
       </motion.section>
 
       {/* Footer */}
-      <footer id="footer" className="bg-[#FAF9F6] border-t border-slate-200/60 py-12 mt-16 relative z-10 text-left">
+      <footer id="footer" className="bg-[#FAF9F6] dark:bg-[#070b15] border-t border-slate-200/60 dark:border-white/10 py-12 mt-16 relative z-10 text-center">
         <div className="max-w-[1250px] mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-2 text-xs font-black tracking-tight text-slate-900 font-heading">
+          <div className="flex items-center gap-2 text-xs font-black tracking-tight text-slate-900 dark:text-white font-heading">
             <img src="/logo-light.jpg" alt="FaujiNiwas" className="w-6 h-6 rounded-md object-contain light-logo" />
             <img src="/logo-dark.jpg" alt="FaujiNiwas" className="w-6 h-6 rounded-md object-contain dark-logo" />
-            <span><span className="text-amber-700">FAUJI</span> <span className="text-slate-950 font-normal">NIWAS</span></span>
+            <span><span className="text-amber-600 dark:text-amber-400">FAUJI</span> <span className="text-slate-950 dark:text-white font-normal">NIWAS</span></span>
             <span className="text-slate-400 text-[10px] ml-1 font-mono">© 2026</span>
           </div>
           
-          <div className="flex flex-wrap justify-center gap-6 text-[10px] font-bold uppercase tracking-wider text-slate-800">
-            <a href="/about" className="hover:text-amber-800 hover:underline transition-colors">About the Founders</a>
-            <a href="/privacy" className="hover:text-amber-800 hover:underline transition-colors">Privacy Policy</a>
-            <a href="/terms" className="hover:text-amber-800 hover:underline transition-colors">Terms of Service</a>
-            <a href="mailto:faujiniwashq@gmail.com" className="hover:text-amber-800 hover:underline transition-colors">Contact Support</a>
+          <div className="flex flex-wrap justify-center gap-6 text-[10px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+            <a href="/about" className="hover:text-amber-600 dark:hover:text-amber-400 hover:underline transition-colors">About the Founders</a>
+            <a href="/privacy" className="hover:text-amber-600 dark:hover:text-amber-400 hover:underline transition-colors">Privacy Policy</a>
+            <a href="/terms" className="hover:text-amber-600 dark:hover:text-amber-400 hover:underline transition-colors">Terms of Service</a>
+            <a href="mailto:faujiniwashq@gmail.com" className="hover:text-amber-600 dark:hover:text-amber-400 hover:underline transition-colors">Contact Support</a>
           </div>
           
-          <div className="text-[9px] text-slate-700 font-medium">
-            Made with ❤️ for the Armed Forces
+          <div className="text-[10px] text-slate-600 dark:text-slate-400 font-medium">
+            Made with ❤️ for the Indian Armed Forces
           </div>
         </div>
 
         {/* Popular Cities SEO Links */}
-        <div className="max-w-[1250px] mx-auto px-6 mt-8 pt-6 border-t border-slate-200/40 text-left">
-          <span className="text-[9px] font-black uppercase tracking-wider text-slate-400 block mb-2">
-            🎖️ Popular Relocation Cities / लोकप्रिय सैन्य स्टेशन:
+        <div className="max-w-[1250px] mx-auto px-6 mt-8 pt-6 border-t border-slate-200/40 dark:border-white/5 text-center">
+          <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-3 font-mono">
+            🎖️ Popular Relocation Cities / प्रमुख सैन्य स्टेशन:
           </span>
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] font-bold text-slate-750">
-            <a href="/pune" className="hover:text-amber-800 hover:scale-105 inline-block transition-transform duration-150">Pune Cantt</a>
-            <span className="text-slate-300">•</span>
-            <a href="/delhi" className="hover:text-amber-800 hover:scale-105 inline-block transition-transform duration-150">Delhi Cantt</a>
-            <span className="text-slate-300">•</span>
-            <a href="/ambala" className="hover:text-amber-800 hover:scale-105 inline-block transition-transform duration-150">Ambala Cantt</a>
-            <span className="text-slate-300">•</span>
-            <a href="/secunderabad" className="hover:text-amber-800 hover:scale-105 inline-block transition-transform duration-150">Secunderabad Cantt</a>
-            <span className="text-slate-300">•</span>
-            <a href="/bhopal" className="hover:text-amber-800 hover:scale-105 inline-block transition-transform duration-150">Bhopal Cantt</a>
-            <span className="text-slate-300">•</span>
-            <a href="/kapurthala" className="hover:text-amber-800 hover:scale-105 inline-block transition-transform duration-150">Kapurthala SSB</a>
-            <span className="text-slate-300">•</span>
-            <a href="/prayagraj" className="hover:text-amber-800 hover:scale-105 inline-block transition-transform duration-150">Prayagraj SSB</a>
-            <span className="text-slate-300">•</span>
-            <a href="/coimbatore" className="hover:text-amber-800 hover:scale-105 inline-block transition-transform duration-150">Coimbatore Cantt</a>
-            <span className="text-slate-300">•</span>
-            <a href="/bangalore" className="hover:text-amber-800 hover:scale-105 inline-block transition-transform duration-150">Bangalore Cantt</a>
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
+            <a href="/pune" className="hover:text-amber-600 dark:hover:text-amber-400 hover:scale-105 inline-block transition-transform duration-150">Pune Cantt</a>
+            <span className="text-slate-300 dark:text-slate-700">•</span>
+            <a href="/delhi" className="hover:text-amber-600 dark:hover:text-amber-400 hover:scale-105 inline-block transition-transform duration-150">Delhi Cantt</a>
+            <span className="text-slate-300 dark:text-slate-700">•</span>
+            <a href="/ambala" className="hover:text-amber-600 dark:hover:text-amber-400 hover:scale-105 inline-block transition-transform duration-150">Ambala Cantt</a>
+            <span className="text-slate-300 dark:text-slate-700">•</span>
+            <a href="/secunderabad" className="hover:text-amber-600 dark:hover:text-amber-400 hover:scale-105 inline-block transition-transform duration-150">Secunderabad Cantt</a>
+            <span className="text-slate-300 dark:text-slate-700">•</span>
+            <a href="/bhopal" className="hover:text-amber-600 dark:hover:text-amber-400 hover:scale-105 inline-block transition-transform duration-150">Bhopal Cantt</a>
+            <span className="text-slate-300 dark:text-slate-700">•</span>
+            <a href="/kapurthala" className="hover:text-amber-600 dark:hover:text-amber-400 hover:scale-105 inline-block transition-transform duration-150">Kapurthala SSB</a>
+            <span className="text-slate-300 dark:text-slate-700">•</span>
+            <a href="/prayagraj" className="hover:text-amber-600 dark:hover:text-amber-400 hover:scale-105 inline-block transition-transform duration-150">Prayagraj SSB</a>
+            <span className="text-slate-300 dark:text-slate-700">•</span>
+            <a href="/coimbatore" className="hover:text-amber-600 dark:hover:text-amber-400 hover:scale-105 inline-block transition-transform duration-150">Coimbatore Cantt</a>
+            <span className="text-slate-300 dark:text-slate-700">•</span>
+            <a href="/bangalore" className="hover:text-amber-600 dark:hover:text-amber-400 hover:scale-105 inline-block transition-transform duration-150">Bangalore Cantt</a>
           </div>
         </div>
       </footer>
