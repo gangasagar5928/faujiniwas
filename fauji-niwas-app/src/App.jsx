@@ -41,6 +41,16 @@ export default function App() {
   const [foodCity, setFoodCity] = useState(null);
   const [isInitTimedOut, setIsInitTimedOut] = useState(false);
 
+  // Apply fixed full-height app-shell strictly when inside the app dashboard
+  useEffect(() => {
+    document.documentElement.classList.add('app-shell');
+    document.body.classList.add('app-shell');
+    return () => {
+      document.documentElement.classList.remove('app-shell');
+      document.body.classList.remove('app-shell');
+    };
+  }, []);
+
   // Safety Timeout for Native Shells (Fixes "Blur Screen" hang)
   useEffect(() => {
     const timer = setTimeout(() => {

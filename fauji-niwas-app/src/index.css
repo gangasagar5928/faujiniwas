@@ -259,6 +259,33 @@ html.app-shell #root {
   min-height: 0;
 }
 
+html:not(.app-shell),
+body:not(.app-shell),
+html.landing-active,
+body.landing-page {
+  position: static !important;
+  inset: auto !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 100vh !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: auto !important;
+  scroll-behavior: smooth;
+}
+
+body.landing-page #root,
+html:not(.app-shell) #root {
+  position: static !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 100vh !important;
+  overflow: visible !important;
+  overflow-x: hidden !important;
+  display: block !important;
+  max-width: 100% !important;
+}
+
 /* Prevent iOS auto-zoom on inputs */
 input, select, textarea { 
   font-size: 16px !important; 

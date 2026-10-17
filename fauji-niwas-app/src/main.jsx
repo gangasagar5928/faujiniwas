@@ -6,9 +6,6 @@ import LandingPage from './pages/LandingPage';
 import './index.css';
 import './landing.css'; 
 
-document.documentElement.classList.add('app-shell');
-document.body.classList.add('app-shell');
-
 // Global ErrorBoundary — prevents silent white screen on mobile crashes
 class ErrorBoundary extends React.Component {
   constructor(props) { super(props); this.state = { error: null }; }
