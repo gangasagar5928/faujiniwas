@@ -59,6 +59,18 @@ export default function LandingPage() {
     document.documentElement.classList.remove('app-shell');
     document.body.classList.remove('app-shell');
     document.body.classList.add('landing-page');
+
+    window.__APP_READY__ = true;
+    window.dispatchEvent(new Event('app-ready'));
+    const loader = document.getElementById('tactical-loader');
+    if (loader) {
+      loader.classList.add('opacity-0');
+      loader.style.pointerEvents = 'none';
+      setTimeout(() => {
+        if (loader) loader.style.display = 'none';
+      }, 600);
+    }
+
     return () => {
       document.body.classList.remove('landing-page');
     };
