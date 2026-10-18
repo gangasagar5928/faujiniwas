@@ -13,14 +13,14 @@ body {
   height: auto !important;
   min-height: 100vh !important;
   overflow: visible !important;
-  background: #F8FAFC;
-  color: #0F172A;
+  background: #FAF9F6;
+  color: #1e293b;
   font-family: "Inter", sans-serif;
 }
 html.dark-theme body,
 body.dark-theme {
-  background: #080D1A !important;
-  color: #F8FAFC !important;
+  background: #0b1325 !important;
+  color: #f3f4f6 !important;
 }
 
 #root {
@@ -33,54 +33,13 @@ h1, h2, h3, h4, h5, h6 {
   font-family: "Outfit", sans-serif;
 }
 
-/* GSAP ScrollSmoother & Lenis Smooth Scroll Engine */
-#smooth-wrapper {
-  position: relative;
-  width: 100%;
-  overflow: visible;
-}
-
-#smooth-content {
-  position: relative;
-  width: 100%;
-  will-change: transform;
-}
-
-html.lenis, html.lenis body {
-  height: auto;
-}
-
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
-}
-
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
-}
-
-.lenis.lenis-stopped {
-  overflow: hidden;
-}
-
-/* Premium Modern Glass Panels */
-.keep-white {
-  color: #ffffff !important;
-}
-
+/* Premium Glassmorphic panels - light theme */
 .glass-card {
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(226, 232, 240, 0.85);
-  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.02);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.dark .glass-card,
-.dark-theme .glass-card {
-  background: rgba(15, 23, 42, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 12px 40px 0 rgba(15, 23, 42, 0.06), inset 0 1px 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .glass-card-olive {
@@ -224,116 +183,261 @@ html.lenis, html.lenis body {
 }
 
 /* ──────────────────────────────────────────────────────────
-   LIQUID GLASSMORPHIC & FLUID MOTION DESIGN SYSTEM
+   DYNAMIC LIGHT THEME SELECTOR OVERRIDES
    ────────────────────────────────────────────────────────── */
+.landing-page {
+  background-color: #FAF9F6 !important;
+  color: #1e293b !important;
+}
 
-/* Glass Cards — Frosted liquid glass with specular highlights */
-.glass-card,
+/* Background video opacity */
+.landing-page #bg-video {
+  opacity: 0.03 !important;
+}
+
+/* Navigation overrides */
+.landing-page nav {
+  background: rgba(250, 249, 246, 0.85) !important;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+.landing-page nav a.logo {
+  color: #0f172a !important;
+}
+
+.landing-page nav .nav-links a,
+.landing-page nav a,
+.landing-page nav button {
+  color: #475569 !important;
+}
+
+.landing-page nav a:hover,
+.landing-page nav button:hover {
+  color: #f59e0b !important;
+}
+
+/* Hero Typography */
+.landing-page h1,
+.landing-page h2,
+.landing-page h3,
+.landing-page h4,
+.landing-page h5 {
+  color: #0f172a !important;
+}
+
+.landing-page p,
+.landing-page .text-gray-400,
+.landing-page .text-slate-400,
+.landing-page .text-slate-300,
+.landing-page .text-gray-300 {
+  color: #475569 !important;
+}
+
+.landing-page .text-white {
+  color: #0f172a !important;
+}
+
+/* Tags and Badges */
+.landing-page .bg-lime-500\/10 {
+  background-color: rgba(59, 83, 35, 0.08) !important;
+  border-color: rgba(59, 83, 35, 0.2) !important;
+  color: #263617 !important;
+}
+
+.landing-page .bg-amber-500\/10 {
+  background-color: rgba(245, 158, 11, 0.08) !important;
+  border-color: rgba(245, 158, 11, 0.25) !important;
+  color: #b45309 !important;
+}
+
+.landing-page .bg-white\/5 {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
+  color: #475569 !important;
+}
+
+.landing-page .text-gray-300 {
+  color: #475569 !important;
+}
+
+/* Mockup elements */
+.landing-page .mockup-container #mockup-layer1 {
+  background: #ffffff !important;
+  border: 1px solid rgba(245, 158, 11, 0.3) !important;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.1) !important;
+}
+
+.landing-page .mockup-container .z-20 {
+  background: #ffffff !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.1) !important;
+}
+
+.landing-page .mockup-container #mockup-layer3 {
+  background: #f4f6f0 !important;
+  border: 1px solid rgba(59, 83, 35, 0.15) !important;
+}
+
+.landing-page .mockup-container .bg-white\/5,
+.landing-page .mockup-container .bg-gray-950\/40 {
+  background: rgba(15, 23, 42, 0.02) !important;
+  border: 1px solid rgba(15, 23, 42, 0.04) !important;
+}
+
+.landing-page .mockup-container h4,
+.landing-page .mockup-container span,
+.landing-page .mockup-container div {
+  color: #0f172a !important;
+}
+
+/* Stats panel */
+.landing-page .relative.z-10.border-y.border-white\/5.bg-gray-950\/40 {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(15, 23, 42, 0.06) !important;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.02) !important;
+}
+
+.landing-page .relative.z-10.border-y.border-white\/5.bg-gray-950\/40 .text-gray-400 {
+  color: #64748b !important;
+}
+
+/* Bento cards and details */
+.landing-page .glass-card,
+.landing-page .glass-card-olive,
+.landing-page .glass-card-gold {
+  background: #ffffff !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04) !important;
+}
+
+.landing-page .glass-card h3,
+.landing-page .glass-card h4,
+.landing-page .glass-card p,
+.landing-page .glass-card span {
+  color: #1e293b !important;
+}
+
+.landing-page .bg-gray-900\/50,
+.landing-page .bg-slate-900\/50,
+.landing-page .bg-emerald-950\/30,
+.landing-page .bg-amber-950\/30 {
+  background: rgba(15, 23, 42, 0.02) !important;
+  border-color: rgba(15, 23, 42, 0.04) !important;
+}
+
+.landing-page .text-gray-200,
+.landing-page .text-slate-200 {
+  color: #334155 !important;
+}
+
+/* Testimonials / Timeline */
+.landing-page .border-white\/10 {
+  border-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+.landing-page .bg-slate-950\/40 {
+  background-color: #ffffff !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04) !important;
+}
+
+/* FAQ Accordion */
+.landing-page .bg-gray-900\/40 {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(15, 23, 42, 0.06) !important;
+}
+
+.landing-page .bg-gray-900\/40 button {
+  color: #0f172a !important;
+}
+
+/* Footer Section */
+.landing-page footer {
+  background-color: #f1efe9 !important;
+  border-top: 1px solid rgba(15, 23, 42, 0.06) !important;
+}
+
+.landing-page footer h3,
+.landing-page footer a,
+.landing-page footer p,
+.landing-page footer span {
+  color: #475569 !important;
+}
+
+.landing-page footer a:hover {
+  color: #f59e0b !important;
+}
+
 .feature-card {
   position: relative;
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  box-shadow: 
-    0 10px 32px 0 rgba(15, 23, 42, 0.05),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background-image: none !important;
 }
-
-.dark-theme .glass-card,
-.dark-theme .feature-card,
-.dark .glass-card,
-.dark .feature-card {
-  background: rgba(11, 19, 37, 0.65) !important;
-  backdrop-filter: blur(24px) saturate(190%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(190%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  box-shadow: 
-    0 16px 40px 0 rgba(0, 0, 0, 0.45),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.15) !important;
-}
-
-.glass-card:hover,
 .feature-card:hover {
-  border-color: rgba(245, 158, 11, 0.6) !important;
-  box-shadow: 
-    0 20px 50px -10px rgba(245, 158, 11, 0.2),
-    inset 0 1px 2px 0 rgba(255, 255, 255, 0.95) !important;
+  border-color: #d97706 !important;
+  box-shadow: 0 10px 25px rgba(217, 119, 6, 0.12) !important;
 }
 
-.dark-theme .glass-card:hover,
-.dark-theme .feature-card:hover,
-.dark .glass-card:hover,
-.dark .feature-card:hover {
-  border-color: rgba(245, 158, 11, 0.6) !important;
-  box-shadow: 
-    0 24px 60px -10px rgba(245, 158, 11, 0.35),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.25) !important;
+.feature-card-overlay {
+  background: rgba(255, 255, 255, 0.93) !important;
+}
+.feature-card-badge {
+  color: var(--accent-amber-dark) !important;
+}
+.feature-card-btn {
+  background: rgba(245, 158, 11, 0.08) !important;
+  border: 1px solid rgba(245, 158, 11, 0.25) !important;
+}
+.feature-card-btn:hover {
+  background: rgba(245, 158, 11, 0.2) !important;
+}
+.feature-card-arrow {
+  color: var(--accent-amber-dark) !important;
+}
+.feature-card-title {
+  color: var(--text-primary) !important;
+}
+.feature-card-desc {
+  color: var(--text-secondary) !important;
 }
 
-/* Glass shine specular sweep effect */
-.glass-shine {
-  position: relative;
-  overflow: hidden;
+/* Dark Theme overrides */
+.dark-theme.landing-page .feature-card,
+.dark-theme .feature-card {
+  background-color: #111827 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
 }
-
-.glass-shine::after {
-  content: '';
-  position: absolute;
-  top: -60%;
-  left: -70%;
-  width: 70%;
-  height: 220%;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.25) 50%,
-    transparent 100%
-  );
-  transform: rotate(25deg);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+.dark-theme.landing-page .feature-card:hover,
+.dark-theme .feature-card:hover {
+  border-color: var(--accent-amber) !important;
+  box-shadow: 0 16px 36px rgba(245, 158, 11, 0.25) !important;
 }
-
-.glass-shine:hover::after {
-  animation: shineSweep 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  opacity: 1;
+.dark-theme.landing-page .feature-card-overlay,
+.dark-theme .feature-card-overlay {
+  background: rgba(17, 24, 39, 0.85) !important;
 }
-
-@keyframes shineSweep {
-  0% { left: -80%; }
-  100% { left: 150%; }
+.dark-theme.landing-page .feature-card-badge,
+.dark-theme .feature-card-badge {
+  color: #fbbf24 !important;
 }
-
-/* Smooth Navigation Glass Sheet */
-.landing-page nav {
-  background: rgba(255, 255, 255, 0.8) !important;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.08) !important;
-  backdrop-filter: blur(20px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+.dark-theme.landing-page .feature-card-btn,
+.dark-theme .feature-card-btn {
+  background: rgba(251, 191, 36, 0.15) !important;
+  border-color: rgba(251, 191, 36, 0.3) !important;
 }
-
-.dark-theme.landing-page nav,
-.dark .landing-page nav {
-  background: rgba(7, 11, 21, 0.78) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-  backdrop-filter: blur(24px) saturate(190%) !important;
+.dark-theme.landing-page .feature-card-arrow,
+.dark-theme .feature-card-arrow {
+  color: #fbbf24 !important;
 }
-
-/* Smooth footer glass */
-.landing-page footer {
-  background: rgba(250, 249, 246, 0.75) !important;
-  border-top: 1px solid rgba(15, 23, 42, 0.08) !important;
-  backdrop-filter: blur(16px) !important;
+.dark-theme.landing-page .feature-card-title,
+.dark-theme .feature-card-title {
+  color: #fbbf24 !important;
 }
-
-.dark-theme.landing-page footer,
-.dark .landing-page footer {
-  background: rgba(11, 19, 37, 0.8) !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+.dark-theme.landing-page .feature-card-desc,
+.dark-theme .feature-card-desc {
+  color: #e2e8f0 !important;
 }
 
 /* Hardcoded bg-white sections (Why us, Comparison, HRA calculator wrapper) */
@@ -633,9 +737,3 @@ body > .skiptranslate {
   position: relative;
   z-index: 1;
 }
-
-/* Hide pre-rendered static SEO footer when dynamic LandingPage mounts */
-body.landing-page .static-footer {
-  display: none !important;
-}
-

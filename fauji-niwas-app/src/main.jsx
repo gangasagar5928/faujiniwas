@@ -48,12 +48,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <ErrorBoundary>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={isNative ? <App /> : <LandingPage />} />
-          <Route path="/home" element={<LandingPage />} />
-          <Route path="/landing" element={<LandingPage />} />
+          <Route path="/" element={<App />} />
           <Route path="/app" element={<App />} />
           <Route path="/app.html" element={<App />} />
-          <Route path="*" element={isNative ? <App /> : <LandingPage />} />
+          <Route path="/landing" element={<LandingPage />} />
+          <Route path="/home" element={<LandingPage />} />
+          <Route path="*" element={<App />} />
         </Routes>
       </BrowserRouter>
     </ErrorBoundary>
@@ -63,14 +63,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 // Landing page hides its own loader in landing.jsx. For the app shell, the
 // index.html tactical loader stays visible until App.jsx signals real
 // readiness (auth resolved) — this avoids the double-loader flicker.
-const isLanding = !isNative && (
-  window.location.pathname === '/' ||
-  window.location.pathname === '' ||
-  window.location.pathname === '/landing' ||
-  window.location.pathname === '/home'
-);
-
-if (isLanding) {
+if (window.location.pathname === '/' || window.location.pathname === '') {
   window.__APP_READY__ = true;
   window.dispatchEvent(new Event('app-ready'));
 } else {
