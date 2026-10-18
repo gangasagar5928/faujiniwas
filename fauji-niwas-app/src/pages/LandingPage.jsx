@@ -257,333 +257,233 @@ export default function LandingPage() {
         </motion.div>
 
         {/* Features 2x3 Bento Grid */}
-        {/* Compact 4-col / 2-col Feature Cards Grid with all new features */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
 
-          {/* Feature 1: Cantonment Map */}
+          {/* Card 1: Station Search */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.4, delay: 0.05 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
             onClick={handleLaunchApp}
-            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-amber-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
+            className="feature-card relative p-8 rounded-[2rem] flex flex-col justify-between h-[280px] shadow-lg group hover:scale-[1.01] transition-all duration-300 overflow-hidden cursor-pointer text-left"
           >
-            <div className="flex justify-between items-start">
-              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-800 bg-amber-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
-                <Navigation size={12} /> #01 Map Search
-              </span>
-              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-amber-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={15} />
-              </div>
+            <div className="feature-card-overlay absolute inset-0 transition-all z-0" />
+            <div className="flex justify-between items-start relative z-10">
+              <span className="feature-card-badge text-xs font-extrabold uppercase tracking-widest font-mono">Feature #01</span>
+              <button onClick={handleLaunchApp} aria-label="Open Station Search feature" className="feature-card-btn w-12 h-12 rounded-full flex items-center justify-center transition-all">
+                <ArrowUpRight size={18} className="feature-card-arrow transition-transform" />
+              </button>
             </div>
-            <div>
-              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">Cantonment Proximity</h3>
-              <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Exact gate distance routing, Army Schools, and Military Hospitals mapped in real-time.</p>
-            </div>
-            <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
-              📍 Gate Routing · 🏫 KV Schools · 🏥 Base Hosp
+            <div className="relative z-10">
+              <h3 className="feature-card-title text-base font-black tracking-wider font-heading mb-2 uppercase">Instant Station Search</h3>
+              <p className="feature-card-desc text-sm leading-relaxed font-light">Proximity routing mapping exact distances to cantonment gates and base sectors.</p>
             </div>
           </motion.div>
 
-          {/* Feature 2: Verified Listings & Marketplace */}
+          {/* Card 2: Verified Listings */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
             onClick={handleLaunchApp}
-            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-amber-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
+            className="feature-card relative p-8 rounded-[2rem] flex flex-col justify-between h-[280px] shadow-lg group hover:scale-[1.01] transition-all duration-300 overflow-hidden cursor-pointer text-left"
           >
-            <div className="flex justify-between items-start">
-              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-800 bg-amber-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
-                <ShoppingBag size={12} /> #02 Defence Market
-              </span>
-              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-amber-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={15} />
-              </div>
+            <div className="feature-card-overlay absolute inset-0 transition-all z-0" />
+            <div className="flex justify-between items-start relative z-10">
+              <span className="feature-card-badge text-xs font-extrabold uppercase tracking-widest font-mono">Feature #02</span>
+              <button onClick={handleLaunchApp} aria-label="Open Verified Listings feature" className="feature-card-btn w-12 h-12 rounded-full flex items-center justify-center transition-all">
+                <ArrowUpRight size={18} className="feature-card-arrow transition-transform" />
+              </button>
             </div>
-            <div>
-              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">Defence Marketplace</h3>
-              <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Direct peer-to-peer household transfers & verified postings without middleman brokers.</p>
-            </div>
-            <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
-              🎖️ Verified Defence · 🚫 Zero Brokerage · 🛋️ Items
+            <div className="relative z-10">
+              <h3 className="feature-card-title text-base font-black tracking-wider font-heading mb-2 uppercase">Verified Defence Listings</h3>
+              <p className="feature-card-desc text-sm leading-relaxed font-light">Direct peer-to-peer listings posted exclusively by relocating personnel or verified base families.</p>
             </div>
           </motion.div>
 
-          {/* Feature 3: HRA Rank Matching */}
+          {/* Card 3: HRA Rank Matching */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.4, delay: 0.15 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
             onClick={handleLaunchApp}
-            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-amber-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
+            className="feature-card relative p-8 rounded-[2rem] flex flex-col justify-between h-[280px] shadow-lg group hover:scale-[1.01] transition-all duration-300 overflow-hidden cursor-pointer text-left"
           >
-            <div className="flex justify-between items-start">
-              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-800 bg-amber-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
-                <Award size={12} /> #03 7th CPC HRA
-              </span>
-              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-amber-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={15} />
-              </div>
+            <div className="feature-card-overlay absolute inset-0 transition-all z-0" />
+            <div className="flex justify-between items-start relative z-10">
+              <span className="feature-card-badge text-xs font-extrabold uppercase tracking-widest font-mono">Feature #03</span>
+              <button onClick={handleLaunchApp} aria-label="Open HRA Rank Matching feature" className="feature-card-btn w-12 h-12 rounded-full flex items-center justify-center transition-all">
+                <ArrowUpRight size={18} className="feature-card-arrow transition-transform" />
+              </button>
             </div>
-            <div>
-              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">Rank-Based HRA Matching</h3>
-              <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Automatic allowance filters calibrated for Jawans, JCOs, and Commissioned Officers.</p>
-            </div>
-            <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
-              💰 7th CPC Bands · 🛡️ OR / JCO / Officers · 📋 Budgets
+            <div className="relative z-10">
+              <h3 className="feature-card-title text-base font-black tracking-wider font-heading mb-2 uppercase">HRA Rank Matching</h3>
+              <p className="feature-card-desc text-sm leading-relaxed font-light">Entitlement filter matching budgets automatically with 7th Pay Commission allowances.</p>
             </div>
           </motion.div>
 
-          {/* Feature 4: SSB Candidate Dorms */}
+          {/* Card 4: Real-time sync */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.4, delay: 0.2 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
             onClick={handleLaunchApp}
-            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-blue-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
+            className="feature-card relative p-8 rounded-[2rem] flex flex-col justify-between h-[280px] shadow-lg group hover:scale-[1.01] transition-all duration-300 overflow-hidden cursor-pointer text-left"
           >
-            <div className="flex justify-between items-start">
-              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-blue-800 bg-blue-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
-                <Star size={12} /> #04 SSB Dorms
-              </span>
-              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={15} />
-              </div>
+            <div className="feature-card-overlay absolute inset-0 transition-all z-0" />
+            <div className="flex justify-between items-start relative z-10">
+              <span className="feature-card-badge text-xs font-extrabold uppercase tracking-widest font-mono">Feature #04</span>
+              <button onClick={handleLaunchApp} aria-label="Open Real Time Availability feature" className="feature-card-btn w-12 h-12 rounded-full flex items-center justify-center transition-all">
+                <ArrowUpRight size={18} className="feature-card-arrow transition-transform" />
+              </button>
             </div>
-            <div>
-              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">SSB Candidate Stays</h3>
-              <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Affordable budget stays and mess food guides minutes away from Selection Centres.</p>
-            </div>
-            <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
-              🪖 11 &amp; 33 SSB · 🛏️ From ₹200/night · 🍛 Food Guides
+            <div className="relative z-10">
+              <h3 className="feature-card-title text-base font-black tracking-wider font-heading mb-2 uppercase">Real Time Availability</h3>
+              <p className="feature-card-desc text-sm leading-relaxed font-light">Sync moving schedules with vacancy calendars of incoming and outgoing service staff.</p>
             </div>
           </motion.div>
 
-          {/* Feature 5: Military AI Transfer Assistant */}
+          {/* Card 5: Secure chat */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.4, delay: 0.25 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
             onClick={handleLaunchApp}
-            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-emerald-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
+            className="feature-card relative p-8 rounded-[2rem] flex flex-col justify-between h-[280px] shadow-lg group hover:scale-[1.01] transition-all duration-300 overflow-hidden cursor-pointer text-left"
           >
-            <div className="flex justify-between items-start">
-              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-800 bg-emerald-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
-                <Sparkles size={12} /> #05 AI Assistant
-              </span>
-              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={15} />
-              </div>
+            <div className="feature-card-overlay absolute inset-0 transition-all z-0" />
+            <div className="flex justify-between items-start relative z-10">
+              <span className="feature-card-badge text-xs font-extrabold uppercase tracking-widest font-mono">Feature #05</span>
+              <button onClick={handleLaunchApp} aria-label="Open Secure In-App Chat feature" className="feature-card-btn w-12 h-12 rounded-full flex items-center justify-center transition-all">
+                <ArrowUpRight size={18} className="feature-card-arrow transition-transform" />
+              </button>
             </div>
-            <div>
-              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">Military AI Assistant</h3>
-              <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Instant station relocation advisory, HRA calculations, and automatic housing matches.</p>
-            </div>
-            <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
-              🤖 Route Planner · 🗺️ Station Intel · ⚡ Instant Match
+            <div className="relative z-10">
+              <h3 className="feature-card-title text-base font-black tracking-wider font-heading mb-2 uppercase">Secure In-App Chat</h3>
+              <p className="feature-card-desc text-sm leading-relaxed font-light">Encrypted chat tunnel protecting mobile numbers until mutual handshakes are signed.</p>
             </div>
           </motion.div>
 
-          {/* Feature 6: Digital Lease Generator */}
+          {/* Card 6: Lease Break */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.4, delay: 0.3 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
             onClick={() => setShowLeaseModal(true)}
-            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-amber-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
+            className="feature-card relative p-8 rounded-[2rem] flex flex-col justify-between h-[280px] shadow-lg group hover:scale-[1.01] transition-all duration-300 overflow-hidden cursor-pointer text-left"
           >
-            <div className="flex justify-between items-start">
-              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-800 bg-amber-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
-                <FileText size={12} /> #06 Lease Generator
-              </span>
-              <button onClick={(e) => { e.stopPropagation(); setShowLeaseModal(true); }} aria-label="Open Lease Generator" className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-amber-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={15} />
+            <div className="feature-card-overlay absolute inset-0 transition-all z-0" />
+            <div className="flex justify-between items-start relative z-10">
+              <span className="feature-card-badge text-xs font-extrabold uppercase tracking-widest font-mono">Feature #06</span>
+              <button onClick={(e) => { e.stopPropagation(); setShowLeaseModal(true); }} aria-label="Open Lease Generator" className="feature-card-btn w-12 h-12 rounded-full flex items-center justify-center transition-all">
+                <ArrowUpRight size={18} className="feature-card-arrow transition-transform" />
               </button>
             </div>
-            <div>
-              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">Military Lease Agreements</h3>
-              <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Official rent agreements embedded with standard 15-day military posting break clause.</p>
-            </div>
-            <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
-              📄 15-Day Break Clause · ⚖️ Standardized · 🖋️ Instant PDF
-            </div>
-          </motion.div>
-
-          {/* Feature 7: Live CSD Pulse */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.4, delay: 0.35 }}
-            onClick={handleLaunchApp}
-            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-purple-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
-          >
-            <div className="flex justify-between items-start">
-              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-purple-800 bg-purple-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
-                <Zap size={12} /> #07 CSD Pulse
-              </span>
-              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-purple-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={15} />
-              </div>
-            </div>
-            <div>
-              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">Live CSD &amp; URC Pulse</h3>
-              <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Real-time canteen token queues, grocery stock updates, and AFD tracking.</p>
-            </div>
-            <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
-              🛒 Token Queues · 🍾 Liquor Stock · 🚗 AFD CSD Portal
-            </div>
-          </motion.div>
-
-          {/* Feature 8: Wasm ID Masking */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.4, delay: 0.4 }}
-            onClick={() => setShowWasmModal(true)}
-            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-rose-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
-          >
-            <div className="flex justify-between items-start">
-              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-rose-800 bg-rose-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
-                <ShieldCheck size={12} /> #08 Client Privacy
-              </span>
-              <button onClick={(e) => { e.stopPropagation(); setShowWasmModal(true); }} aria-label="Open Wasm Masking" className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-rose-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={15} />
-              </button>
-            </div>
-            <div>
-              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">Wasm ID Masking</h3>
-              <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Offline client-side redaction ensuring zero personal military data leaves your browser.</p>
-            </div>
-            <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
-              🔒 100% Offline Wasm · 🛡️ Zero Data Leak · 🆔 Redaction
+            <div className="relative z-10">
+              <h3 className="feature-card-title text-base font-black tracking-wider font-heading mb-2 uppercase">Lease Generator</h3>
+              <p className="feature-card-desc text-sm leading-relaxed font-light">Draft legal agreements automatically fitted with the standard Indian Military Break Clause.</p>
             </div>
           </motion.div>
 
         </div>
 
+
+
         {/* Why FaujiNiwas Section */}
         <motion.section 
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.6 }}
           id="why-us" 
-          className="liquid-glass-morph rounded-3xl p-6 md:p-8 mt-2 text-left flex flex-col md:flex-row gap-6 items-start justify-between"
+          className="bg-white border border-slate-200/60 rounded-[2.5rem] p-8 md:p-12 mt-4 text-left flex flex-col md:flex-row gap-8 items-start justify-between shadow-md"
         >
-          <div className="max-w-xl flex flex-col gap-2">
-            <span className="text-[10px] font-extrabold text-[#b45309] uppercase tracking-widest font-mono">Exclusive Platform Overview</span>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 leading-tight font-heading">
+          <div className="max-w-xl flex flex-col gap-3">
+            <span className="text-[9px] font-extrabold text-[#b45309] uppercase tracking-widest font-mono">Exclusive Platform Overview</span>
+            <h2 className="text-2xl sm:text-4xl font-black text-slate-900 leading-tight font-heading">
               WHY FAUJI NIWAS?
             </h2>
-            <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
+            <p className="text-slate-600 text-xs sm:text-sm leading-relaxed mt-2">
               Designed entirely to remove the friction of sudden military posting cycles. Built securely for jawans, JCOs, and officers to share postings and rent homes without civilian classified noise.
             </p>
           </div>
           <button 
             onClick={handleLaunchApp} 
-            style={{
-              backgroundColor: '#b45309',
-              color: '#ffffff',
-              fontWeight: 900,
-              padding: '14px 26px',
-              borderRadius: '14px',
-              border: 'none',
-              boxShadow: '0 4px 18px rgba(180, 83, 9, 0.35)',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              fontSize: '12px',
-              textTransform: 'uppercase',
-              letterSpacing: '0.08em',
-              whiteSpace: 'nowrap',
-              transition: 'transform 0.15s, background-color 0.15s'
-            }}
-            onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#92400e'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-            onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#b45309'; e.currentTarget.style.transform = 'translateY(0)'; }}
+            className="self-start md:self-center bg-white border border-slate-300 hover:border-slate-800 text-slate-900 font-black text-[10px] uppercase tracking-widest px-6 py-4 rounded-xl shadow-sm transition-all whitespace-nowrap cursor-pointer hover:bg-slate-50 flex items-center gap-2"
           >
-            <span>Launch Relocation OS</span>
-            <span style={{ fontSize: '15px' }}>↗</span>
+            Launch Relocation OS <span>↗</span>
           </button>
         </motion.section>
 
-        {/* Updated Military vs Civilian Comparison Table */}
+        {/* Indian Market Comparison Table Section */}
         <motion.section 
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.6 }}
           id="comparison" 
-          className="liquid-glass-morph rounded-3xl p-6 md:p-8 mt-2 text-left"
+          className="bg-white border border-slate-200/60 rounded-[2.5rem] p-8 md:p-12 mt-4 text-left shadow-md"
         >
-          <div className="flex flex-col gap-2 mb-6">
-            <span className="text-[10px] font-extrabold text-[#b45309] uppercase tracking-widest font-mono">Compare The Tactical Edge</span>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 leading-tight font-heading">
-              MILITARY VS CIVILIAN PLATFORMS
+          <div className="flex flex-col gap-3 mb-8">
+            <span className="text-[9px] font-extrabold text-[#b45309] uppercase tracking-widest font-mono">Compare The Tactical Edge</span>
+            <h2 className="text-2xl sm:text-4xl font-black text-slate-900 leading-tight font-heading">
+              MILITARY VS CIVILIAN DIRECTORIES
             </h2>
             <p className="text-slate-600 text-xs sm:text-sm max-w-2xl font-light">
-              See why defence families across 30+ military stations prefer Fauji Niwas over general civilian rental portals.
+              See how FaujiNiwas protects your identity, limits financial brokerage, and matches official 7th Pay Commission allowance structures compared to general civilian real-estate applications in India.
             </p>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="border-b-2 border-slate-900 text-[10px] font-bold text-slate-700 uppercase tracking-wider">
-                  <th className="pb-3 font-black">Platform Capability</th>
-                  <th className="pb-3 text-emerald-800 font-black">FaujiNiwas 🎖️</th>
-                  <th className="pb-3 text-slate-500 font-normal">Civilian Portals (99acres, MagicBricks, NoBroker)</th>
+                <tr className="border-b-2 border-slate-900 text-[10px] font-bold text-slate-650 uppercase tracking-widest">
+                  <th className="pb-4 font-black">Platform Capability</th>
+                  <th className="pb-4 text-amber-900 font-black">FaujiNiwas</th>
+                  <th className="pb-4 text-slate-500 font-normal">Civ Directories (e.g. NoBroker, MagicBricks)</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 text-slate-800 font-medium">
+              <tbody className="divide-y divide-slate-200 text-slate-800 font-semibold">
                 <tr>
-                  <td className="py-3 font-bold">Military ID Vetting &amp; Privacy</td>
-                  <td className="py-3 text-emerald-700 font-bold">🟢 100% Client-Side Wasm Masking (Zero Data Leak)</td>
-                  <td className="py-3 text-rose-600">🔴 None (Civilian logins, high risk of spam &amp; fraud)</td>
+                  <td className="py-4 font-bold">Military ID Vetting</td>
+                  <td className="py-4 text-emerald-800 font-bold flex items-center gap-1">🟢 100% Secure (Armed Forces ID Check)</td>
+                  <td className="py-4 text-rose-700">🔴 None (Civilian logins, high scam risk)</td>
                 </tr>
                 <tr>
-                  <td className="py-3 font-bold">7th CPC HRA Rank Budgets</td>
-                  <td className="py-3 text-emerald-700 font-bold">🟢 Automatic (Officer / JCO / OR limits matched)</td>
-                  <td className="py-3 text-rose-600">🔴 None (Generic price sliders with no rank context)</td>
+                  <td className="py-4 font-bold">HRA Rank Budgets</td>
+                  <td className="py-4 text-emerald-800 font-bold">🟢 Entitled HRA (Officer / JCO / OR limits)</td>
+                  <td className="py-4 text-rose-700">🔴 None (Generic sliders, no rank context)</td>
                 </tr>
                 <tr>
-                  <td className="py-3 font-bold">Cantonment &amp; Gate Distance</td>
-                  <td className="py-3 text-emerald-700 font-bold">🟢 Exact Gate &amp; Military Unit Proximity Routing</td>
-                  <td className="py-3 text-rose-600">🔴 None (Civilian postal codes only)</td>
+                  <td className="py-4 font-bold">Cantonment Proximity</td>
+                  <td className="py-4 text-emerald-800 font-bold">🟢 Active (Calculates exact distance to Base gates)</td>
+                  <td className="py-4 text-rose-700">🔴 None (Generic postal codes/city areas)</td>
                 </tr>
                 <tr>
-                  <td className="py-3 font-bold">SSB Candidate Dorms</td>
-                  <td className="py-3 text-emerald-700 font-bold">🟢 Dedicated SSB Selection Centre Stays + Food Guide</td>
-                  <td className="py-3 text-rose-600">🔴 None (Expensive civilian hotels only)</td>
+                  <td className="py-4 font-bold">Privacy Encrypted Chat</td>
+                  <td className="py-4 text-emerald-800 font-bold">🟢 Included (Hide phone info till handshake)</td>
+                  <td className="py-4 text-rose-700">🔴 None (Exposed phone numbers to spam brokers)</td>
                 </tr>
                 <tr>
-                  <td className="py-3 font-bold">Military Break Clause Leases</td>
-                  <td className="py-3 text-emerald-700 font-bold">🟢 Official 15-Day Posting Transfer Break Clause</td>
-                  <td className="py-3 text-rose-600">🔴 None (Rigid 11-month civilian lock-in contracts)</td>
+                  <td className="py-4 font-bold">Military Break Clause</td>
+                  <td className="py-4 text-emerald-800 font-bold">🟢 Automated (Includes official 15-day refund clause)</td>
+                  <td className="py-4 text-rose-700">🔴 None (Civilian standard 11-month leases only)</td>
                 </tr>
                 <tr>
-                  <td className="py-3 font-bold">Defence Marketplace</td>
-                  <td className="py-3 text-emerald-700 font-bold">🟢 Direct Peer-to-Peer Relocation Transfers</td>
-                  <td className="py-3 text-rose-600">🔴 Open classifieds filled with commercial dealers</td>
+                  <td className="py-4 font-bold">URC CSD Pulse Ticker</td>
+                  <td className="py-4 text-emerald-800 font-bold">🟢 Live (Crowdsourced wait times & liquor stock)</td>
+                  <td className="py-4 text-rose-700">🔴 None (No canteen synchronizations)</td>
                 </tr>
                 <tr>
-                  <td className="py-3 font-bold">CSD Canteen &amp; Base Facilities</td>
-                  <td className="py-3 text-emerald-700 font-bold">🟢 Live CSD Pulse, Army Schools &amp; Military Hospitals</td>
-                  <td className="py-3 text-rose-600">🔴 None (Zero military infrastructure data)</td>
-                </tr>
-                <tr>
-                  <td className="py-3 font-bold">Brokerage Commission</td>
-                  <td className="py-3 text-emerald-700 font-bold">🟢 ₹0 (Strict Zero-Brokerage Policy)</td>
-                  <td className="py-3 text-rose-600">🔴 High (1–2 Months Rent Commission + Hidden Fees)</td>
+                  <td className="py-4 font-bold">Brokerage Fee</td>
+                  <td className="py-4 text-emerald-800 font-bold">🟢 ₹0 (Strictly P2P Defence Network)</td>
+                  <td className="py-4 text-rose-700">🔴 Variable (Hidden broker charges/commissions)</td>
                 </tr>
               </tbody>
             </table>
@@ -600,7 +500,7 @@ export default function LandingPage() {
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.5, delay: 0.1 }}
             onClick={() => setShowLeaseModal(true)}
-            className="liquid-glass-morph p-6 rounded-2xl flex gap-4 cursor-pointer hover:border-amber-500/60 transition-all text-left items-start"
+            className="bg-white border border-slate-200/60 p-6 rounded-2xl flex gap-4 cursor-pointer hover:border-amber-500/50 hover:bg-amber-500/5 transition-all text-left shadow-sm items-start"
           >
             <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-800 shrink-0">
               <FileText size={20} />
@@ -621,7 +521,7 @@ export default function LandingPage() {
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.5, delay: 0.2 }}
             onClick={() => setShowWasmModal(true)}
-            className="liquid-glass-morph p-6 rounded-2xl flex gap-4 cursor-pointer hover:border-amber-500/60 transition-all text-left items-start"
+            className="bg-white border border-slate-200/60 p-6 rounded-2xl flex gap-4 cursor-pointer hover:border-amber-500/50 hover:bg-amber-500/5 transition-all text-left shadow-sm items-start"
           >
             <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-700 shrink-0">
               <Lock size={20} />
