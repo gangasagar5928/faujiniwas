@@ -744,3 +744,44 @@ body > .skiptranslate {
   position: relative;
   z-index: 1;
 }
+
+/* Glass shine specular sweep effect */
+.glass-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-shine::after {
+  content: '';
+  position: absolute;
+  top: -60%;
+  left: -70%;
+  width: 70%;
+  height: 220%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.25) 50%,
+    transparent 100%
+  );
+  transform: rotate(25deg);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.glass-shine:hover::after {
+  animation: shineSweep 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 1;
+}
+
+@keyframes shineSweep {
+  0% { left: -80%; }
+  100% { left: 150%; }
+}
+
+/* Hide pre-rendered static SEO footer when dynamic LandingPage mounts */
+body.landing-page .static-footer {
+  display: none !important;
+}
+
