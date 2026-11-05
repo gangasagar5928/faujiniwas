@@ -313,7 +313,7 @@ button, a, summary, .pm, .mc-cluster, .fb, .bp {
 }
 
 /* Shared button base */
-button:not(.leaflet-control-zoom-in):not(.leaflet-control-zoom-out) {
+button:not(.leaflet-control-zoom-in):not(.leaflet-control-zoom-out):not(nav button):not(.nav-btn) {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);

@@ -239,7 +239,7 @@ export default function UnifiedBentoDashboard() {
           <div className="flex items-center gap-2 flex-1 mx-3 min-w-0">
 
             {/* Search Pill Input */}
-            <div className="relative flex-1 min-w-[180px] group">
+            <div className="relative flex-1 min-w-[180px] group mx-auto">
               <input
                 type="text"
                 placeholder="Search cantonment, area or city..."
@@ -259,8 +259,8 @@ export default function UnifiedBentoDashboard() {
             </div>
 
             {/* BHK Filter Pill */}
-            <div className="relative">
-              <motion.button 
+            <div className="relative flex items-center gap-2 mx-auto">
+              <motion.button
                 onClick={(e) => {
                   e.stopPropagation();
                   setBhkDropdownOpen(!bhkDropdownOpen);
@@ -313,8 +313,8 @@ export default function UnifiedBentoDashboard() {
             </div>
 
             {/* Budget Filter Pill */}
-            <div className="relative">
-              <motion.button 
+            <div className="relative flex items-center gap-2 mx-auto">
+              <motion.button
                 onClick={(e) => {
                   e.stopPropagation();
                   setBudgetDropdownOpen(!budgetDropdownOpen);

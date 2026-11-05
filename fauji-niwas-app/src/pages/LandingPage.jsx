@@ -123,8 +123,8 @@ export default function LandingPage() {
           {/* Center Links - text contrast upgrades */}
           <div className="hidden md:flex items-center gap-2 text-[11px] font-black uppercase tracking-wider text-slate-800 dark:text-slate-200">
             <a href="#" className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors min-h-[48px] px-3 flex items-center">Home</a>
-            <button onClick={handleLaunchApp} className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors font-black uppercase cursor-pointer bg-transparent border-none min-h-[48px] px-3 flex items-center">Listings</button>
-            <button onClick={handleLaunchApp} className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors font-black uppercase cursor-pointer bg-transparent border-none min-h-[48px] px-3 flex items-center">Post Room</button>
+            <a href="/app" onClick={handleLaunchApp} className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors font-black uppercase cursor-pointer bg-transparent border-none shadow-none min-h-[48px] px-3 flex items-center">Listings</a>
+            <a href="/app" onClick={handleLaunchApp} className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors font-black uppercase cursor-pointer bg-transparent border-none shadow-none min-h-[48px] px-3 flex items-center">Post Room</a>
             <a href="/about.html" className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors min-h-[48px] px-3 flex items-center">About</a>
             <a href="#comparison" className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors min-h-[48px] px-3 flex items-center">Compare</a>
             <a href="#footer" className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors min-h-[48px] px-3 flex items-center">Contact</a>
@@ -165,8 +165,8 @@ export default function LandingPage() {
       {mobMenuOpen && (
         <div className="fixed top-16 left-0 right-0 z-[999] liquid-glass-morph rounded-b-3xl border-0 p-4 flex flex-col text-left shadow-2xl md:hidden">
           <a href="#" onClick={() => setMobMenuOpen(false)} className="text-sm font-black uppercase tracking-widest text-slate-800 hover:text-amber-700 py-4 block">Home</a>
-          <button onClick={(e) => { setMobMenuOpen(false); handleLaunchApp(e); }} className="text-sm font-black uppercase tracking-widest text-slate-800 hover:text-amber-700 text-left cursor-pointer py-4 block w-full border-none bg-transparent">Listings</button>
-          <button onClick={(e) => { setMobMenuOpen(false); handleLaunchApp(e); }} className="text-sm font-black uppercase tracking-widest text-slate-800 hover:text-amber-700 text-left cursor-pointer py-4 block w-full border-none bg-transparent">Post Room</button>
+          <a href="/app" onClick={(e) => { setMobMenuOpen(false); handleLaunchApp(e); }} className="text-sm font-black uppercase tracking-widest text-slate-800 hover:text-amber-700 text-left cursor-pointer py-4 block w-full border-none bg-transparent">Listings</a>
+          <a href="/app" onClick={(e) => { setMobMenuOpen(false); handleLaunchApp(e); }} className="text-sm font-black uppercase tracking-widest text-slate-800 hover:text-amber-700 text-left cursor-pointer py-4 block w-full border-none bg-transparent">Post Room</a>
           <a href="/about.html" onClick={() => setMobMenuOpen(false)} className="text-sm font-black uppercase tracking-widest text-slate-800 hover:text-amber-700 py-4 block">About</a>
           <a href="#comparison" onClick={() => setMobMenuOpen(false)} className="text-sm font-black uppercase tracking-widest text-slate-800 hover:text-amber-700 py-4 block">Compare</a>
           <a href="#footer" onClick={() => setMobMenuOpen(false)} className="text-sm font-black uppercase tracking-widest text-slate-800 hover:text-amber-700 py-4 block">Contact</a>

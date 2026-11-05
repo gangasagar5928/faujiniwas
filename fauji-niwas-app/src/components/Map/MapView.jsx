@@ -471,9 +471,9 @@ export default function MapView({
           style={{ width: '100%', height: '100%' }}
         >
           <TileLayer
-            url={tileError ? "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" : "https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"}
-            subdomains={tileError ? ['a', 'b', 'c', 'd'] : ['mt0', 'mt1', 'mt2', 'mt3']}
-            maxZoom={20}
+            url={tileError ? "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" : "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"}
+            subdomains={tileError ? ['a', 'b', 'c'] : ['a', 'b', 'c', 'd']}
+            maxZoom={19}
             minZoom={3}
             noWrap={true}
             eventHandlers={{
@@ -481,7 +481,7 @@ export default function MapView({
                 if (!tileError) setTileError(true);
               }
             }}
-            attribution="&copy; Google Maps"
+            attribution="&copy; OpenStreetMap contributors &copy; CARTO"
           />
           <UserLocationInitializer userLoc={userLoc} setUserLoc={setUserLoc} hasExplicitSearch={Boolean(searchCity)} />
           <MapController activeCantt={activeCantt} />

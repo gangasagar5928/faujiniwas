@@ -210,6 +210,11 @@ h1, h2, h3, h4, h5, h6 {
 .landing-page nav a,
 .landing-page nav button {
   color: #475569 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .landing-page nav a:hover,

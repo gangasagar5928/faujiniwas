@@ -489,10 +489,11 @@ export default function Map({
         style={{ width: "100%", height: "100%" }}
       >
         <TileLayer
-          url="https://mt1.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}"
-          maxZoom={20}
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+          subdomains={['a', 'b', 'c', 'd']}
+          maxZoom={19}
           minZoom={5}
-          attribution="&copy; Google Maps"
+          attribution="&copy; OpenStreetMap contributors &copy; CARTO"
           bounds={indiaBounds}
         />
 
@@ -513,9 +514,9 @@ export default function Map({
           >
             <Popup>
               <div style={{ color: '#1e293b', padding: '4px', fontSize: '11px', fontFamily: 'sans-serif', minWidth: '140px' }}>
-                <p style={{ fontWeight: 700, borderBottom: '1px solid #e2e8f0', paddingBottom: '4px', marginBottom: '4px', color: '#0f172a' }}>{fac.name}</p>
-                <p style={{ fontSize: '10px', color: '#475569' }}>{fac.details}</p>
-                <p style={{ fontSize: '10px', color: '#2563eb', marginTop: '4px', fontWeight: 600 }}>Commute: {fac.distance}</p>
+                <p style={{ fontWeight: 700, borderBottom: '1px solid #e2e8f0', paddingBottom: '4px', marginBottom: '4px', color: '#0f172a', maxWidth: '130px', wordBreak: 'break-word' }}>{fac.name}</p>
+                <p style={{ fontSize: '10px', color: '#475569', maxWidth: '130px', wordBreak: 'break-word' }}>{fac.details}</p>
+                <p style={{ fontSize: '10px', color: '#2563eb', marginTop: '4px', fontWeight: 600, maxWidth: '130px', wordBreak: 'break-word' }}>Commute: {fac.distance}</p>
               </div>
             </Popup>
           </Marker>

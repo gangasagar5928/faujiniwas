@@ -713,20 +713,21 @@ private fun buildTacticalMapHtml(context: android.content.Context, listings: Lis
                     attributionControl: false
                 }).setView([${initialStation.lat}, ${initialStation.lng}], 13);
 
-                // High-performance standard Google Maps tiles (Normal Road Map)
-                var primaryTiles = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-                    maxZoom: 20,
-                    subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+                // Clean CartoDB Voyager tiles (exact same road map used in web, no API key required)
+                var primaryTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                    maxZoom: 19,
+                    subdomains: 'abcd',
+                    attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
                 }).addTo(map);
 
-                // Safe fallback to CartoDB voyager if Google tiles fail
+                // Safe fallback to OpenStreetMap standard tiles if CartoDB fails
                 primaryTiles.on('tileerror', function() {
                     if (!window._switchedTiles) {
                         window._switchedTiles = true;
                         map.removeLayer(primaryTiles);
-                        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                             maxZoom: 19,
-                            subdomains: 'abcd'
+                            subdomains: ['a', 'b', 'c']
                         }).addTo(map);
                     }
                 });

@@ -7,6 +7,8 @@
   transition: opacity 0.3s ease;
   /* Leaflet needs to handle all touch events itself for proper pan/zoom */
   touch-action: none;
+  margin: 0 auto;
+  display: block;
 }
 
 .isPending {
@@ -91,4 +93,7 @@
   font-weight: 700;
   color: var(--white);
   padding: 4px;
+  max-width: 200px;
+  word-break: break-word;
+  white-space: normal;
 }

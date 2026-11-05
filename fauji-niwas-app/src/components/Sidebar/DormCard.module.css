@@ -39,9 +39,9 @@
 .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
 .row h4 { font-size: 14px; font-weight: 700; }
 .price { font-weight: 800; color: #f4c542; font-size: 14px; }
-.meta { font-size: 12px; color: var(--muted); margin-bottom: 8px; line-height: 1.5; }
-.dist { font-size: 11px; }
-.desc { font-size: 12px; color: var(--muted); margin-bottom: 10px; line-height: 1.5; }
+.meta { font-size: 12px; color: var(--muted); margin-bottom: 8px; line-height: 1.5; max-width: 180px; }
+.dist { font-size: 11px; max-width: 180px; }
+.desc { font-size: 12px; color: var(--muted); margin-bottom: 10px; line-height: 1.5; max-width: 180px; }
 
 .badges { display: flex; flex-wrap: wrap; gap: 5px; }
 .badge {

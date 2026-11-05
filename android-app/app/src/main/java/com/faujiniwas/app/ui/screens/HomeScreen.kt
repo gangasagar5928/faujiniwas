@@ -58,6 +58,15 @@ import com.faujiniwas.app.ui.theme.Olive600
 import com.faujiniwas.app.ui.theme.Gold500
 import com.faujiniwas.app.ui.theme.Teal
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.sp
+import com.faujiniwas.app.R
+import com.faujiniwas.app.ui.theme.Gold400
+
 @Composable
 fun HomeScreen(
     listings: List<Listing>,
@@ -71,11 +80,78 @@ fun HomeScreen(
         contentPadding = androidx.compose.foundation.layout.PaddingValues(
             start = 18.dp,
             end = 18.dp,
-            top = 20.dp,
+            top = 16.dp,
             bottom = 24.dp,
         ),
         verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {
+        // ── Brand Header with Official Faujiniwas Crest ──
+        item {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 4.dp, vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.fauji_logo),
+                        contentDescription = "Fauji Niwas Crest",
+                        modifier = Modifier
+                            .size(38.dp)
+                            .clip(CircleShape)
+                            .border(1.5.dp, Gold500.copy(alpha = 0.6f), CircleShape),
+                    )
+                    Column {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "FAUJI",
+                                style = MaterialTheme.typography.titleLarge,
+                                color = Gold500,
+                                fontWeight = FontWeight.Black,
+                                letterSpacing = 1.sp,
+                            )
+                            Spacer(Modifier.width(4.dp))
+                            Text(
+                                text = "NIWAS",
+                                style = MaterialTheme.typography.titleLarge,
+                                color = androidx.compose.ui.graphics.Color.White,
+                                fontWeight = FontWeight.Light,
+                                letterSpacing = 1.sp,
+                            )
+                        }
+                        Text(
+                            text = "VERIFIED DEFENCE PORTAL",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Gold400.copy(alpha = 0.8f),
+                            letterSpacing = 1.sp,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(androidx.compose.ui.graphics.Color.White.copy(alpha = 0.08f))
+                        .border(1.dp, androidx.compose.ui.graphics.Color.White.copy(alpha = 0.15f), RoundedCornerShape(16.dp))
+                        .clickable { onNavigate("landing") }
+                        .padding(horizontal = 12.dp, vertical = 6.dp),
+                ) {
+                    Text(
+                        text = "Overview",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = Gold400,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                }
+            }
+        }
+
         item { HeroCard(onNavigate) }
         item { StatsStrip() }
         item {

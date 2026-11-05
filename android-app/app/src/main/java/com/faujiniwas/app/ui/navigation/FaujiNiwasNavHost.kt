@@ -22,6 +22,7 @@ import com.faujiniwas.app.ui.screens.HraScreen
 import com.faujiniwas.app.ui.screens.ListingDetailScreen
 import com.faujiniwas.app.ui.screens.ListingsScreen
 import com.faujiniwas.app.ui.screens.HomeScreen
+import com.faujiniwas.app.ui.screens.LandingScreen
 import com.faujiniwas.app.ui.screens.MapScreen
 import com.faujiniwas.app.ui.screens.SettingsScreen
 import com.faujiniwas.app.ui.screens.SsbDormsScreen
@@ -56,11 +57,22 @@ fun FaujiNiwasAppRoot(
     ) { padding ->
         NavHost(
             navController = navController,
-            startDestination = Destination.Home.route,
+            startDestination = "landing",
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding),
         ) {
+            composable("landing") {
+                LandingScreen(
+                    onEnterApp = {
+                        navController.navigateSingleTop(Destination.Home.route)
+                    },
+                    onNavigate = { route ->
+                        if (route in topLevelRoutes) navController.navigateSingleTop(route)
+                        else navController.navigate(route)
+                    },
+                )
+            }
             composable(Destination.Home.route) {
                 HomeScreen(
                     listings = listings,

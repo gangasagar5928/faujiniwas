@@ -90,14 +90,14 @@ private fun glassBrush(dark: Boolean): Brush = Brush.linearGradient(
 /** Soft outer glow for the glass layers — replaces harsh elevation. */
 private fun Modifier.softShadow(shape: androidx.compose.ui.graphics.Shape): Modifier = this
     .shadow(
-        elevation = 18.dp,
+        elevation = 10.dp,
         shape = shape,
-        ambientColor = Color.Black.copy(alpha = 0.45f),
-        spotColor = Color.Black.copy(alpha = 0.35f),
+        ambientColor = Color.Black.copy(alpha = 0.30f),
+        spotColor = Color.Black.copy(alpha = 0.20f),
     )
 
 // ────────────────────────────────────────────────────────────────────────────
-// Gloaming-Blend aurora: drifting colour clouds behind everything.
+// Gloaming-Blend aurora: subtle ambient glow behind everything.
 // ────────────────────────────────────────────────────────────────────────────
 @Composable
 fun AuroraBackground(
@@ -116,12 +116,8 @@ fun AuroraBackground(
         label = "auroraDrift",
     )
 
-    val a1 by drifter(0.0f, 22000)
-    val a2 by drifter(0.5f, 26000)
-    val a3 by drifter(1.0f, 30000)
-    val a4 by drifter(0.25f, 24000)
-
-    val blob = if (dark) Color(0x54FFFFFF) else Color(0x0DFFFFFF)
+    val a1 by drifter(0.0f, 24000)
+    val a2 by drifter(0.5f, 28000)
 
     Box(
         modifier = modifier
@@ -131,17 +127,14 @@ fun AuroraBackground(
                     if (dark)
                         listOf(com.faujiniwas.app.ui.theme.Navy1000, com.faujiniwas.app.ui.theme.Navy950)
                     else
-                        listOf(Color(0xFFF7F5F0), Color(0xFFEFEAE1)),
+                        listOf(Color(0xFFFAF9F6), Color(0xFFF1F5F9)),
                 ),
             )
             .clipToBounds(),
     ) {
-        // Aurora radial spots — mirrors `.aurora-bg` Gloaming Blend positions & colours.
-        val c1 = if (dark) AmberWarm.copy(alpha = 0.44f) else AmberWarm.copy(alpha = 0.22f)
-        val c2 = if (dark) TealAccent.copy(alpha = 0.40f) else TealAccent.copy(alpha = 0.20f)
-        val c3 = if (dark) IndigoAccent.copy(alpha = 0.44f) else IndigoAccent.copy(alpha = 0.22f)
-        val c4 = if (dark) GoldWarm.copy(alpha = 0.36f) else GoldWarm.copy(alpha = 0.18f)
-        val c5 = if (dark) RoseAccent.copy(alpha = 0.18f) else RoseAccent.copy(alpha = 0.10f)
+        // Refined subtle ambient spots — warm gold & deep navy depth (eliminates rainbow clutter)
+        val ambientGold = if (dark) Gold500.copy(alpha = 0.08f) else Gold500.copy(alpha = 0.04f)
+        val ambientNavy = if (dark) Color(0xFF1E293B).copy(alpha = 0.20f) else Color(0xFFE2E8F0).copy(alpha = 0.35f)
 
         Box(
             Modifier
@@ -160,19 +153,11 @@ fun AuroraBackground(
                             center = centre,
                         )
                     }
-                    spot(Offset(w * (0.08f + 0.06f * a1), h * (0.03f + 0.02f * a2)), w * 0.68f, c1)
-                    spot(Offset(w * (0.94f - 0.05f * a2), h * (0.07f + 0.03f * a1)), w * 0.62f, c2)
-                    spot(Offset(w * (0.86f - 0.04f * a3), h * (0.90f - 0.02f * a4)), w * 0.66f, c3)
-                    spot(Offset(w * (0.10f + 0.05f * a4), h * (0.92f - 0.03f * a3)), w * 0.60f, c4)
-                    spot(Offset(w * 0.50f, h * 0.48f), w * 0.46f, c5)
+                    // Subtle ambient top-center warm aura
+                    spot(Offset(w * (0.50f + 0.04f * a1), h * (0.05f + 0.02f * a2)), w * 0.75f, ambientGold)
+                    // Subtle base depth
+                    spot(Offset(w * (0.50f - 0.03f * a2), h * 0.95f), w * 0.70f, ambientNavy)
                 },
-        )
-
-        // faint grain veil
-        Box(
-            Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = if (dark) 0.12f else 0.02f)),
         )
 
         content()
@@ -217,8 +202,7 @@ fun GlassCard(
             .softShadow(shape)
             .graphicsLayer { scaleX = scale; scaleY = scale }
             .clip(shape)
-            .background(if (dark) CardDark else CardLight)
-            .background(glassBrush(dark))
+            .background(if (dark) Color(0xF2111A2E) else Color(0xF7FFFFFF))
             .then(
                 if (tappable) Modifier.clickable(
                     indication = androidx.compose.material3.ripple(),
@@ -231,8 +215,8 @@ fun GlassCard(
                     1.dp,
                     Brush.verticalGradient(
                         colors = if (dark) listOf(
-                            Color.White.copy(alpha = 0.25f),
-                            Color.White.copy(alpha = 0.06f),
+                            Color.White.copy(alpha = 0.12f),
+                            Color.White.copy(alpha = 0.04f),
                         ) else listOf(
                             Color.Black.copy(alpha = 0.08f),
                             Color.Black.copy(alpha = 0.02f),
@@ -242,14 +226,14 @@ fun GlassCard(
                 shape,
             ),
     ) {
-        // top catch-light — the signature Liquid-Glass highlight
+        // top catch-light — clean subtle hairline highlight
         Box(
             Modifier
                 .fillMaxWidth()
-                .height(68.dp)
+                .height(48.dp)
                 .background(
                     Brush.verticalGradient(
-                        listOf(Color.White.copy(alpha = if (dark) 0.08f else 0.45f), Color.Transparent),
+                        listOf(Color.White.copy(alpha = if (dark) 0.04f else 0.25f), Color.Transparent),
                     ),
                 ),
         )
@@ -309,7 +293,7 @@ fun GoldButton(
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(18.dp))
-            .background(Brush.linearGradient(listOf(Gold600, Gold500)))
+            .background(Brush.horizontalGradient(listOf(Gold500, Gold600)))
             .graphicsLayer {
                 scaleX = scale
                 scaleY = scale
@@ -343,11 +327,11 @@ fun GoldText(
     style: androidx.compose.ui.text.TextStyle = MaterialTheme.typography.headlineLarge,
     align: TextAlign = TextAlign.Start,
 ) {
-    val brush = Brush.linearGradient(
+    val brush = Brush.horizontalGradient(
         colors = if (useDark())
-            listOf(Gold400, Gold600, Gold700)
+            listOf(Color(0xFFFDE68A), Gold400, Gold500)
         else
-            listOf(Gold700, Gold600, Gold500),
+            listOf(Gold600, Gold700),
     )
     Text(
         text = text,
