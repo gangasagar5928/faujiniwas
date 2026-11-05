@@ -21,7 +21,7 @@
     </script>
     <title>Fauji Niwas — Verified Defence Housing & Rentals</title>
     <meta name="description" content="India's only verified, zero-brokerage housing platform built exclusively for Indian Armed Forces families." />
-    <meta name="theme-color" content="#0b1325" />
+    <meta name="theme-color" content="#10110f" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -672,7 +672,8 @@
       var savedSize = localStorage.getItem('fn_fontsize') || '16px';
       document.documentElement.style.fontSize = savedSize;
 
-      var savedTheme = localStorage.getItem('fn_theme') || 'light';
+      var isLanding = window.location.pathname === '/' || window.location.pathname === '' || window.location.pathname === '/landing';
+      var savedTheme = isLanding ? 'dark' : (localStorage.getItem('fn_theme') || 'dark');
       if (savedTheme === 'dark') {
         document.documentElement.classList.add('dark', 'dark-theme');
         document.body.classList.add('dark', 'dark-theme');
@@ -687,7 +688,7 @@
     })();
     </script>
     <!-- Semantic Footer for Search Engines & AI Bots -->
-    <footer class="static-footer" style="padding: 24px; text-align: center; font-family: sans-serif; font-size: 13px; color: #475569; border-top: 1px solid #e2e8f0; background: #faf9f6; line-height: 1.6;">
+    <footer class="static-footer" style="display: none !important;">
       <p style="margin: 0 0 8px 0; font-weight: bold; color: #3b5323;">🪖 Fauji Niwas — Verified Defence Housing Platform</p>
       <p style="margin: 0 0 8px 0;">
         Fauji Niwas is India's verified, zero-brokerage housing and relocation portal built for the Indian Armed Forces.

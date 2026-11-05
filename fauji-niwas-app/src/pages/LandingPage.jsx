@@ -57,10 +57,16 @@ export default function LandingPage() {
   }, [basic, da, category, rate]);
 
   useEffect(() => {
-    document.documentElement.classList.remove('app-shell');
-    document.body.classList.remove('app-shell');
+    document.documentElement.classList.remove('app-shell', 'light-theme');
+    document.body.classList.remove('app-shell', 'light-theme');
+    document.documentElement.classList.add('dark', 'dark-theme');
+    document.body.classList.add('dark', 'dark-theme');
     document.documentElement.style.backgroundColor = '#10110f';
     document.body.style.backgroundColor = '#10110f';
+    document.documentElement.style.colorScheme = 'dark';
+    try { localStorage.setItem('fn_theme', 'dark'); } catch { /* noop */ }
+    const themeMeta = document.querySelector('meta[name="theme-color"]');
+    if (themeMeta) themeMeta.content = '#10110f';
     window.__APP_READY__ = true;
     window.dispatchEvent(new Event('app-ready'));
   }, []);
@@ -81,7 +87,8 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="app-shell" id="landing-root">
+    <div className="landing-canvas" id="landing-root">
+      <div className="landing-container">
       
       {/* ── Header ── */}
       <header className="site-header">
@@ -423,7 +430,7 @@ export default function LandingPage() {
           <span>Independent project · Built with respect for the Armed Forces community</span>
         </div>
       </footer>
-
+      </div>
     </div>
   );
 }

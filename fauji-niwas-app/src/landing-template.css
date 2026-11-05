@@ -3,7 +3,8 @@
 :root {
   font-family: 'DM Sans', sans-serif;
   color: #eeeae1;
-  background: #10110f;
+  background-color: #10110f;
+  color-scheme: dark;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   --bg: #10110f;
@@ -19,14 +20,31 @@
   box-sizing: border-box;
 }
 
-html {
+html, html.light-theme, html.dark-theme,
+body, body.light-theme, body.dark-theme {
+  background: #10110f !important;
+  background-color: #10110f !important;
+  color: #eeeae1 !important;
+  color-scheme: dark !important;
   scroll-behavior: smooth;
+  margin: 0;
 }
 
-body {
-  margin: 0;
-  background: var(--bg);
-  background-image: radial-gradient(ellipse at 80% 0%, rgba(164,123,57,.11), transparent 34%), radial-gradient(ellipse at 0% 55%, rgba(91,104,76,.08), transparent 30%);
+#root {
+  background: #10110f !important;
+  background-color: #10110f !important;
+  color: #eeeae1 !important;
+}
+
+/* Hide static light footer from index.html on landing page */
+.static-footer,
+footer.static-footer {
+  display: none !important;
+}
+
+/* Hide floating chatbot on landing page so it doesn't obstruct view */
+#fauji-chatbot, #cb-bubble, #cb-badge, .chat-fab {
+  display: none !important;
 }
 
 a {
@@ -38,26 +56,39 @@ button, input {
   font: inherit;
 }
 
-/* Hide floating chatbot on landing page so it doesn't cover UI */
-#fauji-chatbot, #cb-bubble, #cb-badge, .chat-fab {
-  display: none !important;
+/* ── Full Canvas Wrapper (Dark Charcoal Luxury) ── */
+.landing-canvas {
+  width: 100% !important;
+  min-height: 100vh !important;
+  background: #10110f !important;
+  background-color: #10110f !important;
+  background-image: 
+    radial-gradient(ellipse at 80% 0%, rgba(164,123,57,.15), transparent 40%),
+    radial-gradient(ellipse at 0% 55%, rgba(91,104,76,.1), transparent 35%) !important;
+  color: #eeeae1 !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.app-shell {
+.landing-container {
+  width: 100%;
   max-width: 1440px;
-  margin: auto;
+  margin: 0 auto;
   padding: 0 5.2vw;
-  background: var(--bg);
-  color: #eeeae1;
+  background: transparent !important;
+  color: #eeeae1 !important;
 }
 
+/* ── Header ── */
 .site-header {
   height: 88px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid rgba(255,255,255,.08);
+  border-bottom: 1px solid rgba(220,190,125,.15);
   gap: 24px;
+  background: transparent !important;
 }
 
 .brand {
@@ -91,14 +122,14 @@ button, input {
   display: block;
   font: 800 18px Manrope;
   letter-spacing: -.7px;
-  color: var(--white);
+  color: var(--white) !important;
 }
 
 .brand small {
   display: block;
   font-size: 9px;
   letter-spacing: 2px;
-  color: var(--muted);
+  color: var(--muted) !important;
   margin-top: 3px;
 }
 
@@ -106,27 +137,32 @@ button, input {
   display: flex;
   gap: clamp(14px, 2.4vw, 34px);
   font-size: 12px;
-  color: #c9c7bf;
+  color: #c9c7bf !important;
+}
+
+.site-header nav a {
+  color: #c9c7bf !important;
+  transition: color .2s;
 }
 
 .site-header nav a:hover,
 .footer-links a:hover {
-  color: var(--gold);
+  color: var(--gold) !important;
 }
 
 .nav-cta {
   border: 1px solid var(--line);
   border-radius: 30px;
   padding: 11px 17px;
-  color: var(--gold);
+  color: var(--gold) !important;
   font-size: 12px;
   cursor: pointer;
-  background: transparent;
+  background: rgba(215, 173, 99, 0.05);
   transition: all .2s;
 }
 
 .nav-cta:hover {
-  background: rgba(215, 173, 99, 0.1);
+  background: rgba(215, 173, 99, 0.15);
   border-color: var(--gold);
 }
 
@@ -134,6 +170,7 @@ button, input {
   margin-left: 8px;
 }
 
+/* ── Hero ── */
 .hero {
   position: relative;
   min-height: 570px;
@@ -141,15 +178,19 @@ button, input {
   align-items: center;
   border-bottom: 1px solid var(--line);
   overflow: hidden;
+  background: transparent !important;
 }
 
 .hero:after {
   content: "";
   position: absolute;
-  inset: 0 0 0 42%;
+  inset: 0 0 0 38%;
   z-index: 0;
-  background: linear-gradient(90deg, var(--bg) 0%, rgba(16,17,15,.35) 32%, rgba(16,17,15,.1) 100%), linear-gradient(0deg, var(--bg), transparent 42%), url('/images/hero-service-member.jpg') center/cover no-repeat;
-  opacity: .88;
+  background: 
+    linear-gradient(90deg, #10110f 0%, rgba(16,17,15,.4) 30%, rgba(16,17,15,.05) 100%),
+    linear-gradient(0deg, #10110f 0%, transparent 40%),
+    url('/images/hero-service-member.jpg') center right/cover no-repeat;
+  opacity: .9;
 }
 
 .hero-copy {
@@ -162,7 +203,7 @@ button, input {
 .eyebrow {
   font-size: 10px;
   letter-spacing: 2.3px;
-  color: var(--gold);
+  color: var(--gold) !important;
   font-weight: 700;
   margin: 0 0 17px;
   text-transform: uppercase;
@@ -188,18 +229,18 @@ button, input {
   line-height: 1.02;
   margin: 0 0 20px;
   font-weight: 800;
-  color: var(--white);
+  color: var(--white) !important;
 }
 
 .hero h1 em {
   font-style: normal;
-  color: var(--gold);
+  color: var(--gold) !important;
 }
 
 .hero-sub {
   font-size: 16px;
   line-height: 1.75;
-  color: #c7c5bc;
+  color: #c7c5bc !important;
   max-width: 510px;
 }
 
@@ -207,17 +248,18 @@ button, input {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: #f0eee8;
+  background: #f0eee8 !important;
   border-radius: 8px;
   padding: 6px 7px 6px 17px;
   margin-top: 30px;
   max-width: 560px;
-  color: #171813;
+  color: #171813 !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
 .station-search > span {
   font-size: 20px;
-  color: #555;
+  color: #555 !important;
 }
 
 .station-search input {
@@ -225,8 +267,8 @@ button, input {
   min-width: 0;
   border: 0;
   outline: 0;
-  background: transparent;
-  color: #171813;
+  background: transparent !important;
+  color: #171813 !important;
   font-size: 13px;
 }
 
@@ -234,8 +276,8 @@ button, input {
 .calculate-button {
   border: 0;
   border-radius: 6px;
-  background: var(--gold);
-  color: #171813;
+  background: var(--gold) !important;
+  color: #171813 !important;
   font-weight: 700;
   padding: 13px 17px;
   font-size: 12px;
@@ -258,12 +300,12 @@ button, input {
   flex-wrap: wrap;
   gap: 22px;
   margin-top: 22px;
-  color: #c3c0b5;
+  color: #c3c0b5 !important;
   font-size: 11px;
 }
 
 .hero-proof span:first-letter {
-  color: var(--gold);
+  color: var(--gold) !important;
 }
 
 .hero-visual {
@@ -284,20 +326,20 @@ button, input {
   border-left: 1px solid var(--gold);
   padding: 8px 0 8px 15px;
   margin-bottom: 20px;
-  background: rgba(16, 17, 15, 0.4);
-  backdrop-filter: blur(4px);
+  background: rgba(16, 17, 15, 0.6) !important;
+  backdrop-filter: blur(8px);
 }
 
 .image-note span {
   font-size: 9px;
   letter-spacing: 2px;
-  color: var(--gold);
+  color: var(--gold) !important;
 }
 
 .image-note p {
   font: 600 16px Manrope;
   line-height: 1.4;
-  color: var(--white);
+  color: var(--white) !important;
   margin: 4px 0 0;
 }
 
@@ -308,15 +350,17 @@ button, input {
   right: 0;
   display: flex;
   justify-content: space-between;
-  color: #777970;
+  color: #777970 !important;
   font-size: 9px;
   letter-spacing: 1.5px;
   z-index: 2;
 }
 
+/* ── Section Shared ── */
 .section {
   padding: 92px 0;
   border-bottom: 1px solid rgba(255,255,255,.08);
+  background: transparent !important;
 }
 
 .section-heading {
@@ -331,22 +375,24 @@ button, input {
   font-size: clamp(30px, 4vw, 48px);
   line-height: 1.1;
   margin: 0;
-  color: var(--white);
+  color: var(--white) !important;
 }
 
 .section-intro {
   max-width: 390px;
-  color: var(--muted);
+  color: var(--muted) !important;
   font-size: 13px;
   line-height: 1.7;
   margin: 0 0 4px;
 }
 
+/* ── 12 Features Grid ── */
 .feature-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   border-top: 1px solid var(--line);
   border-left: 1px solid var(--line);
+  background: transparent !important;
 }
 
 .feature {
@@ -355,24 +401,24 @@ button, input {
   padding: 25px 23px;
   border-right: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
-  background: rgba(255,255,255,.015);
+  background: #151713 !important;
   transition: background .2s;
   cursor: pointer;
 }
 
 .feature:hover {
-  background: rgba(215,173,99,.06);
+  background: #1c1f19 !important;
 }
 
 .feature-number {
   font-size: 10px;
-  color: #777970;
+  color: #777970 !important;
   letter-spacing: 1px;
 }
 
 .feature-icon {
   display: block;
-  color: var(--gold);
+  color: var(--gold) !important;
   font-size: 25px;
   margin: 18px 0 13px;
 }
@@ -380,25 +426,27 @@ button, input {
 .feature h3 {
   font: 700 15px Manrope;
   margin: 0 0 8px;
-  color: var(--white);
+  color: var(--white) !important;
 }
 
 .feature p {
   font-size: 11px;
   line-height: 1.6;
-  color: var(--muted);
+  color: var(--muted) !important;
   margin: 0;
   max-width: 220px;
 }
 
+/* ── Comparison Table ── */
 .difference {
-  background: linear-gradient(90deg, rgba(215,173,99,.035), transparent 55%);
+  background: linear-gradient(90deg, rgba(215,173,99,.04), transparent 55%) !important;
 }
 
 .comparison-wrap {
   overflow-x: auto;
   border: 1px solid var(--line);
   border-radius: 8px;
+  background: #141612 !important;
 }
 
 .comparison {
@@ -406,14 +454,15 @@ button, input {
   border-collapse: collapse;
   min-width: 650px;
   text-align: left;
+  background: transparent !important;
 }
 
 .comparison th {
   font-size: 11px;
-  color: var(--gold);
+  color: var(--gold) !important;
   letter-spacing: .4px;
   font-weight: 700;
-  background: rgba(215,173,99,.07);
+  background: rgba(215,173,99,.08) !important;
 }
 
 .comparison th,
@@ -424,11 +473,11 @@ button, input {
 
 .comparison td {
   font-size: 12px;
-  color: #c8c6bd;
+  color: #c8c6bd !important;
 }
 
 .comparison td:first-child {
-  color: #f0eee8;
+  color: #f0eee8 !important;
   font-weight: 600;
 }
 
@@ -438,20 +487,22 @@ button, input {
 
 .fine-print {
   font-size: 10px;
-  color: #777970;
+  color: #777970 !important;
   line-height: 1.65;
   margin: 13px 0 0;
 }
 
+/* ── Calculator ── */
 .calculator-section {
   display: grid;
   grid-template-columns: .8fr 1.2fr;
   gap: 8%;
   align-items: center;
+  background: transparent !important;
 }
 
 .calculator-copy p:not(.eyebrow) {
-  color: var(--muted);
+  color: var(--muted) !important;
   font-size: 13px;
   line-height: 1.8;
   max-width: 370px;
@@ -460,7 +511,7 @@ button, input {
 .calculator-disclaimer {
   border-left: 2px solid var(--gold);
   padding: 10px 0 10px 14px;
-  color: #85867d;
+  color: #85867d !important;
   font-size: 10px;
   line-height: 1.7;
   margin-top: 25px;
@@ -468,10 +519,11 @@ button, input {
 }
 
 .calculator-card {
-  background: linear-gradient(135deg, #20231d, #171915);
+  background: linear-gradient(135deg, #1c1e18, #141612) !important;
   border: 1px solid var(--line);
   border-radius: 10px;
   padding: 28px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.5);
 }
 
 .calc-top {
@@ -488,19 +540,19 @@ button, input {
   display: grid;
   place-items: center;
   background: rgba(215,173,99,.12);
-  color: var(--gold);
+  color: var(--gold) !important;
   font-size: 24px;
 }
 
 .calc-top h3 {
   font: 700 17px Manrope;
   margin: 0 0 4px;
-  color: var(--white);
+  color: var(--white) !important;
 }
 
 .calc-top p {
   font-size: 11px;
-  color: var(--muted);
+  color: var(--muted) !important;
   margin: 0;
 }
 
@@ -508,7 +560,7 @@ button, input {
 .calc-fields label span {
   display: block;
   font-size: 11px;
-  color: #c6c3b9;
+  color: #c6c3b9 !important;
   margin-bottom: 9px;
 }
 
@@ -520,10 +572,10 @@ button, input {
 }
 
 .category {
-  background: #121410;
+  background: #11130f !important;
   border: 1px solid rgba(255,255,255,.1);
   border-radius: 6px;
-  color: #eee;
+  color: #eee !important;
   padding: 12px;
   text-align: left;
   cursor: pointer;
@@ -531,19 +583,19 @@ button, input {
 }
 
 .category.active {
-  border-color: var(--gold);
-  background: rgba(215,173,99,.1);
+  border-color: var(--gold) !important;
+  background: rgba(215,173,99,.12) !important;
 }
 
 .category strong {
   display: block;
   font: 700 18px Manrope;
-  color: var(--gold);
+  color: var(--gold) !important;
 }
 
 .category small {
   display: block;
-  color: var(--muted);
+  color: var(--muted) !important;
   font-size: 9px;
   margin-top: 3px;
 }
@@ -556,11 +608,11 @@ button, input {
 
 .calc-fields input {
   width: 100%;
-  background: #10120f;
+  background: #0f100d !important;
   border: 1px solid rgba(255,255,255,.12);
   border-radius: 5px;
   padding: 12px;
-  color: white;
+  color: white !important;
   outline: none;
 }
 
@@ -582,14 +634,14 @@ button, input {
 .calc-result span,
 .calc-result small {
   display: block;
-  color: var(--muted);
+  color: var(--muted) !important;
   font-size: 10px;
 }
 
 .calc-result strong {
   display: block;
   font: 800 29px Manrope;
-  color: var(--gold);
+  color: var(--gold) !important;
   margin: 5px 0;
 }
 
@@ -597,13 +649,14 @@ button, input {
   line-height: 1.5;
 }
 
+/* ── URC Pulses ── */
 .pulses-section {
-  background: radial-gradient(ellipse at 50% 100%, rgba(215,173,99,.05), transparent 55%);
+  background: radial-gradient(ellipse at 50% 100%, rgba(215,173,99,.06), transparent 55%) !important;
 }
 
 .demo-status {
   font-size: 10px;
-  color: #a6a99d;
+  color: #a6a99d !important;
 }
 
 .demo-status i {
@@ -628,20 +681,20 @@ button, input {
   padding: 19px 15px;
   border: 1px solid rgba(255,255,255,.1);
   border-radius: 7px;
-  background: rgba(255,255,255,.025);
+  background: #151713 !important;
   min-height: 125px;
   cursor: pointer;
   transition: all .2s;
 }
 
 .pulse:hover {
-  background: rgba(215,173,99,.05);
+  background: #1c1f19 !important;
   border-color: rgba(215,173,99,.3);
 }
 
 .pulse-index {
   font-size: 10px;
-  color: var(--gold);
+  color: var(--gold) !important;
   padding-top: 2px;
 }
 
@@ -649,37 +702,39 @@ button, input {
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: #9c9c91;
+  color: #9c9c91 !important;
 }
 
 .pulse h3 {
   font: 700 13px Manrope;
   margin: 8px 0 5px;
-  color: var(--white);
+  color: var(--white) !important;
 }
 
 .pulse p {
   font-size: 10px;
-  color: var(--muted);
+  color: var(--muted) !important;
   margin: 0;
   line-height: 1.5;
 }
 
 .pulse-arrow {
   margin-left: auto;
-  color: var(--gold);
+  color: var(--gold) !important;
 }
 
+/* ── About Section ── */
 .about-section {
   display: grid;
   grid-template-columns: .8fr 1.2fr;
   gap: 8%;
   align-items: center;
+  background: transparent !important;
 }
 
 .about-copy p:not(.eyebrow) {
   font-size: 13px;
-  color: var(--muted);
+  color: var(--muted) !important;
   line-height: 1.85;
 }
 
@@ -701,7 +756,7 @@ button, input {
   padding: 20px 15px;
   border: 1px solid rgba(255,255,255,.11);
   border-radius: 8px;
-  background: rgba(255,255,255,.025);
+  background: #151713 !important;
 }
 
 .founder-avatar {
@@ -711,7 +766,7 @@ button, input {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: #2b3026;
+  background: #252820;
   border: 1px solid var(--line);
   color: var(--gold);
   font: 700 15px Manrope;
@@ -727,23 +782,25 @@ button, input {
 .founder span {
   font-size: 8px;
   letter-spacing: 1.5px;
-  color: var(--gold);
+  color: var(--gold) !important;
 }
 
 .founder h3 {
   font: 700 13px Manrope;
   margin: 5px 0;
-  color: var(--white);
+  color: var(--white) !important;
 }
 
 .founder p {
   font-size: 10px;
-  color: var(--muted);
+  color: var(--muted) !important;
   margin: 0;
 }
 
+/* ── Footer ── */
 .footer {
   padding: 35px 0 20px;
+  background: transparent !important;
 }
 
 .footer-main {
@@ -756,14 +813,14 @@ button, input {
 
 .footer-main > p {
   font-size: 11px;
-  color: var(--muted);
+  color: var(--muted) !important;
 }
 
 .footer-links {
   display: flex;
   gap: 20px;
   font-size: 11px;
-  color: #c5c2b8;
+  color: #c5c2b8 !important;
 }
 
 .footer-bottom {
@@ -771,12 +828,13 @@ button, input {
   justify-content: space-between;
   border-top: 1px solid rgba(255,255,255,.08);
   padding-top: 18px;
-  color: #777970;
+  color: #777970 !important;
   font-size: 9px;
 }
 
+/* ── Responsive ── */
 @media (max-width: 900px) {
-  .app-shell {
+  .landing-container {
     padding: 0 4vw;
   }
   .site-header nav {
