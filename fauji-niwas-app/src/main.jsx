@@ -4,7 +4,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import App from './App';
 import LandingPage from './pages/LandingPage';
 import './index.css';
-import './landing.css'; 
 
 // Global ErrorBoundary — prevents silent white screen on mobile crashes
 class ErrorBoundary extends React.Component {
@@ -60,9 +59,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   </React.StrictMode>
 );
 
-// Landing page hides its own loader in landing.jsx. For the app shell, the
+// Landing page hides its own loader. For the app shell, the
 // index.html tactical loader stays visible until App.jsx signals real
-// readiness (auth resolved) — this avoids the double-loader flicker.
+// readiness (auth resolved).
 if (window.location.pathname === '/' || window.location.pathname === '') {
   window.__APP_READY__ = true;
   window.dispatchEvent(new Event('app-ready'));
@@ -73,8 +72,6 @@ if (window.location.pathname === '/' || window.location.pathname === '') {
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js').then((reg) => {
-      // Auto-update: when a newer SW activates, force a full reload
-      // so the user always sees the latest build — no stale cache.
       reg.addEventListener('updatefound', () => {
         const newWorker = reg.installing;
         if (!newWorker) return;
@@ -82,7 +79,6 @@ if ('serviceWorker' in navigator && import.meta.env.PROD) {
           if (newWorker.state === 'activated') {
             const last = Number(localStorage.getItem('_fn_sw_ts') || 0);
             const now = Date.now();
-            // Only reload if >10s since last reload (avoids infinite loop)
             if (now - last > 10000) {
               localStorage.setItem('_fn_sw_ts', now);
               console.info('[PWA] New version activated — reloading.');
