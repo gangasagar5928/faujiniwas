@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, Search, ArrowUpRight, Check, FileText, Lock, Globe, Phone, Mail, Award, Navigation, Star, Menu, X, Sparkles, Building, ShoppingBag, MapPin, Calculator, ShieldCheck, Zap } from 'lucide-react';
+import { Shield, Search, ArrowUpRight, Check, FileText, Lock, Globe, Phone, Mail, Award, Navigation, Star, Menu, X, Sparkles, Building, ShoppingBag, MapPin, Calculator, ShieldCheck, Zap, CheckCircle2, XCircle } from 'lucide-react';
 const LeaseGeneratorModal = React.lazy(() => import('../components/Modals/LeaseGeneratorModal'));
 const WasmMaskingModal = React.lazy(() => import('../components/Modals/WasmMaskingModal'));
 const CSDPulseTicker = React.lazy(() => import('../components/CSD/CSDPulseTicker'));
@@ -501,75 +501,262 @@ export default function LandingPage() {
           </button>
         </motion.section>
 
-        {/* Updated Military vs Civilian Comparison Table */}
+        {/* Military Standard vs Civilian Comparison Section */}
         <motion.section 
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.5 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.6 }}
           id="comparison" 
-          className="liquid-glass-morph rounded-3xl p-6 md:p-8 mt-2 text-left"
+          className="liquid-glass-morph rounded-[2.5rem] p-6 sm:p-10 md:p-12 mt-6 border border-slate-200/80 dark:border-white/10 shadow-2xl backdrop-blur-2xl flex flex-col gap-8 text-left"
         >
-          <div className="flex flex-col gap-2 mb-6">
-            <span className="text-[10px] font-extrabold text-[#b45309] uppercase tracking-widest font-mono">Compare The Tactical Edge</span>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 leading-tight font-heading">
-              MILITARY VS CIVILIAN PLATFORMS
+          {/* Centered Header with Verified Standards Badge */}
+          <div className="flex flex-col items-center text-center gap-3 max-w-3xl mx-auto">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 text-xs font-bold shadow-xs">
+              <Zap size={14} className="text-emerald-500" />
+              <span>Verified Standards</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight font-heading leading-tight">
+              Military Standard vs Civilian Portals
             </h2>
-            <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm max-w-2xl font-light">
-              See why defence families across 30+ military stations prefer Fauji Niwas over general civilian rental portals.
+            <p className="text-slate-650 dark:text-slate-300 text-xs sm:text-base leading-relaxed font-normal max-w-2xl">
+              See why defence families across 30+ military stations prefer Fauji Niwas over general commercial rental portals like 99acres and NoBroker.
             </p>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs border-collapse min-w-[620px] md:min-w-full">
+          {/* Elevated Modern Matrix Table - Spacious & Fully Padded */}
+          <div className="overflow-x-auto w-full rounded-3xl border border-slate-200/90 dark:border-white/10 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl shadow-lg">
+            <table className="w-full text-left border-collapse min-w-[760px]">
               <thead>
-                <tr className="border-b-2 border-slate-900 dark:border-white/20 text-[10px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                  <th className="py-3.5 pr-4 font-black">Platform Capability</th>
-                  <th className="py-3.5 px-4 text-emerald-800 dark:text-emerald-400 font-black">FaujiNiwas 🎖️</th>
-                  <th className="py-3.5 pl-4 text-slate-500 dark:text-slate-400 font-normal">Civilian Portals (99acres, MagicBricks, NoBroker)</th>
+                <tr className="border-b border-slate-200/90 dark:border-white/10 text-xs font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-300 bg-slate-50/70 dark:bg-slate-800/50">
+                  <th className="py-5 sm:py-6 pl-8 sm:pl-10 pr-6 w-[30%]">
+                    Platform Capability
+                  </th>
+                  <th className="py-5 sm:py-6 px-6 sm:px-8 w-[40%] bg-amber-500/[0.08] dark:bg-amber-500/[0.12] border-x border-amber-500/20 text-amber-900 dark:text-amber-200">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="font-heading font-black text-sm sm:text-base tracking-wide">
+                        Fauji Niwas 🎖️
+                      </span>
+                      <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-amber-500/20 text-amber-900 dark:text-amber-300 border border-amber-500/30 shadow-xs shrink-0">
+                        Defence Standard
+                      </span>
+                    </div>
+                  </th>
+                  <th className="py-5 sm:py-6 px-6 sm:px-8 pr-8 sm:pr-10 w-[30%] text-slate-500 dark:text-slate-400 font-bold">
+                    Civilian Portals (99acres, NoBroker)
+                  </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-white/10 text-slate-800 dark:text-slate-200 font-medium">
+              <tbody className="divide-y divide-slate-100 dark:divide-white/5 text-xs sm:text-sm">
+                
+                {/* Row 1 */}
                 <tr className="hover:bg-slate-500/5 transition-colors">
-                  <td className="py-3.5 pr-4 font-bold text-slate-900 dark:text-white">Military ID Vetting &amp; Privacy</td>
-                  <td className="py-3.5 px-4 text-emerald-700 dark:text-emerald-400 font-bold">🟢 100% Client-Side Wasm Masking (Zero Data Leak)</td>
-                  <td className="py-3.5 pl-4 text-rose-600 dark:text-rose-400">🔴 None (Civilian logins, high risk of spam &amp; fraud)</td>
+                  <td className="py-5 sm:py-6 pl-8 sm:pl-10 pr-6 font-bold text-slate-900 dark:text-white">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-sm sm:text-base font-bold">Military ID Vetting &amp; Privacy</span>
+                      <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">DPDPA 2023 Compliant</span>
+                    </div>
+                  </td>
+                  <td className="py-5 sm:py-6 px-6 sm:px-8 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 size={20} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                      <span className="text-emerald-800 dark:text-emerald-300 font-bold text-xs sm:text-sm leading-relaxed">
+                        100% Client-Side Wasm Masking (Zero Data Leak)
+                      </span>
+                    </div>
+                  </td>
+                  <td className="py-5 sm:py-6 px-6 sm:px-8 pr-8 sm:pr-10">
+                    <div className="flex items-start gap-3">
+                      <XCircle size={20} className="text-rose-500/80 dark:text-rose-400 shrink-0 mt-0.5" />
+                      <span className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm leading-relaxed">
+                        Civilian logins, high risk of commercial spam &amp; fraud
+                      </span>
+                    </div>
+                  </td>
                 </tr>
+
+                {/* Row 2 */}
                 <tr className="hover:bg-slate-500/5 transition-colors">
-                  <td className="py-3.5 pr-4 font-bold text-slate-900 dark:text-white">7th CPC HRA Rank Budgets</td>
-                  <td className="py-3.5 px-4 text-emerald-700 dark:text-emerald-400 font-bold">🟢 Automatic (Officer / JCO / OR limits matched)</td>
-                  <td className="py-3.5 pl-4 text-rose-600 dark:text-rose-400">🔴 None (Generic price sliders with no rank context)</td>
+                  <td className="py-5 sm:py-6 pl-8 sm:pl-10 pr-6 font-bold text-slate-900 dark:text-white">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-sm sm:text-base font-bold">7th CPC HRA Rank Budgets</span>
+                      <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Rank-Calibrated Bands</span>
+                    </div>
+                  </td>
+                  <td className="py-5 sm:py-6 px-6 sm:px-8 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 size={20} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                      <span className="text-emerald-800 dark:text-emerald-300 font-bold text-xs sm:text-sm leading-relaxed">
+                        Automatic allowance match (Officer / JCO / OR limits)
+                      </span>
+                    </div>
+                  </td>
+                  <td className="py-5 sm:py-6 px-6 sm:px-8 pr-8 sm:pr-10">
+                    <div className="flex items-start gap-3">
+                      <XCircle size={20} className="text-rose-500/80 dark:text-rose-400 shrink-0 mt-0.5" />
+                      <span className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm leading-relaxed">
+                        Generic price sliders with no rank calibration
+                      </span>
+                    </div>
+                  </td>
                 </tr>
+
+                {/* Row 3 */}
                 <tr className="hover:bg-slate-500/5 transition-colors">
-                  <td className="py-3.5 pr-4 font-bold text-slate-900 dark:text-white">Cantonment &amp; Gate Distance</td>
-                  <td className="py-3.5 px-4 text-emerald-700 dark:text-emerald-400 font-bold">🟢 Exact Gate &amp; Military Unit Proximity Routing</td>
-                  <td className="py-3.5 pl-4 text-rose-600 dark:text-rose-400">🔴 None (Civilian postal codes only)</td>
+                  <td className="py-5 sm:py-6 pl-8 sm:pl-10 pr-6 font-bold text-slate-900 dark:text-white">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-sm sm:text-base font-bold">Cantonment &amp; Gate Distance</span>
+                      <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Military Gate GIS</span>
+                    </div>
+                  </td>
+                  <td className="py-5 sm:py-6 px-6 sm:px-8 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 size={20} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                      <span className="text-emerald-800 dark:text-emerald-300 font-bold text-xs sm:text-sm leading-relaxed">
+                        Exact military gate &amp; unit proximity routing
+                      </span>
+                    </div>
+                  </td>
+                  <td className="py-5 sm:py-6 px-6 sm:px-8 pr-8 sm:pr-10">
+                    <div className="flex items-start gap-3">
+                      <XCircle size={20} className="text-rose-500/80 dark:text-rose-400 shrink-0 mt-0.5" />
+                      <span className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm leading-relaxed">
+                        Civilian postal codes only, far away from cantt gates
+                      </span>
+                    </div>
+                  </td>
                 </tr>
+
+                {/* Row 4 */}
                 <tr className="hover:bg-slate-500/5 transition-colors">
-                  <td className="py-3.5 pr-4 font-bold text-slate-900 dark:text-white">SSB Candidate Dorms</td>
-                  <td className="py-3.5 px-4 text-emerald-700 dark:text-emerald-400 font-bold">🟢 Dedicated SSB Selection Centre Stays + Food Guide</td>
-                  <td className="py-3.5 pl-4 text-rose-600 dark:text-rose-400">🔴 None (Expensive civilian hotels only)</td>
+                  <td className="py-5 sm:py-6 pl-8 sm:pl-10 pr-6 font-bold text-slate-900 dark:text-white">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-sm sm:text-base font-bold">SSB Candidate Dorms</span>
+                      <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Selection Centre Stays</span>
+                    </div>
+                  </td>
+                  <td className="py-5 sm:py-6 px-6 sm:px-8 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 size={20} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                      <span className="text-emerald-800 dark:text-emerald-300 font-bold text-xs sm:text-sm leading-relaxed">
+                        Dedicated Selection Centre stays + Mess food guide
+                      </span>
+                    </div>
+                  </td>
+                  <td className="py-5 sm:py-6 px-6 sm:px-8 pr-8 sm:pr-10">
+                    <div className="flex items-start gap-3">
+                      <XCircle size={20} className="text-rose-500/80 dark:text-rose-400 shrink-0 mt-0.5" />
+                      <span className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm leading-relaxed">
+                        Expensive civilian hotels with no candidate facilities
+                      </span>
+                    </div>
+                  </td>
                 </tr>
+
+                {/* Row 5 */}
                 <tr className="hover:bg-slate-500/5 transition-colors">
-                  <td className="py-3.5 pr-4 font-bold text-slate-900 dark:text-white">Military Break Clause Leases</td>
-                  <td className="py-3.5 px-4 text-emerald-700 dark:text-emerald-400 font-bold">🟢 Official 15-Day Posting Transfer Break Clause</td>
-                  <td className="py-3.5 pl-4 text-rose-600 dark:text-rose-400">🔴 None (Rigid 11-month civilian lock-in contracts)</td>
+                  <td className="py-5 sm:py-6 pl-8 sm:pl-10 pr-6 font-bold text-slate-900 dark:text-white">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-sm sm:text-base font-bold">Military Break Clause Leases</span>
+                      <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Official Posting Orders</span>
+                    </div>
+                  </td>
+                  <td className="py-5 sm:py-6 px-6 sm:px-8 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 size={20} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                      <span className="text-emerald-800 dark:text-emerald-300 font-bold text-xs sm:text-sm leading-relaxed">
+                        Official 15-Day Posting Transfer Break Clause
+                      </span>
+                    </div>
+                  </td>
+                  <td className="py-5 sm:py-6 px-6 sm:px-8 pr-8 sm:pr-10">
+                    <div className="flex items-start gap-3">
+                      <XCircle size={20} className="text-rose-500/80 dark:text-rose-400 shrink-0 mt-0.5" />
+                      <span className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm leading-relaxed">
+                        Rigid 11-month civilian lock-in contracts
+                      </span>
+                    </div>
+                  </td>
                 </tr>
+
+                {/* Row 6 */}
                 <tr className="hover:bg-slate-500/5 transition-colors">
-                  <td className="py-3.5 pr-4 font-bold text-slate-900 dark:text-white">Defence Marketplace</td>
-                  <td className="py-3.5 px-4 text-emerald-700 dark:text-emerald-400 font-bold">🟢 Direct Peer-to-Peer Relocation Transfers</td>
-                  <td className="py-3.5 pl-4 text-rose-600 dark:text-rose-400">🔴 Open classifieds filled with commercial dealers</td>
+                  <td className="py-5 sm:py-6 pl-8 sm:pl-10 pr-6 font-bold text-slate-900 dark:text-white">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-sm sm:text-base font-bold">Defence Peer Transfers</span>
+                      <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Direct Quarters Handover</span>
+                    </div>
+                  </td>
+                  <td className="py-5 sm:py-6 px-6 sm:px-8 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 size={20} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                      <span className="text-emerald-800 dark:text-emerald-300 font-bold text-xs sm:text-sm leading-relaxed">
+                        Direct Peer-to-Peer relocation quarters handover
+                      </span>
+                    </div>
+                  </td>
+                  <td className="py-5 sm:py-6 px-6 sm:px-8 pr-8 sm:pr-10">
+                    <div className="flex items-start gap-3">
+                      <XCircle size={20} className="text-rose-500/80 dark:text-rose-400 shrink-0 mt-0.5" />
+                      <span className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm leading-relaxed">
+                        Open classifieds saturated with commercial dealers
+                      </span>
+                    </div>
+                  </td>
                 </tr>
+
+                {/* Row 7 */}
                 <tr className="hover:bg-slate-500/5 transition-colors">
-                  <td className="py-3.5 pr-4 font-bold text-slate-900 dark:text-white">CSD Canteen &amp; Base Facilities</td>
-                  <td className="py-3.5 px-4 text-emerald-700 dark:text-emerald-400 font-bold">🟢 Live CSD Pulse, Army Schools &amp; Military Hospitals</td>
-                  <td className="py-3.5 pl-4 text-rose-600 dark:text-rose-400">🔴 None (Zero military infrastructure data)</td>
+                  <td className="py-5 sm:py-6 pl-8 sm:pl-10 pr-6 font-bold text-slate-900 dark:text-white">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-sm sm:text-base font-bold">CSD Canteen &amp; Base Facilities</span>
+                      <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Live URC &amp; Cantonment Intel</span>
+                    </div>
+                  </td>
+                  <td className="py-5 sm:py-6 px-6 sm:px-8 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 size={20} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                      <span className="text-emerald-800 dark:text-emerald-300 font-bold text-xs sm:text-sm leading-relaxed">
+                        Live CSD pulse, Army Schools &amp; Military Hospitals
+                      </span>
+                    </div>
+                  </td>
+                  <td className="py-5 sm:py-6 px-6 sm:px-8 pr-8 sm:pr-10">
+                    <div className="flex items-start gap-3">
+                      <XCircle size={20} className="text-rose-500/80 dark:text-rose-400 shrink-0 mt-0.5" />
+                      <span className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm leading-relaxed">
+                        Zero military infrastructure or canteen data
+                      </span>
+                    </div>
+                  </td>
                 </tr>
+
+                {/* Row 8 */}
                 <tr className="hover:bg-slate-500/5 transition-colors">
-                  <td className="pt-3.5 pb-5 pr-4 font-bold text-slate-900 dark:text-white">Brokerage Commission</td>
-                  <td className="pt-3.5 pb-5 px-4 text-emerald-700 dark:text-emerald-400 font-bold">🟢 ₹0 (Strict Zero-Brokerage Policy)</td>
-                  <td className="pt-3.5 pb-5 pl-4 text-rose-600 dark:text-rose-400">🔴 High (1–2 Months Rent Commission + Hidden Fees)</td>
+                  <td className="pt-5 sm:pt-6 pb-8 sm:pb-9 pl-8 sm:pl-10 pr-6 font-bold text-slate-900 dark:text-white">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-sm sm:text-base font-bold">Brokerage Commission</span>
+                      <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Zero Middlemen Guaranteed</span>
+                    </div>
+                  </td>
+                  <td className="pt-5 sm:pt-6 pb-8 sm:pb-9 px-6 sm:px-8 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 size={20} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                      <span className="text-emerald-800 dark:text-emerald-300 font-bold text-xs sm:text-sm leading-relaxed">
+                        ₹0 Forever (Strict Zero-Brokerage Policy)
+                      </span>
+                    </div>
+                  </td>
+                  <td className="pt-5 sm:pt-6 pb-8 sm:pb-9 px-6 sm:px-8 pr-8 sm:pr-10">
+                    <div className="flex items-start gap-3">
+                      <XCircle size={20} className="text-rose-500/80 dark:text-rose-400 shrink-0 mt-0.5" />
+                      <span className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm leading-relaxed">
+                        1–2 Months rent commission + excessive hidden fees
+                      </span>
+                    </div>
+                  </td>
                 </tr>
+
               </tbody>
             </table>
           </div>
