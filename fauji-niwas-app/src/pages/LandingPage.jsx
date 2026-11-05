@@ -100,7 +100,7 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF9F6] dark:bg-[#0b1325] text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-amber-500/20 relative">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#FAF9F6] dark:bg-[#0b1325] text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-amber-500/20 relative">
 
       {/* ColorOS Gloaming aurora backdrop — colour field behind every glass panel */}
       <div className="landing-aurora" aria-hidden="true" />
@@ -174,7 +174,7 @@ export default function LandingPage() {
       )}
 
       {/* Main Container */}
-      <main className="relative z-10 max-w-[1250px] mx-auto px-6 pt-28 pb-16 flex flex-col gap-10">
+      <main className="relative z-10 w-full max-w-[1250px] min-w-0 mx-auto px-4 sm:px-6 pt-28 pb-16 flex flex-col gap-10">
         
         {/* Title and Metrics Grid */}
         <motion.div 
@@ -633,10 +633,10 @@ export default function LandingPage() {
                 
                 {/* Row 1 */}
                 <tr className="hover:bg-slate-500/5 transition-colors">
-                  <td className="p-5 font-bold text-slate-900 dark:text-white">
+                  <td className="py-4 pl-6 sm:pl-8 pr-4 font-bold text-slate-900 dark:text-white text-xs sm:text-sm">
                     Military ID Vetting &amp; Privacy
                   </td>
-                  <td className="p-5 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
+                  <td className="py-4 px-4 sm:px-6 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20 text-xs sm:text-sm">
                     <div className="flex items-start gap-2.5">
                       <CheckCircle2 size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                       <span className="text-emerald-800 dark:text-emerald-300 font-bold">
@@ -644,7 +644,7 @@ export default function LandingPage() {
                       </span>
                     </div>
                   </td>
-                  <td className="p-5">
+                  <td className="py-4 px-4 sm:px-6 pr-6 sm:pr-8 text-xs sm:text-sm">
                     <div className="flex items-start gap-2.5">
                       <XCircle size={18} className="text-rose-500/80 shrink-0 mt-0.5" />
                       <span className="text-slate-500 dark:text-slate-400">
@@ -656,10 +656,10 @@ export default function LandingPage() {
 
                 {/* Row 2 */}
                 <tr className="hover:bg-slate-500/5 transition-colors">
-                  <td className="p-5 font-bold text-slate-900 dark:text-white">
+                  <td className="py-4 pl-6 sm:pl-8 pr-4 font-bold text-slate-900 dark:text-white text-xs sm:text-sm">
                     7th CPC HRA Rank Budgets
                   </td>
-                  <td className="p-5 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
+                  <td className="py-4 px-4 sm:px-6 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20 text-xs sm:text-sm">
                     <div className="flex items-start gap-2.5">
                       <CheckCircle2 size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                       <span className="text-emerald-800 dark:text-emerald-300 font-bold">
@@ -667,7 +667,7 @@ export default function LandingPage() {
                       </span>
                     </div>
                   </td>
-                  <td className="p-5">
+                  <td className="py-4 px-4 sm:px-6 pr-6 sm:pr-8 text-xs sm:text-sm">
                     <div className="flex items-start gap-2.5">
                       <XCircle size={18} className="text-rose-500/80 shrink-0 mt-0.5" />
                       <span className="text-slate-500 dark:text-slate-400">
@@ -679,10 +679,10 @@ export default function LandingPage() {
 
                 {/* Row 3 */}
                 <tr className="hover:bg-slate-500/5 transition-colors">
-                  <td className="p-5 font-bold text-slate-900 dark:text-white">
+                  <td className="py-4 pl-6 sm:pl-8 pr-4 font-bold text-slate-900 dark:text-white text-xs sm:text-sm">
                     Cantonment &amp; Gate Distance
                   </td>
-                  <td className="p-5 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
+                  <td className="py-4 px-4 sm:px-6 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20 text-xs sm:text-sm">
                     <div className="flex items-start gap-2.5">
                       <CheckCircle2 size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                       <span className="text-emerald-800 dark:text-emerald-300 font-bold">
@@ -690,7 +690,7 @@ export default function LandingPage() {
                       </span>
                     </div>
                   </td>
-                  <td className="p-5">
+                  <td className="py-4 px-4 sm:px-6 pr-6 sm:pr-8 text-xs sm:text-sm">
                     <div className="flex items-start gap-2.5">
                       <XCircle size={18} className="text-rose-500/80 shrink-0 mt-0.5" />
                       <span className="text-slate-500 dark:text-slate-400">
@@ -702,10 +702,10 @@ export default function LandingPage() {
 
                 {/* Row 4 */}
                 <tr className="hover:bg-slate-500/5 transition-colors">
-                  <td className="p-5 font-bold text-slate-900 dark:text-white">
+                  <td className="py-4 pl-6 sm:pl-8 pr-4 font-bold text-slate-900 dark:text-white text-xs sm:text-sm">
                     SSB Candidate Dorms
                   </td>
-                  <td className="p-5 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
+                  <td className="py-4 px-4 sm:px-6 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20 text-xs sm:text-sm">
                     <div className="flex items-start gap-2.5">
                       <CheckCircle2 size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                       <span className="text-emerald-800 dark:text-emerald-300 font-bold">
@@ -713,7 +713,7 @@ export default function LandingPage() {
                       </span>
                     </div>
                   </td>
-                  <td className="p-5">
+                  <td className="py-4 px-4 sm:px-6 pr-6 sm:pr-8 text-xs sm:text-sm">
                     <div className="flex items-start gap-2.5">
                       <XCircle size={18} className="text-rose-500/80 shrink-0 mt-0.5" />
                       <span className="text-slate-500 dark:text-slate-400">
@@ -725,10 +725,10 @@ export default function LandingPage() {
 
                 {/* Row 5 */}
                 <tr className="hover:bg-slate-500/5 transition-colors">
-                  <td className="p-5 font-bold text-slate-900 dark:text-white">
+                  <td className="py-4 pl-6 sm:pl-8 pr-4 font-bold text-slate-900 dark:text-white text-xs sm:text-sm">
                     Military Break Clause Leases
                   </td>
-                  <td className="p-5 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
+                  <td className="py-4 px-4 sm:px-6 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20 text-xs sm:text-sm">
                     <div className="flex items-start gap-2.5">
                       <CheckCircle2 size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                       <span className="text-emerald-800 dark:text-emerald-300 font-bold">
@@ -736,7 +736,7 @@ export default function LandingPage() {
                       </span>
                     </div>
                   </td>
-                  <td className="p-5">
+                  <td className="py-4 px-4 sm:px-6 pr-6 sm:pr-8 text-xs sm:text-sm">
                     <div className="flex items-start gap-2.5">
                       <XCircle size={18} className="text-rose-500/80 shrink-0 mt-0.5" />
                       <span className="text-slate-500 dark:text-slate-400">
@@ -748,10 +748,10 @@ export default function LandingPage() {
 
                 {/* Row 6 */}
                 <tr className="hover:bg-slate-500/5 transition-colors">
-                  <td className="p-5 font-bold text-slate-900 dark:text-white">
+                  <td className="py-4 pl-6 sm:pl-8 pr-4 font-bold text-slate-900 dark:text-white text-xs sm:text-sm">
                     Defence Peer Transfers
                   </td>
-                  <td className="p-5 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
+                  <td className="py-4 px-4 sm:px-6 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20 text-xs sm:text-sm">
                     <div className="flex items-start gap-2.5">
                       <CheckCircle2 size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                       <span className="text-emerald-800 dark:text-emerald-300 font-bold">
@@ -759,7 +759,7 @@ export default function LandingPage() {
                       </span>
                     </div>
                   </td>
-                  <td className="p-5">
+                  <td className="py-4 px-4 sm:px-6 pr-6 sm:pr-8 text-xs sm:text-sm">
                     <div className="flex items-start gap-2.5">
                       <XCircle size={18} className="text-rose-500/80 shrink-0 mt-0.5" />
                       <span className="text-slate-500 dark:text-slate-400">
@@ -771,10 +771,10 @@ export default function LandingPage() {
 
                 {/* Row 7 */}
                 <tr className="hover:bg-slate-500/5 transition-colors">
-                  <td className="p-5 font-bold text-slate-900 dark:text-white">
+                  <td className="py-4 pl-6 sm:pl-8 pr-4 font-bold text-slate-900 dark:text-white text-xs sm:text-sm">
                     CSD Canteen &amp; Base Facilities
                   </td>
-                  <td className="p-5 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
+                  <td className="py-4 px-4 sm:px-6 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20 text-xs sm:text-sm">
                     <div className="flex items-start gap-2.5">
                       <CheckCircle2 size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                       <span className="text-emerald-800 dark:text-emerald-300 font-bold">
@@ -782,7 +782,7 @@ export default function LandingPage() {
                       </span>
                     </div>
                   </td>
-                  <td className="p-5">
+                  <td className="py-4 px-4 sm:px-6 pr-6 sm:pr-8 text-xs sm:text-sm">
                     <div className="flex items-start gap-2.5">
                       <XCircle size={18} className="text-rose-500/80 shrink-0 mt-0.5" />
                       <span className="text-slate-500 dark:text-slate-400">
@@ -794,10 +794,10 @@ export default function LandingPage() {
 
                 {/* Row 8 */}
                 <tr className="hover:bg-slate-500/5 transition-colors">
-                  <td className="p-5 font-bold text-slate-900 dark:text-white">
+                  <td className="py-4 pl-6 sm:pl-8 pr-4 font-bold text-slate-900 dark:text-white text-xs sm:text-sm">
                     Brokerage Commission
                   </td>
-                  <td className="p-5 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
+                  <td className="py-4 px-4 sm:px-6 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20 text-xs sm:text-sm">
                     <div className="flex items-start gap-2.5">
                       <CheckCircle2 size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                       <span className="text-emerald-800 dark:text-emerald-300 font-bold">
@@ -805,7 +805,7 @@ export default function LandingPage() {
                       </span>
                     </div>
                   </td>
-                  <td className="p-5">
+                  <td className="py-4 px-4 sm:px-6 pr-6 sm:pr-8 text-xs sm:text-sm">
                     <div className="flex items-start gap-2.5">
                       <XCircle size={18} className="text-rose-500/80 shrink-0 mt-0.5" />
                       <span className="text-slate-500 dark:text-slate-400">
@@ -950,7 +950,7 @@ export default function LandingPage() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.2 }}
         transition={{ duration: 0.6 }}
-        className="max-w-[1250px] mx-auto px-6 mt-8 mb-4 relative z-10 text-left"
+        className="w-full max-w-[1250px] min-w-0 mx-auto px-4 sm:px-6 mt-8 mb-4 relative z-10 text-left"
       >
         <div className="liquid-glass-morph rounded-3xl p-8">
           <span className="text-[10px] font-black uppercase text-amber-700 tracking-wider font-mono">Founding Team</span>
@@ -1013,8 +1013,8 @@ export default function LandingPage() {
       </motion.section>
 
       {/* Footer */}
-      <footer id="footer" className="bg-[#FAF9F6] border-t border-slate-200/60 py-12 mt-16 relative z-10 text-left">
-        <div className="max-w-[1250px] mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+      <footer id="footer" className="w-full max-w-full overflow-x-hidden bg-[#FAF9F6] border-t border-slate-200/60 py-12 mt-16 relative z-10 text-left">
+        <div className="w-full max-w-[1250px] min-w-0 mx-auto px-4 sm:px-6 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-2 text-xs font-black tracking-tight text-slate-900 font-heading">
             <img src="/logo-light.jpg" alt="FaujiNiwas" className="w-6 h-6 rounded-md object-contain light-logo" />
             <img src="/logo-dark.jpg" alt="FaujiNiwas" className="w-6 h-6 rounded-md object-contain dark-logo" />
@@ -1035,7 +1035,7 @@ export default function LandingPage() {
         </div>
 
         {/* Popular Cities SEO Links */}
-        <div className="max-w-[1250px] mx-auto px-6 mt-8 pt-6 border-t border-slate-200/40 text-left">
+        <div className="w-full max-w-[1250px] min-w-0 mx-auto px-4 sm:px-6 mt-8 pt-6 border-t border-slate-200/40 text-left">
           <span className="text-[9px] font-black uppercase tracking-wider text-slate-400 block mb-2">
             🎖️ Popular Relocation Cities / लोकप्रिय सैन्य स्टेशन:
           </span>

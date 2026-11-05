@@ -120,7 +120,7 @@ export default function CSDPulseTicker() {
       initial={{ y: 20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ type: 'spring', stiffness: 260, damping: 22 }}
-      className="liquid-glass rounded-[2rem] p-8 flex flex-col relative overflow-hidden select-none text-left"
+      className="liquid-glass rounded-[2rem] p-5 sm:p-7 md:p-8 flex flex-col relative overflow-hidden select-none text-left w-full max-w-full min-w-0"
       style={{ border: '1px solid var(--border2)' }}
     >
       {/* Header + CSD Selector */}
@@ -129,7 +129,7 @@ export default function CSDPulseTicker() {
           <ShoppingCart size={20} />
           <span className="font-heading font-black uppercase tracking-wider" style={{ fontSize: '0.75rem' }}>Live URC Pulse</span>
         </div>
-        <span className="flex items-center gap-1.5 font-semibold" style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>
+        <span className="flex items-center gap-1.5 font-semibold shrink-0" style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>
           <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: 'var(--red)' }}></span>
           Live
         </span>
@@ -167,7 +167,7 @@ export default function CSDPulseTicker() {
       </div>
 
       {/* Pulse Data Display */}
-      <div className="h-24 relative">
+      <div className="min-h-[5.5rem] w-full relative">
         <AnimatePresence mode="wait">
           <motion.div
             key={pulse.id || selectedCSD}
@@ -175,7 +175,7 @@ export default function CSDPulseTicker() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -15, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 24 }}
-            className="absolute inset-0 flex flex-col gap-2"
+            className="w-full flex flex-col gap-2"
           >
             <div className="flex items-start justify-between">
               <h4 className="font-heading font-bold leading-tight" style={{ fontSize: '1rem', color: 'var(--text)' }}>{pulse.cantonment}</h4>
