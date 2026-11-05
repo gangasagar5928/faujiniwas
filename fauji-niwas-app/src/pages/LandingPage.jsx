@@ -1,10 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, Search, ArrowUpRight, Check, FileText, Lock, Globe, Phone, Mail, Award, Navigation, Star, Menu, X, Sparkles, Building, ShoppingBag, MapPin, Calculator, ShieldCheck, Zap, CheckCircle2, XCircle } from 'lucide-react';
+import { 
+  Building2, MapPin, ShieldCheck, Users, Calendar, 
+  CircleDollarSign, FileText, Navigation, Bell, 
+  Headphones, Star, Smartphone, Search, Check, 
+  Menu, X, Sparkles, Calculator, Zap, CheckCircle2, 
+  XCircle, Megaphone, Bookmark, Shield, Award, ExternalLink
+} from 'lucide-react';
+
 const LeaseGeneratorModal = React.lazy(() => import('../components/Modals/LeaseGeneratorModal'));
 const WasmMaskingModal = React.lazy(() => import('../components/Modals/WasmMaskingModal'));
-const CSDPulseTicker = React.lazy(() => import('../components/CSD/CSDPulseTicker'));
-import HRACalculator from '../components/New/HRACalculator';
 import AccessibilityModal from '../components/Modals/AccessibilityModal';
 
 export default function LandingPage() {
@@ -12,50 +17,25 @@ export default function LandingPage() {
   const [showWasmModal, setShowWasmModal] = useState(false);
   const [showAccessibilityModal, setShowAccessibilityModal] = useState(false);
   const [mobMenuOpen, setMobMenuOpen] = useState(false);
-  
-  const [isDarkTheme, setIsDarkTheme] = useState(() => {
-    return document.documentElement.classList.contains('dark') || document.documentElement.classList.contains('dark-theme');
-  });
-
-  useEffect(() => {
-    const handleTheme = () => {
-      setIsDarkTheme(document.documentElement.classList.contains('dark') || document.documentElement.classList.contains('dark-theme'));
-    };
-    window.addEventListener('theme-change', handleTheme);
-    window.addEventListener('storage', handleTheme);
-    return () => {
-      window.removeEventListener('theme-change', handleTheme);
-      window.removeEventListener('storage', handleTheme);
-    };
-  }, []);
-  
-  // HRA calculator states
-  const [calcRank, setCalcRank] = useState('Major');
-  const [calcBasicPay, setCalcBasicPay] = useState(69400);
-  
-  // High-tech secure redirection sequence states
   const [isRedirecting, setIsRedirecting] = useState(false);
-  const [redirectStep, setRedirectStep] = useState(0);
+  
+  // Hero Search input
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const [showTicker, setShowTicker] = useState(false);
-  const tickerRef = useRef(null);
+  // 7th CPC HRA Calculator State
+  const [cityCategory, setCityCategory] = useState('Y'); // 'X' (30%), 'Y' (20%), 'Z' (10%)
+  const [basicPay, setBasicPay] = useState(34800);
+  const [calculatedHra, setCalculatedHra] = useState(6960);
 
+  // Compute HRA
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setShowTicker(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: '150px' }
-    );
-    if (tickerRef.current) {
-      observer.observe(tickerRef.current);
-    }
-    return () => observer.disconnect();
-  }, []);
+    const rate = cityCategory === 'X' ? 0.30 : cityCategory === 'Y' ? 0.20 : 0.10;
+    const minHra = cityCategory === 'X' ? 5400 : cityCategory === 'Y' ? 3600 : 1800;
+    const hra = Math.max(minHra, Math.round((Number(basicPay) || 0) * rate));
+    setCalculatedHra(hra);
+  }, [cityCategory, basicPay]);
 
+  // Ensure body classes are clean
   useEffect(() => {
     document.documentElement.classList.remove('app-shell');
     document.body.classList.remove('app-shell');
@@ -65,16 +45,21 @@ export default function LandingPage() {
     };
   }, []);
 
-  const handleLaunchApp = (e) => {
-    if (e) e.preventDefault();
+  const handleLaunchApp = (e, customStation) => {
+    if (e && e.preventDefault) e.preventDefault();
     setIsRedirecting(true);
+
+    const targetStation = customStation || searchQuery;
+    if (targetStation && targetStation.trim()) {
+      try { sessionStorage.setItem('fn_search_city', targetStation.trim()); } catch { /* noop */ }
+    }
 
     try { sessionStorage.setItem('fn_redirect', 'true'); } catch { /* noop */ }
 
-    document.documentElement.style.backgroundColor = '#030712';
+    document.documentElement.style.backgroundColor = '#0b0f17';
     document.documentElement.style.colorScheme = 'dark';
-    var themeMeta = document.querySelector('meta[name="theme-color"]');
-    if (themeMeta) themeMeta.content = '#030712';
+    const themeMeta = document.querySelector('meta[name="theme-color"]');
+    if (themeMeta) themeMeta.content = '#0b0f17';
 
     document.body.style.transition = 'opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1)';
     document.body.style.opacity = '0';
@@ -84,913 +69,977 @@ export default function LandingPage() {
     }, 250);
   };
 
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    handleLaunchApp(e, searchQuery);
+  };
+
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#FAF9F6] dark:bg-[#0b1325] text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-amber-500/20 relative flex flex-col items-center">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#0a0d14] text-slate-100 font-sans antialiased selection:bg-amber-500/30 relative flex flex-col items-center">
+      
+      {/* Golden Ambient Glows */}
+      <div className="fixed top-0 right-0 w-[500px] h-[400px] bg-amber-500/10 blur-[120px] rounded-full pointer-events-none z-0" />
+      <div className="fixed top-1/3 left-0 w-[400px] h-[400px] bg-amber-600/5 blur-[100px] rounded-full pointer-events-none z-0" />
 
-      {/* ColorOS Gloaming aurora backdrop — colour field behind every glass panel */}
-      <div className="landing-aurora" aria-hidden="true" />
-
-      {/* Grid Background Overlay */}
-      <div className="grid-bg-overlay" aria-hidden="true" />
-
-      {/* Navigation Header — floating liquid glass sheet */}
-      <nav className="fixed top-0 left-0 right-0 z-[1000] liquid-glass-morph lg-hairline border-0 transition-all duration-300 flex justify-center">
-        <div className="w-full max-w-[1250px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between" style={{ marginLeft: "auto", marginRight: "auto" }}>
-          <a href="#" className="logo flex items-center gap-2 text-lg font-black tracking-tight text-slate-900 font-heading min-h-[48px] px-2">
+      {/* ── Navbar ── */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[#0a0d14]/90 backdrop-blur-md border-b border-amber-500/15 flex justify-center">
+        <div className="w-full max-w-[1250px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+          
+          {/* Brand Logo with Silhouette Crest */}
+          <a href="#home" className="flex items-center gap-2 group cursor-pointer">
             <img 
-              src={isDarkTheme ? '/logo-dark.jpg' : '/logo-light.jpg'} 
-              alt="FaujiNiwas" 
-              className="w-8 h-8 rounded-lg object-contain shadow-xs" 
+              src="/brand/brand_logo.png" 
+              alt="Fauji Niwas" 
+              className="h-9 sm:h-11 w-auto object-contain transition-transform group-hover:scale-105" 
             />
-            <span><span className="text-amber-700">FAUJI</span> <span className="text-slate-950 dark:text-white font-normal">NIWAS</span></span>
           </a>
 
-          {/* Center Links - text contrast upgrades */}
-          <div className="hidden md:flex items-center gap-2 text-[11px] font-black uppercase tracking-wider text-slate-800 dark:text-slate-200">
-            <a href="#" className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors min-h-[48px] px-3 flex items-center">Home</a>
-            <a href="/app" onClick={handleLaunchApp} className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors font-black uppercase cursor-pointer bg-transparent border-none shadow-none min-h-[48px] px-3 flex items-center">Listings</a>
-            <a href="/app" onClick={handleLaunchApp} className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors font-black uppercase cursor-pointer bg-transparent border-none shadow-none min-h-[48px] px-3 flex items-center">Post Room</a>
-            <a href="/about.html" className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors min-h-[48px] px-3 flex items-center">About</a>
-            <a href="#comparison" className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors min-h-[48px] px-3 flex items-center">Compare</a>
-            <a href="#footer" className="hover:text-amber-800 dark:hover:text-amber-400 transition-colors min-h-[48px] px-3 flex items-center">Contact</a>
-          </div>
+          {/* Center Navigation Links */}
+          <nav className="hidden lg:flex items-center gap-7 text-xs font-bold uppercase tracking-wider text-slate-300">
+            <a href="#home" className="hover:text-amber-400 transition-colors">Home</a>
+            <a href="#features" className="hover:text-amber-400 transition-colors">Features</a>
+            <a href="#calculator" className="hover:text-amber-400 transition-colors">Calculator</a>
+            <a href="#pulses" className="hover:text-amber-400 transition-colors">URC Pulses</a>
+            <a href="#about" className="hover:text-amber-400 transition-colors">About</a>
+            <a href="/terms.html" className="hover:text-amber-400 transition-colors">Policy</a>
+          </nav>
 
-          {/* Action buttons */}
-          <div className="flex items-center gap-2">
+          {/* Right Action Buttons */}
+          <div className="flex items-center gap-3">
             <button 
               onClick={() => setShowAccessibilityModal(true)}
-              className="px-3.5 py-2 min-h-[40px] rounded-xl text-[11px] font-extrabold uppercase tracking-wider border border-slate-300 dark:border-slate-700 bg-white/90 dark:bg-slate-800/90 text-slate-800 dark:text-white shadow-xs hover:border-amber-600 transition-all cursor-pointer flex items-center gap-1.5"
-              title="Accessibility, Contrast & Font"
+              className="px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider border border-white/10 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-amber-400 transition-all cursor-pointer flex items-center gap-1.5"
+              title="Accessibility & High Contrast"
             >
               <span>♿</span>
-              <span className="hidden sm:inline">Contrast &amp; Font</span>
+              <span className="hidden sm:inline">Access</span>
             </button>
-            <button onClick={handleLaunchApp} className="text-slate-800 dark:text-slate-200 hover:text-amber-800 transition-colors cursor-pointer w-10 h-10 flex items-center justify-center" title="Search Listings" aria-label="Search">
-              <Search size={18} />
-            </button>
+
+            {/* Golden "Find a Stay" Pill Button */}
             <button 
               onClick={handleLaunchApp}
-              className="px-5 py-2.5 min-h-[40px] rounded-full text-[10px] font-black uppercase tracking-widest border border-amber-700/40 text-amber-900 dark:text-amber-400 bg-amber-500/5 hover:bg-amber-500/10 transition-all cursor-pointer flex items-center"
+              className="px-5 py-2 rounded-full text-xs font-black uppercase tracking-wider border border-amber-500/50 bg-gradient-to-r from-amber-500/20 to-amber-600/20 hover:from-amber-500/30 hover:to-amber-600/30 text-amber-300 shadow-[0_0_20px_rgba(245,158,11,0.2)] hover:shadow-[0_0_25px_rgba(245,158,11,0.35)] transition-all cursor-pointer flex items-center gap-2"
             >
-              Sign In
+              <Search size={14} className="text-amber-400" />
+              <span>Find a Stay</span>
             </button>
-            {/* Hamburger Toggle (Mobile) */}
+
+            {/* Mobile Hamburger Toggle */}
             <button 
               onClick={() => setMobMenuOpen(!mobMenuOpen)}
-              className="md:hidden w-10 h-10 text-slate-800 dark:text-slate-200 hover:text-amber-800 transition-colors cursor-pointer flex items-center justify-center"
+              className="lg:hidden w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-200 hover:text-amber-400 cursor-pointer"
               aria-label="Toggle Menu"
             >
-              {mobMenuOpen ? <X size={22} /> : <Menu size={22} />}
+              {mobMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
         </div>
-      </nav>
 
-      {/* Mobile Menu Drawer */}
-      {mobMenuOpen && (
-        <div className="fixed top-16 left-0 right-0 z-[999] liquid-glass-morph rounded-b-3xl border-0 p-4 flex flex-col text-left shadow-2xl md:hidden">
-          <a href="#" onClick={() => setMobMenuOpen(false)} className="text-sm font-black uppercase tracking-widest text-slate-800 hover:text-amber-700 py-4 block">Home</a>
-          <a href="/app" onClick={(e) => { setMobMenuOpen(false); handleLaunchApp(e); }} className="text-sm font-black uppercase tracking-widest text-slate-800 hover:text-amber-700 text-left cursor-pointer py-4 block w-full border-none bg-transparent">Listings</a>
-          <a href="/app" onClick={(e) => { setMobMenuOpen(false); handleLaunchApp(e); }} className="text-sm font-black uppercase tracking-widest text-slate-800 hover:text-amber-700 text-left cursor-pointer py-4 block w-full border-none bg-transparent">Post Room</a>
-          <a href="/about.html" onClick={() => setMobMenuOpen(false)} className="text-sm font-black uppercase tracking-widest text-slate-800 hover:text-amber-700 py-4 block">About</a>
-          <a href="#comparison" onClick={() => setMobMenuOpen(false)} className="text-sm font-black uppercase tracking-widest text-slate-800 hover:text-amber-700 py-4 block">Compare</a>
-          <a href="#footer" onClick={() => setMobMenuOpen(false)} className="text-sm font-black uppercase tracking-widest text-slate-800 hover:text-amber-700 py-4 block">Contact</a>
-        </div>
-      )}
+        {/* Mobile Navigation Drawer */}
+        {mobMenuOpen && (
+          <div className="lg:hidden absolute top-16 left-0 right-0 bg-[#0a0d14]/98 backdrop-blur-2xl border-b border-amber-500/20 p-5 flex flex-col gap-3 text-left shadow-2xl">
+            <a href="#home" onClick={() => setMobMenuOpen(false)} className="text-sm font-bold uppercase tracking-wider text-slate-200 hover:text-amber-400 py-2 border-b border-white/5">Home</a>
+            <a href="#features" onClick={() => setMobMenuOpen(false)} className="text-sm font-bold uppercase tracking-wider text-slate-200 hover:text-amber-400 py-2 border-b border-white/5">Features</a>
+            <a href="#calculator" onClick={() => setMobMenuOpen(false)} className="text-sm font-bold uppercase tracking-wider text-slate-200 hover:text-amber-400 py-2 border-b border-white/5">Calculator</a>
+            <a href="#pulses" onClick={() => setMobMenuOpen(false)} className="text-sm font-bold uppercase tracking-wider text-slate-200 hover:text-amber-400 py-2 border-b border-white/5">URC Pulses</a>
+            <a href="#about" onClick={() => setMobMenuOpen(false)} className="text-sm font-bold uppercase tracking-wider text-slate-200 hover:text-amber-400 py-2 border-b border-white/5">About</a>
+            <a href="/terms.html" onClick={() => setMobMenuOpen(false)} className="text-sm font-bold uppercase tracking-wider text-slate-200 hover:text-amber-400 py-2 border-b border-white/5">Policy</a>
+            <button onClick={handleLaunchApp} className="w-full mt-2 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black uppercase tracking-wider text-xs flex items-center justify-center gap-2">
+              <Search size={16} /> Find a Stay
+            </button>
+          </div>
+        )}
+      </header>
 
-      {/* Main Container */}
-      <main className="relative z-10 w-full max-w-[1250px] min-w-0 mx-auto px-4 sm:px-6 pt-28 pb-16 flex flex-col gap-10" style={{ width: "100%", maxWidth: "1250px", marginLeft: "auto", marginRight: "auto" }}>
+      {/* ── Main Landing Canvas ── */}
+      <main className="relative z-10 w-full max-w-[1250px] min-w-0 mx-auto px-4 sm:px-6 pt-24 sm:pt-28 pb-16 flex flex-col gap-14">
         
-        {/* Title and Metrics Grid */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pt-4"
-        >
-          <div className="text-left">
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-black tracking-tighter leading-none text-slate-900 font-heading">
-              FAUJI<br />NIWAS
-            </h1>
-          </div>
-
-          {/* Stat metrics */}
-          <div className="flex flex-wrap sm:flex-nowrap gap-8 border-t border-slate-200 lg:border-t-0 pt-6 lg:pt-0">
-            <div className="flex flex-col border-l-2 border-slate-900 pl-4 min-w-[100px]">
-              <span className="text-3xl font-black text-slate-900 leading-none">300+</span>
-              <span className="text-[9px] uppercase tracking-widest text-slate-600 font-bold mt-1">Listings</span>
-            </div>
-            <div className="flex flex-col border-l-2 border-slate-900 pl-4 min-w-[100px]">
-              <span className="text-3xl font-black text-slate-900 leading-none">15+</span>
-              <span className="text-[9px] uppercase tracking-widest text-slate-600 font-bold mt-1">Stations</span>
-            </div>
-            <div className="flex flex-col border-l-2 border-slate-900 pl-4 min-w-[100px]">
-              <span className="text-3xl font-black text-slate-900 leading-none">0</span>
-              <span className="text-[9px] uppercase tracking-widest text-slate-600 font-bold mt-1">Brokerage</span>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Hero Image Section */}
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-          className="relative rounded-[2rem] overflow-hidden w-full h-[450px] sm:h-[500px] md:h-[540px] liquid-glass-morph shadow-[0_24px_70px_rgba(15,23,42,0.18)]"
-        >
-          <picture>
-            <source media="(max-width: 640px)" srcSet="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=450&q=25&fm=webp" />
-            <img 
-              src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=50&fm=webp" 
-              alt="Premium Defence Housing Villa" 
-              className="w-full h-full object-cover"
-              fetchpriority="high"
-              loading="eager"
-              decoding="sync"
-              width="1200"
-              height="800"
-            />
-          </picture>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent" />
-          
-          {/* Top Right Live Badge */}
-          <div className="absolute top-6 right-6 bg-emerald-500/10 backdrop-blur-md border border-emerald-500/30 px-3 py-1.5 rounded-full flex items-center gap-2 shadow-lg">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
-            <span className="text-[9px] font-black uppercase tracking-widest text-emerald-100 font-mono">Live Station Link Active</span>
-          </div>
-
-          {/* Bottom Left Info Overlay */}
-          <div className="absolute bottom-8 left-8 md:bottom-12 md:left-12 max-w-2xl text-left flex flex-col gap-4">
-            <div className="w-fit bg-[#0f172a]/60 backdrop-blur-md border border-amber-500/40 px-3.5 py-1.5 rounded-full text-amber-400 text-[9px] font-black uppercase tracking-widest shadow-lg">
-              Premium Real Estate For Defence
-            </div>
-            <h2 className="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-amber-100 to-amber-500 leading-tight font-heading drop-shadow-xl hero-title">
-              Relocate Safely, Trust Implicitly
-            </h2>
-            <p className="text-slate-300 text-xs sm:text-sm leading-relaxed font-medium hero-desc">
-              The premier housing network connecting Indian Armed Forces personnel, JCOs, and Officers with secure residential outliving areas across military stations.
-            </p>
+        {/* ════════════════════════════════════════════════════════════
+            1. HERO SECTION
+            ════════════════════════════════════════════════════════════ */}
+        <section id="home" className="pt-4 pb-4">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             
-            {/* Big Redirect CTA Button */}
-            <button 
-              onClick={handleLaunchApp}
-              className="mt-2 w-fit bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-heading font-black text-[10px] sm:text-xs uppercase tracking-widest px-8 py-5 min-h-[48px] rounded-xl shadow-[0_4px_24px_rgba(245,158,11,0.4)] hover:shadow-[0_4px_32px_rgba(245,158,11,0.6)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 cursor-pointer flex items-center justify-center gap-2"
-            >
-              <span>🚀</span> Enter Secure Command Center
-            </button>
+            {/* Left Content Column */}
+            <div className="lg:col-span-7 flex flex-col text-left">
+              
+              {/* Main Headline */}
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white font-heading tracking-tight leading-none mb-3">
+                Fauji Niwas
+              </h1>
+              
+              {/* Gold Subtitle */}
+              <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-slate-100 font-heading tracking-tight mb-4">
+                Secure. Verified. For Our <span className="text-amber-400">Armed Forces.</span>
+              </h2>
+
+              {/* Description */}
+              <p className="text-sm sm:text-base text-slate-300 font-normal leading-relaxed max-w-xl mb-6">
+                Find and book comfortable, verified transit accommodation near defence establishments across 62+ stations.
+              </p>
+
+              {/* Interactive Station Search Bar */}
+              <form onSubmit={handleSearchSubmit} className="w-full max-w-xl mb-6">
+                <div className="bg-white rounded-full p-1.5 sm:p-2 flex items-center shadow-[0_10px_35px_rgba(0,0,0,0.6)] border border-amber-500/40">
+                  <div className="pl-3 sm:pl-4 text-slate-400 shrink-0">
+                    <MapPin size={20} className="text-amber-600" />
+                  </div>
+                  <input 
+                    type="text" 
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Enter Station (e.g. Delhi Cantt, Pune, Jaipur...)"
+                    className="w-full px-3 py-2 text-xs sm:text-sm text-slate-900 placeholder:text-slate-500 bg-transparent outline-none font-medium"
+                  />
+                  <button 
+                    type="submit"
+                    className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black text-xs sm:text-sm px-6 py-2.5 sm:py-3 rounded-full flex items-center gap-1.5 cursor-pointer shadow-md transition-all shrink-0 uppercase tracking-wider"
+                  >
+                    <Search size={14} className="stroke-[3]" />
+                    <span>Search</span>
+                  </button>
+                </div>
+              </form>
+
+              {/* Trust Badges Row */}
+              <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-xs text-slate-300 font-semibold">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-4 h-4 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 text-[10px]">✔</span>
+                  <span>Verified Properties</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-amber-400">⭐</span>
+                  <span>Trusted by Forces</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-amber-400">📍</span>
+                  <span>62+ Stations</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-amber-400">⚡</span>
+                  <span>Instant Booking</span>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Right Artwork Column: Soldier with Flag */}
+            <div className="lg:col-span-5 relative flex flex-col items-center">
+              <div className="relative rounded-3xl overflow-hidden border border-amber-500/30 shadow-[0_15px_45px_rgba(0,0,0,0.7)] group max-w-md w-full">
+                <img 
+                  src="/brand/hero_soldier_flag.jpg" 
+                  alt="Indian Armed Forces Soldier at Sunset" 
+                  className="w-full h-[260px] sm:h-[300px] object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0d14] via-transparent to-transparent opacity-80" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#0a0d14]/70 via-transparent to-transparent opacity-60" />
+                
+                {/* Script Cursive Quote */}
+                <div className="absolute bottom-4 right-4 max-w-[240px] text-right">
+                  <p className="font-serif italic text-amber-300/90 text-sm sm:text-base leading-snug drop-shadow-md">
+                    “Because every soldier deserves a home away from home.”
+                  </p>
+                </div>
+              </div>
+            </div>
+
           </div>
-        </motion.div>
+        </section>
 
-        {/* Features 2x3 Bento Grid */}
-        {/* Compact 4-col / 2-col Feature Cards Grid with all new features */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-2">
-
-          {/* Feature 1: Cantonment Map */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.4, delay: 0.05 }}
-            onClick={handleLaunchApp}
-            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-amber-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
-          >
-            <div className="flex justify-between items-start">
-              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-800 bg-amber-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
-                <Navigation size={12} /> #01 Map Search
-              </span>
-              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-amber-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={15} />
-              </div>
-            </div>
-            <div>
-              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">Cantonment Proximity</h3>
-              <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Exact gate distance routing, Army Schools, and Military Hospitals mapped in real-time.</p>
-            </div>
-            <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
-              📍 Gate Routing · 🏫 KV Schools · 🏥 Base Hosp
-            </div>
-          </motion.div>
-
-          {/* Feature 2: Verified Listings & Marketplace */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
-            onClick={handleLaunchApp}
-            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-amber-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
-          >
-            <div className="flex justify-between items-start">
-              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-800 bg-amber-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
-                <ShoppingBag size={12} /> #02 Defence Market
-              </span>
-              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-amber-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={15} />
-              </div>
-            </div>
-            <div>
-              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">Defence Marketplace</h3>
-              <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Direct peer-to-peer household transfers & verified postings without middleman brokers.</p>
-            </div>
-            <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
-              🎖️ Verified Defence · 🚫 Zero Brokerage · 🛋️ Items
-            </div>
-          </motion.div>
-
-          {/* Feature 3: HRA Rank Matching */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.4, delay: 0.15 }}
-            onClick={handleLaunchApp}
-            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-amber-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
-          >
-            <div className="flex justify-between items-start">
-              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-800 bg-amber-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
-                <Award size={12} /> #03 7th CPC HRA
-              </span>
-              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-amber-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={15} />
-              </div>
-            </div>
-            <div>
-              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">Rank-Based HRA Matching</h3>
-              <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Automatic allowance filters calibrated for Jawans, JCOs, and Commissioned Officers.</p>
-            </div>
-            <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
-              💰 7th CPC Bands · 🛡️ OR / JCO / Officers · 📋 Budgets
-            </div>
-          </motion.div>
-
-          {/* Feature 4: SSB Candidate Dorms */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.4, delay: 0.2 }}
-            onClick={handleLaunchApp}
-            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-blue-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
-          >
-            <div className="flex justify-between items-start">
-              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-blue-800 bg-blue-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
-                <Star size={12} /> #04 SSB Dorms
-              </span>
-              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={15} />
-              </div>
-            </div>
-            <div>
-              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">SSB Candidate Stays</h3>
-              <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Affordable budget stays and mess food guides minutes away from Selection Centres.</p>
-            </div>
-            <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
-              🪖 11 &amp; 33 SSB · 🛏️ From ₹200/night · 🍛 Food Guides
-            </div>
-          </motion.div>
-
-          {/* Feature 5: Military AI Transfer Assistant */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.4, delay: 0.25 }}
-            onClick={handleLaunchApp}
-            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-emerald-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
-          >
-            <div className="flex justify-between items-start">
-              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-800 bg-emerald-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
-                <Sparkles size={12} /> #05 AI Assistant
-              </span>
-              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={15} />
-              </div>
-            </div>
-            <div>
-              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">Military AI Assistant</h3>
-              <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Instant station relocation advisory, HRA calculations, and automatic housing matches.</p>
-            </div>
-            <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
-              🤖 Route Planner · 🗺️ Station Intel · ⚡ Instant Match
-            </div>
-          </motion.div>
-
-          {/* Feature 6: Digital Lease Generator */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.4, delay: 0.3 }}
-            onClick={() => setShowLeaseModal(true)}
-            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-amber-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
-          >
-            <div className="flex justify-between items-start">
-              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-800 bg-amber-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
-                <FileText size={12} /> #06 Lease Generator
-              </span>
-              <button onClick={(e) => { e.stopPropagation(); setShowLeaseModal(true); }} aria-label="Open Lease Generator" className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-amber-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={15} />
-              </button>
-            </div>
-            <div>
-              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">Military Lease Agreements</h3>
-              <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Official rent agreements embedded with standard 15-day military posting break clause.</p>
-            </div>
-            <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
-              📄 15-Day Break Clause · ⚖️ Standardized · 🖋️ Instant PDF
-            </div>
-          </motion.div>
-
-          {/* Feature 7: Live CSD Pulse */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.4, delay: 0.35 }}
-            onClick={handleLaunchApp}
-            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-purple-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
-          >
-            <div className="flex justify-between items-start">
-              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-purple-800 bg-purple-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
-                <Zap size={12} /> #07 CSD Pulse
-              </span>
-              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-purple-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={15} />
-              </div>
-            </div>
-            <div>
-              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">Live CSD &amp; URC Pulse</h3>
-              <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Real-time canteen token queues, grocery stock updates, and AFD tracking.</p>
-            </div>
-            <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
-              🛒 Token Queues · 🍾 Liquor Stock · 🚗 AFD CSD Portal
-            </div>
-          </motion.div>
-
-          {/* Feature 8: Wasm ID Masking */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.4, delay: 0.4 }}
-            onClick={() => setShowWasmModal(true)}
-            className="feature-card relative p-6 rounded-2xl flex flex-col justify-between shadow-sm hover:shadow-md hover:border-rose-600/40 transition-all duration-300 overflow-hidden cursor-pointer text-left bg-white border border-slate-200/80 gap-4"
-          >
-            <div className="flex justify-between items-start">
-              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-rose-800 bg-rose-500/15 px-2.5 py-1 rounded-md flex items-center gap-1.5">
-                <ShieldCheck size={12} /> #08 Client Privacy
-              </span>
-              <button onClick={(e) => { e.stopPropagation(); setShowWasmModal(true); }} aria-label="Open Wasm Masking" className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-rose-600 group-hover:text-white transition-colors">
-                <ArrowUpRight size={15} />
-              </button>
-            </div>
-            <div>
-              <h3 className="text-lg font-black tracking-tight text-slate-900 leading-snug">Wasm ID Masking</h3>
-              <p className="text-sm text-slate-600 leading-relaxed font-normal mt-1.5">Offline client-side redaction ensuring zero personal military data leaves your browser.</p>
-            </div>
-            <div className="text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
-              🔒 100% Offline Wasm · 🛡️ Zero Data Leak · 🆔 Redaction
-            </div>
-          </motion.div>
-
-        </div>
-
-        {/* Why FaujiNiwas Section */}
-        <motion.section 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.5 }}
-          id="why-us" 
-          className="liquid-glass-morph rounded-3xl p-6 md:p-8 mt-2 text-left flex flex-col md:flex-row gap-6 items-start justify-between"
-        >
-          <div className="max-w-xl flex flex-col gap-2">
-            <span className="text-[10px] font-extrabold text-[#b45309] uppercase tracking-widest font-mono">Exclusive Platform Overview</span>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white leading-tight font-heading">
-              WHY FAUJI NIWAS?
+        {/* ════════════════════════════════════════════════════════════
+            2. 12 KEY FEATURES GRID
+            ════════════════════════════════════════════════════════════ */}
+        <section id="features" className="pt-2">
+          
+          {/* Section Divider Header */}
+          <div className="flex items-center justify-center gap-4 mb-8">
+            <div className="h-px bg-gradient-to-r from-transparent via-amber-500/40 to-transparent flex-1 max-w-[180px]" />
+            <h2 className="text-xl sm:text-2xl font-black font-heading text-amber-400 uppercase tracking-widest text-center">
+              12 Key Features
             </h2>
-            <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
-              Designed entirely to remove the friction of sudden military posting cycles. Built securely for jawans, JCOs, and officers to share postings and rent homes without civilian classified noise.
-            </p>
+            <div className="h-px bg-gradient-to-r from-transparent via-amber-500/40 to-transparent flex-1 max-w-[180px]" />
           </div>
-          <button 
-            onClick={handleLaunchApp} 
-            style={{
-              backgroundColor: '#b45309',
-              color: '#ffffff',
-              fontWeight: 900,
-              padding: '14px 26px',
-              borderRadius: '14px',
-              border: 'none',
-              boxShadow: '0 4px 18px rgba(180, 83, 9, 0.35)',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              fontSize: '12px',
-              textTransform: 'uppercase',
-              letterSpacing: '0.08em',
-              whiteSpace: 'nowrap',
-              transition: 'transform 0.15s, background-color 0.15s'
-            }}
-            onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#92400e'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-            onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#b45309'; e.currentTarget.style.transform = 'translateY(0)'; }}
-          >
-            <span>Launch Relocation OS</span>
-            <span style={{ fontSize: '15px' }}>↗</span>
-          </button>
-        </motion.section>
 
-        {/* Military Standard vs Civilian Comparison Section */}
-        <motion.section 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.15 }}
-          transition={{ duration: 0.6 }}
-          id="comparison" 
-          className="liquid-glass-morph rounded-[2.5rem] p-6 sm:p-10 md:p-12 mt-6 border border-slate-200/80 dark:border-white/10 shadow-2xl backdrop-blur-2xl flex flex-col gap-8 text-left"
-        >
-          {/* Centered Header with Verified Standards Badge */}
-          <div className="flex flex-col items-center text-center gap-3 max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 text-xs font-bold shadow-xs">
-              <Zap size={14} className="text-emerald-500" />
-              <span>Verified Standards</span>
+          {/* 4x3 Grid (12 Cards) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            {/* Card 1 */}
+            <div onClick={handleLaunchApp} className="bg-[#10141f]/80 hover:bg-[#161c2b] border border-white/10 hover:border-amber-500/40 p-4 rounded-2xl flex items-center gap-3.5 transition-all duration-200 cursor-pointer group text-left">
+              <div className="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0 group-hover:bg-amber-500/20 transition-colors">
+                <Building2 className="text-amber-400" size={22} />
+              </div>
+              <div>
+                <h3 className="font-bold text-xs sm:text-sm text-white font-heading">Verified &amp; Trusted Properties</h3>
+                <p className="text-[11px] text-slate-400 font-medium mt-0.5">Physically vetted cantonment stays</p>
+              </div>
             </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight font-heading leading-tight">
-              Military Standard vs Civilian Portals
+
+            {/* Card 2 */}
+            <div onClick={handleLaunchApp} className="bg-[#10141f]/80 hover:bg-[#161c2b] border border-white/10 hover:border-amber-500/40 p-4 rounded-2xl flex items-center gap-3.5 transition-all duration-200 cursor-pointer group text-left">
+              <div className="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0 group-hover:bg-amber-500/20 transition-colors">
+                <MapPin className="text-amber-400" size={22} />
+              </div>
+              <div>
+                <h3 className="font-bold text-xs sm:text-sm text-white font-heading">62+ Defence Stations</h3>
+                <p className="text-[11px] text-slate-400 font-medium mt-0.5">All Army, Navy &amp; Air Force bases</p>
+              </div>
+            </div>
+
+            {/* Card 3 */}
+            <div onClick={handleLaunchApp} className="bg-[#10141f]/80 hover:bg-[#161c2b] border border-white/10 hover:border-amber-500/40 p-4 rounded-2xl flex items-center gap-3.5 transition-all duration-200 cursor-pointer group text-left">
+              <div className="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0 group-hover:bg-amber-500/20 transition-colors">
+                <ShieldCheck className="text-amber-400" size={22} />
+              </div>
+              <div>
+                <h3 className="font-bold text-xs sm:text-sm text-white font-heading">Secure &amp; Safe Stays</h3>
+                <p className="text-[11px] text-slate-400 font-medium mt-0.5">Gated zones with zero broker fraud</p>
+              </div>
+            </div>
+
+            {/* Card 4 */}
+            <div onClick={handleLaunchApp} className="bg-[#10141f]/80 hover:bg-[#161c2b] border border-white/10 hover:border-amber-500/40 p-4 rounded-2xl flex items-center gap-3.5 transition-all duration-200 cursor-pointer group text-left">
+              <div className="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0 group-hover:bg-amber-500/20 transition-colors">
+                <Users className="text-amber-400" size={22} />
+              </div>
+              <div>
+                <h3 className="font-bold text-xs sm:text-sm text-white font-heading">Family Friendly Options</h3>
+                <p className="text-[11px] text-slate-400 font-medium mt-0.5">BHK flats &amp; family transit homes</p>
+              </div>
+            </div>
+
+            {/* Card 5 */}
+            <div onClick={handleLaunchApp} className="bg-[#10141f]/80 hover:bg-[#161c2b] border border-white/10 hover:border-amber-500/40 p-4 rounded-2xl flex items-center gap-3.5 transition-all duration-200 cursor-pointer group text-left">
+              <div className="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0 group-hover:bg-amber-500/20 transition-colors">
+                <Calendar className="text-amber-400" size={22} />
+              </div>
+              <div>
+                <h3 className="font-bold text-xs sm:text-sm text-white font-heading">Flexible Booking</h3>
+                <p className="text-[11px] text-slate-400 font-medium mt-0.5">Short (TD) &amp; Long Term Postings</p>
+              </div>
+            </div>
+
+            {/* Card 6 */}
+            <div onClick={handleLaunchApp} className="bg-[#10141f]/80 hover:bg-[#161c2b] border border-white/10 hover:border-amber-500/40 p-4 rounded-2xl flex items-center gap-3.5 transition-all duration-200 cursor-pointer group text-left">
+              <div className="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0 group-hover:bg-amber-500/20 transition-colors">
+                <CircleDollarSign className="text-amber-400" size={22} />
+              </div>
+              <div>
+                <h3 className="font-bold text-xs sm:text-sm text-white font-heading">Transparent Pricing</h3>
+                <p className="text-[11px] text-slate-400 font-medium mt-0.5">No Hidden Charges · ₹0 Brokerage</p>
+              </div>
+            </div>
+
+            {/* Card 7 */}
+            <div onClick={() => setShowLeaseModal(true)} className="bg-[#10141f]/80 hover:bg-[#161c2b] border border-white/10 hover:border-amber-500/40 p-4 rounded-2xl flex items-center gap-3.5 transition-all duration-200 cursor-pointer group text-left">
+              <div className="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0 group-hover:bg-amber-500/20 transition-colors">
+                <FileText className="text-amber-400" size={22} />
+              </div>
+              <div>
+                <h3 className="font-bold text-xs sm:text-sm text-white font-heading">HRA &amp; TA/DA Guidance</h3>
+                <p className="text-[11px] text-slate-400 font-medium mt-0.5">7th CPC Allowance &amp; Break Clause</p>
+              </div>
+            </div>
+
+            {/* Card 8 */}
+            <div onClick={handleLaunchApp} className="bg-[#10141f]/80 hover:bg-[#161c2b] border border-white/10 hover:border-amber-500/40 p-4 rounded-2xl flex items-center gap-3.5 transition-all duration-200 cursor-pointer group text-left">
+              <div className="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0 group-hover:bg-amber-500/20 transition-colors">
+                <Navigation className="text-amber-400" size={22} />
+              </div>
+              <div>
+                <h3 className="font-bold text-xs sm:text-sm text-white font-heading">Real-Time Location on Map</h3>
+                <p className="text-[11px] text-slate-400 font-medium mt-0.5">Gate distance &amp; Army School GIS</p>
+              </div>
+            </div>
+
+            {/* Card 9 */}
+            <div onClick={handleLaunchApp} className="bg-[#10141f]/80 hover:bg-[#161c2b] border border-white/10 hover:border-amber-500/40 p-4 rounded-2xl flex items-center gap-3.5 transition-all duration-200 cursor-pointer group text-left">
+              <div className="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0 group-hover:bg-amber-500/20 transition-colors">
+                <Bell className="text-amber-400" size={22} />
+              </div>
+              <div>
+                <h3 className="font-bold text-xs sm:text-sm text-white font-heading">Instant Notifications</h3>
+                <p className="text-[11px] text-slate-400 font-medium mt-0.5">URC &amp; live canteen updates</p>
+              </div>
+            </div>
+
+            {/* Card 10 */}
+            <div onClick={handleLaunchApp} className="bg-[#10141f]/80 hover:bg-[#161c2b] border border-white/10 hover:border-amber-500/40 p-4 rounded-2xl flex items-center gap-3.5 transition-all duration-200 cursor-pointer group text-left">
+              <div className="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0 group-hover:bg-amber-500/20 transition-colors">
+                <Headphones className="text-amber-400" size={22} />
+              </div>
+              <div>
+                <h3 className="font-bold text-xs sm:text-sm text-white font-heading">Dedicated Support</h3>
+                <p className="text-[11px] text-slate-400 font-medium mt-0.5">24×7 Defence Community Help</p>
+              </div>
+            </div>
+
+            {/* Card 11 */}
+            <div onClick={handleLaunchApp} className="bg-[#10141f]/80 hover:bg-[#161c2b] border border-white/10 hover:border-amber-500/40 p-4 rounded-2xl flex items-center gap-3.5 transition-all duration-200 cursor-pointer group text-left">
+              <div className="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0 group-hover:bg-amber-500/20 transition-colors">
+                <Star className="text-amber-400" size={22} />
+              </div>
+              <div>
+                <h3 className="font-bold text-xs sm:text-sm text-white font-heading">Ratings &amp; Reviews</h3>
+                <p className="text-[11px] text-slate-400 font-medium mt-0.5">from Defence Community Only</p>
+              </div>
+            </div>
+
+            {/* Card 12 */}
+            <div onClick={handleLaunchApp} className="bg-[#10141f]/80 hover:bg-[#161c2b] border border-white/10 hover:border-amber-500/40 p-4 rounded-2xl flex items-center gap-3.5 transition-all duration-200 cursor-pointer group text-left">
+              <div className="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0 group-hover:bg-amber-500/20 transition-colors">
+                <Smartphone className="text-amber-400" size={22} />
+              </div>
+              <div>
+                <h3 className="font-bold text-xs sm:text-sm text-white font-heading">Mobile Friendly</h3>
+                <p className="text-[11px] text-slate-400 font-medium mt-0.5">Fast PWA for Any Device</p>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        {/* ════════════════════════════════════════════════════════════
+            3. EXISTING VS FAUJI NIWAS (COMPARISON MATRIX)
+            ════════════════════════════════════════════════════════════ */}
+        <section id="comparison" className="pt-2">
+          
+          {/* Section Divider Header */}
+          <div className="flex items-center justify-center gap-4 mb-8">
+            <div className="h-px bg-gradient-to-r from-transparent via-amber-500/40 to-transparent flex-1 max-w-[180px]" />
+            <h2 className="text-xl sm:text-2xl font-black font-heading text-amber-400 uppercase tracking-widest text-center">
+              Existing vs Fauji Niwas
             </h2>
-            <p className="text-slate-650 dark:text-slate-300 text-xs sm:text-base leading-relaxed font-normal max-w-2xl">
-              See why defence families across 30+ military stations prefer Fauji Niwas over general commercial rental portals like 99acres and NoBroker.
-            </p>
+            <div className="h-px bg-gradient-to-r from-transparent via-amber-500/40 to-transparent flex-1 max-w-[180px]" />
           </div>
 
-          {/* Elevated Modern Matrix Table - Spacious & Fully Padded */}
-          <div className="overflow-x-auto w-full rounded-3xl border border-slate-200/90 dark:border-white/10 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl shadow-lg">
-            <table className="w-full text-left border-collapse min-w-[760px]">
+          {/* Elevated Matrix Table with Gold Highlights */}
+          <div className="overflow-x-auto w-full rounded-2xl border border-amber-500/30 bg-[#0e121c]/90 backdrop-blur-md shadow-2xl">
+            <table className="w-full text-left border-collapse min-w-[700px]">
               <thead>
-                <tr className="border-b border-slate-200/90 dark:border-white/10 text-xs font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-300 bg-slate-50/70 dark:bg-slate-800/50">
-                  <th className="py-5 sm:py-6 pl-8 sm:pl-10 pr-6 w-[30%]">
-                    Platform Capability
+                <tr className="border-b border-amber-500/20 text-xs font-black uppercase tracking-wider text-amber-400 bg-amber-500/5">
+                  <th className="py-4 pl-6 sm:pl-8 pr-4 w-[28%]">
+                    Feature
                   </th>
-                  <th className="py-5 sm:py-6 px-6 sm:px-8 w-[40%] bg-amber-500/[0.08] dark:bg-amber-500/[0.12] border-x border-amber-500/20 text-amber-900 dark:text-amber-200">
-                    <div className="flex items-center justify-between gap-3">
-                      <span className="font-heading font-black text-sm sm:text-base tracking-wide">
-                        Fauji Niwas 🎖️
-                      </span>
-                      <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-amber-500/20 text-amber-900 dark:text-amber-300 border border-amber-500/30 shadow-xs shrink-0">
-                        Defence Standard
-                      </span>
-                    </div>
+                  <th className="py-4 px-6 w-[34%] text-slate-400 font-bold">
+                    What's Existing?
                   </th>
-                  <th className="py-5 sm:py-6 px-6 sm:px-8 pr-8 sm:pr-10 w-[30%] text-slate-500 dark:text-slate-400 font-bold">
-                    Civilian Portals (99acres, NoBroker)
+                  <th className="py-4 px-6 pr-8 w-[38%] text-amber-300 font-black bg-amber-500/10 border-l border-amber-500/20">
+                    What's Different with Fauji Niwas?
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-white/5 text-xs sm:text-sm">
+              <tbody className="divide-y divide-white/5 text-xs sm:text-sm">
                 
-                {/* Row 1 */}
-                <tr className="hover:bg-slate-500/5 transition-colors">
-                  <td className="py-5 sm:py-6 pl-8 sm:pl-10 pr-6 font-bold text-slate-900 dark:text-white">
-                    <div className="flex flex-col gap-1">
-                      <span className="text-sm sm:text-base font-bold">Military ID Vetting &amp; Privacy</span>
-                      <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">DPDPA 2023 Compliant</span>
+                {/* Row 1: Accommodation */}
+                <tr className="hover:bg-white/[0.02] transition-colors">
+                  <td className="py-4 pl-6 sm:pl-8 pr-4 font-bold text-white">
+                    <div className="flex items-center gap-2.5">
+                      <Building2 size={16} className="text-amber-400 shrink-0" />
+                      <span>Accommodation</span>
                     </div>
                   </td>
-                  <td className="py-5 sm:py-6 px-6 sm:px-8 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
-                    <div className="flex items-start gap-3">
-                      <CheckCircle2 size={20} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                      <span className="text-emerald-800 dark:text-emerald-300 font-bold text-xs sm:text-sm leading-relaxed">
-                        100% Client-Side Wasm Masking (Zero Data Leak)
-                      </span>
-                    </div>
+                  <td className="py-4 px-6 text-slate-400">
+                    Unorganised / Limited Options
                   </td>
-                  <td className="py-5 sm:py-6 px-6 sm:px-8 pr-8 sm:pr-10">
-                    <div className="flex items-start gap-3">
-                      <XCircle size={20} className="text-rose-500/80 dark:text-rose-400 shrink-0 mt-0.5" />
-                      <span className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm leading-relaxed">
-                        Civilian logins, high risk of commercial spam &amp; fraud
-                      </span>
-                    </div>
+                  <td className="py-4 px-6 pr-8 text-amber-200 font-bold bg-amber-500/[0.04] border-l border-amber-500/20">
+                    Verified, Safe &amp; Comfortable Stays
                   </td>
                 </tr>
 
-                {/* Row 2 */}
-                <tr className="hover:bg-slate-500/5 transition-colors">
-                  <td className="py-5 sm:py-6 pl-8 sm:pl-10 pr-6 font-bold text-slate-900 dark:text-white">
-                    <div className="flex flex-col gap-1">
-                      <span className="text-sm sm:text-base font-bold">7th CPC HRA Rank Budgets</span>
-                      <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Rank-Calibrated Bands</span>
+                {/* Row 2: Location Coverage */}
+                <tr className="hover:bg-white/[0.02] transition-colors">
+                  <td className="py-4 pl-6 sm:pl-8 pr-4 font-bold text-white">
+                    <div className="flex items-center gap-2.5">
+                      <MapPin size={16} className="text-amber-400 shrink-0" />
+                      <span>Location Coverage</span>
                     </div>
                   </td>
-                  <td className="py-5 sm:py-6 px-6 sm:px-8 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
-                    <div className="flex items-start gap-3">
-                      <CheckCircle2 size={20} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                      <span className="text-emerald-800 dark:text-emerald-300 font-bold text-xs sm:text-sm leading-relaxed">
-                        Automatic allowance match (Officer / JCO / OR limits)
-                      </span>
-                    </div>
+                  <td className="py-4 px-6 text-slate-400">
+                    Few Stations
                   </td>
-                  <td className="py-5 sm:py-6 px-6 sm:px-8 pr-8 sm:pr-10">
-                    <div className="flex items-start gap-3">
-                      <XCircle size={20} className="text-rose-500/80 dark:text-rose-400 shrink-0 mt-0.5" />
-                      <span className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm leading-relaxed">
-                        Generic price sliders with no rank calibration
-                      </span>
-                    </div>
+                  <td className="py-4 px-6 pr-8 text-amber-200 font-bold bg-amber-500/[0.04] border-l border-amber-500/20">
+                    62+ Stations Across India
                   </td>
                 </tr>
 
-                {/* Row 3 */}
-                <tr className="hover:bg-slate-500/5 transition-colors">
-                  <td className="py-5 sm:py-6 pl-8 sm:pl-10 pr-6 font-bold text-slate-900 dark:text-white">
-                    <div className="flex flex-col gap-1">
-                      <span className="text-sm sm:text-base font-bold">Cantonment &amp; Gate Distance</span>
-                      <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Military Gate GIS</span>
+                {/* Row 3: Booking Process */}
+                <tr className="hover:bg-white/[0.02] transition-colors">
+                  <td className="py-4 pl-6 sm:pl-8 pr-4 font-bold text-white">
+                    <div className="flex items-center gap-2.5">
+                      <Calendar size={16} className="text-amber-400 shrink-0" />
+                      <span>Booking Process</span>
                     </div>
                   </td>
-                  <td className="py-5 sm:py-6 px-6 sm:px-8 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
-                    <div className="flex items-start gap-3">
-                      <CheckCircle2 size={20} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                      <span className="text-emerald-800 dark:text-emerald-300 font-bold text-xs sm:text-sm leading-relaxed">
-                        Exact military gate &amp; unit proximity routing
-                      </span>
-                    </div>
+                  <td className="py-4 px-6 text-slate-400">
+                    Manual / Direct Contact
                   </td>
-                  <td className="py-5 sm:py-6 px-6 sm:px-8 pr-8 sm:pr-10">
-                    <div className="flex items-start gap-3">
-                      <XCircle size={20} className="text-rose-500/80 dark:text-rose-400 shrink-0 mt-0.5" />
-                      <span className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm leading-relaxed">
-                        Civilian postal codes only, far away from cantt gates
-                      </span>
-                    </div>
+                  <td className="py-4 px-6 pr-8 text-amber-200 font-bold bg-amber-500/[0.04] border-l border-amber-500/20">
+                    Instant Online Booking
                   </td>
                 </tr>
 
-                {/* Row 4 */}
-                <tr className="hover:bg-slate-500/5 transition-colors">
-                  <td className="py-5 sm:py-6 pl-8 sm:pl-10 pr-6 font-bold text-slate-900 dark:text-white">
-                    <div className="flex flex-col gap-1">
-                      <span className="text-sm sm:text-base font-bold">SSB Candidate Dorms</span>
-                      <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Selection Centre Stays</span>
+                {/* Row 4: HRA Guidance */}
+                <tr className="hover:bg-white/[0.02] transition-colors">
+                  <td className="py-4 pl-6 sm:pl-8 pr-4 font-bold text-white">
+                    <div className="flex items-center gap-2.5">
+                      <FileText size={16} className="text-amber-400 shrink-0" />
+                      <span>HRA Guidance</span>
                     </div>
                   </td>
-                  <td className="py-5 sm:py-6 px-6 sm:px-8 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
-                    <div className="flex items-start gap-3">
-                      <CheckCircle2 size={20} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                      <span className="text-emerald-800 dark:text-emerald-300 font-bold text-xs sm:text-sm leading-relaxed">
-                        Dedicated Selection Centre stays + Mess food guide
-                      </span>
-                    </div>
+                  <td className="py-4 px-6 text-slate-400">
+                    Confusing Rules
                   </td>
-                  <td className="py-5 sm:py-6 px-6 sm:px-8 pr-8 sm:pr-10">
-                    <div className="flex items-start gap-3">
-                      <XCircle size={20} className="text-rose-500/80 dark:text-rose-400 shrink-0 mt-0.5" />
-                      <span className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm leading-relaxed">
-                        Expensive civilian hotels with no candidate facilities
-                      </span>
-                    </div>
+                  <td className="py-4 px-6 pr-8 text-amber-200 font-bold bg-amber-500/[0.04] border-l border-amber-500/20">
+                    Easy 7th CPC HRA Support
                   </td>
                 </tr>
 
-                {/* Row 5 */}
-                <tr className="hover:bg-slate-500/5 transition-colors">
-                  <td className="py-5 sm:py-6 pl-8 sm:pl-10 pr-6 font-bold text-slate-900 dark:text-white">
-                    <div className="flex flex-col gap-1">
-                      <span className="text-sm sm:text-base font-bold">Military Break Clause Leases</span>
-                      <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Official Posting Orders</span>
+                {/* Row 5: Support */}
+                <tr className="hover:bg-white/[0.02] transition-colors">
+                  <td className="py-4 pl-6 sm:pl-8 pr-4 font-bold text-white">
+                    <div className="flex items-center gap-2.5">
+                      <Headphones size={16} className="text-amber-400 shrink-0" />
+                      <span>Support</span>
                     </div>
                   </td>
-                  <td className="py-5 sm:py-6 px-6 sm:px-8 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
-                    <div className="flex items-start gap-3">
-                      <CheckCircle2 size={20} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                      <span className="text-emerald-800 dark:text-emerald-300 font-bold text-xs sm:text-sm leading-relaxed">
-                        Official 15-Day Posting Transfer Break Clause
-                      </span>
-                    </div>
+                  <td className="py-4 px-6 text-slate-400">
+                    Limited
                   </td>
-                  <td className="py-5 sm:py-6 px-6 sm:px-8 pr-8 sm:pr-10">
-                    <div className="flex items-start gap-3">
-                      <XCircle size={20} className="text-rose-500/80 dark:text-rose-400 shrink-0 mt-0.5" />
-                      <span className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm leading-relaxed">
-                        Rigid 11-month civilian lock-in contracts
-                      </span>
-                    </div>
+                  <td className="py-4 px-6 pr-8 text-amber-200 font-bold bg-amber-500/[0.04] border-l border-amber-500/20">
+                    24×7 Dedicated Support
                   </td>
                 </tr>
 
-                {/* Row 6 */}
-                <tr className="hover:bg-slate-500/5 transition-colors">
-                  <td className="py-5 sm:py-6 pl-8 sm:pl-10 pr-6 font-bold text-slate-900 dark:text-white">
-                    <div className="flex flex-col gap-1">
-                      <span className="text-sm sm:text-base font-bold">Defence Peer Transfers</span>
-                      <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Direct Quarters Handover</span>
+                {/* Row 6: ID Vetting & Privacy */}
+                <tr className="hover:bg-white/[0.02] transition-colors">
+                  <td className="py-4 pl-6 sm:pl-8 pr-4 font-bold text-white">
+                    <div className="flex items-center gap-2.5">
+                      <ShieldCheck size={16} className="text-amber-400 shrink-0" />
+                      <span>ID Vetting &amp; Privacy</span>
                     </div>
                   </td>
-                  <td className="py-5 sm:py-6 px-6 sm:px-8 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
-                    <div className="flex items-start gap-3">
-                      <CheckCircle2 size={20} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                      <span className="text-emerald-800 dark:text-emerald-300 font-bold text-xs sm:text-sm leading-relaxed">
-                        Direct Peer-to-Peer relocation quarters handover
-                      </span>
-                    </div>
+                  <td className="py-4 px-6 text-slate-400">
+                    Civilian logins, high spam &amp; fraud risk
                   </td>
-                  <td className="py-5 sm:py-6 px-6 sm:px-8 pr-8 sm:pr-10">
-                    <div className="flex items-start gap-3">
-                      <XCircle size={20} className="text-rose-500/80 dark:text-rose-400 shrink-0 mt-0.5" />
-                      <span className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm leading-relaxed">
-                        Open classifieds saturated with commercial dealers
-                      </span>
-                    </div>
+                  <td className="py-4 px-6 pr-8 text-amber-200 font-bold bg-amber-500/[0.04] border-l border-amber-500/20">
+                    100% Client-Side Wasm Masking (Zero Data Leak)
                   </td>
                 </tr>
 
-                {/* Row 7 */}
-                <tr className="hover:bg-slate-500/5 transition-colors">
-                  <td className="py-5 sm:py-6 pl-8 sm:pl-10 pr-6 font-bold text-slate-900 dark:text-white">
-                    <div className="flex flex-col gap-1">
-                      <span className="text-sm sm:text-base font-bold">CSD Canteen &amp; Base Facilities</span>
-                      <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Live URC &amp; Cantonment Intel</span>
+                {/* Row 7: Military Break Clause Leases */}
+                <tr className="hover:bg-white/[0.02] transition-colors">
+                  <td className="py-4 pl-6 sm:pl-8 pr-4 font-bold text-white">
+                    <div className="flex items-center gap-2.5">
+                      <FileText size={16} className="text-amber-400 shrink-0" />
+                      <span>Posting Transfer Break Clause</span>
                     </div>
                   </td>
-                  <td className="py-5 sm:py-6 px-6 sm:px-8 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
-                    <div className="flex items-start gap-3">
-                      <CheckCircle2 size={20} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                      <span className="text-emerald-800 dark:text-emerald-300 font-bold text-xs sm:text-sm leading-relaxed">
-                        Live CSD pulse, Army Schools &amp; Military Hospitals
-                      </span>
-                    </div>
+                  <td className="py-4 px-6 text-slate-400">
+                    Rigid 11-month civilian lock-in contracts
                   </td>
-                  <td className="py-5 sm:py-6 px-6 sm:px-8 pr-8 sm:pr-10">
-                    <div className="flex items-start gap-3">
-                      <XCircle size={20} className="text-rose-500/80 dark:text-rose-400 shrink-0 mt-0.5" />
-                      <span className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm leading-relaxed">
-                        Zero military infrastructure or canteen data
-                      </span>
-                    </div>
+                  <td className="py-4 px-6 pr-8 text-amber-200 font-bold bg-amber-500/[0.04] border-l border-amber-500/20">
+                    Official 15-Day Posting Transfer Refund Clause
                   </td>
                 </tr>
 
-                {/* Row 8 */}
-                <tr className="hover:bg-slate-500/5 transition-colors">
-                  <td className="pt-5 sm:pt-6 pb-8 sm:pb-9 pl-8 sm:pl-10 pr-6 font-bold text-slate-900 dark:text-white">
-                    <div className="flex flex-col gap-1">
-                      <span className="text-sm sm:text-base font-bold">Brokerage Commission</span>
-                      <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Zero Middlemen Guaranteed</span>
+                {/* Row 8: Brokerage Commission */}
+                <tr className="hover:bg-white/[0.02] transition-colors">
+                  <td className="py-5 pl-6 sm:pl-8 pr-4 font-bold text-white">
+                    <div className="flex items-center gap-2.5">
+                      <CircleDollarSign size={16} className="text-amber-400 shrink-0" />
+                      <span>Brokerage Commission</span>
                     </div>
                   </td>
-                  <td className="pt-5 sm:pt-6 pb-8 sm:pb-9 px-6 sm:px-8 bg-amber-500/[0.04] dark:bg-amber-500/[0.08] border-x border-amber-500/20">
-                    <div className="flex items-start gap-3">
-                      <CheckCircle2 size={20} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                      <span className="text-emerald-800 dark:text-emerald-300 font-bold text-xs sm:text-sm leading-relaxed">
-                        ₹0 Forever (Strict Zero-Brokerage Policy)
-                      </span>
-                    </div>
+                  <td className="py-5 px-6 text-slate-400">
+                    1–2 Months rent commission + hidden dealer fees
                   </td>
-                  <td className="pt-5 sm:pt-6 pb-8 sm:pb-9 px-6 sm:px-8 pr-8 sm:pr-10">
-                    <div className="flex items-start gap-3">
-                      <XCircle size={20} className="text-rose-500/80 dark:text-rose-400 shrink-0 mt-0.5" />
-                      <span className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm leading-relaxed">
-                        1–2 Months rent commission + excessive hidden fees
-                      </span>
-                    </div>
+                  <td className="py-5 px-6 pr-8 text-emerald-400 font-extrabold bg-amber-500/[0.04] border-l border-amber-500/20">
+                    ₹0 Forever (Strict Zero-Brokerage Policy)
                   </td>
                 </tr>
 
               </tbody>
             </table>
           </div>
-        </motion.section>
+        </section>
 
-        {/* Tactical Tools list */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-          
-          {/* Card 1: Lease Generator */}
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            onClick={() => setShowLeaseModal(true)}
-            className="liquid-glass-morph p-6 rounded-2xl flex gap-4 cursor-pointer hover:border-amber-500/60 transition-all text-left items-start"
-          >
-            <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-800 shrink-0">
-              <FileText size={20} />
+        {/* ════════════════════════════════════════════════════════════
+            4. 7TH CPC HRA COVERAGE CALCULATOR
+            ════════════════════════════════════════════════════════════ */}
+        <section id="calculator" className="pt-2">
+          <div className="w-full rounded-3xl border border-amber-500/40 bg-gradient-to-br from-[#121622] via-[#0d1017] to-[#0a0d14] p-6 sm:p-9 shadow-2xl relative overflow-hidden">
+            
+            {/* Subtle background quarter photo on the right */}
+            <div className="absolute right-0 top-0 bottom-0 w-1/3 opacity-20 pointer-events-none hidden md:block">
+              <img 
+                src="/brand/hra_quarters.jpg" 
+                alt="Military Quarters" 
+                className="w-full h-full object-cover object-center" 
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#121622] via-transparent to-transparent" />
             </div>
-            <div>
-              <span className="text-[8px] font-black uppercase text-amber-700 tracking-wider font-mono">Free Legal Tool</span>
-              <h3 className="text-xs font-bold text-slate-900 mt-0.5 mb-1 font-heading">Military Lease Generator</h3>
-              <p className="text-slate-650 text-[10px] leading-relaxed font-light">
-                Draft a rental agreement equipped with the Indian Military Break Clause. Landlords must agree to refund deposits within a 15-day notice upon official posting orders.
-              </p>
-            </div>
-          </motion.div>
 
-          {/* Card 2: WASM Masking */}
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            onClick={() => setShowWasmModal(true)}
-            className="liquid-glass-morph p-6 rounded-2xl flex gap-4 cursor-pointer hover:border-amber-500/60 transition-all text-left items-start"
-          >
-            <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-700 shrink-0">
-              <Lock size={20} />
-            </div>
-            <div>
-              <span className="text-[8px] font-black uppercase text-amber-700 tracking-wider font-mono">Zero-Trust Security</span>
-              <h3 className="text-xs font-bold text-slate-900 mt-0.5 mb-1 font-heading">WASM Edge Document Masking</h3>
-              <p className="text-slate-650 text-[10px] leading-relaxed font-light">
-                Protect your privacy in line with DPDPA Act 2023. Our client-side WebAssembly script processes documents directly on your browser, automatically redacting personal identification cards and numbers before upload.
-              </p>
-            </div>
-          </motion.div>
+            <div className="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+              
+              {/* Left Form Controls */}
+              <div className="md:col-span-7 flex flex-col text-left">
+                
+                {/* Title */}
+                <div className="flex items-center gap-2.5 mb-1">
+                  <div className="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
+                    <Calculator size={18} />
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-black text-white font-heading">
+                    7th CPC HRA Coverage Calculator
+                  </h3>
+                </div>
+                <p className="text-xs text-slate-400 mb-6 font-normal">
+                  Check your HRA coverage as per 7th CPC norms
+                </p>
 
-        </div>
+                {/* City Category Selector Buttons */}
+                <div className="flex flex-col gap-2 mb-4">
+                  <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                    City Category:
+                  </label>
+                  <div className="grid grid-cols-3 gap-2 max-w-sm">
+                    {['X', 'Y', 'Z'].map((cat) => (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => setCityCategory(cat)}
+                        className={`py-2 px-3 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer border ${
+                          cityCategory === cat 
+                            ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-md scale-[1.02]' 
+                            : 'bg-white/5 text-slate-300 border-white/10 hover:border-amber-500/40 hover:text-white'
+                        }`}
+                      >
+                        {cat} ({cat === 'X' ? '30%' : cat === 'Y' ? '20%' : '10%'})
+                      </button>
+                    ))}
+                  </div>
+                  <span className="text-[10px] text-slate-400">
+                    {cityCategory === 'X' && 'Class X: Delhi, Mumbai, Kolkata, Chennai, Bengaluru, Hyderabad, Pune, Ahmedabad'}
+                    {cityCategory === 'Y' && 'Class Y: Ambala, Jaipur, Lucknow, Bhopal, Prayagraj, Jalandhar, etc. (Default)'}
+                    {cityCategory === 'Z' && 'Class Z: All other small military stations and cantonments'}
+                  </span>
+                </div>
 
-        {/* 7th CPC HRA Calculator Section */}
-        <div className="flex flex-col gap-4 text-left mb-6">
-          <div>
-            <span className="text-[10px] font-black uppercase text-amber-700 tracking-wider font-mono">Allowance Optimization</span>
-            <h2 className="text-xl font-extrabold text-slate-900 mt-1 mb-2 font-heading">7th CPC HRA Coverage Calculator</h2>
-            <p className="text-slate-650 text-xs leading-relaxed font-light">
-              Check your exact house rent allowance entitlements based on rank and basic pay under the 7th Pay Commission for Y-class cities.
-            </p>
-          </div>
-          <div className="max-w-xl">
-            <HRACalculator
-              selectedRank={calcRank}
-              onRankSelect={setCalcRank}
-              basicPay={calcBasicPay}
-              onBasicPayChange={setCalcBasicPay}
-            />
-          </div>
-        </div>
+                {/* Basic Pay Numeric Input */}
+                <div className="flex flex-col gap-2 mb-5 max-w-sm">
+                  <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                    Basic Pay (₹):
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <input 
+                      type="number"
+                      value={basicPay}
+                      onChange={(e) => setBasicPay(e.target.value)}
+                      placeholder="Enter Basic Pay"
+                      className="w-full bg-[#171c29] border border-white/10 focus:border-amber-500 text-white rounded-xl px-4 py-2.5 text-sm font-semibold outline-none transition-colors"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const rate = cityCategory === 'X' ? 0.30 : cityCategory === 'Y' ? 0.20 : 0.10;
+                        const minHra = cityCategory === 'X' ? 5400 : cityCategory === 'Y' ? 3600 : 1800;
+                        setCalculatedHra(Math.max(minHra, Math.round((Number(basicPay) || 0) * rate)));
+                      }}
+                      className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black text-xs px-5 py-2.5 rounded-xl uppercase tracking-wider flex items-center gap-1.5 cursor-pointer shadow-md shrink-0"
+                    >
+                      <span>Calculate</span>
+                    </button>
+                  </div>
+                </div>
 
-        {/* Live CSD Pulse Section */}
-        <div ref={tickerRef} className="min-h-[170px]">
-          {showTicker && (
-            <React.Suspense fallback={
-              <div className="bg-white border border-slate-200/80 rounded-[2rem] p-8 flex flex-col justify-center items-center h-44 shadow-sm animate-pulse">
-                <span className="text-xs text-slate-400 font-mono tracking-wider">Syncing Live URC Ledger...</span>
+                {/* Quick Rank Presets */}
+                <div className="flex flex-wrap gap-1.5 text-[10px]">
+                  <span className="text-slate-400 mr-1 self-center">Presets:</span>
+                  {[
+                    { label: 'Jawan', pay: 21700 },
+                    { label: 'Havildar', pay: 29200 },
+                    { label: 'Subedar', pay: 44900 },
+                    { label: 'Captain', pay: 61300 },
+                    { label: 'Major', pay: 69400 },
+                    { label: 'Col', pay: 130600 },
+                  ].map(p => (
+                    <button
+                      key={p.label}
+                      type="button"
+                      onClick={() => setBasicPay(p.pay)}
+                      className="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-slate-300 hover:text-amber-400 hover:border-amber-500/40 cursor-pointer"
+                    >
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+
               </div>
-            }>
-              <CSDPulseTicker />
-            </React.Suspense>
-          )}
-        </div>
+
+              {/* Right Output Display */}
+              <div className="md:col-span-5 flex flex-col items-center md:items-end justify-center text-center md:text-right">
+                <span className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-1">
+                  Your HRA Coverage
+                </span>
+                <div className="text-4xl sm:text-5xl font-black text-amber-400 font-mono tracking-tight drop-shadow-lg">
+                  ₹ {calculatedHra.toLocaleString('en-IN')}
+                </div>
+                <span className="text-xs text-slate-400 mt-1 font-medium">
+                  (as per 7th CPC, {cityCategory === 'X' ? '30%' : cityCategory === 'Y' ? '20%' : '10%'})
+                </span>
+                <button
+                  onClick={handleLaunchApp}
+                  className="mt-4 px-4 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 hover:bg-amber-500/20 text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5"
+                >
+                  <span>Filter Stays Within HRA</span>
+                  <ExternalLink size={12} />
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+        </section>
+
+        {/* ════════════════════════════════════════════════════════════
+            5. LIVE URC PULSES
+            ════════════════════════════════════════════════════════════ */}
+        <section id="pulses" className="pt-2">
+          
+          {/* Header with Pulse Waveform */}
+          <div className="flex flex-col items-center justify-center gap-2 mb-6">
+            <div className="flex items-center gap-3">
+              {/* Left Pulse SVG */}
+              <svg width="40" height="20" viewBox="0 0 40 20" fill="none" className="text-amber-500 opacity-80">
+                <path d="M0 10 H12 L16 3 L22 17 L26 10 H40" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <h2 className="text-xl sm:text-2xl font-black font-heading text-amber-400 uppercase tracking-widest">
+                Live URC Pulses
+              </h2>
+              {/* Right Pulse SVG */}
+              <svg width="40" height="20" viewBox="0 0 40 20" fill="none" className="text-amber-500 opacity-80">
+                <path d="M0 10 H12 L16 3 L22 17 L26 10 H40" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            
+            <div className="flex flex-wrap items-center justify-center gap-3 text-xs">
+              <span className="text-slate-400">Real-time updates on URC announcements, circulars and policies.</span>
+              <span className="text-slate-500">•</span>
+              <span className="flex items-center gap-1.5 text-emerald-400 font-bold font-mono">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                Live · Last Updated: 06 Nov 2026, 20:45 IST
+              </span>
+            </div>
+          </div>
+
+          {/* 4 Pulse Cards in a Row */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            {/* Card 1 */}
+            <div onClick={handleLaunchApp} className="bg-[#10141f]/90 hover:bg-[#161c2a] border border-white/10 hover:border-amber-500/40 p-4 rounded-2xl flex items-center justify-between transition-all cursor-pointer group text-left">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
+                  <Megaphone size={18} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-xs sm:text-sm text-white">URC Circular</h4>
+                  <p className="text-[11px] text-slate-400">No. 45/2026 (Policy Update)</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1 text-[10px] text-slate-400 font-mono shrink-0">
+                <span>2h ago</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              </div>
+            </div>
+
+            {/* Card 2 */}
+            <div onClick={handleLaunchApp} className="bg-[#10141f]/90 hover:bg-[#161c2a] border border-white/10 hover:border-amber-500/40 p-4 rounded-2xl flex items-center justify-between transition-all cursor-pointer group text-left">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
+                  <FileText size={18} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-xs sm:text-sm text-white">HRA Revision</h4>
+                  <p className="text-[11px] text-slate-400">Clarifications &amp; Rates</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1 text-[10px] text-slate-400 font-mono shrink-0">
+                <span>3h ago</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              </div>
+            </div>
+
+            {/* Card 3 */}
+            <div onClick={handleLaunchApp} className="bg-[#10141f]/90 hover:bg-[#161c2a] border border-white/10 hover:border-amber-500/40 p-4 rounded-2xl flex items-center justify-between transition-all cursor-pointer group text-left">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
+                  <Bookmark size={18} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-xs sm:text-sm text-white">Station List</h4>
+                  <p className="text-[11px] text-slate-400">(Updated 62+ Cantts)</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1 text-[10px] text-slate-400 font-mono shrink-0">
+                <span>5h ago</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              </div>
+            </div>
+
+            {/* Card 4 */}
+            <div onClick={handleLaunchApp} className="bg-[#10141f]/90 hover:bg-[#161c2a] border border-white/10 hover:border-amber-500/40 p-4 rounded-2xl flex items-center justify-between transition-all cursor-pointer group text-left">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
+                  <Shield size={18} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-xs sm:text-sm text-white">General Instructions</h4>
+                  <p className="text-[11px] text-slate-400">for Veterans &amp; ESM Stays</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1 text-[10px] text-slate-400 font-mono shrink-0">
+                <span>6h ago</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        {/* ════════════════════════════════════════════════════════════
+            6. ABOUT THE FOUNDERS
+            ════════════════════════════════════════════════════════════ */}
+        <section id="about" className="pt-2">
+          
+          {/* Header */}
+          <div className="flex items-center justify-center gap-4 mb-8">
+            <div className="h-px bg-gradient-to-r from-transparent via-amber-500/40 to-transparent flex-1 max-w-[180px]" />
+            <h2 className="text-xl sm:text-2xl font-black font-heading text-amber-400 uppercase tracking-widest text-center">
+              About the Founders
+            </h2>
+            <div className="h-px bg-gradient-to-r from-transparent via-amber-500/40 to-transparent flex-1 max-w-[180px]" />
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            
+            {/* Left Statement */}
+            <div className="lg:col-span-4 flex flex-col text-left">
+              <p className="text-sm sm:text-base text-slate-300 font-normal leading-relaxed mb-4">
+                Fauji Niwas is proudly built by a team of passionate innovators — committed to serve the Armed Forces community with technology, trust and care.
+              </p>
+              <p className="font-serif italic text-amber-300 text-sm font-semibold">
+                Built with respect. For those who serve. 🇮🇳
+              </p>
+            </div>
+
+            {/* Right: 3 Founder Cards */}
+            <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+              
+              {/* Founder 1: Aman Kumar Singh */}
+              <div className="bg-[#10141f] border border-white/10 hover:border-amber-500/40 rounded-2xl p-5 flex flex-col items-center text-center transition-all group">
+                <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-amber-500/40 p-0.5 mb-3 group-hover:border-amber-400 transition-colors">
+                  <img 
+                    src="/brand/avatar_aman.png" 
+                    alt="Aman Kumar Singh" 
+                    className="w-full h-full object-cover rounded-full" 
+                  />
+                </div>
+                <h3 className="font-black text-sm text-white font-heading">Aman Kumar Singh</h3>
+                <span className="text-[11px] text-slate-400 font-medium mt-0.5 mb-3">Co-Founder &amp; Developer</span>
+                <a 
+                  href="https://www.linkedin.com/in/aman-kumar-singh-46b2b4255/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="w-6 h-6 rounded bg-[#0a66c2] text-white flex items-center justify-center text-xs font-bold hover:scale-110 transition-transform"
+                  title="LinkedIn Profile"
+                >
+                  in
+                </a>
+              </div>
+
+              {/* Founder 2: Pari Rastogi */}
+              <div className="bg-[#10141f] border border-white/10 hover:border-amber-500/40 rounded-2xl p-5 flex flex-col items-center text-center transition-all group">
+                <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-amber-500/40 p-0.5 mb-3 group-hover:border-amber-400 transition-colors">
+                  <img 
+                    src="/brand/avatar_pari.png" 
+                    alt="Pari Rastogi" 
+                    className="w-full h-full object-cover rounded-full" 
+                  />
+                </div>
+                <h3 className="font-black text-sm text-white font-heading">Pari Rastogi</h3>
+                <span className="text-[11px] text-slate-400 font-medium mt-0.5 mb-3">Co-Founder &amp; Designer</span>
+                <a 
+                  href="https://www.linkedin.com" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="w-6 h-6 rounded bg-[#0a66c2] text-white flex items-center justify-center text-xs font-bold hover:scale-110 transition-transform"
+                  title="LinkedIn Profile"
+                >
+                  in
+                </a>
+              </div>
+
+              {/* Founder 3: Ayush Gautam */}
+              <div className="bg-[#10141f] border border-white/10 hover:border-amber-500/40 rounded-2xl p-5 flex flex-col items-center text-center transition-all group">
+                <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-amber-500/40 p-0.5 mb-3 group-hover:border-amber-400 transition-colors">
+                  <img 
+                    src="/brand/avatar_ayush.png" 
+                    alt="Ayush Gautam" 
+                    className="w-full h-full object-cover rounded-full" 
+                  />
+                </div>
+                <h3 className="font-black text-sm text-white font-heading">Ayush Gautam</h3>
+                <span className="text-[11px] text-slate-400 font-medium mt-0.5 mb-3">Co-Founder &amp; Engineer</span>
+                <a 
+                  href="https://www.linkedin.com" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="w-6 h-6 rounded bg-[#0a66c2] text-white flex items-center justify-center text-xs font-bold hover:scale-110 transition-transform"
+                  title="LinkedIn Profile"
+                >
+                  in
+                </a>
+              </div>
+
+            </div>
+
+          </div>
+        </section>
 
       </main>
 
-      {/* Founders Section for GEO & search engine grounding */}
-      <motion.section 
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.6 }}
-        className="w-full max-w-[1250px] min-w-0 mx-auto px-4 sm:px-6 mt-8 mb-4 relative z-10 text-left"
-        style={{ width: "100%", maxWidth: "1250px", marginLeft: "auto", marginRight: "auto" }}
-      >
-        <div className="liquid-glass-morph rounded-3xl p-8">
-          <span className="text-[10px] font-black uppercase text-amber-700 tracking-wider font-mono">Founding Team</span>
-          <h2 className="text-xl font-extrabold text-slate-900 mt-1 mb-6 font-heading">Meet the Minds Behind Fauji Niwas</h2>
+      {/* ════════════════════════════════════════════════════════════
+          7. FOOTER
+          ════════════════════════════════════════════════════════════ */}
+      <footer className="w-full bg-[#07090e] border-t border-amber-500/20 pt-12 pb-8 relative z-10 flex flex-col items-center">
+        <div className="w-full max-w-[1250px] mx-auto px-4 sm:px-6 flex flex-col gap-8">
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Founder 1 */}
-            <div className="flex gap-4 items-start">
-              <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-amber-500/30 shrink-0">
-                <img 
-                  src="/aman-kumar-singh-small.jpg" 
-                  alt="Aman Kumar Singh" 
-                  className="w-full h-full object-cover object-top"
-                  width="64"
-                  height="64"
-                  loading="lazy"
-                  onError={(e) => { e.target.style.display = 'none'; }}
-                />
-              </div>
-              <div>
-                <h3 className="text-sm font-bold text-slate-900 font-heading">Aman Kumar Singh</h3>
-                <span className="text-[9px] font-bold text-amber-755 uppercase tracking-wide block mt-0.5">Founder & Developer</span>
-                <p className="text-slate-650 text-[11px] leading-relaxed font-light mt-1.5">
-                  B.Tech EEE Student at Galgotias College of Engineering and Technology (GCET, AKTU), Security Researcher, and NCC Air Wing 'A' Certificate holder. Aman built Fauji Niwas to solve verified relocation lodging for military families.
-                </p>
-                <div className="flex gap-3 mt-2.5 text-[10px] font-semibold text-slate-800">
-                  <a href="https://linkedin.com/in/gangasagar5928" target="_blank" rel="noopener noreferrer" className="hover:text-amber-800">LinkedIn</a>
-                  <a href="https://github.com/gangasagar5928" target="_blank" rel="noopener noreferrer" className="hover:text-amber-800">GitHub</a>
-                </div>
-              </div>
+          {/* Top Row: Brand, Nav Links & Social */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-6 border-b border-white/5">
+            
+            {/* Logo + Tagline */}
+            <div className="flex items-center gap-3">
+              <img 
+                src="/brand/brand_logo.png" 
+                alt="Fauji Niwas" 
+                className="h-10 w-auto object-contain" 
+              />
             </div>
 
-            {/* Founder 2 */}
-            <div className="flex gap-4 items-start">
-              <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-indigo-500/30 shrink-0">
-                <img 
-                  src="/anurag.jpg" 
-                  alt="Anurag Kumar Singh" 
-                  className="w-full h-full object-cover object-top"
-                  width="64"
-                  height="64"
-                  loading="lazy"
-                  onError={(e) => { e.target.style.display = 'none'; }}
-                />
-              </div>
-              <div>
-                <h3 className="text-sm font-bold text-slate-900 font-heading">Anurag Kumar Singh</h3>
-                <span className="text-[9px] font-bold text-indigo-755 uppercase tracking-wide block mt-0.5">Co-Founder</span>
-                <p className="text-slate-650 text-[11px] leading-relaxed font-light mt-1.5">
-                  JEE Aspirant, YouTuber, Content Creator, and passionate gamer. Co-founded the platform to design community engagement channels and streamline communication guides for serving families.
-                </p>
-                <div className="flex gap-3 mt-2.5 text-[10px] font-semibold text-slate-800">
-                  <a href="https://www.linkedin.com/in/anurag-singh-a126843a3" target="_blank" rel="noopener noreferrer" className="hover:text-amber-800">LinkedIn</a>
-                  <a href="https://youtube.com/@aks_vlogs_edits" target="_blank" rel="noopener noreferrer" className="hover:text-amber-800">YouTube</a>
-                </div>
-              </div>
+            {/* Navigation links */}
+            <div className="flex flex-wrap justify-center items-center gap-6 text-xs text-slate-400 font-medium">
+              <a href="/privacy.html" className="hover:text-amber-400 transition-colors">Privacy Policy</a>
+              <span>|</span>
+              <a href="/terms.html" className="hover:text-amber-400 transition-colors">Terms of Service</a>
+              <span>|</span>
+              <a href="mailto:faujiniwashq@gmail.com" className="hover:text-amber-400 transition-colors">Contact Us</a>
+              <span>|</span>
+              <a href="/faq.html" className="hover:text-amber-400 transition-colors">FAQ</a>
+              <span>|</span>
+              <a href="https://github.com/gangasagar5928/faujiniwas" target="_blank" rel="noopener noreferrer" className="hover:text-amber-400 transition-colors flex items-center gap-1">
+                <span>GitHub</span>
+              </a>
+            </div>
+
+            {/* Social Icons & Silhouette */}
+            <div className="flex items-center gap-4">
+              {/* Silhouette artwork */}
+              <img 
+                src="/brand/footer_silhouette.png" 
+                alt="Soldiers & Families Silhouette" 
+                className="h-7 w-auto opacity-60 hidden sm:block" 
+              />
+              
+              {/* LinkedIn */}
+              <a href="https://www.linkedin.com/in/aman-kumar-singh-46b2b4255/" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-amber-400 transition-colors" title="LinkedIn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+              </a>
+              {/* X / Twitter */}
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-amber-400 transition-colors" title="X (Twitter)">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              </a>
+              {/* YouTube */}
+              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-amber-400 transition-colors" title="YouTube">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+              </a>
+              {/* Mail */}
+              <a href="mailto:faujiniwashq@gmail.com" className="text-slate-400 hover:text-amber-400 transition-colors" title="Email Support">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M0 3v18h24v-18h-24zm21.518 2l-9.518 7.713-9.518-7.713h19.036zm-19.518 14v-11.817l9.518 7.713 9.518-7.713v11.817h-19.036z"/></svg>
+              </a>
+            </div>
+
+          </div>
+
+          {/* Popular Relocation Cities for SEO */}
+          <div className="text-left">
+            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 block mb-2">
+              🎖️ Popular Military Relocation Stations / लोकप्रिय सैन्य स्टेशन:
+            </span>
+            <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-slate-400 font-medium">
+              <a href="/pune.html" className="hover:text-amber-400 transition-colors">Pune Cantt</a>
+              <a href="/delhi.html" className="hover:text-amber-400 transition-colors">Delhi Cantt</a>
+              <a href="/ambala.html" className="hover:text-amber-400 transition-colors">Ambala Cantt</a>
+              <a href="/secunderabad.html" className="hover:text-amber-400 transition-colors">Secunderabad</a>
+              <a href="/bhopal.html" className="hover:text-amber-400 transition-colors">Bhopal</a>
+              <a href="/prayagraj.html" className="hover:text-amber-400 transition-colors">Prayagraj (SCE)</a>
+              <a href="/kapurthala.html" className="hover:text-amber-400 transition-colors">Kapurthala</a>
+              <a href="/bangalore.html" className="hover:text-amber-400 transition-colors">Bengaluru</a>
+              <a href="/mhow.html" className="hover:text-amber-400 transition-colors">Mhow</a>
+              <a href="/jabalpur.html" className="hover:text-amber-400 transition-colors">Jabalpur</a>
+              <a href="/jodhpur.html" className="hover:text-amber-400 transition-colors">Jodhpur</a>
+              <a href="/jaipur.html" className="hover:text-amber-400 transition-colors">Jaipur</a>
+              <a href="/lucknow.html" className="hover:text-amber-400 transition-colors">Lucknow</a>
+              <a href="/jalandhar.html" className="hover:text-amber-400 transition-colors">Jalandhar</a>
+              <a href="/pathankot.html" className="hover:text-amber-400 transition-colors">Pathankot</a>
+              <a href="/dehradun.html" className="hover:text-amber-400 transition-colors">Dehradun</a>
+              <a href="/udhampur.html" className="hover:text-amber-400 transition-colors">Udhampur</a>
+              <a href="/chennai.html" className="hover:text-amber-400 transition-colors">Chennai</a>
+              <a href="/kolkata.html" className="hover:text-amber-400 transition-colors">Kolkata</a>
             </div>
           </div>
-        </div>
-      </motion.section>
 
-      {/* Footer */}
-      <footer id="footer" className="w-full max-w-full overflow-x-hidden bg-[#FAF9F6] border-t border-slate-200/60 py-12 mt-16 relative z-10 flex flex-col items-center">
-        <div className="w-full max-w-[1250px] min-w-0 mx-auto px-4 sm:px-6 flex flex-col md:flex-row justify-between items-center gap-6" style={{ width: "100%", maxWidth: "1250px", marginLeft: "auto", marginRight: "auto" }}>
-          <div className="flex items-center gap-2 text-xs font-black tracking-tight text-slate-900 font-heading">
-            <img src="/logo-light.jpg" alt="FaujiNiwas" className="w-6 h-6 rounded-md object-contain light-logo" />
-            <img src="/logo-dark.jpg" alt="FaujiNiwas" className="w-6 h-6 rounded-md object-contain dark-logo" />
-            <span><span className="text-amber-700">FAUJI</span> <span className="text-slate-950 font-normal">NIWAS</span></span>
-            <span className="text-slate-400 text-[10px] ml-1 font-mono">© 2026</span>
+          {/* Copyright Notice */}
+          <div className="text-center pt-4 border-t border-white/5 text-[11px] text-slate-500 font-medium">
+            © 2026 Fauji Niwas. All rights reserved. &nbsp;|&nbsp; Made with 🇮🇳 for our Armed Forces.
           </div>
-          
-          <div className="flex flex-wrap justify-center gap-6 text-[10px] font-bold uppercase tracking-wider text-slate-800">
-            <a href="/about" className="hover:text-amber-800 transition-colors">About the Founders</a>
-            <a href="/privacy" className="hover:text-amber-800 transition-colors">Privacy Policy</a>
-            <a href="/terms" className="hover:text-amber-800 transition-colors">Terms of Service</a>
-            <a href="mailto:faujiniwashq@gmail.com" className="hover:text-amber-800 transition-colors">Contact Support</a>
-          </div>
-          
-          <div className="text-[9px] text-slate-700 font-medium">
-            Made with ❤️ for the Armed Forces
-          </div>
-        </div>
 
-        {/* Popular Cities SEO Links */}
-        <div className="w-full max-w-[1250px] min-w-0 mx-auto px-4 sm:px-6 mt-8 pt-6 border-t border-slate-200/40 text-left" style={{ width: "100%", maxWidth: "1250px", marginLeft: "auto", marginRight: "auto" }}>
-          <span className="text-[9px] font-black uppercase tracking-wider text-slate-400 block mb-2">
-            🎖️ Popular Relocation Cities / लोकप्रिय सैन्य स्टेशन:
-          </span>
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] font-bold text-slate-750">
-            <a href="/pune" className="hover:text-amber-800 transition-colors">Pune Cantt</a>
-            <span className="text-slate-300">•</span>
-            <a href="/delhi" className="hover:text-amber-800 transition-colors">Delhi Cantt</a>
-            <span className="text-slate-300">•</span>
-            <a href="/ambala" className="hover:text-amber-800 transition-colors">Ambala Cantt</a>
-            <span className="text-slate-300">•</span>
-            <a href="/secunderabad" className="hover:text-amber-800 transition-colors">Secunderabad Cantt</a>
-            <span className="text-slate-300">•</span>
-            <a href="/bhopal" className="hover:text-amber-800 transition-colors">Bhopal Cantt</a>
-            <span className="text-slate-300">•</span>
-            <a href="/kapurthala" className="hover:text-amber-800 transition-colors">Kapurthala SSB</a>
-            <span className="text-slate-300">•</span>
-            <a href="/prayagraj" className="hover:text-amber-800 transition-colors">Prayagraj SSB</a>
-            <span className="text-slate-300">•</span>
-            <a href="/coimbatore" className="hover:text-amber-800 transition-colors">Coimbatore Cantt</a>
-            <span className="text-slate-300">•</span>
-            <a href="/bangalore" className="hover:text-amber-800 transition-colors">Bangalore Cantt</a>
-          </div>
         </div>
       </footer>
 
-      {/* Dynamic Modals */}
+      {/* ── Modals & Transitions ── */}
       {showLeaseModal && (
         <React.Suspense fallback={null}>
-          <LeaseGeneratorModal onClose={() => setShowLeaseModal(false)} />
-        </React.Suspense>
-      )}
-      {showWasmModal && (
-        <React.Suspense fallback={null}>
-          <WasmMaskingModal onClose={() => setShowWasmModal(false)} />
+          <LeaseGeneratorModal isOpen={showLeaseModal} onClose={() => setShowLeaseModal(false)} />
         </React.Suspense>
       )}
 
-      {/* 🚀 Futuristic Glassmorphic Boot/Routing Transition Screen Overlay */}
-      {isRedirecting && (
-        <div className="fixed inset-0 z-[9999] bg-[#0b1120]/85 backdrop-blur-xl flex flex-col items-center justify-center select-none">
-          <div className="liquid-glass-morph w-[280px] p-8 rounded-[28px] shadow-[0_0_60px_rgba(0,0,0,0.6)] relative overflow-hidden flex flex-col items-center gap-5">
-            <span className="w-3 h-3 rounded-full bg-emerald-400 animate-ping" />
-            <div className="flex flex-col items-center gap-1.5">
-              <h3 className="text-[13px] font-black uppercase tracking-[0.2em] text-[#fbbf24]">FaujiNiwas</h3>
-              <p className="text-[10px] text-slate-400 tracking-widest font-medium">SECURE HOUSING GATEWAY</p>
-            </div>
-            <div className="w-40 h-1 rounded-full bg-white/10 overflow-hidden">
-              <div className="h-full w-1/2 rounded-full bg-gradient-to-r from-amber-400 to-emerald-400 animate-[loaderSlide_1s_ease-in-out_infinite]" />
-            </div>
-          </div>
-        </div>
+      {showWasmModal && (
+        <React.Suspense fallback={null}>
+          <WasmMaskingModal isOpen={showWasmModal} onClose={() => setShowWasmModal(false)} />
+        </React.Suspense>
       )}
 
       {showAccessibilityModal && (
-        <AccessibilityModal onClose={() => setShowAccessibilityModal(false)} />
+        <AccessibilityModal 
+          isOpen={showAccessibilityModal} 
+          onClose={() => setShowAccessibilityModal(false)} 
+        />
+      )}
+
+      {/* Fast Dark Glass Loader Transition Screen */}
+      {isRedirecting && (
+        <div className="fixed inset-0 z-[9999] bg-[#07090e]/90 backdrop-blur-xl flex flex-col items-center justify-center select-none">
+          <div className="bg-[#10141f] border border-amber-500/30 w-[280px] p-8 rounded-[28px] shadow-[0_0_60px_rgba(0,0,0,0.8)] relative overflow-hidden flex flex-col items-center gap-5">
+            <span className="w-3.5 h-3.5 rounded-full bg-amber-400 animate-ping" />
+            <div className="flex flex-col items-center gap-1.5">
+              <h3 className="text-sm font-black uppercase tracking-[0.2em] text-amber-400">FaujiNiwas</h3>
+              <p className="text-[10px] text-slate-400 tracking-widest font-medium">SECURE COMMAND CENTER</p>
+            </div>
+            <div className="w-40 h-1 rounded-full bg-white/10 overflow-hidden">
+              <div className="h-full w-1/2 rounded-full bg-gradient-to-r from-amber-400 to-amber-600 animate-[loaderSlide_1s_ease-in-out_infinite]" />
+            </div>
+          </div>
+        </div>
       )}
 
     </div>
