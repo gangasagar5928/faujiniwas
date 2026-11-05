@@ -53,6 +53,11 @@ function pingIndexNow(customUrls) {
     });
   });
 
+  req.setTimeout(4000, () => {
+    console.log('IndexNow ping timed out, continuing.');
+    req.destroy();
+  });
+
   req.on('error', (error) => {
     console.error('IndexNow ping failed:', error);
   });
