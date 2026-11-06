@@ -387,7 +387,30 @@ export default function MapView({
     return null;
   });
 
-  const [tileError, setTileError] = useState(false);
+  const [mapType, setMapType] = useState(() => {
+    try {
+      return localStorage.getItem('fn_map_type') || 'roadmap';
+    } catch(e) {
+      return 'roadmap';
+    }
+  });
+
+  const handleMapTypeChange = (type) => {
+    setMapType(type);
+    try { localStorage.setItem('fn_map_type', type); } catch(e) {}
+  };
+
+  const getGoogleTileUrl = (type) => {
+    switch (type) {
+      case 'satellite':
+        return "https://{s}.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}";
+      case 'terrain':
+        return "https://{s}.google.com/vt/lyrs=p&hl=en&x={x}&y={y}&z={z}";
+      case 'roadmap':
+      default:
+        return "https://{s}.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}";
+    }
+  };
   const activeView = useFilterStore((s) => s.activeView);
   const { listings, showCommuteZones, showHospitals, showSchools, showCanteens, isPending } = useFilterStore();
   const allState = useFilterStore((s) => s);
@@ -463,7 +486,7 @@ export default function MapView({
 
   return (
     <MapErrorBoundary>
-      <div className={`${styles.mapContainer} ${isPending ? styles.isPending : ''}`}>
+      <div className={`${styles.mapContainer} google-natural-map ${isPending ? styles.isPending : ''}`}>
         <MapContainer
           center={initialCenter}
           zoom={13}
@@ -474,16 +497,12 @@ export default function MapView({
           style={{ width: '100%', height: '100%' }}
         >
           <TileLayer
-            url={tileError ? "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" : "https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"}
-            subdomains={tileError ? ['a', 'b', 'c', 'd'] : ['mt0', 'mt1', 'mt2', 'mt3']}
+            key={mapType}
+            url={getGoogleTileUrl(mapType)}
+            subdomains={['mt0', 'mt1', 'mt2', 'mt3']}
             maxZoom={20}
             minZoom={3}
             noWrap={true}
-            eventHandlers={{
-              tileerror: () => {
-                if (!tileError) setTileError(true);
-              }
-            }}
             attribution="&copy; Google Maps"
           />
           <UserLocationInitializer userLoc={userLoc} setUserLoc={setUserLoc} hasExplicitSearch={Boolean(searchCity)} />
@@ -525,6 +544,99 @@ export default function MapView({
             activeCantt={activeCantt}
           />
         </MapContainer>
+
+        {/* Google Maps Layer Switcher (Map | Satellite | Terrain) */}
+        <div style={{
+          position: 'absolute',
+          bottom: 24,
+          left: 12,
+          zIndex: 1000,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 2,
+          background: 'rgba(255, 255, 255, 0.95)',
+          borderRadius: 8,
+          padding: 3,
+          boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+          border: '1px solid rgba(0,0,0,0.12)'
+        }}>
+          <button
+            type="button"
+            onClick={() => handleMapTypeChange('roadmap')}
+            style={{
+              padding: '5px 11px',
+              fontSize: 11,
+              fontWeight: 700,
+              borderRadius: 6,
+              border: 'none',
+              cursor: 'pointer',
+              background: mapType === 'roadmap' ? '#1a73e8' : 'transparent',
+              color: mapType === 'roadmap' ? '#ffffff' : '#3c4043',
+              boxShadow: mapType === 'roadmap' ? '0 1px 3px rgba(0,0,0,0.2)' : 'none',
+              transition: 'all 0.15s ease'
+            }}
+          >
+            Map
+          </button>
+          <button
+            type="button"
+            onClick={() => handleMapTypeChange('satellite')}
+            style={{
+              padding: '5px 11px',
+              fontSize: 11,
+              fontWeight: 700,
+              borderRadius: 6,
+              border: 'none',
+              cursor: 'pointer',
+              background: mapType === 'satellite' ? '#1a73e8' : 'transparent',
+              color: mapType === 'satellite' ? '#ffffff' : '#3c4043',
+              boxShadow: mapType === 'satellite' ? '0 1px 3px rgba(0,0,0,0.2)' : 'none',
+              transition: 'all 0.15s ease'
+            }}
+          >
+            Satellite
+          </button>
+          <button
+            type="button"
+            onClick={() => handleMapTypeChange('terrain')}
+            style={{
+              padding: '5px 11px',
+              fontSize: 11,
+              fontWeight: 700,
+              borderRadius: 6,
+              border: 'none',
+              cursor: 'pointer',
+              background: mapType === 'terrain' ? '#1a73e8' : 'transparent',
+              color: mapType === 'terrain' ? '#ffffff' : '#3c4043',
+              boxShadow: mapType === 'terrain' ? '0 1px 3px rgba(0,0,0,0.2)' : 'none',
+              transition: 'all 0.15s ease'
+            }}
+          >
+            Terrain
+          </button>
+        </div>
+
+        {/* Official Google Maps Watermark Logo */}
+        <a
+          href="https://maps.google.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            position: 'absolute',
+            bottom: 4,
+            left: 12,
+            zIndex: 999,
+            display: 'block',
+            lineHeight: 0
+          }}
+          title="Open in Google Maps"
+        >
+          <img
+            src="https://maps.gstatic.com/mapfiles/api-3/images/google4.png"
+            alt="Google"
+            style={{ height: 16, width: 'auto', display: 'block' }}
+          />
+        </a>
       </div>
     </MapErrorBoundary>
   );
