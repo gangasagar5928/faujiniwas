@@ -1,7 +1,10 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react';
+import L from 'leaflet';
+if (typeof window !== 'undefined' && !window.L) {
+  window.L = L;
+}
 import { MapContainer, TileLayer, Marker, Circle, useMap, Popup } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
-import L from 'leaflet';
 import { useFilterStore, getFilteredListings } from '../../store/filterStore';
 import { SSB_DORMS, ARMY_SCHOOLS, MILITARY_HOSPITALS, CANTEENS, CITY_ALIASES } from '../../data';
 import RentalMarker from './RentalMarker';
@@ -471,9 +474,9 @@ export default function MapView({
           style={{ width: '100%', height: '100%' }}
         >
           <TileLayer
-            url={tileError ? "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" : "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"}
-            subdomains={tileError ? ['a', 'b', 'c'] : ['a', 'b', 'c', 'd']}
-            maxZoom={19}
+            url={tileError ? "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" : "https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"}
+            subdomains={tileError ? ['a', 'b', 'c', 'd'] : ['mt0', 'mt1', 'mt2', 'mt3']}
+            maxZoom={20}
             minZoom={3}
             noWrap={true}
             eventHandlers={{
@@ -481,7 +484,7 @@ export default function MapView({
                 if (!tileError) setTileError(true);
               }
             }}
-            attribution="&copy; OpenStreetMap contributors &copy; CARTO"
+            attribution="&copy; Google Maps"
           />
           <UserLocationInitializer userLoc={userLoc} setUserLoc={setUserLoc} hasExplicitSearch={Boolean(searchCity)} />
           <MapController activeCantt={activeCantt} />

@@ -1,5 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import L from 'leaflet';
+if (typeof window !== 'undefined' && !window.L) {
+  window.L = L;
+}
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import App from './App';
 import LandingPage from './pages/LandingPage';
