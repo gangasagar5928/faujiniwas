@@ -1467,18 +1467,18 @@ html.dark-theme, body.dark-theme {
   color: #f8fafc !important;
 }
 
-.dark-theme nav {
+.dark-theme .legacy-landing-nav {
   background: rgba(8, 12, 20, 0.9) !important;
   border-bottom-color: rgba(255, 255, 255, 0.08) !important;
 }
 
-.dark-theme nav .logo,
-.dark-theme nav a,
-.dark-theme nav button {
+.dark-theme .legacy-landing-nav .logo,
+.dark-theme .legacy-landing-nav a,
+.dark-theme .legacy-landing-nav button {
   color: #ffffff !important;
 }
 
-.dark-theme nav button:hover {
+.dark-theme .legacy-landing-nav button:hover {
   color: var(--accent) !important;
 }
 

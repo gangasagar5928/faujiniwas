@@ -92,22 +92,27 @@ button, input {
   z-index: 1;
 }
 
-/* ── Glassmorphic Header ── */
+/* ── Glassmorphic Header (Full-Width Sticky) ── */
 .site-header {
-  height: 88px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  background: rgba(16, 17, 15, 0.78) !important;
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border-bottom: 1px solid var(--line);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.site-header-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  height: 84px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid var(--line);
   gap: 24px;
-  background: rgba(16, 17, 15, 0.72) !important;
-  backdrop-filter: blur(18px) saturate(160%);
-  -webkit-backdrop-filter: blur(18px) saturate(160%);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  margin: 0 -5.2vw;
   padding: 0 5.2vw;
 }
 
@@ -116,6 +121,7 @@ button, input {
   align-items: center;
   gap: 12px;
   min-width: max-content;
+  text-decoration: none;
 }
 
 .brand-mark {
@@ -154,18 +160,28 @@ button, input {
   margin-top: 3px;
 }
 
-.site-header nav {
-  display: flex;
-  gap: clamp(14px, 2.4vw, 34px);
-  font-size: 12px;
-  color: #c9c7bf !important;
+.site-header nav,
+.dark-theme .site-header nav {
+  display: flex !important;
+  align-items: center !important;
+  gap: clamp(16px, 2.5vw, 36px) !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
-.site-header nav a {
+.site-header nav a,
+.dark-theme .site-header nav a {
   color: #c9c7bf !important;
-  transition: all .2s;
-  padding: 6px 0;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all .2s ease;
+  padding: 8px 0;
   position: relative;
+  letter-spacing: 0.2px;
 }
 
 .site-header nav a:hover,
@@ -174,30 +190,53 @@ button, input {
   text-shadow: 0 0 12px rgba(215, 173, 99, 0.5);
 }
 
-.nav-cta {
-  border: 1px solid var(--line);
-  border-radius: 30px;
-  padding: 11px 19px;
+.site-header nav a.active {
   color: var(--gold) !important;
-  font-size: 12px;
   font-weight: 600;
+}
+
+.site-header nav a.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--gold);
+  border-radius: 2px;
+  box-shadow: 0 0 8px rgba(215, 173, 99, 0.6);
+}
+
+.nav-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(215, 173, 99, 0.55);
+  border-radius: 9999px;
+  padding: 10px 22px;
+  color: var(--gold) !important;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
   cursor: pointer;
   background: rgba(215, 173, 99, 0.08);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 4px 15px rgba(0, 0, 0, 0.25);
   transition: all .25s ease;
+  white-space: nowrap;
 }
 
 .nav-cta:hover {
-  background: rgba(215, 173, 99, 0.18);
+  background: rgba(215, 173, 99, 0.2);
   border-color: var(--gold);
-  box-shadow: 0 0 20px rgba(215, 173, 99, 0.35);
+  box-shadow: 0 0 20px rgba(215, 173, 99, 0.45);
   transform: translateY(-1px);
 }
 
-.nav-cta span {
-  margin-left: 8px;
+.nav-cta svg {
+  stroke: var(--gold);
+  flex-shrink: 0;
 }
 
 /* ── Hero Section ── */
@@ -911,18 +950,18 @@ button, input {
 
 /* ── Responsive Media Queries ── */
 @media (max-width: 900px) {
-  .site-header {
-    margin: 0 -4vw;
+  .site-header-inner {
     padding: 0 4vw;
+    gap: 14px;
   }
   .landing-container {
     padding: 0 4vw;
   }
   .site-header nav {
-    gap: 13px;
+    gap: 14px;
   }
   .site-header nav a {
-    font-size: 10px;
+    font-size: 11px;
   }
   .hero-visual {
     width: 40%;
@@ -948,24 +987,28 @@ button, input {
 }
 
 @media (max-width: 620px) {
-  .site-header {
+  .site-header-inner {
     height: auto;
-    min-height: 76px;
+    min-height: 72px;
     flex-wrap: wrap;
-    padding: 14px 4vw;
+    padding: 12px 4vw;
+    gap: 10px;
   }
   .site-header nav {
     order: 3;
     width: 100%;
-    overflow: auto;
-    padding: 8px 0 2px;
+    overflow-x: auto;
+    padding: 6px 0 2px !important;
+    gap: 16px;
+    -webkit-overflow-scrolling: touch;
   }
   .site-header nav a {
     white-space: nowrap;
+    font-size: 11px;
   }
   .nav-cta {
-    font-size: 10px;
-    padding: 9px 11px;
+    font-size: 11px;
+    padding: 8px 14px;
   }
   .hero {
     min-height: 590px;

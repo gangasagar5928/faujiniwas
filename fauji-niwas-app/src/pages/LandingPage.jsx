@@ -88,38 +88,46 @@ export default function LandingPage() {
 
   return (
     <div className="landing-canvas" id="landing-root">
-      <div className="landing-container">
-      
-      {/* ── Header ── */}
+            {/* ── Glassmorphic Header ── */}
       <header className="site-header">
-        <a className="brand" href="#home" aria-label="Fauji Niwas home">
-          <span className="brand-mark">
-            <img 
-              src="/logo-dark.jpg" 
-              alt="FN" 
-              onError={(e) => { e.target.style.display = 'none'; e.target.parentNode.textContent = 'FN'; }}
-            />
-          </span>
-          <span>
-            <strong>Fauji Niwas</strong>
-            <small>STAY · SERVE · BELONG</small>
-          </span>
-        </a>
-        <nav aria-label="Main navigation">
-          <a href="#features">Features</a>
-          <a href="#difference">Why us</a>
-          <a href="#calculator">HRA calculator</a>
-          <a href="#pulses">URC updates</a>
-          <a href="#about">About</a>
-        </nav>
-        <button 
-          type="button"
-          className="nav-cta" 
-          onClick={() => handleLaunchApp()}
-        >
-          Find a stay <span>↗</span>
-        </button>
+        <div className="site-header-inner">
+          <a className="brand" href="#home" aria-label="Fauji Niwas home">
+            <span className="brand-mark">
+              <img 
+                src="/logo-dark.jpg" 
+                alt="FN" 
+                onError={(e) => { e.target.style.display = 'none'; e.target.parentNode.textContent = 'FN'; }}
+              />
+            </span>
+            <span>
+              <strong>Fauji Niwas</strong>
+              <small>STAY · SERVE · BELONG</small>
+            </span>
+          </a>
+          <nav aria-label="Main navigation">
+            <a href="#home" className="active">Home</a>
+            <a href="#features">Features</a>
+            <a href="#calculator">Calculator</a>
+            <a href="#pulses">URC Pulses</a>
+            <a href="#about">About</a>
+            <a href="#policy">Policy</a>
+          </nav>
+          <button 
+            type="button"
+            className="nav-cta" 
+            onClick={() => handleLaunchApp()}
+            aria-label="Find a stay"
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ marginRight: '6px' }}>
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            Find a Stay
+          </button>
+        </div>
       </header>
+
+      <div className="landing-container">
 
       {/* ── Main Content ── */}
       <main>
@@ -402,7 +410,7 @@ export default function LandingPage() {
       </main>
 
       {/* ── Footer ── */}
-      <footer className="footer">
+      <footer className="footer" id="policy">
         <div className="footer-main">
           <a className="brand" href="#home">
             <span className="brand-mark">
