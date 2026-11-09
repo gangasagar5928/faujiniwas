@@ -19,6 +19,13 @@ const firebaseConfig = {
   appId:             import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
+// Validate runtime environment variables
+if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
+  if (typeof window !== 'undefined') {
+    console.warn('[Security / Config] Required Firebase environment variables missing. Ensure .env is populated.');
+  }
+}
+
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);

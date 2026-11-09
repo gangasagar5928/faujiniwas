@@ -11,7 +11,9 @@ import com.google.firebase.FirebaseOptions
  * identifiers — not secrets. Firestore rules still gate every read/write.
  */
 object FirebaseConfig {
-    const val API_KEY = "AIzaSyAlVmqtNiwnZsb8XlmcOZ49ceZWyRzGeSw"
+    val API_KEY: String = BuildConfig.FIREBASE_API_KEY.ifEmpty {
+        System.getenv("FIREBASE_API_KEY") ?: ""
+    }
     const val PROJECT_ID = "rentmap-8075d"
     const val APP_ID = "1:4164892727:web:56d483aa6cd2b1dabe27b2"
     const val AUTH_DOMAIN = "rentmap-8075d.firebaseapp.com"

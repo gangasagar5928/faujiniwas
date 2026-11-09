@@ -15,6 +15,11 @@ android {
         versionCode = 1
         versionName = "0.1.0"
         vectorDrawables { useSupportLibrary = true }
+
+        val firebaseApiKey = (project.findProperty("FIREBASE_API_KEY") as? String)
+            ?: System.getenv("FIREBASE_API_KEY")
+            ?: ""
+        buildConfigField("String", "FIREBASE_API_KEY", "\"$firebaseApiKey\"")
     }
 
     buildTypes {
@@ -43,6 +48,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     packaging {
