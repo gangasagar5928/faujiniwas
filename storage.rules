@@ -1,0 +1,57 @@
+rules_version = '2';
+
+// ── FaujiNiwas Firebase Storage Rules ──────────────────────────────
+// Hardened with MIME-type verification, size boundaries, and ownership checks:
+//   • listings/{...}  → public read (photos on map/cards), owner upload, image/* only, max 10MB
+//   • chats/{...}     → participants only (media shared inside a chat), image/* only, max 15MB
+//   • verifications/  → owner writes encrypted military IDs (max 20MB), admin/owner reads only
+//   • Default deny on any other path
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    // ── Listing photos: publicly viewable, owner uploads ───────────
+    // Path: listings/{ownerUid}_{timestamp}_{index}.webp
+    match /listings/{fileName} {
+      allow read: if true;
+      allow write: if signedIn()
+        && fileName.matches('^' + request.auth.uid + '_.*$')
+        && request.resource.size < 10 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    // ── Chat media: visible only to the chat's participants ────────
+    // Path: chats/{chatId}/{file}
+    match /chats/{chatId}/{file} {
+      function isChatMember() {
+        return signedIn()
+          && chatId.matches('.*_' + request.auth.uid + '(_.*)?$');
+      }
+      allow read: if isChatMember();
+      allow write: if isChatMember()
+        && request.resource.size < 15 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    // ── Verification documents: encrypted military IDs ─────────────
+    // Path: verifications/{ownerUid}_{timestamp}.enc
+    match /verifications/{fileName} {
+      allow write: if signedIn()
+        && fileName.matches('^' + request.auth.uid + '_')
+        && request.resource.size < 20 * 1024 * 1024;
+      allow read: if signedIn() && (
+        fileName.matches('^' + request.auth.uid + '_')
+        || firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
+    }
+
+    // ── Default deny catch-all ─────────────────────────────────────
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

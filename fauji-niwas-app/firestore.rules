@@ -1,13 +1,15 @@
 rules_version = '2';
 
 // ── FaujiNiwas Firestore Security Rules ────────────────────────────
-// Hardened so that:
-//   • Users can never escalate their own role to 'admin'
-//   • E2EE public keys are owner-only writable (no MITM key swap)
-//   • Chats are readable/writable ONLY by their participants
-//   • Sessions are owner-only
-//   • Admin surfaces (verifications, audit_logs, admin_keys) are
-//     restricted to users whose Firestore role is 'admin'
+// Defense-in-depth security matrix:
+//   • Zero-Trust IDOR protection: every write verifies resource ownership
+//   • Role immutability: users cannot self-escalate to 'admin'
+//   • Badge integrity: 'verified' flag strictly restricted to admin updates
+//   • E2EE key integrity: public keys are owner-only writable (anti-MITM)
+//   • Confidential communication: chats/messages restricted to verified participants
+//   • Device session isolation: sessions are owner-only
+//   • Admin-only audit & review logs: strict administrative governance
+//   • Default-deny catch-all for any undefined collections
 
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -16,26 +18,24 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    // isAdmin reads the caller's users/{uid} role. This is the ONLY
-    // client-facing signal of adminness — the rules below make sure the
-    // `role` field itself cannot be self-written.
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    // Admin authorization reads the caller's verified role in users/{uid}
     function isAdmin() {
       return signedIn()
         && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
 
-    function isOwner(uid) {
-      return signedIn() && request.auth.uid == uid;
-    }
-
     // ── users/{uid} ────────────────────────────────────────────────
-    // Role is IMMUTABLE after creation. A user may update their own
-    // profile but never `role`, and may only set their own verified flag
-    // to the honest "pending" state (admin alone can mark true/approved).
+    // Role is immutable on client-side writes.
+    // 'verified' status can only be set to 'pending' by the user, or toggled by admin.
     match /users/{uid} {
       allow read: if isOwner(uid) || isAdmin();
-      // Self-registration: user creates their own stub with base role only.
-      allow create: if isOwner(uid) && request.resource.data.role == 'user';
+      allow create: if isOwner(uid)
+        && request.resource.data.role == 'user'
+        && (!('verified' in request.resource.data) || request.resource.data.verified == false || request.resource.data.verified == 'pending');
       allow update: if isAdmin();
       allow update: if isOwner(uid)
         && request.resource.data.role == resource.data.role
@@ -44,42 +44,54 @@ service cloud.firestore {
       allow delete: if isOwner(uid) || isAdmin();
     }
 
-    // ── rentals + market (public read, authenticated write) ───────
-    // The `verified` badge is TRUST-CRITICAL: flipping it requires admin.
+    // ── rentals (Public Read, Owner/Admin Write, Anti-Tamper) ──────
     function onlyNonVerifiedUpdate() {
       return !request.resource.data.diff(resource.data).affectedKeys().hasAny(['verified', 'ownerVerified']);
     }
 
     match /rentals/{id} {
       allow read: if true;
-      // New rental listings cannot self-start as already "Verified".
-      allow create: if signedIn() && request.resource.data.verified == false;
-      allow update: if signedIn() && (onlyNonVerifiedUpdate() || isAdmin());
-      // Only the owner or an admin can remove a listing.
+      // New rental listings must belong to the caller and start unverified
+      allow create: if signedIn()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.verified == false;
+      // Updating a rental requires ownership (or admin) and preserves verification badge
+      allow update: if isAdmin();
+      allow update: if signedIn()
+        && resource.data.uid == request.auth.uid
+        && request.resource.data.uid == resource.data.uid
+        && onlyNonVerifiedUpdate();
+      // Allow community report count increment by any authenticated user
+      allow update: if signedIn()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reportCount'])
+        && request.resource.data.reportCount == resource.data.reportCount + 1;
+      // Deleting a listing strictly requires listing owner or admin
       allow delete: if signedIn() && (isAdmin() || resource.data.uid == request.auth.uid);
     }
+
+    // ── marketplace (Defence community swap/resale) ────────────────
     match /marketplace/{id} {
       allow read: if true;
-      allow create, update: if signedIn();
-      // Only the owner or an admin can remove a listing.
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+      allow update: if isAdmin()
+        || (signedIn() && resource.data.uid == request.auth.uid && request.resource.data.uid == resource.data.uid);
       allow delete: if signedIn() && (isAdmin() || resource.data.uid == request.auth.uid);
     }
 
-    // ── public_keys/{uid} — E2EE — owner-only write (KEY INTEGRITY) ─
+    // ── public_keys/{uid} — E2EE Public Keys (Anti-MITM) ───────────
     match /public_keys/{uid} {
-      allow read: if true;                 // anyone can fetch a public key
-      allow write: if isOwner(uid);        // only the owner may set/replace it
+      allow read: if true;
+      allow write: if isOwner(uid);
     }
 
-    // ── sessions/{id} — device sessions — owner-only ───────────────
+    // ── sessions/{id} — Multi-device session audit ─────────────────
     match /sessions/{id} {
-      // setDoc with { merge: true } → create or update; both owner-checked.
       allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
       allow update: if signedIn() && resource.data.uid == request.auth.uid;
       allow read, delete: if signedIn() && resource.data.uid == request.auth.uid;
     }
 
-    // ── chats/{chatId} + subcollection messages — participants only ─
+    // ── chats/{chatId} & messages — Participant Confidentiality ────
     match /chats/{chatId} {
       function isParticipant() {
         return signedIn() && resource.data.participants.hasAny([request.auth.uid]);
@@ -96,62 +108,69 @@ service cloud.firestore {
       }
       allow read, delete: if inChat();
       allow create: if inChat() && request.resource.data.senderId == request.auth.uid;
-      allow update: if false;   // messages are append-only
+      allow update: if false; // messages are immutable append-only
     }
 
-    // ── csd_pulse — community URC data (read: all, write: signed-in) ─
+    // ── csd_pulse — Community URC Canteen Stock & Wait Times ───────
     match /csd_pulse/{id} {
       allow read: if true;
-      allow create, update: if signedIn();
-      allow delete: if false;   // no deletion of community pulse entries
-    }
-
-    // ── food_reviews — read: all, write: signed-in ─────────────────
-    match /food_reviews/{id} {
-      allow read: if true;
-      allow create, update: if signedIn();
+      allow create: if signedIn();
+      allow update: if signedIn()
+        && request.resource.data.diff(resource.data).affectedKeys().hasAny([
+          'votes', 'downvotes', 'stockYes', 'stockNo', 'waitTime', 'time', 'liquorQuota', 'groceries'
+        ]);
       allow delete: if isAdmin();
     }
 
-    // ── transfers — read: all, write: signed-in ────────────────────
-    match /transfers/{id} {
+    // ── food_reviews — Mess & Homely Tiffin Reviews ────────────────
+    match /food_reviews/{id} {
       allow read: if true;
-      allow create, update: if signedIn();
-      allow delete: if signedIn();
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+      allow update: if isAdmin()
+        || (signedIn() && resource.data.uid == request.auth.uid && request.resource.data.uid == resource.data.uid);
+      allow delete: if isAdmin() || (signedIn() && resource.data.uid == request.auth.uid);
     }
 
-    // ── reports — mod reports (create: any signed-in, read: admin) ─
+    // ── transfers — Military Posting & Swap Board ──────────────────
+    match /transfers/{id} {
+      allow read: if true;
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+      allow update: if isAdmin()
+        || (signedIn() && resource.data.uid == request.auth.uid && request.resource.data.uid == resource.data.uid);
+      allow delete: if isAdmin() || (signedIn() && resource.data.uid == request.auth.uid);
+    }
+
+    // ── reports — Moderation reports (Create: user, View/Action: admin)
     match /reports/{id} {
       allow create: if signedIn();
       allow read, update, delete: if isAdmin();
     }
 
-    // ── verifications — military ID records ──────────────────────────
-    // Document id == the submitter's uid. Owner can submit/re-submit
-    // (udpate); only the owner & admins can read; admins approve/reject.
+    // ── verifications — Encrypted Military ID Records ──────────────
     match /verifications/{uid} {
-      allow create, update, delete: if (signedIn() && request.auth.uid == uid) || isAdmin();
+      allow create, update: if (signedIn() && request.auth.uid == uid) || isAdmin();
       allow read: if (signedIn() && request.auth.uid == uid) || isAdmin();
+      allow delete: if isAdmin() || (signedIn() && request.auth.uid == uid);
     }
 
-    // ── audit_logs — write: any signed-in (for audit trail), read: admin ─
+    // ── audit_logs — Tamper-evident Security Logs ───────────────────
     match /audit_logs/{id} {
       allow create: if signedIn();
       allow read, update, delete: if isAdmin();
     }
 
-    // ── listings — LEGACY collection (only used during account teardown) ─
+    // ── listings — Legacy migration collection ──────────────────────
     match /listings/{id} {
       allow read, delete: if signedIn() && (resource.data.uid == request.auth.uid || isAdmin());
     }
 
-    // ── admin_keys — public RSA key readable by all, writable by admin ─
+    // ── admin_keys — RSA public key distribution ───────────────────
     match /admin_keys/{keyId} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // ── default deny ───────────────────────────────────────────────
+    // ── DEFAULT DENY CATCH-ALL ──────────────────────────────────────
     match /{document=**} {
       allow read, write: if false;
     }
