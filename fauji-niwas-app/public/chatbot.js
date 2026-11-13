@@ -65,6 +65,16 @@ const FLOW = [
 }
 ];
 
+function cbEscape(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
 let botState = {};
 let botStep = 0;
 let botOpen = false;
@@ -431,7 +441,7 @@ function createChatbotUI() {
             matches.forEach(m => {
                 const item = document.createElement('button');
                 item.style.cssText = `background:none;border:none;border-bottom:1px solid rgba(255,255,255,0.05);color:#f1f1ee;padding:9px 13px;font-size:13px;cursor:pointer;text-align:left;font-family:'Outfit',sans-serif;transition:background .15s;`;
-                item.innerHTML = `📍 ${m}`;
+                item.textContent = `📍 ${m}`;
                 item.onmouseenter = () => item.style.background = 'rgba(255,153,51,0.1)';
                 item.onmouseleave = () => item.style.background = 'none';
                 item.onclick = () => {
@@ -608,24 +618,28 @@ function cbShowResults() {
         const resEl = document.getElementById('cb-results');
         resEl.innerHTML = '';
 
+        const safeStation = cbEscape(station);
         if (!results.length) {
-            cbAddMsg(`😔 No listings found in <b>${station}</b> matching your criteria yet. Try a broader search or check back soon.`, 'bot');
+            cbAddMsg(`😔 No listings found in <b>${safeStation}</b> matching your criteria yet. Try a broader search or check back soon.`, 'bot');
             document.getElementById('cb-restart').style.display = 'block';
             return;
         }
 
-        cbAddMsg(`✅ Found <b>${results.length} listing${results.length > 1 ? 's' : ''}</b> for <b>${HRA_LIMITS[rank]?.label || rank}</b> in <b>${station}</b>:`, 'bot');
+        cbAddMsg(`✅ Found <b>${results.length} listing${results.length > 1 ? 's' : ''}</b> for <b>${cbEscape(HRA_LIMITS[rank]?.label || rank)}</b> in <b>${safeStation}</b>:`, 'bot');
 
         results.forEach(l => {
             const card = document.createElement('div');
             card.className = 'cb-listing-card';
+            const safeName = cbEscape(l.name || `${l.type} ${l.city}`);
+            const safeArea = cbEscape(l.area || 'Cantt Area');
+            const safeCity = cbEscape(l.city || '');
             card.innerHTML = `
-            <b>${l.name || l.type + ' ' + l.city}</b>
+            <b>${safeName}</b>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
-            <span>📍 ${l.area || 'Cantt Area'}, ${l.city}${l.verified ? ' · ✅ Verified' : ''}</span>
-            <span class="cb-price">₹${(l.price||0).toLocaleString()}/mo</span>
+            <span>📍 ${safeArea}, ${safeCity}${l.verified ? ' · ✅ Verified' : ''}</span>
+            <span class="cb-price">₹${(Number(l.price)||0).toLocaleString()}/mo</span>
             </div>
-            ${l.distance ? `<span>🚗 ${l.distance} km from gate</span>` : ''}`;
+            ${l.distance ? `<span>🚗 ${cbEscape(l.distance)} km from gate</span>` : ''}`;
             card.onclick = () => {
                 // If on app.html, open the detail modal via global API
                 if (window.openDetailModal && l.id) {
