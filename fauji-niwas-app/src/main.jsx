@@ -7,6 +7,7 @@ if (typeof window !== 'undefined' && !window.L) {
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import App from './App';
 import LandingPage from './pages/LandingPage';
+import AdminPage from './pages/AdminPage';
 import './index.css';
 
 // Global ErrorBoundary — prevents silent white screen on mobile crashes
@@ -56,6 +57,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="/landing" element={<LandingPage />} />
           <Route path="/app" element={<App />} />
           <Route path="/app.html" element={<App />} />
+          <Route path="/admin" element={<AdminPage />} />
           <Route path="*" element={<LandingPage />} />
         </Routes>
       </BrowserRouter>

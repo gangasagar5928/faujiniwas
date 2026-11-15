@@ -3,9 +3,11 @@ import { motion } from 'framer-motion';
 import { db, auth } from '../../firebase';
 import { collection, query, where, onSnapshot, doc, updateDoc, deleteDoc, getDocs, addDoc } from 'firebase/firestore';
 import { ModalContext } from '../../App';
+import { useAuth } from '../../hooks/useAuth';
 import styles from './AdminModal.module.css';
 
 export default function AdminModal({ onClose }) {
+  const { user, isAdmin, loading: authLoading } = useAuth();
   const ctx = useContext(ModalContext);
   const [activeTab, setActiveTab] = useState('verifications'); // verifications, reports
   const [pendingUsers, setPendingUsers] = useState([]);
@@ -14,6 +16,8 @@ export default function AdminModal({ onClose }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!isAdmin) return;
+
     // 1. Listen for pending verifications
     const qUsers = query(collection(db, 'users'), where('verified', '==', 'pending'));
     const unsubUsers = onSnapshot(qUsers, (snap) => {
@@ -28,7 +32,7 @@ export default function AdminModal({ onClose }) {
     });
 
     return () => { unsubUsers(); unsubReports(); };
-  }, []);
+  }, [isAdmin]);
 
   const handleVerify = async (userId, status) => {
     try {
@@ -100,6 +104,24 @@ export default function AdminModal({ onClose }) {
       ctx.showToast(e.message, 'err');
     }
   };
+
+  if (authLoading) return null;
+  if (!user || !isAdmin) {
+    return (
+      <div className="modal-backdrop" onClick={onClose}>
+        <div className="mc" style={{ maxWidth: 450, padding: 32, textAlign: 'center' }}>
+          <div style={{ fontSize: 44, marginBottom: 12 }}>🛡️</div>
+          <h2 style={{ color: '#ef4444', fontSize: 18, marginBottom: 8 }}>Restricted Access</h2>
+          <p style={{ color: '#94a3b8', fontSize: 13, marginBottom: 20 }}>
+            403 Forbidden — Administrator clearance required.
+          </p>
+          <button onClick={onClose} className="bp" style={{ maxWidth: 200, margin: '0 auto' }}>
+            Close
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="modal-backdrop" onClick={e => e.target === e.currentTarget && onClose()}>

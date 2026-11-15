@@ -3,10 +3,12 @@ import { db } from '../../firebase';
 import { collection, query, where, getDocs, doc, updateDoc, orderBy, limit } from 'firebase/firestore';
 import { decryptFileBytes, getPrivateKey, generateAdminRsaKeys, exportAdminKeyBackup, importAdminKeyBackup } from '../../security/documentEncrypt';
 import { setDoc, getDoc } from 'firebase/firestore';
+import { useAuth } from '../../hooks/useAuth';
 import Loader from '../UI/Loader';
 import styles from './AdminPanel.module.css';
 
 export default function AdminPanel({ onClose }) {
+  const { user, isAdmin, loading: authLoading } = useAuth();
   const [activeTab, setActiveTab] = useState('verifications'); // verifications | logs | flags | keyvault
   const [verifications, setVerifications] = useState([]);
   const [logs, setLogs] = useState([]);
@@ -34,9 +36,11 @@ export default function AdminPanel({ onClose }) {
         console.warn("Keys setup failed:", e);
       }
     };
-    initKeys();
-    loadData(activeTab);
-  }, [activeTab]);
+    if (isAdmin) {
+      initKeys();
+      loadData(activeTab);
+    }
+  }, [activeTab, isAdmin]);
 
   const loadData = async (tab) => {
     setLoading(true);
@@ -169,6 +173,24 @@ export default function AdminPanel({ onClose }) {
       alert("Generation failed: " + e.message);
     }
   };
+
+  if (authLoading) return <Loader />;
+  if (!user || !isAdmin) {
+    return (
+      <div style={{ padding: 32, textAlign: 'center', color: '#ef4444', background: '#0b1325', borderRadius: 16 }}>
+        <div style={{ fontSize: 48, marginBottom: 16 }}>🛡️</div>
+        <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 8, color: '#f8fafc' }}>Restricted Cantonment Access</h3>
+        <p style={{ color: '#94a3b8', fontSize: 13, marginBottom: 20 }}>
+          403 Forbidden — Verified administrator clearance required.
+        </p>
+        {onClose && (
+          <button onClick={onClose} style={{ padding: '8px 20px', background: '#f59e0b', color: '#000', border: 'none', borderRadius: 8, fontWeight: 700, cursor: 'pointer' }}>
+            Return to Dashboard
+          </button>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
