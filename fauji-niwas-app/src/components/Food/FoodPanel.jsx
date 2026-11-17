@@ -4,6 +4,8 @@ import { db, collection, query, where, onSnapshot, addDoc, serverTimestamp } fro
 import { FOOD_BY_CITY, SSB_DORMS } from '../../data';
 import { ModalContext } from '../../App';
 import { useAuth } from '../../hooks/useAuth';
+import { sanitizeText } from '../../security/sanitize';
+import { checkRateLimit } from '../../security/rateLimit';
 import styles from './FoodPanel.module.css';
 
 const TIFFIN_SERVICES = [
@@ -92,16 +94,18 @@ export default function FoodPanel({ city, onClose }) {
   const handleRate = async () => {
     if (!user) return ctx.showToast('Login to rate', 'err');
     if (submitting) return;
+    const rl = checkRateLimit('review');
+    if (!rl.allowed) return ctx.showToast(rl.message, 'err');
     setSubmitting(true);
     try {
       const vendorId = `${key}_${selectedVendor.name}`;
       await addDoc(collection(db, 'food_reviews'), {
         vendorId,
         city: key,
-        rating: newReview.rating,
-        comment: newReview.comment,
+        rating: Math.min(5, Math.max(1, Number(newReview.rating) || 5)),
+        comment: sanitizeText(newReview.comment, 500),
         uid: user.uid,
-        userName: user.displayName || user.phoneNumber || 'Fauji Member',
+        userName: sanitizeText(user.displayName || user.phoneNumber || 'Fauji Member', 60),
         createdAt: serverTimestamp()
       });
       ctx.showToast('Rating submitted! 🍽️', 'ok');

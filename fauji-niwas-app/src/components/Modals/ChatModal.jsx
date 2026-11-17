@@ -6,6 +6,8 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { ModalContext } from '../../App';
 import { useAuth } from '../../hooks/useAuth';
 import { useE2EE } from '../../hooks/useE2EE';
+import { sanitizeText } from '../../security/sanitize';
+import { checkRateLimit } from '../../security/rateLimit';
 import styles from './ChatModal.module.css';
 
 export default function ChatModal({ config, onClose }) {
@@ -87,6 +89,8 @@ export default function ChatModal({ config, onClose }) {
   const sendMessage = async (content, type = 'text') => {
     if (!content.trim() && type === 'text') return;
     if (!user) return ctx.showToast('Login to send messages', 'err');
+    const rl = checkRateLimit('chat');
+    if (!rl.allowed) return ctx.showToast(rl.message, 'err');
     if (!isReady) return ctx.showToast('E2EE Keys not initialized yet. Wait a moment.', 'err');
 
     setSending(true);
@@ -97,7 +101,8 @@ export default function ChatModal({ config, onClose }) {
       let mediaCipher = '', mediaIv = '';
 
       if (type === 'text') {
-         const enc = await encryptText(remoteUid, content);
+         const cleanText = sanitizeText(content, 2000);
+         const enc = await encryptText(remoteUid, cleanText);
          textCipher = enc.ciphertextBase64;
          textIv = enc.ivBase64;
       } else if (type === 'image') {

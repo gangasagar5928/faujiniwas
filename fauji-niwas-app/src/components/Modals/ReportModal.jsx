@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { motion } from 'framer-motion';
 import { auth, db, doc, updateDoc, increment, collection, addDoc } from '../../firebase';
 import { ModalContext } from '../../App';
+import { checkRateLimit } from '../../security/rateLimit';
 import styles from './ReportModal.module.css';
 
 const springTap = { whileTap: { scale: 0.97 }, transition: { type: 'spring', stiffness: 400, damping: 24 } };
@@ -11,7 +12,9 @@ export default function ReportModal({ id, onClose }) {
 
   const submit = async () => {
     const sel = document.querySelector('input[name="rr"]:checked');
-    if (!sel) { ctx.showToast('Please select a reason', 'err'); return; }
+    if (!sel || !reasons.includes(sel.value)) { ctx.showToast('Please select a valid reason', 'err'); return; }
+    const rl = checkRateLimit('report');
+    if (!rl.allowed) { ctx.showToast(rl.message, 'err'); return; }
     try {
       await updateDoc(doc(db, 'rentals', id), { reportCount: increment(1) });
       

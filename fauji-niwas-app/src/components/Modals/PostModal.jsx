@@ -4,6 +4,8 @@ import { auth, db, collection, addDoc, updateDoc, doc, increment } from '../../f
 import { ModalContext } from '../../App';
 import { useAuth } from '../../hooks/useAuth';
 import { useFilterStore } from '../../store/filterStore';
+import { sanitizeListingData } from '../../security/sanitize';
+import { checkRateLimit } from '../../security/rateLimit';
 import styles from './PostModal.module.css';
 
 // Minimal pass-through PostModal — auth + single listing form
@@ -74,6 +76,8 @@ export default function PostModal({ onClose }) {
 
   const handleSendOtp = async () => {
     if (phone.length < 10) return ctx.showToast('Enter valid 10-digit number', 'err');
+    const rl = checkRateLimit('otp');
+    if (!rl.allowed) return ctx.showToast(rl.message, 'err');
     setLoading(true);
     try {
       await initRecaptcha();
@@ -119,6 +123,8 @@ export default function PostModal({ onClose }) {
     if (!form.name || !form.area || !form.city || !form.price || !form.phone) {
       ctx.showToast('Please fill all required fields', 'err'); return;
     }
+    const rl = checkRateLimit('listing');
+    if (!rl.allowed) return ctx.showToast(rl.message, 'err');
     setLoading(true);
     try {
       // 1. Geocode
@@ -164,8 +170,9 @@ export default function PostModal({ onClose }) {
 
       // 3. Save to Firestore
       const coll = view === 'market' ? 'marketplace' : 'rentals';
+      const sanitized = sanitizeListingData(form);
       await addDoc(collection(db, coll), {
-        ...form,
+        ...sanitized,
         ownerType: view === 'market' ? 'individual' : finalOwnerType,
         price: Number(form.price),
         lat, lng,
