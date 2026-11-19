@@ -49,7 +49,7 @@ export async function deriveSharedAesKey(localPrivateKey, remotePublicKey) {
     },
     localPrivateKey,
     { name: 'AES-GCM', length: 256 },
-    true, // Extractable false in prod, true here just in case debugging
+    false, // Non-extractable for production security (prevents key theft via XSS)
     ['encrypt', 'decrypt']
   );
 }

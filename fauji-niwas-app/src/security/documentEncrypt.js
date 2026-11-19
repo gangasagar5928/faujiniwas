@@ -68,8 +68,9 @@ export async function generateAdminRsaKeys() {
 
 /**
  * Encrypted Key Backup & Restore Flow (PBKDF2 + AES-GCM)
+ * Hardened with OWASP-recommended 600,000 iterations for PBKDF2-HMAC-SHA256.
  */
-async function derivePassphraseKey(passphrase, salt) {
+async function derivePassphraseKey(passphrase, salt, iterations = 600000) {
   const enc = new TextEncoder();
   const baseKey = await window.crypto.subtle.importKey(
     'raw',
@@ -82,7 +83,7 @@ async function derivePassphraseKey(passphrase, salt) {
     {
       name: 'PBKDF2',
       salt,
-      iterations: 100000,
+      iterations,
       hash: 'SHA-256'
     },
     baseKey,
@@ -99,7 +100,7 @@ export async function exportAdminKeyBackup(passphrase) {
   const jwk = await window.crypto.subtle.exportKey('jwk', privateKey);
   const salt = window.crypto.getRandomValues(new Uint8Array(16));
   const iv = window.crypto.getRandomValues(new Uint8Array(12));
-  const encKey = await derivePassphraseKey(passphrase, salt);
+  const encKey = await derivePassphraseKey(passphrase, salt, 600000);
   
   const enc = new TextEncoder();
   const plaintext = enc.encode(JSON.stringify(jwk));
@@ -112,8 +113,10 @@ export async function exportAdminKeyBackup(passphrase) {
   const toHex = (buf) => Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
   
   return JSON.stringify({
-    version: '1.0',
+    version: '2.0',
     app: 'FaujiNiwas',
+    kdf: 'PBKDF2-HMAC-SHA256',
+    iterations: 600000,
     salt: toHex(salt),
     iv: toHex(iv),
     payload: toHex(ciphertext),
@@ -131,8 +134,9 @@ export async function importAdminKeyBackup(backupJsonString, passphrase) {
   const salt = fromHex(backup.salt);
   const iv = fromHex(backup.iv);
   const ciphertext = fromHex(backup.payload);
+  const iterations = backup.iterations || 100000;
   
-  const encKey = await derivePassphraseKey(passphrase, salt);
+  const encKey = await derivePassphraseKey(passphrase, salt, iterations);
   const decrypted = await window.crypto.subtle.decrypt(
     { name: 'AES-GCM', iv },
     encKey,

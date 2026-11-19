@@ -24,7 +24,7 @@ export default defineConfig({
         server.middlewares.use((req, res, next) => {
           // SPA fallback for dev server (React Router will handle /app)
           const url = new URL(req.url, 'http://localhost');
-          if (url.pathname === '/app' || url.pathname.startsWith('/app/')) {
+          if (url.pathname === '/app' || url.pathname.startsWith('/app/') || url.pathname === '/admin' || url.pathname.startsWith('/admin/')) {
             req.url = '/app.html' + url.search;
           }
           next();
@@ -32,8 +32,12 @@ export default defineConfig({
       }
     }
   ],
+  esbuild: {
+    drop: process.env.NODE_ENV === 'production' ? ['console', 'debugger'] : [],
+  },
   build: {
     outDir: 'dist',
+    sourcemap: false,
     rollupOptions: {
       input: {
         main: './index.html',

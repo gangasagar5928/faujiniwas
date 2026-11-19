@@ -9,6 +9,8 @@ import Loader from '../UI/Loader';
 import AdminPanel from '../Admin/AdminPanel';
 import { useFilterStore } from '../../store/filterStore';
 import { useUserStore } from '../../store/userStore';
+import { sanitizeText } from '../../security/sanitize';
+import { checkRateLimit } from '../../security/rateLimit';
 import styles from './ProfileModal.module.css';
 
 const TRANSLATIONS = {
@@ -91,6 +93,7 @@ export default function ProfileModal({ onClose }) {
   
   // Email login states
   const [useEmail, setUseEmail] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -109,11 +112,13 @@ export default function ProfileModal({ onClose }) {
   }, [dbUser?.name]);
 
   const handleSaveName = async () => {
-    if (!userName.trim()) return;
+    const cleanName = sanitizeText(userName, 60);
+    if (!cleanName) return;
     setLoading(true);
     try {
       const { db, doc, updateDoc } = await import('../../firebase');
-      await updateDoc(doc(db, 'users', user.uid), { name: userName.trim() });
+      await updateDoc(doc(db, 'users', user.uid), { name: cleanName });
+      setUserName(cleanName);
       ctx.showToast('Profile name updated! 👤', 'ok');
     } catch (e) {
       console.error(e);
@@ -220,33 +225,57 @@ export default function ProfileModal({ onClose }) {
     setLoading(false);
   };
   
-  const handleEmailLogin = async () => {
+  const handleEmailAuth = async () => {
     if (!email || !password) return ctx.showToast('Enter email and password', 'err');
-    if (password.length < 6) return ctx.showToast('Password must be at least 6 characters', 'err');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) return ctx.showToast('Enter a valid email address', 'err');
+
+    const rl = checkRateLimit('login');
+    if (!rl.allowed) return ctx.showToast(rl.message, 'err');
+
+    if (isSignUp) {
+      if (password.length < 8) return ctx.showToast('Password must be at least 8 characters', 'err');
+      if (!/[A-Za-z]/.test(password) || !/[0-9]/.test(password)) {
+        return ctx.showToast('Password must contain both letters and numbers', 'err');
+      }
+    }
+
     setLoading(true);
     try {
-      const { signInWithEmailAndPassword } = await import('firebase/auth');
-      await signInWithEmailAndPassword(auth, email, password);
-      ctx.showToast('Logged in successfully! 👤', 'ok');
-    } catch (e) {
-      if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential' || e.code === 'auth/wrong-password') {
-        // Try creating an account
-        try {
-          const { createUserWithEmailAndPassword } = await import('firebase/auth');
-          await createUserWithEmailAndPassword(auth, email, password);
-          ctx.showToast('Account created and logged in! 🎉', 'ok');
-        } catch (signUpError) {
-          if (signUpError.code === 'auth/email-already-in-use') {
-            ctx.showToast('Incorrect password for this email.', 'err');
-          } else {
-            console.warn("Sign up failed:", signUpError);
-            ctx.showToast('Sign up failed. Please try again.', 'err');
-          }
-        }
+      if (isSignUp) {
+        const { createUserWithEmailAndPassword } = await import('firebase/auth');
+        await createUserWithEmailAndPassword(auth, email.trim(), password);
+        ctx.showToast('Account created and logged in! 🎉', 'ok');
       } else {
-        console.warn("Login failed:", e);
-        ctx.showToast('Login failed: ' + (e.message || 'Please try again.'), 'err');
+        const { signInWithEmailAndPassword } = await import('firebase/auth');
+        await signInWithEmailAndPassword(auth, email.trim(), password);
+        ctx.showToast('Logged in successfully! 👤', 'ok');
       }
+    } catch (e) {
+      if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {
+        ctx.showToast('Invalid email or password credentials.', 'err');
+      } else if (e.code === 'auth/email-already-in-use') {
+        ctx.showToast('An account already exists with this email. Please sign in.', 'err');
+      } else if (e.code === 'auth/user-not-found') {
+        ctx.showToast('No account found with this email. Please create an account.', 'err');
+      } else {
+        ctx.showToast(e.message || 'Authentication failed', 'err');
+      }
+    }
+    setLoading(false);
+  };
+
+  const handlePasswordReset = async () => {
+    if (!email.trim()) return ctx.showToast('Enter your email address first', 'err');
+    const rl = checkRateLimit('login');
+    if (!rl.allowed) return ctx.showToast(rl.message, 'err');
+    setLoading(true);
+    try {
+      const { sendPasswordResetEmail } = await import('firebase/auth');
+      await sendPasswordResetEmail(auth, email.trim());
+      ctx.showToast('Password reset link sent to your email! ✉️', 'ok', 6000);
+    } catch (e) {
+      ctx.showToast(e.message || 'Password reset request failed', 'err');
     }
     setLoading(false);
   };
@@ -353,6 +382,42 @@ export default function ProfileModal({ onClose }) {
 
             {useEmail ? (
               <>
+                <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+                  <button
+                    type="button"
+                    onClick={() => setIsSignUp(false)}
+                    style={{
+                      flex: 1,
+                      padding: '6px 10px',
+                      background: !isSignUp ? 'var(--accent)' : 'rgba(255,255,255,0.05)',
+                      color: !isSignUp ? '#fff' : 'var(--muted)',
+                      border: '1px solid var(--border2)',
+                      borderRadius: 8,
+                      fontSize: 12,
+                      fontWeight: 700,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Sign In
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsSignUp(true)}
+                    style={{
+                      flex: 1,
+                      padding: '6px 10px',
+                      background: isSignUp ? 'var(--accent)' : 'rgba(255,255,255,0.05)',
+                      color: isSignUp ? '#fff' : 'var(--muted)',
+                      border: '1px solid var(--border2)',
+                      borderRadius: 8,
+                      fontSize: 12,
+                      fontWeight: 700,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Create Account
+                  </button>
+                </div>
                 <input 
                   className="fi" 
                   type="email" 
@@ -363,13 +428,24 @@ export default function ProfileModal({ onClose }) {
                 <input 
                   className="fi" 
                   type="password" 
-                  placeholder="Password" 
+                  placeholder={isSignUp ? "Password (min 8 chars, letters + numbers)" : "Password"} 
                   value={password} 
                   onChange={e => setPassword(e.target.value)} 
-                  style={{ marginBottom: 14 }}
+                  style={{ marginBottom: 10 }}
                 />
-                <motion.button className="bp liquid-glass-chip fluid-press" onClick={handleEmailLogin} disabled={loading} whileTap={{ scale: 0.97 }} transition={{ type:'spring', stiffness:400, damping:24 }}>
-                  {loading ? 'Processing…' : 'Sign In / Sign Up 🔑'}
+                {!isSignUp && (
+                  <div style={{ textAlign: 'right', marginBottom: 12 }}>
+                    <button
+                      type="button"
+                      onClick={handlePasswordReset}
+                      style={{ background: 'none', border: 'none', color: 'var(--accent)', fontSize: 11, cursor: 'pointer', textDecoration: 'underline' }}
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
+                )}
+                <motion.button className="bp liquid-glass-chip fluid-press" onClick={handleEmailAuth} disabled={loading} whileTap={{ scale: 0.97 }} transition={{ type:'spring', stiffness:400, damping:24 }}>
+                  {loading ? 'Processing…' : (isSignUp ? 'Create Account 🚀' : 'Sign In 🔑')}
                 </motion.button>
               </>
             ) : (
