@@ -6,6 +6,9 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+build_log.txt
+deploy_debug*.log
+scratch/
 
 node_modules
 dist
