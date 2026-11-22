@@ -508,16 +508,47 @@ select.fb option { background: var(--card); color: var(--text); }
   pointer-events:none;
 }
 
+
+/* Dropdown / popover menus — solid opaque surface to prevent text collision */
+.liquid-glass-menu {
+  position: absolute;
+  background: rgba(13, 19, 33, 0.98);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 100;
+}
+:root:not(.dark) .liquid-glass-menu,
+.light-theme .liquid-glass-menu {
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+@keyframes appFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.995);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 /* Keep Tailwind's absolute/fixed positioning intact on glass surfaces */
 .liquid-glass.absolute,
 .liquid-glass-nav.absolute,
 .liquid-glass-deep.absolute,
 .liquid-glass-float.absolute,
+.liquid-glass-menu.absolute,
 .liquid-glass-chip.absolute { position: absolute; }
 .liquid-glass.fixed,
 .liquid-glass-nav.fixed,
 .liquid-glass-deep.fixed,
 .liquid-glass-float.fixed,
+.liquid-glass-menu.fixed,
 .liquid-glass-chip.fixed { position: fixed; }
 
 /* Continuous light sweep (map toolbar & promo surfaces) */

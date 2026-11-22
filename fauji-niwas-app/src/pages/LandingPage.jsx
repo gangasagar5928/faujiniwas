@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "../landing-template.css";
 
 const features = [
@@ -33,6 +34,7 @@ const samplePulses = [
 ];
 
 export default function LandingPage() {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [isRedirecting, setIsRedirecting] = useState(false);
 
@@ -80,7 +82,13 @@ export default function LandingPage() {
       : '/app';
 
     try { sessionStorage.setItem('fn_redirect', 'true'); } catch { /* noop */ }
-    window.location.href = targetUrl;
+    setTimeout(() => {
+      if (navigate) {
+        navigate(targetUrl);
+      } else {
+        window.location.href = targetUrl;
+      }
+    }, 180);
   };
 
   const handleSearchSubmit = (e) => {
@@ -89,7 +97,7 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="landing-canvas" id="landing-root">
+    <div className={`landing-canvas transition-all duration-200 ease-out ${isRedirecting ? 'opacity-0 scale-[0.99] pointer-events-none' : 'opacity-100 scale-100'}`} id="landing-root">
             {/* ── Glassmorphic Header ── */}
       <header className="site-header">
         <div className="site-header-inner">

@@ -208,14 +208,29 @@ export default function App() {
     }
   }, [authLoading, isInitTimedOut]);
 
-  if (authLoading && !isInitTimedOut) return <Loader />;
+  const isFromRedirect = typeof window !== 'undefined' && sessionStorage.getItem('fn_redirect') === 'true';
+
+  useEffect(() => {
+    if (sessionStorage.getItem('fn_redirect')) {
+      const timer = setTimeout(() => {
+        sessionStorage.removeItem('fn_redirect');
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  if (authLoading && !isInitTimedOut && !isFromRedirect) return <Loader />;
 
   return (
     <HelmetProvider>
       <ModalContext.Provider value={ctxValue}>
         <SessionGuard>
           <ErrorBoundary>
-            <div inert={Boolean(openModal || foodCity) ? "" : undefined}>
+            <div 
+              className="w-full h-full"
+              style={{ animation: 'appFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}
+              inert={Boolean(openModal || foodCity) ? "" : undefined}
+            >
               <UnifiedBentoDashboard />
             </div>
 

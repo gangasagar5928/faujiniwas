@@ -285,7 +285,7 @@ export default function UnifiedBentoDashboard() {
               {bhkDropdownOpen && (
                 <div
                   onClick={e => e.stopPropagation()}
-                  className="absolute top-[calc(100%+6px)] left-0 w-36 liquid-glass rounded-xl p-1.5 z-50 flex flex-col gap-1 shadow-xl animate-cardFloat"
+                  className="absolute top-[calc(100%+6px)] left-0 w-36 liquid-glass-menu rounded-xl p-1.5 flex flex-col gap-1 animate-cardFloat"
                 >
                   {[
                     { value: 'all', label: 'All BHK' },
@@ -339,7 +339,7 @@ export default function UnifiedBentoDashboard() {
               {budgetDropdownOpen && (
                 <div
                   onClick={e => e.stopPropagation()}
-                  className="absolute top-[calc(100%+6px)] left-0 w-44 liquid-glass rounded-xl p-1.5 z-50 flex flex-col gap-1 shadow-xl animate-cardFloat"
+                  className="absolute top-[calc(100%+6px)] left-0 w-44 liquid-glass-menu rounded-xl p-1.5 flex flex-col gap-1 animate-cardFloat"
                 >
                   {[
                     { value: 100000, label: 'All Budgets' },
@@ -587,7 +587,7 @@ export default function UnifiedBentoDashboard() {
                   {sortDropdownOpen && (
                     <div
                       onClick={e => e.stopPropagation()}
-                      className="absolute top-[calc(100%+6px)] right-0 w-44 liquid-glass rounded-xl p-1.5 z-50 flex flex-col gap-1"
+                      className="absolute top-[calc(100%+6px)] right-0 w-44 liquid-glass-menu rounded-xl p-1.5 flex flex-col gap-1 animate-cardFloat"
                     >
                       {[
                         { value: 'new', label: 'Relevance' },
@@ -600,10 +600,10 @@ export default function UnifiedBentoDashboard() {
                             setSortPref(opt.value);
                             setSortDropdownOpen(false);
                           }}
-                          className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-colors ${
+                          className={`w-full text-left px-3 py-2 rounded-lg text-xs font-semibold cursor-pointer transition-colors ${
                             sortPref === opt.value
-                              ? 'bg-emerald-600 text-white'
-                              : 'hover:bg-black/5 dark:hover:bg-white/10'
+                              ? 'bg-[#00875a] text-white font-bold shadow-xs'
+                              : 'text-slate-200 dark:text-slate-200 hover:bg-black/10 dark:hover:bg-white/10'
                           }`}
                           style={sortPref === opt.value ? undefined : { color: 'var(--text)' }}
                         >
