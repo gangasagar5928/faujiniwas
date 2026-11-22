@@ -2,6 +2,8 @@
 <html lang="en-IN">
 <head>
     <meta charset="UTF-8">
+    <meta name="color-scheme" content="light dark">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Privacy Policy for Fauji Niwas. Built secure, direct, and zero-brokerage for Indian Armed Forces families." />
     <link rel="canonical" href="https://faujiniwas.web.app/privacy" />
@@ -21,6 +23,8 @@
     <script>
       (function () {
         var savedTheme = localStorage.getItem('fn_theme') || 'light';
+        var colorSchemeMeta = document.querySelector('meta[name="color-scheme"]');
+        if (colorSchemeMeta) colorSchemeMeta.content = savedTheme === 'dark' ? 'dark' : (savedTheme === 'light' ? 'light' : 'light dark');
         if (savedTheme === 'dark') {
           document.documentElement.classList.add('dark-theme');
           document.documentElement.classList.remove('light-theme');
@@ -31,6 +35,14 @@
       })();
     </script>
     <style>
+        @media (prefers-reduced-motion: no-preference) {
+          @view-transition { navigation: auto; }
+        }
+        :root {
+          color-scheme: light dark;
+          &:has(> head > meta[name="color-scheme"][content="dark"]) { color-scheme: dark; }
+          &:has(> head > meta[name="color-scheme"][content="light"]) { color-scheme: light; }
+        }
         :root, html.light-theme, body.light-theme {
             --bg: #FAF9F6;
             --card-bg: #ffffff;
@@ -334,6 +346,8 @@
       (function () {
         function applySavedTheme() {
           var val = localStorage.getItem('fn_theme') || 'light';
+          var colorSchemeMeta = document.querySelector('meta[name="color-scheme"]');
+          if (colorSchemeMeta) colorSchemeMeta.content = val === 'dark' ? 'dark' : (val === 'light' ? 'light' : 'light dark');
           if (val === 'dark') {
             document.documentElement.classList.add('dark-theme');
             document.documentElement.classList.remove('light-theme');

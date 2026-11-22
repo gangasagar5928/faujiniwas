@@ -61,7 +61,7 @@ export default function PostModal({ onClose }) {
         window.recaptchaVerifier = null;
       }
       const container = document.getElementById('recaptcha-container');
-      if (container) container.innerHTML = '';
+      if (container) container.replaceChildren();
     } catch (_) {}
   };
 

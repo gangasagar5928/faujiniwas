@@ -2,6 +2,8 @@
 <html lang="en-IN">
 <head>
   <meta charset="UTF-8"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="referrer" content="strict-origin-when-cross-origin"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Rooms & Flats for Rent in Pathankot for Defence Families | FaujiNiwas</title>
   <meta name="description" content="Find verified rooms, flats, PGs and houses for rent near Pathankot Cantonment for Army, Air Force, Navy and defence families. Verified community listings in Western Command. Zero brokerage."/>
@@ -164,6 +166,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
   <style>
+    @media (prefers-reduced-motion: no-preference) {
+      @view-transition { navigation: auto; }
+    }
+    :root {
+      color-scheme: light dark;
+      &:has(> head > meta[name="color-scheme"][content="dark"]) { color-scheme: dark; }
+      &:has(> head > meta[name="color-scheme"][content="light"]) { color-scheme: light; }
+    }
     :root {
       --bg: #FAF9F6;
       --bg2: #f4f3ed;

@@ -2,6 +2,8 @@
 <html lang="en-IN">
   <head>
     <meta charset="UTF-8" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script>
       (function() {
@@ -38,8 +40,8 @@
     <link rel="preconnect" href="https://mt1.google.com" crossorigin />
     <link rel="preconnect" href="https://firebaseapp.com" crossorigin />
     <link rel="dns-prefetch" href="https://translate.google.com" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <!-- Geographic Location Meta Tags (GEO) -->
     <meta name="geo.region" content="IN" />
@@ -280,6 +282,16 @@
     <!-- Google Fonts (blocking, with size-adjust fallback overrides) -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;700;800&family=Playfair+Display:wght@700&family=Syne:wght@700;800&display=swap" />
     <link rel="manifest" href="manifest.json" />
+    <style>
+    @media (prefers-reduced-motion: no-preference) {
+      @view-transition { navigation: auto; }
+    }
+    :root {
+      color-scheme: light dark;
+      &:has(> head > meta[name="color-scheme"][content="dark"]) { color-scheme: dark; }
+      &:has(> head > meta[name="color-scheme"][content="light"]) { color-scheme: light; }
+    }
+  </style>
   </head>
   <body class="bg-[#FAF9F6] text-slate-900 font-sans antialiased">
     <h1 class="sr-only" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0;">
@@ -672,6 +684,8 @@
 
       var isLanding = window.location.pathname === '/' || window.location.pathname === '' || window.location.pathname === '/landing';
       var savedTheme = isLanding ? 'dark' : (localStorage.getItem('fn_theme') || 'dark');
+      var colorSchemeMeta = document.querySelector('meta[name="color-scheme"]');
+      if (colorSchemeMeta) colorSchemeMeta.content = savedTheme === 'dark' ? 'dark' : (savedTheme === 'light' ? 'light' : 'light dark');
       if (savedTheme === 'dark') {
         document.documentElement.classList.add('dark', 'dark-theme');
         document.body.classList.add('dark', 'dark-theme');

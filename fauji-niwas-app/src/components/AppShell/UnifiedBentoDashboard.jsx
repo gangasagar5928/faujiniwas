@@ -85,6 +85,8 @@ export default function UnifiedBentoDashboard() {
     setIsDark(nextDark);
     const mode = nextDark ? 'dark' : 'light';
     localStorage.setItem('fn_theme', mode);
+    const colorSchemeMeta = document.querySelector('meta[name="color-scheme"]');
+    if (colorSchemeMeta) colorSchemeMeta.content = mode;
     if (nextDark) {
       document.documentElement.classList.add('dark', 'dark-theme');
       document.body.classList.add('dark', 'dark-theme');

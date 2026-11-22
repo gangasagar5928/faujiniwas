@@ -410,7 +410,7 @@ async function checkMixedContent(html) {
 
 function renderResults() {
   let pass = 0, warn = 0, fail = 0;
-  $grid.innerHTML = '';
+  $grid.replaceChildren();
 
   for (const r of results) {
     if (r.status === 'pass') pass++;
@@ -457,8 +457,8 @@ function escapeHTML(str) {
 async function startScan() {
   // Reset
   results = [];
-  $grid.innerHTML = '';
-  $terminal.innerHTML = '';
+  $grid.replaceChildren();
+  $terminal.replaceChildren();
   $summary.style.display = 'none';
   $grid.style.display = 'none';
   $progress.style.display = 'block';

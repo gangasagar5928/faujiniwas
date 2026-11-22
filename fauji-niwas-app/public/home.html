@@ -3,6 +3,8 @@
 
 <head>
     <meta charset="UTF-8" />
+    <meta name="color-scheme" content="light dark">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/jpeg" href="/logo-light.jpg" />
     <link rel="apple-touch-icon" href="/logo-light.jpg" />
@@ -107,9 +109,9 @@
             href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Outfit:wght@400;500;600;700&display=swap">
     </noscript>
 
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    <script defer src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" integrity="sha384-Z3REaz79l2IaAZqJsSABtTbhjgOUYyV3p90XNnAPCSHg3EMTz1fouunq9WZRtj3d" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script defer src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js" integrity="sha384-B2WBjDzEjJpYvhmi2UyEn7rektqkf5suS6sNoyyrf0EBAwBHdkiXxIlU0V5Ru2ed" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <style>
         /* ==========================================================================
@@ -1824,10 +1826,15 @@
             border: 1px solid rgba(255,153,51,0.18);
             transform-style: preserve-3d;
         }
-        .radar-meridian:nth-child(1) { transform: rotateY(0deg); }
-        .radar-meridian:nth-child(2) { transform: rotateY(30deg); }
-        .radar-meridian:nth-child(3) { transform: rotateY(60deg); }
-        .radar-meridian:nth-child(4) { transform: rotateY(90deg); }
+        @supports (transform: rotateY(calc(sibling-index() * 30deg))) {
+            .radar-meridian:nth-child(-n+4) { transform: rotateY(calc((sibling-index() - 1) * 30deg)); }
+        }
+        @supports not (transform: rotateY(calc(sibling-index() * 30deg))) {
+            .radar-meridian:nth-child(1) { transform: rotateY(0deg); }
+            .radar-meridian:nth-child(2) { transform: rotateY(30deg); }
+            .radar-meridian:nth-child(3) { transform: rotateY(60deg); }
+            .radar-meridian:nth-child(4) { transform: rotateY(90deg); }
+        }
         .radar-meridian:nth-child(5) { transform: rotateX(30deg); }
         .radar-meridian:nth-child(6) { transform: rotateX(60deg); }
 
@@ -2615,7 +2622,7 @@
                 // Build dots
                 const pageCount = () => Math.ceil(total / perView());
                 function buildDots() {
-                    dotsWrap.innerHTML = '';
+                    dotsWrap.replaceChildren();
                     for (let i = 0; i < pageCount(); i++) {
                         const d = document.createElement('div');
                         d.className = 'testi-dot' + (i === 0 ? ' active' : '');
@@ -3171,6 +3178,8 @@
         (function () {
             const saved = localStorage.getItem('fauji-theme');
             const isLite = localStorage.getItem('fauji-lite') === '1';
+            const colorSchemeMeta = document.querySelector('meta[name="color-scheme"]');
+            if (colorSchemeMeta) colorSchemeMeta.content = saved === 'light' ? 'light' : (saved === 'dark' ? 'dark' : 'light dark');
             const preferLight = saved === 'light' ||
                 (!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches);
             if (preferLight) document.documentElement.classList.add('light-mode');

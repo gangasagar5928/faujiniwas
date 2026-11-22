@@ -1,6 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 @variant dark (&:where(.dark-theme, .dark-theme *));
+
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+}
 /* ─────────────────────────────────────────────────────────
    Fauji Niwas — Global CSS
    ───────────────────────────────────────────────────────── */
@@ -36,6 +42,9 @@ body {
 }
 
 :root {
+  color-scheme: light dark;
+  &:has(> head > meta[name="color-scheme"][content="dark"]) { color-scheme: dark; }
+  &:has(> head > meta[name="color-scheme"][content="light"]) { color-scheme: light; }
   --bg:       #080c14;
   --nav:      #0d1321;
   --card:     #131b2e;

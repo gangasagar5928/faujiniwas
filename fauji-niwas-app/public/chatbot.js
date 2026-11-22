@@ -414,7 +414,11 @@ function createChatbotUI() {
 
     // Allow enter key in text input
     document.getElementById('cb-input')?.addEventListener('keydown', e => {
-        if (e.key === 'Enter') window.cbSubmitText();
+        if (e.key === 'Enter') {
+            if (e.isComposing || e.keyCode === 229) return;
+            e.preventDefault();
+            window.cbSubmitText();
+        }
     });
 
         // ── Live autocomplete suggestions ──
@@ -433,7 +437,7 @@ function createChatbotUI() {
 
         cbInput?.addEventListener('input', () => {
             const val = cbInput.value.trim().toLowerCase();
-            suggestBox.innerHTML = '';
+            suggestBox.replaceChildren();
             if (val.length < 2) { suggestBox.style.display = 'none'; return; }
             const matches = CANTONMENTS.filter(c => c.toLowerCase().startsWith(val) || c.toLowerCase().includes(val)).slice(0, 5);
             if (!matches.length) { suggestBox.style.display = 'none'; return; }
@@ -474,8 +478,8 @@ function createChatbotUI() {
 
                 window.cbStart = () => {
                     botState = {}; botStep = 0;
-                    document.getElementById('cb-messages').innerHTML = '';
-                    document.getElementById('cb-results').innerHTML = '';
+                    document.getElementById('cb-messages').replaceChildren();
+                    document.getElementById('cb-results').replaceChildren();
                     document.getElementById('cb-restart').style.display = 'none';
                     cbShowStep();
                 };
@@ -507,7 +511,7 @@ function cbShowStep() {
 
     const optsEl = document.getElementById('cb-options');
     const inputRow = document.getElementById('cb-input-row');
-    optsEl.innerHTML = '';
+    optsEl.replaceChildren();
     inputRow.style.display = 'none';
 
     if (step.freeText) {
@@ -559,7 +563,7 @@ window.cbSubmitText = () => {
 function cbSelectOption(label, value, key) {
     cbAddMsg(label, 'user');
     botState[key] = value;
-    document.getElementById('cb-options').innerHTML = '';
+    document.getElementById('cb-options').replaceChildren();
     document.getElementById('cb-input-row').style.display = 'none';
     botStep++;
 
@@ -568,7 +572,7 @@ function cbSelectOption(label, value, key) {
 
 function cbShowResults() {
     const optsEl = document.getElementById('cb-options');
-    optsEl.innerHTML = '';
+    optsEl.replaceChildren();
     document.getElementById('cb-input-row').style.display = 'none';
 
     cbAddMsg('🔍 <b>Searching listings…</b>', 'bot');
@@ -612,11 +616,11 @@ function cbShowResults() {
 
         // Sort by verified first, then newest
         results = results
-        .sort((a, b) => (b.verified ? 1 : 0) - (a.verified ? 1 : 0) || (b.createdAt || 0) - (a.createdAt || 0))
+        .toSorted((a, b) => (b.verified ? 1 : 0) - (a.verified ? 1 : 0) || (b.createdAt || 0) - (a.createdAt || 0))
         .slice(0, 5);
 
         const resEl = document.getElementById('cb-results');
-        resEl.innerHTML = '';
+        resEl.replaceChildren();
 
         const safeStation = cbEscape(station);
         if (!results.length) {

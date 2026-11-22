@@ -215,8 +215,12 @@ body::before {
   color: var(--green-dim);
 }
 
-#terminal-log::-webkit-scrollbar { width: 4px; }
-#terminal-log::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+#terminal-log { scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+@supports not (scrollbar-color: auto) {
+  #terminal-log { scrollbar-width: auto; }
+  #terminal-log::-webkit-scrollbar { width: 4px; }
+  #terminal-log::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+}
 
 .log-line { display: block; animation: log-fadein 0.15s ease; }
 @keyframes log-fadein { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }

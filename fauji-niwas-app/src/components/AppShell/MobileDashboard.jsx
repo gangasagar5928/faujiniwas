@@ -175,7 +175,7 @@ export default function MobileDashboard({ items = [] }) {
     } else if (activeCategory === 'near_academy') {
       sourceList = sourceList.filter(h => h.verified || (h.distance && parseFloat(h.distance) < 2.0));
     } else if (activeCategory === 'budget') {
-      sourceList = [...sourceList].sort((a, b) => (a.price || 0) - (b.price || 0));
+      sourceList = sourceList.toSorted((a, b) => (a.price || 0) - (b.price || 0));
     }
 
     return sourceList.length > 0 ? sourceList : DEFAULT_SAMPLE_HOMES;

@@ -215,7 +215,9 @@ export default function App() {
       <ModalContext.Provider value={ctxValue}>
         <SessionGuard>
           <ErrorBoundary>
-            <UnifiedBentoDashboard />
+            <div inert={Boolean(openModal || foodCity) ? "" : undefined}>
+              <UnifiedBentoDashboard />
+            </div>
 
             {/* Separate Suspense boundaries prevent sibling lazy-loads from unmounting each other */}
             <Suspense fallback={null}>

@@ -294,7 +294,7 @@ export default function ProfileModal({ onClose }) {
       const { RecaptchaVerifier, signInWithPhoneNumber } = await import('firebase/auth');
       // Re-create the container div to avoid "already rendered" error
       const container = document.getElementById('recaptcha-profile');
-      if (container) container.innerHTML = '';
+      if (container) container.replaceChildren();
       window.recaptchaVerifierProfile = new RecaptchaVerifier(auth, 'recaptcha-profile', {
         size: 'invisible',
         callback: () => {},

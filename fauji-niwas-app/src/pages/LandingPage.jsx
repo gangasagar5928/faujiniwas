@@ -64,6 +64,8 @@ export default function LandingPage() {
     document.documentElement.style.backgroundColor = '#10110f';
     document.body.style.backgroundColor = '#10110f';
     document.documentElement.style.colorScheme = 'dark';
+    const colorSchemeMeta = document.querySelector('meta[name="color-scheme"]');
+    if (colorSchemeMeta) colorSchemeMeta.content = 'dark';
     try { localStorage.setItem('fn_theme', 'dark'); } catch { /* noop */ }
     const themeMeta = document.querySelector('meta[name="theme-color"]');
     if (themeMeta) themeMeta.content = '#10110f';

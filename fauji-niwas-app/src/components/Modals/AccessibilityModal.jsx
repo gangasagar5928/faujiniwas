@@ -22,6 +22,8 @@ export default function AccessibilityModal({ onClose }) {
   const applyTheme = (mode) => {
     setTheme(mode);
     localStorage.setItem('fn_theme', mode);
+    const colorSchemeMeta = document.querySelector('meta[name="color-scheme"]');
+    if (colorSchemeMeta) colorSchemeMeta.content = mode;
     if (mode === 'dark') {
       document.documentElement.classList.add('dark', 'dark-theme');
       document.body.classList.add('dark', 'dark-theme');
