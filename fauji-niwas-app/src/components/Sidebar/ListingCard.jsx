@@ -88,10 +88,10 @@ export default function ListingCard({ listing, item, onClick }) {
         flexDirection: 'row',
         borderRadius: '16px',
         padding: '10px',
-        gap: '14px',
+        gap: '12px',
         position: 'relative',
-        minHeight: '124px',
-        height: '124px',
+        minHeight: '118px',
+        height: '118px',
         flexShrink: 0,
         boxSizing: 'border-box',
         cursor: 'pointer',
@@ -99,7 +99,7 @@ export default function ListingCard({ listing, item, onClick }) {
       }}
     >
       {/* ── Photo Thumbnail with Rating & Dots ── */}
-      <div style={{ position: 'relative', width: '135px', height: '102px', flexShrink: 0, borderRadius: '12px', overflow: 'hidden', background: '#f1f5f9' }}>
+      <div style={{ position: 'relative', width: '126px', height: '98px', flexShrink: 0, borderRadius: '12px', overflow: 'hidden', background: '#f1f5f9' }}>
         <img
           src={thumb}
           loading="lazy"
@@ -163,7 +163,7 @@ export default function ListingCard({ listing, item, onClick }) {
         {/* Row 1: Title & Wishlist */}
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 6 }}>
           <div style={{
-            fontSize: 14,
+            fontSize: 13,
             fontWeight: 800,
             color: 'var(--text)',
             lineHeight: 1.25,
@@ -200,7 +200,7 @@ export default function ListingCard({ listing, item, onClick }) {
 
         {/* Row 2: Location */}
         <div style={{
-          fontSize: 12,
+          fontSize: 11,
           color: 'var(--muted)',
           display: 'flex',
           alignItems: 'center',
@@ -215,24 +215,24 @@ export default function ListingCard({ listing, item, onClick }) {
         {/* Row 3: Specs Tag Pills */}
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           <span style={{
-            fontSize: 11,
+            fontSize: 10,
             fontWeight: 600,
             color: 'var(--text2)',
             background: 'var(--card2)',
             border: '1px solid var(--border2)',
             borderRadius: 6,
-            padding: '2px 8px'
+            padding: '2px 7px'
           }}>
             {bhkText}
           </span>
           <span style={{
-            fontSize: 11,
+            fontSize: 10,
             fontWeight: 600,
             color: 'var(--text2)',
             background: 'var(--card2)',
             border: '1px solid var(--border2)',
             borderRadius: 6,
-            padding: '2px 8px'
+            padding: '2px 7px'
           }}>
             {sqftText}
           </span>
@@ -241,7 +241,7 @@ export default function ListingCard({ listing, item, onClick }) {
         {/* Row 4: Price & Verified Badge */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 2 }}>
-            <span style={{ fontSize: 16, fontWeight: 900, color: '#ea580c', letterSpacing: '-0.2px' }}>
+            <span style={{ fontSize: 15, fontWeight: 900, color: '#ea580c', letterSpacing: '-0.2px' }}>
               ₹{price > 0 ? price.toLocaleString('en-IN') : '14,000'}
             </span>
             <span style={{ fontSize: 11.5, color: 'var(--muted)', fontWeight: 500 }}>/mo</span>
@@ -251,7 +251,7 @@ export default function ListingCard({ listing, item, onClick }) {
             display: 'inline-flex',
             alignItems: 'center',
             gap: 3,
-            fontSize: 10.5,
+            fontSize: 10,
             fontWeight: 800,
             color: '#059669',
             background: '#ecfdf5',

@@ -487,13 +487,20 @@ select.fb option { background: var(--card); color: var(--text); }
   box-shadow: inset 0 1px 0 var(--lg-rim-top), 0 1px 2px rgba(0,0,0,.08), 0 6px 16px var(--lg-shadow);
 }
 
-/* Floating map cards — translucent so the map tiles glow through slightly */
+/* Floating map cards — solid opaque glass so map tiles and roads do not bleed through */
 .liquid-glass-float {
   position: relative;
-  background: linear-gradient(180deg, var(--lg-top), var(--lg-bottom)), var(--lg-fallback);
-  backdrop-filter: var(--lg-blur); -webkit-backdrop-filter: var(--lg-blur);
-  border: 1px solid var(--lg-border);
-  box-shadow: inset 0 1px 0 var(--lg-rim-top), 0 8px 24px var(--lg-shadow);
+  background: rgba(13, 19, 33, 0.96);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+:root:not(.dark) .liquid-glass-float,
+.light-theme .liquid-glass-float {
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 .liquid-glass-float::before {
   content:''; position:absolute; inset:0 0 auto 0; height:1px;

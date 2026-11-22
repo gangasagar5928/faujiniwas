@@ -209,51 +209,51 @@ export default function UnifiedBentoDashboard() {
         {/* ══════════════════════════════════════════
             1. TOP NAVBAR HEADER
             ══════════════════════════════════════════ */}
-        <header className="h-[64px] min-h-[64px] px-5 lg:px-6 gap-2 liquid-glass-nav relative flex items-center justify-between z-50 flex-shrink-0">
+        <header className="h-[58px] min-h-[58px] px-5 lg:px-6 gap-3 liquid-glass-nav relative flex items-center justify-between z-50 flex-shrink-0">
           
           {/* Left: Brand Logo & Subtitle */}
           <a
             href="/"
             onClick={(e) => { e.preventDefault(); window.location.href = '/'; }}
-            className="flex items-center gap-3 no-underline group cursor-pointer flex-shrink-0"
+            className="flex items-center gap-2.5 no-underline group cursor-pointer flex-shrink-0"
           >
             <img 
               src="/logo-light.jpg" 
               alt="FaujiNiwas" 
-              className="w-10 h-10 rounded-full object-contain border border-white/30 dark:border-white/20 block dark:hidden" 
+              className="w-9 h-9 rounded-full object-contain border border-white/30 dark:border-white/20 block dark:hidden" 
             />
             <img 
               src="/logo-dark.jpg" 
               alt="FaujiNiwas" 
-              className="w-10 h-10 rounded-full object-contain border border-white/30 dark:border-white/20 hidden dark:block" 
+              className="w-9 h-9 rounded-full object-contain border border-white/30 dark:border-white/20 hidden dark:block" 
             />
             <div className="flex flex-col">
-              <span className="text-[18px] font-extrabold tracking-tight leading-tight" style={{color:'var(--text)'}}>
+              <span className="text-[16px] font-extrabold tracking-tight leading-tight" style={{color:'var(--text)'}}>
                 FaujiNiwas
               </span>
-              <span className="text-[11.5px] font-semibold leading-tight" style={{color:'var(--muted)'}}>
+              <span className="text-[10.5px] font-semibold leading-tight" style={{color:'var(--muted)'}}>
                 Defence Housing Rentals
               </span>
             </div>
           </a>
 
           {/* Center: Search & Filter Controls */}
-          <div className="flex items-center gap-2 flex-1 mx-3 min-w-0">
+          <div className="flex items-center gap-2 flex-1 max-w-[620px] mx-4 min-w-0">
 
             {/* Search Pill Input */}
-            <div className="relative flex-1 min-w-[180px] group mx-auto">
+            <div className="relative flex-1 min-w-[160px] group">
               <input
                 type="text"
                 placeholder="Search cantonment, area or city..."
                 value={smartSearchQ}
                 onChange={e => setSmartSearchQ(e.target.value)}
-                className="w-full h-[38px] pl-4 pr-10 text-[13px] font-medium bg-white/40 dark:bg-white/10 backdrop-blur-xl border border-slate-200/70 dark:border-white/20 rounded-full focus:outline-none focus:border-emerald-600 dark:focus:border-emerald-500 hover:border-emerald-500/40 focus:shadow-[0_0_16px_rgba(16,185,129,0.2)] transition-all placeholder:text-slate-400" style={{color:'var(--text)'}}
+                className="w-full h-[36px] pl-3.5 pr-8 text-[12px] font-medium bg-white/40 dark:bg-white/10 backdrop-blur-xl border border-slate-200/70 dark:border-white/20 rounded-full focus:outline-none focus:border-emerald-600 dark:focus:border-emerald-500 hover:border-emerald-500/40 focus:shadow-[0_0_16px_rgba(16,185,129,0.2)] transition-all placeholder:text-slate-400" style={{color:'var(--text)'}}
               />
-              <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none group-hover:text-emerald-500 transition-colors" style={{ color: 'var(--muted)' }} />
+              <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 pointer-events-none group-hover:text-emerald-500 transition-colors" style={{ color: 'var(--muted)' }} />
               {smartSearchQ && (
                 <button
                   onClick={() => setSmartSearchQ('')}
-                  className="absolute right-8 top-1/2 -translate-y-1/2 text-xs cursor-pointer hover:scale-125 transition-transform" style={{ color: 'var(--muted)' }}
+                  className="absolute right-7 top-1/2 -translate-y-1/2 text-[11px] cursor-pointer hover:scale-125 transition-transform" style={{ color: 'var(--muted)' }}
                 >
                   ✕
                 </button>
@@ -261,7 +261,7 @@ export default function UnifiedBentoDashboard() {
             </div>
 
             {/* BHK Filter Pill */}
-            <div className="relative flex items-center gap-2 mx-auto">
+            <div className="relative flex-shrink-0">
               <motion.button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -271,7 +271,7 @@ export default function UnifiedBentoDashboard() {
                 whileHover={{ scale: 1.04, y: -1 }}
                 whileTap={{ scale: 0.96 }}
                 transition={{ type: 'spring', stiffness: 450, damping: 20 }}
-                className={`h-[38px] px-3.5 rounded-full text-[12.5px] font-bold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap fluid-press ${
+                className={`h-[36px] px-3 rounded-full text-[11.5px] font-bold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap fluid-press ${
                   bhkFilter !== 'all'
                     ? 'liquid-glass-chip border-emerald-500 text-emerald-700 dark:text-emerald-300 shadow-xs'
                     : 'liquid-glass-chip hover:border-emerald-500/40'
@@ -279,7 +279,7 @@ export default function UnifiedBentoDashboard() {
                 style={bhkFilter !== 'all' ? undefined : { color: 'var(--text)' }}
               >
                 <span>{bhkFilter === 'all' ? 'All BHK' : `${bhkFilter} BHK`}</span>
-                <ChevronDown className={`w-3.5 h-3.5 opacity-60 transition-transform duration-200 ${bhkDropdownOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-3 h-3 opacity-60 transition-transform duration-200 ${bhkDropdownOpen ? 'rotate-180' : ''}`} />
               </motion.button>
 
               {bhkDropdownOpen && (
@@ -315,7 +315,7 @@ export default function UnifiedBentoDashboard() {
             </div>
 
             {/* Budget Filter Pill */}
-            <div className="relative flex items-center gap-2 mx-auto">
+            <div className="relative flex-shrink-0">
               <motion.button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -325,7 +325,7 @@ export default function UnifiedBentoDashboard() {
                 whileHover={{ scale: 1.04, y: -1 }}
                 whileTap={{ scale: 0.96 }}
                 transition={{ type: 'spring', stiffness: 450, damping: 20 }}
-                className={`h-[38px] px-3.5 rounded-full text-[12.5px] font-bold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap fluid-press ${
+                className={`h-[36px] px-3 rounded-full text-[11.5px] font-bold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap fluid-press ${
                   maxPrice < 100000
                     ? 'liquid-glass-chip border-emerald-500 text-emerald-700 dark:text-emerald-300 shadow-xs'
                     : 'liquid-glass-chip hover:border-emerald-500/40'
@@ -333,7 +333,7 @@ export default function UnifiedBentoDashboard() {
                 style={maxPrice < 100000 ? undefined : { color: 'var(--text)' }}
               >
                 <span>{maxPrice >= 100000 ? 'All Budgets' : `≤ ₹${(maxPrice / 1000).toFixed(0)}K`}</span>
-                <ChevronDown className={`w-3.5 h-3.5 opacity-60 transition-transform duration-200 ${budgetDropdownOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-3 h-3 opacity-60 transition-transform duration-200 ${budgetDropdownOpen ? 'rotate-180' : ''}`} />
               </motion.button>
 
               {budgetDropdownOpen && (
@@ -375,7 +375,7 @@ export default function UnifiedBentoDashboard() {
               whileHover={{ scale: 1.04, y: -1 }}
               whileTap={{ scale: 0.96 }}
               transition={{ type: 'spring', stiffness: 450, damping: 20 }}
-              className="h-[38px] px-3.5 rounded-full border border-slate-200/70 dark:border-white/20 bg-white/40 dark:bg-white/10 backdrop-blur-xl text-[12.5px] font-bold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap hover:bg-white/60 dark:hover:bg-white/20 hover:border-amber-500/40" style={{ color: 'var(--text)' }}
+              className="h-[36px] px-3 rounded-full border border-slate-200/70 dark:border-white/20 bg-white/40 dark:bg-white/10 backdrop-blur-xl text-[11.5px] font-bold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap hover:bg-white/60 dark:hover:bg-white/20 hover:border-amber-500/40 flex-shrink-0" style={{ color: 'var(--text)' }}
               title="Accessibility, Font and Contrast Settings"
             >
               <SlidersHorizontal className="w-3.5 h-3.5" />
@@ -392,10 +392,10 @@ export default function UnifiedBentoDashboard() {
               whileHover={{ scale: 1.04, y: -1, boxShadow: '0 6px 20px rgba(0, 135, 90, 0.45)' }}
               whileTap={{ scale: 0.96 }}
               transition={{ type: 'spring', stiffness: 450, damping: 20 }}
-              className="h-[38px] px-4 rounded-xl text-[13px] font-extrabold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shadow-none hover:opacity-95"
+              className="h-[36px] px-3.5 rounded-xl text-[12px] font-extrabold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shadow-none hover:opacity-95"
               style={{ backgroundColor: '#00875a', color: '#ffffff' }}
             >
-              <Plus className="w-4 h-4 stroke-[3]" style={{ color: '#ffffff' }} />
+              <Plus className="w-3.5 h-3.5 stroke-[3]" style={{ color: '#ffffff' }} />
               <span style={{ color: '#ffffff', fontWeight: 800 }}>Post Property</span>
             </motion.button>
 
@@ -405,9 +405,9 @@ export default function UnifiedBentoDashboard() {
               whileHover={{ scale: 1.04, y: -1 }}
               whileTap={{ scale: 0.96 }}
               transition={{ type: 'spring', stiffness: 450, damping: 20 }}
-              className="h-[38px] px-3.5 border border-slate-200/70 dark:border-white/20 bg-white/40 dark:bg-white/10 backdrop-blur-xl rounded-xl text-[13px] font-bold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shadow-none hover:bg-white/60 dark:hover:bg-white/20 hover:border-emerald-500/40" style={{ color: 'var(--text)' }}
+              className="h-[36px] px-3 border border-slate-200/70 dark:border-white/20 bg-white/40 dark:bg-white/10 backdrop-blur-xl rounded-xl text-[12px] font-bold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shadow-none hover:bg-white/60 dark:hover:bg-white/20 hover:border-emerald-500/40" style={{ color: 'var(--text)' }}
             >
-              <User className="w-4 h-4" style={{ color: 'var(--muted)' }} />
+              <User className="w-3.5 h-3.5" style={{ color: 'var(--muted)' }} />
               <span>{user ? 'Profile' : 'Sign In / Sign Up'}</span>
             </motion.button>
 
@@ -417,13 +417,13 @@ export default function UnifiedBentoDashboard() {
               whileHover={{ scale: 1.15, rotate: 20 }}
               whileTap={{ scale: 0.9, rotate: -25 }}
               transition={{ type: 'spring', stiffness: 450, damping: 18 }}
-              className="w-[38px] h-[38px] rounded-full border border-slate-200/70 dark:border-white/20 bg-white/40 dark:bg-white/10 backdrop-blur-xl flex items-center justify-center flex-shrink-0 cursor-pointer transition-colors hover:bg-white/60 dark:hover:bg-white/20 hover:border-amber-500/40" style={{ color: 'var(--text)' }}
+              className="w-[36px] h-[36px] rounded-full border border-slate-200/70 dark:border-white/20 bg-white/40 dark:bg-white/10 backdrop-blur-xl flex items-center justify-center flex-shrink-0 cursor-pointer transition-colors hover:bg-white/60 dark:hover:bg-white/20 hover:border-amber-500/40" style={{ color: 'var(--text)' }}
               title="Toggle Light / Dark mode"
             >
               {isDark ? (
-                <Moon className="w-4 h-4 text-emerald-400 fill-emerald-400/20" />
+                <Moon className="w-3.5 h-3.5 text-emerald-400 fill-emerald-400/20" />
               ) : (
-                <Sun className="w-4 h-4 text-amber-500 fill-amber-500/20" />
+                <Sun className="w-3.5 h-3.5 text-amber-500 fill-amber-500/20" />
               )}
             </motion.button>
 
@@ -437,7 +437,7 @@ export default function UnifiedBentoDashboard() {
         <div className="flex-1 flex overflow-hidden relative min-h-0">
 
           {/* ── COLUMN 1: LEFT NAVIGATION SIDEBAR ── */}
-          <aside className="w-[230px] liquid-glass-deep flex flex-col justify-between p-3 flex-shrink-0 z-20 min-h-0 overflow-hidden">
+          <aside className="w-[220px] liquid-glass-deep flex flex-col justify-between p-2.5 flex-shrink-0 z-20 min-h-0 overflow-hidden">
 
             {/* Nav Menu */}
             <div className="flex flex-col gap-1.5 overflow-y-auto custom-scrollbar-panel pr-0.5">
@@ -451,7 +451,7 @@ export default function UnifiedBentoDashboard() {
                     whileHover={{ x: 4, scale: 1.01 }}
                     whileTap={{ scale: 0.98 }}
                     transition={{ type: 'spring', stiffness: 450, damping: 24 }}
-                    className={`relative w-full h-[42px] flex items-center justify-between px-3.5 rounded-2xl text-[14px] font-bold transition-all cursor-pointer flex-shrink-0 ${
+                    className={`relative w-full h-[38px] flex items-center justify-between px-3 rounded-xl text-[12.5px] font-bold transition-all cursor-pointer flex-shrink-0 ${
                       isActive
                         ? 'text-[#00875a] dark:text-[#34d399]'
                         : 'text-transparent hover:bg-white/[0.08]'
@@ -466,7 +466,7 @@ export default function UnifiedBentoDashboard() {
                       />
                     )}
                     <div className="relative z-10 flex items-center gap-2.5">
-                      <IconComponent className={`w-[18px] h-[18px] transition-transform duration-200 group-hover:scale-110 ${isActive ? 'text-[#00875a] dark:text-[#34d399]' : ''}`} style={isActive ? undefined : { color: 'var(--muted)' }} />
+                      <IconComponent className={`w-[16px] h-[16px] transition-transform duration-200 group-hover:scale-110 ${isActive ? 'text-[#00875a] dark:text-[#34d399]' : ''}`} style={isActive ? undefined : { color: 'var(--muted)' }} />
                       <span>{item.label}</span>
                     </div>
                     {item.count !== undefined && item.count > 0 && (
@@ -481,7 +481,7 @@ export default function UnifiedBentoDashboard() {
 
             {/* Bottom Download & Copyright Section */}
             <div className="flex flex-col gap-2 pt-3 border-t flex-shrink-0" style={{ borderColor: 'var(--border)' }}>
-              <span className="text-[12px] font-extrabold uppercase tracking-wider px-0.5" style={{ color: 'var(--text)' }}>
+              <span className="text-[11px] font-extrabold uppercase tracking-wider px-0.5" style={{ color: 'var(--text)' }}>
                 DOWNLOAD APP
               </span>
               
@@ -503,7 +503,7 @@ export default function UnifiedBentoDashboard() {
                   textDecoration: 'none',
                   border: '1px solid #1f2937',
                   cursor: 'pointer',
-                  height: '42px'
+                  height: '38px'
                 }}
               >
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" style={{ flexShrink: 0 }}>
@@ -536,7 +536,7 @@ export default function UnifiedBentoDashboard() {
                   textDecoration: 'none',
                   border: '1px solid #1f2937',
                   cursor: 'pointer',
-                  height: '42px'
+                  height: '38px'
                 }}
               >
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="#ffffff" style={{ flexShrink: 0 }}>
@@ -550,7 +550,7 @@ export default function UnifiedBentoDashboard() {
 
               {/* Copyright */}
               <div className="text-[11.5px] font-bold px-0.5 pt-0.5 pb-1 leading-tight" style={{ color: 'var(--muted)' }}>
-                <div>© 2025 FaujiNiwas</div>
+                <div>© 2026 FaujiNiwas</div>
                 <div className="font-semibold text-[10.5px]">All rights reserved.</div>
               </div>
             </div>
@@ -566,7 +566,7 @@ export default function UnifiedBentoDashboard() {
 
             {/* Header: Properties Found & Sort Selector */}
             <div className="p-3.5 pb-2.5 flex items-center justify-between flex-shrink-0 liquid-glass-chip border-x-0 border-t-0">
-              <span className="text-[14.5px] font-extrabold" style={{ color: 'var(--text)' }}>
+              <span className="text-[13.5px] font-extrabold" style={{ color: 'var(--text)' }}>
                 {visibleItems.length} Properties Found
               </span>
 
@@ -578,7 +578,7 @@ export default function UnifiedBentoDashboard() {
                       e.stopPropagation();
                       setSortDropdownOpen(!sortDropdownOpen);
                     }}
-                    className="text-[12px] font-semibold flex items-center gap-1 cursor-pointer" style={{ color: 'var(--muted)' }}
+                    className="text-[11.5px] font-semibold flex items-center gap-1 cursor-pointer" style={{ color: 'var(--muted)' }}
                   >
                     <span>Sorted by: <strong style={{ color: 'var(--text)' }}>{sortPref === 'priceAsc' ? 'Price: Low to High' : (sortPref === 'priceDesc' ? 'Price: High to Low' : 'Relevance')}</strong></span>
                     <ChevronDown className="w-3.5 h-3.5" />
@@ -694,7 +694,7 @@ export default function UnifiedBentoDashboard() {
             )}
 
             {/* Floating Top Map Controls Toolbar */}
-            <div className="absolute top-3 left-3 z-[1000] flex items-center gap-1.5 liquid-glass-float p-1.5 rounded-xl shadow-lg">
+            <div className="absolute top-3 left-3 z-[1000] flex items-center gap-1.5 liquid-glass-float p-1.5 rounded-xl shadow-2xl bg-slate-900/95 dark:bg-[#0d1321]/95 border border-white/20 text-white">
               <span className="sheen-sweep" />
               
               {/* Expand List Button when collapsed */}
@@ -704,28 +704,27 @@ export default function UnifiedBentoDashboard() {
                     onClick={() => setIsListCollapsed(false)}
                     whileHover={{ scale: 1.04 }}
                     whileTap={{ scale: 0.96 }}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-extrabold bg-[#ebfbee] dark:bg-emerald-950 text-[#00875a] dark:text-emerald-400 border border-[#86efac] dark:border-emerald-700 hover:bg-emerald-100 transition-colors cursor-pointer whitespace-nowrap"
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11.5px] font-bold bg-[#ebfbee] dark:bg-emerald-950 text-[#00875a] dark:text-emerald-400 border border-[#86efac] dark:border-emerald-700 hover:bg-emerald-100 transition-colors cursor-pointer whitespace-nowrap"
                     title="Expand Properties List"
                   >
                     <ChevronRight className="w-3.5 h-3.5 stroke-[2.5]" />
                     <span>Show Properties ({visibleItems.length})</span>
                   </motion.button>
-                  <div className="w-[1px] h-5 bg-white/40 dark:bg-white/20 mx-0.5" />
+                  <div className="w-[1px] h-4 bg-white/25 mx-1" />
                 </>
               )}
 
               {/* Segmented View Toggle: Map View | List View */}
-              <div className="flex items-center gap-0.5 bg-white/40 dark:bg-white/10 backdrop-blur-md p-0.5 rounded-lg">
+              <div className="flex items-center gap-0.5 bg-slate-800/80 dark:bg-slate-800/80 border border-white/10 p-0.5 rounded-lg">
                 <motion.button
                   onClick={() => setMapMode('map')}
                   whileHover={{ scale: 1.04 }}
                   whileTap={{ scale: 0.96 }}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-bold transition-all cursor-pointer ${
+                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[11.5px] font-bold transition-all cursor-pointer ${
                     mapMode === 'map'
                       ? 'bg-[#00875a] text-white shadow-xs'
-                      : 'hover:text-white/80 dark:hover:text-white'
+                      : 'text-slate-300 hover:text-white hover:bg-white/10'
                   }`}
-                  style={mapMode === 'map' ? undefined : { color: 'var(--muted)' }}
                 >
                   <MapIcon className="w-3.5 h-3.5" />
                   <span>Map View</span>
@@ -737,12 +736,11 @@ export default function UnifiedBentoDashboard() {
                   }}
                   whileHover={{ scale: 1.04 }}
                   whileTap={{ scale: 0.96 }}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-bold transition-all cursor-pointer ${
+                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[11.5px] font-bold transition-all cursor-pointer ${
                     mapMode === 'list'
                       ? 'bg-[#00875a] text-white shadow-xs'
-                      : 'hover:text-white/80 dark:hover:text-white'
+                      : 'text-slate-300 hover:text-white hover:bg-white/10'
                   }`}
-                  style={mapMode === 'list' ? undefined : { color: 'var(--muted)' }}
                 >
                   <List className="w-3.5 h-3.5" />
                   <span>List View</span>
@@ -750,19 +748,19 @@ export default function UnifiedBentoDashboard() {
               </div>
 
               {/* Divider */}
-              <div className="w-[1px] h-5 bg-white/40 dark:bg-white/20 mx-0.5" />
+              <div className="w-[1px] h-4 bg-white/25 mx-1" />
 
               {/* Search as I move the map Checkbox Pill */}
               <motion.button
                 onClick={() => setSearchAsMove(!searchAsMove)}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[12px] font-bold hover:bg-white/10 dark:hover:bg-white/10 transition-colors cursor-pointer" style={{ color: 'var(--text)' }}
+                className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-[11.5px] font-semibold text-slate-200 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
               >
-                <div className={`w-4 h-4 rounded flex items-center justify-center border text-[10px] ${
+                <div className={`w-3.5 h-3.5 rounded flex items-center justify-center border text-[9.5px] font-bold ${
                   searchAsMove
                     ? 'bg-[#00875a] border-[#00875a] text-white'
-                    : 'border-white/40 dark:border-white/30 bg-white/40 dark:bg-white/10'
+                    : 'border-white/40 bg-white/10 text-transparent'
                 }`}>
                   {searchAsMove && '✓'}
                 </div>
@@ -770,14 +768,14 @@ export default function UnifiedBentoDashboard() {
               </motion.button>
 
               {/* Divider */}
-              <div className="w-[1px] h-5 bg-white/40 dark:bg-white/20 mx-0.5" />
+              <div className="w-[1px] h-4 bg-white/25 mx-1" />
 
               {/* Reset Map Button */}
               <motion.button
                 onClick={handleResetMap}
                 whileHover={{ scale: 1.04, rotate: -25 }}
                 whileTap={{ scale: 0.96 }}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[12px] font-bold hover:bg-white/10 dark:hover:bg-white/10 transition-colors cursor-pointer whitespace-nowrap" style={{ color: 'var(--text)' }}
+                className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-[11.5px] font-semibold text-slate-200 hover:text-white hover:bg-white/10 transition-colors cursor-pointer whitespace-nowrap"
                 title="Recenter map"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
@@ -824,24 +822,24 @@ export default function UnifiedBentoDashboard() {
                   onClick={() => setIsFacilitiesOpen(true)}
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
-                  className="liquid-glass-float rounded-xl px-3.5 py-2 flex items-center gap-2 text-xs font-bold cursor-pointer fluid-press shadow-md hover:border-emerald-500/40" style={{ color: 'var(--text)' }}
+                  className="liquid-glass-float rounded-xl px-3 py-1.5 flex items-center gap-2 text-[11.5px] font-bold cursor-pointer fluid-press shadow-md hover:border-emerald-500/40 bg-slate-900/95 dark:bg-[#0d1321]/95 text-white border border-white/20"
                 >
                   <span>📍 Nearby Facilities</span>
-                  <span className="text-[10px]" style={{ color: 'var(--muted)' }}>▲</span>
+                  <span className="text-[10px] text-slate-400">▲</span>
                 </motion.button>
               ) : (
-                <div className="liquid-glass-float rounded-2xl p-3 flex flex-col gap-2 shadow-xl animate-cardFloat">
+                <div className="liquid-glass-float rounded-2xl p-2.5 flex flex-col gap-2 shadow-2xl bg-slate-900/95 dark:bg-[#0d1321]/95 border border-white/20 text-white animate-cardFloat">
                   
                   {/* Card Header */}
-                  <div className="flex items-center justify-between pb-1 border-b" style={{ borderColor: 'var(--border)' }}>
-                    <span className="text-xs font-extrabold" style={{ color: 'var(--text)' }}>
+                  <div className="flex items-center justify-between pb-1 border-b border-white/15">
+                    <span className="text-[11.5px] font-extrabold text-white">
                       Nearby Facilities
                     </span>
                     <motion.button
                       onClick={() => setIsFacilitiesOpen(false)}
                       whileHover={{ scale: 1.2, rotate: 90 }}
                       whileTap={{ scale: 0.9 }}
-                      className="text-xs p-1 cursor-pointer" style={{ color: 'var(--muted)' }}
+                      className="text-xs p-1 text-slate-400 hover:text-white cursor-pointer"
                     >
                       <X className="w-3.5 h-3.5" />
                     </motion.button>
@@ -854,21 +852,20 @@ export default function UnifiedBentoDashboard() {
                     whileTap={{ scale: 0.98 }}
                     className={`flex items-center justify-between p-2 rounded-xl border text-left transition-all cursor-pointer ${
                       showCommuteZones
-                        ? 'bg-emerald-50/80 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-700 text-emerald-900 dark:text-emerald-200 font-bold shadow-xs'
-                        : 'bg-white/40 dark:bg-white/10 border-white/30 dark:border-white/20 hover:border-emerald-500/30'
+                        ? 'bg-emerald-950/80 border-emerald-500 text-emerald-300 font-bold shadow-xs'
+                        : 'bg-slate-800/80 border-white/10 text-slate-200 hover:border-emerald-500/40 hover:bg-slate-800'
                     }`}
-                    style={showCommuteZones ? undefined : { color: 'var(--text)' }}
                   >
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-lg bg-emerald-100 dark:bg-emerald-900/60 flex items-center justify-center text-xs">
+                      <div className="w-6 h-6 rounded-lg bg-emerald-900/60 border border-emerald-700/50 flex items-center justify-center text-xs">
                         🚆
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-[11.5px] leading-tight">Station Commute Zone</span>
-                        <span className="text-[9.5px] opacity-70">5 - 15 min</span>
+                        <span className="text-[11px] leading-tight font-bold">Station Commute Zone</span>
+                        <span className="text-[9px] text-slate-400">5 - 15 min</span>
                       </div>
                     </div>
-                    <ArrowUpRight className={`w-3.5 h-3.5 ${showCommuteZones ? 'text-emerald-600' : ''}`} style={showCommuteZones ? undefined : { color: 'var(--muted)' }} />
+                    <ArrowUpRight className={`w-3.5 h-3.5 ${showCommuteZones ? 'text-emerald-400' : 'text-slate-400'}`} />
                   </motion.button>
 
                   {/* Facility 2: Army School */}
@@ -878,21 +875,20 @@ export default function UnifiedBentoDashboard() {
                     whileTap={{ scale: 0.98 }}
                     className={`flex items-center justify-between p-2 rounded-xl border text-left transition-all cursor-pointer ${
                       showSchools
-                        ? 'bg-blue-50/80 dark:bg-blue-950/40 border-blue-300 dark:border-blue-700 text-blue-900 dark:text-blue-200 font-bold shadow-xs'
-                        : 'bg-white/40 dark:bg-white/10 border-white/30 dark:border-white/20 hover:border-blue-500/30'
+                        ? 'bg-blue-950/80 border-blue-500 text-blue-300 font-bold shadow-xs'
+                        : 'bg-slate-800/80 border-white/10 text-slate-200 hover:border-blue-500/40 hover:bg-slate-800'
                     }`}
-                    style={showSchools ? undefined : { color: 'var(--text)' }}
                   >
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-lg bg-blue-100 dark:bg-blue-900/60 flex items-center justify-center text-xs">
+                      <div className="w-6 h-6 rounded-lg bg-blue-900/60 border border-blue-700/50 flex items-center justify-center text-xs">
                         🏫
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-[11.5px] leading-tight">Army School</span>
-                        <span className="text-[9.5px] opacity-70">5 - 10 min</span>
+                        <span className="text-[11px] leading-tight font-bold">Army School</span>
+                        <span className="text-[9px] text-slate-400">5 - 10 min</span>
                       </div>
                     </div>
-                    <span className={`text-[11px] font-bold ${showSchools ? 'text-blue-600' : ''}`} style={showSchools ? undefined : { color: 'var(--muted)' }}>
+                    <span className={`text-[10.5px] font-bold ${showSchools ? 'text-blue-400' : 'text-slate-400'}`}>
                       {showSchools ? '✓' : '○'}
                     </span>
                   </motion.button>
@@ -904,21 +900,20 @@ export default function UnifiedBentoDashboard() {
                     whileTap={{ scale: 0.98 }}
                     className={`flex items-center justify-between p-2 rounded-xl border text-left transition-all cursor-pointer ${
                       showHospitals
-                        ? 'bg-rose-50/80 dark:bg-rose-950/40 border-rose-300 dark:border-rose-700 text-rose-900 dark:text-rose-200 font-bold shadow-xs'
-                        : 'bg-white/40 dark:bg-white/10 border-white/30 dark:border-white/20 hover:border-rose-500/30'
+                        ? 'bg-rose-950/80 border-rose-500 text-rose-300 font-bold shadow-xs'
+                        : 'bg-slate-800/80 border-white/10 text-slate-200 hover:border-rose-500/40 hover:bg-slate-800'
                     }`}
-                    style={showHospitals ? undefined : { color: 'var(--text)' }}
                   >
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-lg bg-rose-100 dark:bg-rose-900/60 flex items-center justify-center text-xs">
+                      <div className="w-6 h-6 rounded-lg bg-rose-900/60 border border-rose-700/50 flex items-center justify-center text-xs">
                         🏥
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-[11.5px] leading-tight">Military Hospital</span>
-                        <span className="text-[9.5px] opacity-70">5 - 15 min</span>
+                        <span className="text-[11px] leading-tight font-bold">Military Hospital</span>
+                        <span className="text-[9px] text-slate-400">5 - 15 min</span>
                       </div>
                     </div>
-                    <span className={`text-[11px] font-bold ${showHospitals ? 'text-rose-600' : ''}`} style={showHospitals ? undefined : { color: 'var(--muted)' }}>
+                    <span className={`text-[10.5px] font-bold ${showHospitals ? 'text-rose-400' : 'text-slate-400'}`}>
                       {showHospitals ? '✓' : '○'}
                     </span>
                   </motion.button>
@@ -928,7 +923,7 @@ export default function UnifiedBentoDashboard() {
                     onClick={() => ctx?.openAccessibility?.()}
                     whileHover={{ scale: 1.04 }}
                     whileTap={{ scale: 0.96 }}
-                    className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 hover:underline pt-1 text-center cursor-pointer"
+                    className="text-[10.5px] font-bold text-emerald-400 hover:underline pt-0.5 text-center cursor-pointer"
                   >
                     View more facilities →
                   </motion.button>
@@ -944,23 +939,23 @@ export default function UnifiedBentoDashboard() {
         {/* ══════════════════════════════════════════
             3. BOTTOM STRIP: LEGEND TAGS & VALUE PROPS
             ══════════════════════════════════════════ */}
-        <footer className="h-[44px] px-6 liquid-glass-nav relative flex items-center justify-between z-30 flex-shrink-0 font-['Plus_Jakarta_Sans',sans-serif]">
+        <footer className="h-[40px] px-6 liquid-glass-nav relative flex items-center justify-between z-30 flex-shrink-0 font-['Plus_Jakarta_Sans',sans-serif]">
           
           {/* Left Legend Tags */}
           <div className="flex items-center gap-5 flex-shrink-0">
-            <span className="inline-flex items-center gap-1.5 text-[12.5px] font-bold whitespace-nowrap">
+            <span className="inline-flex items-center gap-1.5 text-[11.5px] font-bold whitespace-nowrap">
               <span className="text-base leading-none">🛡️</span>
               <span>Verified Property</span>
             </span>
-            <span className="inline-flex items-center gap-1.5 text-[12.5px] font-bold whitespace-nowrap">
+            <span className="inline-flex items-center gap-1.5 text-[11.5px] font-bold whitespace-nowrap">
               <span className="text-base leading-none">🏢</span>
               <span>BHK Options</span>
             </span>
-            <span className="inline-flex items-center gap-1.5 text-[12.5px] font-bold whitespace-nowrap">
+            <span className="inline-flex items-center gap-1.5 text-[11.5px] font-bold whitespace-nowrap">
               <span className="text-base leading-none">🛏️</span>
               <span>PG / Rooms</span>
             </span>
-            <span className="inline-flex items-center gap-1.5 text-[12.5px] font-bold whitespace-nowrap">
+            <span className="inline-flex items-center gap-1.5 text-[11.5px] font-bold whitespace-nowrap">
               <span className="text-base leading-none">🏥</span>
               <span>Nearby Facilities</span>
             </span>
@@ -970,18 +965,18 @@ export default function UnifiedBentoDashboard() {
           <div className="flex items-center gap-5 overflow-hidden flex-shrink-0">
             <div className="flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-              <span className="text-[12px] font-extrabold whitespace-nowrap">Secure & Verified</span>
-              <span className="text-[11px] font-semibold hidden xl:inline whitespace-nowrap" style={{ color: 'var(--muted)' }}>— 100% Defence Auth</span>
+              <span className="text-[11px] font-extrabold whitespace-nowrap">Secure & Verified</span>
+              <span className="text-[10px] font-semibold hidden xl:inline whitespace-nowrap" style={{ color: 'var(--muted)' }}>— 100% Defence Auth</span>
             </div>
             <div className="flex items-center gap-1.5">
               <Users className="w-4 h-4 text-blue-600 flex-shrink-0" />
-              <span className="text-[12px] font-extrabold whitespace-nowrap">For Defence Community</span>
-              <span className="text-[11px] font-semibold hidden xl:inline whitespace-nowrap" style={{ color: 'var(--muted)' }}>— Jawans, JCOs & Officers</span>
+              <span className="text-[11px] font-extrabold whitespace-nowrap">For Defence Community</span>
+              <span className="text-[10px] font-semibold hidden xl:inline whitespace-nowrap" style={{ color: 'var(--muted)' }}>— Jawans, JCOs & Officers</span>
             </div>
             <div className="flex items-center gap-1.5">
               <Tag className="w-4 h-4 text-amber-600 flex-shrink-0" />
-              <span className="text-[12px] font-extrabold whitespace-nowrap">Best Prices</span>
-              <span className="text-[11px] font-semibold hidden xl:inline whitespace-nowrap" style={{ color: 'var(--muted)' }}>— Zero Brokerage</span>
+              <span className="text-[11px] font-extrabold whitespace-nowrap">Best Prices</span>
+              <span className="text-[10px] font-semibold hidden xl:inline whitespace-nowrap" style={{ color: 'var(--muted)' }}>— Zero Brokerage</span>
             </div>
           </div>
 

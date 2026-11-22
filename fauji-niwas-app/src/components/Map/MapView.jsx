@@ -546,32 +546,32 @@ export default function MapView({
         </MapContainer>
 
         {/* Google Maps Layer Switcher (Map | Satellite | Terrain) */}
-        <div style={{
-          position: 'absolute',
-          bottom: 24,
-          left: 12,
-          zIndex: 1000,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 2,
-          background: 'rgba(255, 255, 255, 0.95)',
-          borderRadius: 8,
-          padding: 3,
-          boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-          border: '1px solid rgba(0,0,0,0.12)'
-        }}>
+        <div 
+          className="liquid-glass-float"
+          style={{
+            position: 'absolute',
+            bottom: 20,
+            left: 12,
+            zIndex: 1000,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2,
+            borderRadius: 8,
+            padding: 2.5
+          }}
+        >
           <button
             type="button"
             onClick={() => handleMapTypeChange('roadmap')}
             style={{
-              padding: '5px 11px',
+              padding: '4px 10px',
               fontSize: 11,
               fontWeight: 700,
               borderRadius: 6,
               border: 'none',
               cursor: 'pointer',
-              background: mapType === 'roadmap' ? '#1a73e8' : 'transparent',
-              color: mapType === 'roadmap' ? '#ffffff' : '#3c4043',
+              background: mapType === 'roadmap' ? '#00875a' : 'transparent',
+              color: mapType === 'roadmap' ? '#ffffff' : 'var(--text)',
               boxShadow: mapType === 'roadmap' ? '0 1px 3px rgba(0,0,0,0.2)' : 'none',
               transition: 'all 0.15s ease'
             }}
@@ -582,14 +582,14 @@ export default function MapView({
             type="button"
             onClick={() => handleMapTypeChange('satellite')}
             style={{
-              padding: '5px 11px',
+              padding: '4px 10px',
               fontSize: 11,
               fontWeight: 700,
               borderRadius: 6,
               border: 'none',
               cursor: 'pointer',
-              background: mapType === 'satellite' ? '#1a73e8' : 'transparent',
-              color: mapType === 'satellite' ? '#ffffff' : '#3c4043',
+              background: mapType === 'satellite' ? '#00875a' : 'transparent',
+              color: mapType === 'satellite' ? '#ffffff' : 'var(--text)',
               boxShadow: mapType === 'satellite' ? '0 1px 3px rgba(0,0,0,0.2)' : 'none',
               transition: 'all 0.15s ease'
             }}
@@ -600,14 +600,14 @@ export default function MapView({
             type="button"
             onClick={() => handleMapTypeChange('terrain')}
             style={{
-              padding: '5px 11px',
+              padding: '4px 10px',
               fontSize: 11,
               fontWeight: 700,
               borderRadius: 6,
               border: 'none',
               cursor: 'pointer',
-              background: mapType === 'terrain' ? '#1a73e8' : 'transparent',
-              color: mapType === 'terrain' ? '#ffffff' : '#3c4043',
+              background: mapType === 'terrain' ? '#00875a' : 'transparent',
+              color: mapType === 'terrain' ? '#ffffff' : 'var(--text)',
               boxShadow: mapType === 'terrain' ? '0 1px 3px rgba(0,0,0,0.2)' : 'none',
               transition: 'all 0.15s ease'
             }}
